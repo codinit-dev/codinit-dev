@@ -1,11 +1,12 @@
 # CodinIT.dev
 
-[![CodinIT.dev: AI-Powered Full-Stack Web Development in the Browser](./public/social_preview_index.jpg)](https://codinit.dev)
+![CodinIT.dev: AI-Powered Full-Stack Web Development in the Browser](https://github.com/user-attachments/assets/de684e88-a65c-42ea-b067-d1a3bc85a420)
+
 
 Welcome to CodinIT.dev, an AI-powered development platform that allows you to choose the LLM that you use for each prompt! Currently, you can use OpenAI, Anthropic, Ollama, OpenRouter, Gemini, LMStudio, Mistral, xAI, HuggingFace, DeepSeek, Groq, Cohere, Together, Perplexity, Moonshot (Kimi), Hyperbolic, GitHub Models, Amazon Bedrock, and OpenAI-like providers - and it is easily extended to use any other model supported by the Vercel AI SDK! See the instructions below for running this locally and extending it to include more models.
 
 -----
-Check the [CodinIT.dev Docs](https://gerome-elassaad.github.io/codingit/) for more official installation instructions and additional information.
+Check the [CodinIT.dev Docs](https://docs.codinit.dev) for more official installation instructions and additional information.
 
 -----
 
@@ -98,7 +99,7 @@ Let's get you up and running with the stable version of CodinIT.dev!
 - Download the binary for your platform (available for Windows, macOS, and Linux)
 - **Note**: For macOS, if you get the error "This app is damaged", run:
   ```bash
-  xattr -cr /path/to/Bolt.app
+  xattr -cr /path/to/codinit.app
   ```
 
 ## Manual installation
@@ -127,7 +128,7 @@ Node.js is required to run the application.
 
 ## Running the Application
 
-You have two options for running Bolt.DIY: directly on your machine or using Docker.
+You have two options for running CodinIT.dev: directly on your machine or using Docker.
 
 ### Option 1: Direct Installation (Recommended for Beginners)
 
@@ -166,7 +167,7 @@ This option requires some familiarity with Docker but provides a more isolated e
    npm run dockerbuild
 
    # OR using direct Docker command:
-   docker build . --target bolt-ai-development
+   docker build . --target codinit-ai-development
    ```
 
 2. **Run the Container**:

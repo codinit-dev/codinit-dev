@@ -82,16 +82,16 @@ const formatContextSize = (tokens: number): string => {
 // Helper function to get provider logo path
 const getProviderLogo = (providerName: string): string | null => {
   const logoMap: Record<string, string> = {
-    'Anthropic': '/thirdparty/logos/anthropic.svg',
-    'OpenAI': '/thirdparty/logos/openai.svg',
-    'Google': '/thirdparty/logos/google.svg',
-    'Groq': '/thirdparty/logos/groq.svg',
-    'Mistral': '/thirdparty/logos/mistral.svg',
-    'Ollama': '/thirdparty/logos/ollama.svg',
-    'Deepseek': '/thirdparty/logos/deepseek.svg',
-    'xAI': '/thirdparty/logos/xai.svg',
-    'Together': '/thirdparty/logos/togetherai.svg',
-    'Fireworks': '/thirdparty/logos/fireworks.svg',
+    Anthropic: '/thirdparty/logos/anthropic.svg',
+    OpenAI: '/thirdparty/logos/openai.svg',
+    Google: '/thirdparty/logos/google.svg',
+    Groq: '/thirdparty/logos/groq.svg',
+    Mistral: '/thirdparty/logos/mistral.svg',
+    Ollama: '/thirdparty/logos/ollama.svg',
+    Deepseek: '/thirdparty/logos/deepseek.svg',
+    xAI: '/thirdparty/logos/xai.svg',
+    Together: '/thirdparty/logos/togetherai.svg',
+    Fireworks: '/thirdparty/logos/fireworks.svg',
   };
 
   return logoMap[providerName] || null;

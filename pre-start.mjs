@@ -1,4 +1,9 @@
-const { execSync } = require('child_process');
+import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Get git hash with fallback
 const getGitHash = () => {
@@ -9,9 +14,19 @@ const getGitHash = () => {
   }
 };
 
+// Get version from package.json
+const getVersion = () => {
+  try {
+    const packageJson = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
+    return packageJson.version;
+  } catch {
+    return 'unknown';
+  }
+};
+
 let commitJson = {
   hash: JSON.stringify(getGitHash()),
-  version: JSON.stringify(process.env.npm_package_version),
+  version: JSON.stringify(getVersion()),
 };
 
 console.log(`

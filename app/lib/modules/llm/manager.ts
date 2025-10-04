@@ -125,6 +125,7 @@ export class LLMManager {
               }
 
               logger.error(`Error getting dynamic models ${provider.name} :`, err);
+
               return [];
             });
 
@@ -204,6 +205,7 @@ export class LLMManager {
         }
 
         logger.error(`Error getting dynamic models ${provider.name} :`, err);
+
         return [];
       });
     const dynamicModelsName = dynamicModels.map((d) => d.name);
