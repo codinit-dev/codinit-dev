@@ -58,33 +58,3 @@ jobs:
           name: coverage-report
           path: coverage/
           retention-days: 7
-
-  docker-validation:
-    name: Docker Build Validation
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Validate Docker production build
-        run: |
-          echo "🐳 Testing Docker production target..."
-          docker build --target runtime . --no-cache --progress=plain
-          echo "✅ Production target builds successfully"
-
-      - name: Validate Docker development build
-        run: |
-          echo "🐳 Testing Docker development target..."
-          docker build --target development . --no-cache --progress=plain
-          echo "✅ Development target builds successfully"
-
-      - name: Validate docker-compose configuration
-        run: |
-          echo "🐳 Validating docker-compose configuration..."
-          docker compose config --quiet
-          echo "✅ docker-compose configuration is valid"

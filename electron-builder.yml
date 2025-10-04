@@ -18,7 +18,7 @@ asarUnpack:
   - electron-update.yml
 
 mac:
-  icon: assets/icons/icon.icns
+  icon: assets/icons/icon.png
   target:
     - dmg
   identity: null

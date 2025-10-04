@@ -86,6 +86,9 @@ export async function newShellProcess(webcontainer: WebContainer, terminal: ITer
 
   await jshReady.promise;
 
+  // Change to workdir to ensure commands run in correct directory
+  input.write(`cd ${webcontainer.workdir}\n`);
+
   return process;
 }
 
@@ -126,7 +129,17 @@ export class BoltShell {
     this._watchExpoUrlInBackground(expoUrlStream);
 
     await this.waitTillOscCode('interactive');
+
+    // Change to workdir after shell is interactive to ensure commands run in correct directory
+    await this.#changeToWorkdir(webcontainer);
+
     this.#initialized?.();
+  }
+
+  async #changeToWorkdir(webcontainer: WebContainer) {
+    const workdir = webcontainer.workdir;
+    this.#shellInputStream?.write(`cd ${workdir}\n`);
+    await this.waitTillOscCode('prompt');
   }
 
   async newBoltShellProcess(webcontainer: WebContainer, terminal: ITerminal) {
