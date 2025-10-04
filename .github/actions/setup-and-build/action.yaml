@@ -2,12 +2,12 @@ name: Setup and Build
 description: Generic setup action
 inputs:
   pnpm-version:
+    description: 'Version of pnpm to use'
     required: false
-    type: string
     default: '9.14.4'
   node-version:
+    description: 'Version of Node.js to use'
     required: false
-    type: string
     default: '20.18.0'
 
 runs:
