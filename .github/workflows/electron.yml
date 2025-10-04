@@ -1,0 +1,98 @@
+name: Electron Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag for the release (e.g., v1.0.0). Leave empty if not applicable.'
+        required: false
+  push:
+    branches:
+      - electron
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest] # Use unsigned macOS builds for now
+        node-version: [20.18.0]
+      fail-fast: false
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.14.4
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # Install Linux dependencies
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+
+      # Build
+      - name: Build Electron app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_OPTIONS: "--max_old_space_size=4096"
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            pnpm run electron:build:win
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            pnpm run electron:build:mac
+          else
+            pnpm run electron:build:linux
+          fi
+        shell: bash
+
+      # Create Release
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # Use the workflow_dispatch input tag if available, else use the Git ref name.
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+          # Only branch pushes remain drafts. For workflow_dispatch and tag pushes the release is published.
+          draft: ${{ github.event_name != 'workflow_dispatch' && github.ref_type == 'branch' }}
+          # For tag pushes, name the release as "Release <tagname>", otherwise "Electron Release".
+          name: ${{ (github.event_name == 'push' && github.ref_type == 'tag') && format('Release {0}', github.ref_name) || 'Electron Release' }}
+          files: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.deb
+            dist/*.AppImage
+            dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

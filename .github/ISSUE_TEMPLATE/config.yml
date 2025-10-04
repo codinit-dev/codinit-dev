@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community Discussion
+    url: https://github.com/Gerome-Elassaad/codingit/discussions
+    about: Ask questions and discuss with other CodinIT.dev users
