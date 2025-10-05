@@ -444,7 +444,11 @@ export const ModelSelector = ({
   return (
     <div className="flex gap-2 flex-col sm:flex-row overflow-visible">
       {/* Provider Combobox */}
-      <div className="relative flex w-full overflow-visible" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
+      <div
+        className="relative flex w-full overflow-visible"
+        onKeyDown={handleProviderKeyDown}
+        ref={providerDropdownRef}
+      >
         <div
           className={classNames(
             'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
@@ -618,7 +622,11 @@ export const ModelSelector = ({
       </div>
 
       {/* Model Combobox */}
-      <div className="relative flex w-full min-w-[70%] overflow-visible" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
+      <div
+        className="relative flex w-full min-w-[70%] overflow-visible"
+        onKeyDown={handleModelKeyDown}
+        ref={modelDropdownRef}
+      >
         <div
           className={classNames(
             'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
