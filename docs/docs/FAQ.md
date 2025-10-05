@@ -402,7 +402,7 @@ If your custom LLM provider isn't appearing:
 ## Get Help & Support
 
 !!! tip "Community Support"
-[Join the CodinIT.dev Community](https://thinktank.ottomator.ai/c/bolt-diy/17){target=\_blank} for discussions and help
+[Join the CodinIT.dev Community](https://thinktank.ottomator.ai/c/codinit-diy/17){target=\_blank} for discussions and help
 
 !!! bug "Report Issues"
 [Open an Issue](https://github.com/stackblitz-labs/CodinIT.dev/issues/19){target=\_blank} in our GitHub Repository

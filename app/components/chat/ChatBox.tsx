@@ -67,13 +67,11 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   return (
     <div
       className={classNames(
-        'relative bg-bolt-elements-background-depth-2 backdrop-blur p-3 rounded-lg border border-bolt-elements-borderColor relative w-full max-w-chat mx-auto z-prompt',
-
-        /*
-         * {
-         *   'sticky bottom-2': chatStarted,
-         * },
-         */
+        'relative backdrop-blur-xl bg-bolt-elements-background-depth-1/95 p-4 rounded-2xl border border-bolt-elements-borderColor/50 w-full max-w-chat mx-auto z-prompt',
+        'shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]',
+        'transition-all duration-300 ease-in-out',
+        'hover:shadow-[0_12px_40px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_12px_40px_rgb(0,0,0,0.5)]',
+        'hover:border-bolt-elements-borderColorActive/70',
       )}
     >
       <svg className={classNames(styles.PromptEffectContainer)}>
@@ -87,25 +85,25 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             gradientUnits="userSpaceOnUse"
             gradientTransform="rotate(-45)"
           >
-            <stop offset="0%" stopColor="#b44aff" stopOpacity="0%"></stop>
-            <stop offset="40%" stopColor="#b44aff" stopOpacity="80%"></stop>
-            <stop offset="50%" stopColor="#b44aff" stopOpacity="80%"></stop>
-            <stop offset="100%" stopColor="#b44aff" stopOpacity="0%"></stop>
+            <stop offset="0%" stopColor="#8a5fff" stopOpacity="0%"></stop>
+            <stop offset="40%" stopColor="#8a5fff" stopOpacity="90%"></stop>
+            <stop offset="50%" stopColor="#8a5fff" stopOpacity="90%"></stop>
+            <stop offset="100%" stopColor="#8a5fff" stopOpacity="0%"></stop>
           </linearGradient>
           <linearGradient id="shine-gradient">
             <stop offset="0%" stopColor="white" stopOpacity="0%"></stop>
-            <stop offset="40%" stopColor="#ffffff" stopOpacity="80%"></stop>
-            <stop offset="50%" stopColor="#ffffff" stopOpacity="80%"></stop>
+            <stop offset="40%" stopColor="#ffffff" stopOpacity="90%"></stop>
+            <stop offset="50%" stopColor="#ffffff" stopOpacity="90%"></stop>
             <stop offset="100%" stopColor="white" stopOpacity="0%"></stop>
           </linearGradient>
         </defs>
         <rect className={classNames(styles.PromptEffectLine)} pathLength="100" strokeLinecap="round"></rect>
         <rect className={classNames(styles.PromptShine)} x="48" y="24" width="70" height="1"></rect>
       </svg>
-      <div>
+      <div className="relative z-10 mb-3 overflow-visible">
         <ClientOnly>
           {() => (
-            <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
+            <div className={classNames(props.isModelSettingsCollapsed ? 'hidden' : '', 'overflow-visible')}>
               <ModelSelector
                 key={props.provider?.name + ':' + props.modelList.length}
                 model={props.model}
@@ -151,15 +149,15 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         )}
       </ClientOnly>
       {props.selectedElement && (
-        <div className="flex mx-1.5 gap-2 items-center justify-between rounded-lg rounded-b-none border border-b-none border-bolt-elements-borderColor text-bolt-elements-textPrimary flex py-1 px-2.5 font-medium text-xs">
+        <div className="flex gap-2 items-center justify-between rounded-xl border border-bolt-elements-borderColor/60 bg-gradient-to-r from-accent-500/10 to-accent-600/10 text-bolt-elements-textPrimary py-2 px-3.5 mb-3 font-medium text-xs backdrop-blur-sm">
           <div className="flex gap-2 items-center lowercase">
-            <code className="bg-accent-500 rounded-4px px-1.5 py-1 mr-0.5 text-white">
+            <code className="bg-accent-500 rounded-lg px-2 py-1 text-white font-semibold shadow-sm">
               {props?.selectedElement?.tagName}
             </code>
-            selected for inspection
+            <span className="text-bolt-elements-textSecondary">selected for inspection</span>
           </div>
           <button
-            className="bg-transparent text-accent-500 pointer-auto"
+            className="bg-transparent text-accent-500 hover:text-accent-600 transition-colors font-medium"
             onClick={() => props.setSelectedElement?.(null)}
           >
             Clear
@@ -167,14 +165,20 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         </div>
       )}
       <div
-        className={classNames('relative shadow-xs border border-bolt-elements-borderColor backdrop-blur rounded-lg')}
+        className={classNames(
+          'relative shadow-lg border border-bolt-elements-borderColor/60 backdrop-blur-sm rounded-xl',
+          'bg-bolt-elements-background-depth-2/50',
+          'transition-all duration-300',
+          'hover:border-bolt-elements-borderColorActive/50 hover:shadow-xl',
+          'focus-within:border-accent-500/50 focus-within:shadow-[0_0_0_3px_rgba(138,95,255,0.1)]',
+        )}
       >
         <textarea
           ref={props.textareaRef}
           className={classNames(
-            'w-full pl-4 pt-4 pr-16 outline-none resize-none text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary bg-transparent text-sm',
-            'transition-all duration-200',
-            'hover:border-bolt-elements-focus',
+            'w-full pl-5 pt-4 pr-16 pb-2 outline-none resize-none text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary/70 bg-transparent text-sm',
+            'transition-all duration-300',
+            'leading-relaxed',
           )}
           onDragEnter={(e) => {
             e.preventDefault();
@@ -260,17 +264,24 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             />
           )}
         </ClientOnly>
-        <div className="flex justify-between items-center text-sm p-4 pt-2">
-          <div className="flex gap-1 items-center">
+        <div className="flex justify-between items-center text-sm px-4 pb-3 pt-2 border-t border-bolt-elements-borderColor/30 mt-1">
+          <div className="flex gap-1.5 items-center">
             <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
             <McpTools />
-            <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
+            <IconButton
+              title="Upload file"
+              className="transition-all hover:scale-110 hover:bg-bolt-elements-item-backgroundAccent/50"
+              onClick={() => props.handleFileUpload()}
+            >
               <div className="i-ph:paperclip text-xl"></div>
             </IconButton>
             <IconButton
               title="Enhance prompt"
               disabled={props.input.length === 0 || props.enhancingPrompt}
-              className={classNames('transition-all', props.enhancingPrompt ? 'opacity-100' : '')}
+              className={classNames(
+                'transition-all hover:scale-110',
+                props.enhancingPrompt ? 'opacity-100' : 'hover:bg-accent-500/20',
+              )}
               onClick={() => {
                 props.enhancePrompt?.();
                 toast.success('Prompt enhanced!');
@@ -279,7 +290,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               {props.enhancingPrompt ? (
                 <div className="i-svg-spinners:90-ring-with-bg text-bolt-elements-loader-progress text-xl animate-spin"></div>
               ) : (
-                <div className="i-codinit:stars text-xl"></div>
+                <div className="i-codinit:stars text-xl text-accent-500"></div>
               )}
             </IconButton>
 
@@ -293,38 +304,48 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               <IconButton
                 title="Discuss"
                 className={classNames(
-                  'transition-all flex items-center gap-1 px-1.5',
+                  'transition-all flex items-center gap-1.5 px-2 py-1.5 rounded-lg',
                   props.chatMode === 'discuss'
-                    ? '!bg-bolt-elements-item-backgroundAccent !text-bolt-elements-item-contentAccent'
-                    : 'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault',
+                    ? 'bg-gradient-to-r from-accent-500 to-accent-600 !text-white shadow-md shadow-accent-500/30'
+                    : 'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault hover:bg-bolt-elements-item-backgroundAccent/30',
                 )}
                 onClick={() => {
                   props.setChatMode?.(props.chatMode === 'discuss' ? 'build' : 'discuss');
                 }}
               >
-                <div className={`i-ph:chats text-xl`} />
-                {props.chatMode === 'discuss' ? <span>Discuss</span> : <span />}
+                <div className="i-ph:chats text-lg" />
+                {props.chatMode === 'discuss' ? <span className="text-xs font-medium">Discuss</span> : <span />}
               </IconButton>
             )}
             <IconButton
               title="Model Settings"
-              className={classNames('transition-all flex items-center gap-1', {
-                'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent':
-                  props.isModelSettingsCollapsed,
-                'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault':
-                  !props.isModelSettingsCollapsed,
-              })}
+              className={classNames(
+                'transition-all flex items-center gap-1.5 px-2 py-1.5 rounded-lg',
+                props.isModelSettingsCollapsed
+                  ? 'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent hover:bg-bolt-elements-item-backgroundAccent/80'
+                  : 'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault hover:bg-bolt-elements-item-backgroundAccent/30',
+              )}
               onClick={() => props.setIsModelSettingsCollapsed(!props.isModelSettingsCollapsed)}
               disabled={!props.providerList || props.providerList.length === 0}
             >
-              <div className={`i-ph:caret-${props.isModelSettingsCollapsed ? 'right' : 'down'} text-lg`} />
-              {props.isModelSettingsCollapsed ? <span className="text-xs">{props.model}</span> : <span />}
+              <div className={`i-ph:caret-${props.isModelSettingsCollapsed ? 'right' : 'down'} text-base`} />
+              {props.isModelSettingsCollapsed ? (
+                <span className="text-xs font-medium max-w-[120px] truncate">{props.model}</span>
+              ) : (
+                <span />
+              )}
             </IconButton>
           </div>
           {props.input.length > 3 ? (
-            <div className="text-xs text-bolt-elements-textTertiary">
-              Use <kbd className="kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2">Shift</kbd> +{' '}
-              <kbd className="kdb px-1.5 py-0.5 rounded bg-bolt-elements-background-depth-2">Return</kbd> a new line
+            <div className="text-xs text-bolt-elements-textTertiary/80 flex items-center gap-1">
+              <kbd className="kdb px-2 py-1 rounded-md bg-bolt-elements-background-depth-3/80 border border-bolt-elements-borderColor/40 font-medium shadow-sm">
+                Shift
+              </kbd>
+              <span>+</span>
+              <kbd className="kdb px-2 py-1 rounded-md bg-bolt-elements-background-depth-3/80 border border-bolt-elements-borderColor/40 font-medium shadow-sm">
+                Return
+              </kbd>
+              <span className="ml-1">for new line</span>
             </div>
           ) : null}
           <SupabaseConnection />

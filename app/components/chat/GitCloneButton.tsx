@@ -167,25 +167,24 @@ ${escapeBoltTags(file.content)}
           setSelectedProvider(null);
           setIsDialogOpen(true);
         }}
-        title="Clone a repo"
+        title="Import from Git Repository"
         variant="default"
         size="lg"
         className={classNames(
-          'gap-2 bg-bolt-elements-background-depth-1',
-          'text-bolt-elements-textPrimary',
-          'hover:bg-bolt-elements-background-depth-2',
-          'border border-bolt-elements-borderColor',
-          'h-10 px-4 py-2 min-w-[120px] justify-center',
-          'transition-all duration-200 ease-in-out',
+          'group relative gap-2.5 bg-gradient-to-br from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-2',
+          'text-bolt-elements-textPrimary font-medium',
+          'hover:from-bolt-elements-background-depth-2 hover:to-bolt-elements-background-depth-3',
+          'border border-bolt-elements-borderColor/60 hover:border-blue-500/40',
+          'shadow-md hover:shadow-lg hover:shadow-blue-500/10',
+          'h-11 px-5 py-2.5 min-w-[140px] justify-center',
+          'rounded-xl transition-all duration-300 ease-out',
+          'hover:scale-105 active:scale-95',
           className,
         )}
         disabled={!ready || loading}
       >
-        Clone a repo
-        <div className="flex items-center gap-1 ml-2">
-          <Github className="w-4 h-4" />
-          <GitBranch className="w-4 h-4" />
-        </div>
+        <span className="i-ph:git-branch-duotone w-5 h-5 text-blue-500 group-hover:scale-110 transition-transform" />
+        Import Git Repo
       </Button>
 
       {/* Provider Selection Dialog */}

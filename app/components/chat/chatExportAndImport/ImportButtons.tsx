@@ -11,7 +11,7 @@ type ChatData = {
 
 export function ImportButtons(importChat: ((description: string, messages: Message[]) => Promise<void>) | undefined) {
   return (
-    <div className="flex flex-col items-center justify-center w-auto">
+    <>
       <input
         type="file"
         id="chat-import"
@@ -57,40 +57,40 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
           }
         }}
       />
-      <div className="flex flex-col items-center gap-4 max-w-2xl text-center">
-        <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              const input = document.getElementById('chat-import');
-              input?.click();
-            }}
-            variant="default"
-            size="lg"
-            className={classNames(
-              'gap-2 bg-bolt-elements-background-depth-1',
-              'text-bolt-elements-textPrimary',
-              'hover:bg-bolt-elements-background-depth-2',
-              'border border-bolt-elements-borderColor',
-              'h-10 px-4 py-2 min-w-[120px] justify-center',
-              'transition-all duration-200 ease-in-out',
-            )}
-          >
-            <span className="i-ph:upload-simple w-4 h-4" />
-            Import Chat
-          </Button>
-          <ImportFolderButton
-            importChat={importChat}
-            className={classNames(
-              'gap-2 bg-bolt-elements-background-depth-1',
-              'text-bolt-elements-textPrimary',
-              'hover:bg-bolt-elements-background-depth-2',
-              'border border-[rgba(0,0,0,0.08)] dark:border-[rgba(255,255,255,0.08)]',
-              'h-10 px-4 py-2 min-w-[120px] justify-center',
-              'transition-all duration-200 ease-in-out rounded-lg',
-            )}
-          />
-        </div>
-      </div>
-    </div>
+      <Button
+        onClick={() => {
+          const input = document.getElementById('chat-import');
+          input?.click();
+        }}
+        variant="default"
+        size="lg"
+        className={classNames(
+          'group relative gap-2.5 bg-gradient-to-br from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-2',
+          'text-bolt-elements-textPrimary font-medium',
+          'hover:from-bolt-elements-background-depth-2 hover:to-bolt-elements-background-depth-3',
+          'border border-bolt-elements-borderColor/60 hover:border-accent-500/40',
+          'shadow-md hover:shadow-lg hover:shadow-accent-500/10',
+          'h-11 px-5 py-2.5 min-w-[140px] justify-center',
+          'rounded-xl transition-all duration-300 ease-out',
+          'hover:scale-105 active:scale-95',
+        )}
+      >
+        <span className="i-ph:file-arrow-up-duotone w-5 h-5 text-accent-500 group-hover:scale-110 transition-transform" />
+        Import Chat
+      </Button>
+      <ImportFolderButton
+        importChat={importChat}
+        className={classNames(
+          'group relative gap-2.5 bg-gradient-to-br from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-2',
+          'text-bolt-elements-textPrimary font-medium',
+          'hover:from-bolt-elements-background-depth-2 hover:to-bolt-elements-background-depth-3',
+          'border border-bolt-elements-borderColor/60 hover:border-green-500/40',
+          'shadow-md hover:shadow-lg hover:shadow-green-500/10',
+          'h-11 px-5 py-2.5 min-w-[140px] justify-center',
+          'rounded-xl transition-all duration-300 ease-out',
+          'hover:scale-105 active:scale-95',
+        )}
+      />
+    </>
   );
 }

@@ -1,4 +1,4 @@
-site_name: bolt.diy Docs
+site_name: CodinIT.dev Docs
 site_dir: ../site
 theme:
   name: material
@@ -31,25 +31,25 @@ theme:
     repo: fontawesome/brands/github
   # logo: assets/logo.png
   # favicon: assets/logo.png
-repo_name: bolt.diy
-repo_url: https://github.com/stackblitz-labs/bolt.diy
+repo_name: CodingIT
+repo_url: https://github.com/Gerome-Elassaad/CodingIT
 edit_uri: ''
 
 extra:
   generator: false
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/stackblitz-labs/bolt.diy
-      name: bolt.diy
+      link: https://github.com/Gerome-Elassaad/CodingIT
+      name: CodingIT
     - icon: fontawesome/brands/discourse
       link: https://thinktank.ottomator.ai/
-      name: bolt.diy Discourse
+      name: CodingIT Discourse
     - icon: fontawesome/brands/x-twitter
       link: https://x.com/bolt_diy
-      name: bolt.diy on X
+      name: CodingIT on X
     - icon: fontawesome/brands/bluesky
-      link: https://bsky.app/profile/bolt.diy
-      name: bolt.diy on Bluesky
+      link: https://bsky.app/profile/CodingIT
+      name: CodingIT on Bluesky
 
 markdown_extensions:
   - pymdownx.highlight:

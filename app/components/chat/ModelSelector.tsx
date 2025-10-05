@@ -92,6 +92,15 @@ const getProviderLogo = (providerName: string): string | null => {
     xAI: '/thirdparty/logos/xai.svg',
     Together: '/thirdparty/logos/togetherai.svg',
     Fireworks: '/thirdparty/logos/fireworks.svg',
+    Cohere: '/thirdparty/logos/cohere.svg',
+    Github: '/thirdparty/logos/github.svg',
+    HuggingFace: '/thirdparty/logos/huggingface.svg',
+    Perplexity: '/thirdparty/logos/perplexity.svg',
+    OpenRouter: '/thirdparty/logos/openrouter.svg',
+    LMStudio: '/thirdparty/logos/lmstudio.svg',
+    AmazonBedrock: '/thirdparty/logos/bedrock.svg',
+    Hyperbolic: '/thirdparty/logos/hyperbolic.svg',
+    Moonshot: '/thirdparty/logos/moonshot.svg',
   };
 
   return logoMap[providerName] || null;
@@ -433,9 +442,9 @@ export const ModelSelector = ({
   }
 
   return (
-    <div className="flex gap-2 flex-col sm:flex-row">
+    <div className="flex gap-2 flex-col sm:flex-row overflow-visible">
       {/* Provider Combobox */}
-      <div className="relative flex w-full" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
+      <div className="relative flex w-full overflow-visible" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
         <div
           className={classNames(
             'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
@@ -479,7 +488,7 @@ export const ModelSelector = ({
 
         {isProviderDropdownOpen && (
           <div
-            className="absolute z-20 w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
+            className="absolute z-[100] w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
             role="listbox"
             id="provider-listbox"
           >
@@ -609,7 +618,7 @@ export const ModelSelector = ({
       </div>
 
       {/* Model Combobox */}
-      <div className="relative flex w-full min-w-[70%]" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
+      <div className="relative flex w-full min-w-[70%] overflow-visible" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
         <div
           className={classNames(
             'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
@@ -644,7 +653,7 @@ export const ModelSelector = ({
 
         {isModelDropdownOpen && (
           <div
-            className="absolute z-10 w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
+            className="absolute z-[100] w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
             role="listbox"
             id="model-listbox"
           >

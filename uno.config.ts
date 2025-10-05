@@ -2,10 +2,11 @@ import { globSync } from 'fast-glob';
 import fs from 'node:fs/promises';
 import { basename } from 'node:path';
 import { defineConfig, presetIcons, presetUno, transformerDirectives } from 'unocss';
+import { icons as phIcons } from '@iconify-json/ph';
 
 const iconPaths = globSync('./icons/*.svg');
 
-const collectionName = 'bolt';
+const collectionName = 'codinit';
 
 const customIconCollection = iconPaths.reduce(
   (acc, iconPath) => {
@@ -98,7 +99,7 @@ const COLOR_PRIMITIVES = {
 };
 
 export default defineConfig({
-  safelist: [...Object.keys(customIconCollection[collectionName] || {}).map((x) => `i-bolt:${x}`)],
+  safelist: [...Object.keys(customIconCollection[collectionName] || {}).map((x) => `i-codinit:${x}`)],
   shortcuts: {
     'bolt-ease-cubic-bezier': 'ease-[cubic-bezier(0.4,0,0.2,1)]',
     'transition-theme': 'transition-[background-color,border-color,color] duration-150 bolt-ease-cubic-bezier',
@@ -241,6 +242,7 @@ export default defineConfig({
       warn: true,
       collections: {
         ...customIconCollection,
+        ph: () => phIcons,
       },
       unit: 'em',
     }),

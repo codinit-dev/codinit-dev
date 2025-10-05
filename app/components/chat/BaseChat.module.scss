@@ -20,12 +20,14 @@
 
 .PromptEffectContainer {
   --prompt-container-offset: 50px;
-  --prompt-line-stroke-width: 1px;
+  --prompt-line-stroke-width: 1.5px;
   position: absolute;
   pointer-events: none;
   inset: calc(var(--prompt-container-offset) / -2);
   width: calc(100% + var(--prompt-container-offset));
   height: calc(100% + var(--prompt-container-offset));
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
 .PromptEffectLine {
@@ -33,15 +35,17 @@
   height: calc(100% - var(--prompt-container-offset) + var(--prompt-line-stroke-width));
   x: calc(var(--prompt-container-offset) / 2 - var(--prompt-line-stroke-width) / 2);
   y: calc(var(--prompt-container-offset) / 2 - var(--prompt-line-stroke-width) / 2);
-  rx: calc(8px - var(--prompt-line-stroke-width));
+  rx: calc(16px - var(--prompt-line-stroke-width));
   fill: transparent;
   stroke-width: var(--prompt-line-stroke-width);
   stroke: url(#line-gradient);
-  stroke-dasharray: 35px 65px;
+  stroke-dasharray: 40px 60px;
   stroke-dashoffset: 10;
+  filter: blur(0.5px);
 }
 
 .PromptShine {
   fill: url(#shine-gradient);
   mix-blend-mode: overlay;
+  opacity: 0.9;
 }

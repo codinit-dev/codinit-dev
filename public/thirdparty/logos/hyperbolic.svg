@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="hyperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667EEA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764BA2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M100 20C55.817 20 20 55.817 20 100s35.817 80 80 80 80-35.817 80-80-35.817-80-80-80zm0 20c33.137 0 60 26.863 60 60s-26.863 60-60 60-60-26.863-60-60 26.863-60 60-60z" fill="url(#hyperGrad)"/>
+  <path d="M70 70Q100 130 130 70M70 130Q100 70 130 130" stroke="url(#hyperGrad)" stroke-width="8" fill="none"/>
+</svg>
