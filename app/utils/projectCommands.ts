@@ -116,12 +116,12 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
 
   if (commands.setupCommand) {
     commandString += `
-<boltAction type="shell">${commands.setupCommand}</boltAction>`;
+<codinitAction type="shell">${commands.setupCommand}</boltAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<boltAction type="start">${commands.startCommand}</boltAction>
+<codinitAction type="start">${commands.startCommand}</boltAction>
 `;
   }
 
@@ -129,7 +129,7 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
     role: 'assistant',
     content: `
 ${commands.followupMessage ? `\n\n${commands.followupMessage}` : ''}
-<boltArtifact id="project-setup" title="Project Setup">
+<codinitArtifact id="project-setup" title="Project Setup">
 ${commandString}
 </boltArtifact>`,
     id: generateId(),
@@ -139,7 +139,7 @@ ${commandString}
 
 export function escapeBoltArtifactTags(input: string) {
   // Regular expression to match boltArtifact tags and their content
-  const regex = /(<boltArtifact[^>]*>)([\s\S]*?)(<\/boltArtifact>)/g;
+  const regex = /(<codinitArtifact[^>]*>)([\s\S]*?)(<\/boltArtifact>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -155,7 +155,7 @@ export function escapeBoltArtifactTags(input: string) {
 
 export function escapeBoltAActionTags(input: string) {
   // Regular expression to match boltArtifact tags and their content
-  const regex = /(<boltAction[^>]*>)([\s\S]*?)(<\/boltAction>)/g;
+  const regex = /(<codinitAction[^>]*>)([\s\S]*?)(<\/boltAction>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -184,12 +184,12 @@ export function createCommandActionsString(commands: ProjectCommands): string {
 
   if (commands.setupCommand) {
     commandString += `
-<boltAction type="shell">${commands.setupCommand}</boltAction>`;
+<codinitAction type="shell">${commands.setupCommand}</boltAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<boltAction type="start">${commands.startCommand}</boltAction>
+<codinitAction type="start">${commands.startCommand}</boltAction>
 `;
   }
 

@@ -160,11 +160,11 @@ export async function getTemplates(templateName: string, title?: string) {
      */
   }
 
-  // exclude    .bolt
-  filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.bolt') == false);
+  // exclude    .codinit
+  filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.codinit') == false);
 
-  // check for ignore file in .bolt folder
-  const templateIgnoreFile = files.find((x) => x.path.startsWith('.bolt') && x.name == 'ignore');
+  // check for ignore file in .codinit folder
+  const templateIgnoreFile = files.find((x) => x.path.startsWith('.codinit') && x.name == 'ignore');
 
   const filesToImport = {
     files: filteredFiles,
@@ -184,12 +184,12 @@ export async function getTemplates(templateName: string, title?: string) {
   }
 
   const assistantMessage = `
-Bolt is initializing your project with the required files using the ${template.name} template.
-<boltArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
+codinit is initializing your project with the required files using the ${template.name} template.
+<codinitArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
 ${filesToImport.files
   .map(
     (file) =>
-      `<boltAction type="file" filePath="${file.path}">
+      `<codinitAction type="file" filePath="${file.path}">
 ${file.content}
 </boltAction>`,
   )
@@ -197,7 +197,7 @@ ${file.content}
 </boltArtifact>
 `;
   let userMessage = ``;
-  const templatePromptFile = files.filter((x) => x.path.startsWith('.bolt')).find((x) => x.name == 'prompt');
+  const templatePromptFile = files.filter((x) => x.path.startsWith('.codinit')).find((x) => x.name == 'prompt');
 
   if (templatePromptFile) {
     userMessage = `
