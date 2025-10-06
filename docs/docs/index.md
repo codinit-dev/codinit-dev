@@ -183,7 +183,7 @@ Once you've configured your keys, the application will be ready to use the selec
    Alternatively, use Docker commands directly:
 
    ```bash
-   docker build . --target bolt-ai-development
+   docker build . --target codinit-ai-development
    ```
 
 2. **Run the Container**:  

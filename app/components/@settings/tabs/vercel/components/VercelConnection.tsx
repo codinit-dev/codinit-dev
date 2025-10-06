@@ -127,14 +127,14 @@ export default function VercelConnection() {
               crossOrigin="anonymous"
               src={`https://cdn.simpleicons.org/vercel/black`}
             />
-            <h3 className="text-base font-medium text-bolt-elements-textPrimary">Vercel Connection</h3>
+            <h3 className="text-base font-medium text-codinit-elements-textPrimary">Vercel Connection</h3>
           </div>
         </div>
 
         {!connection.user ? (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-bolt-elements-textSecondary mb-2">Personal Access Token</label>
+              <label className="block text-sm text-codinit-elements-textSecondary mb-2">Personal Access Token</label>
               <input
                 type="password"
                 value={connection.token}
@@ -145,26 +145,26 @@ export default function VercelConnection() {
                   'w-full px-3 py-2 rounded-lg text-sm',
                   'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
                   'border border-[#E5E5E5] dark:border-[#333333]',
-                  'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
-                  'focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive',
+                  'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                  'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
                   'disabled:opacity-50',
                 )}
               />
-              <div className="mt-2 text-sm text-bolt-elements-textSecondary">
+              <div className="mt-2 text-sm text-codinit-elements-textSecondary">
                 <a
                   href="https://vercel.com/account/tokens"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
+                  className="text-codinit-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                 >
                   Get your token
                   <div className="i-ph:arrow-square-out w-4 h-4" />
                 </a>
-                <div className="mt-2 text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 p-2 rounded">
+                <div className="mt-2 text-xs text-codinit-elements-textSecondary bg-codinit-elements-background-depth-1 p-2 rounded">
                   <p className="flex items-center gap-1">
-                    <span className="i-ph:lightbulb w-3.5 h-3.5 text-bolt-elements-icon-success" />
+                    <span className="i-ph:lightbulb w-3.5 h-3.5 text-codinit-elements-icon-success" />
                     <span className="font-medium">Tip:</span> You can also set{' '}
-                    <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 rounded text-xs">
+                    <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 rounded text-xs">
                       VITE_VERCEL_ACCESS_TOKEN
                     </code>{' '}
                     in your .env.local for automatic connection.
@@ -238,7 +238,7 @@ export default function VercelConnection() {
                   <div className="i-ph:plug w-4 h-4" />
                   Disconnect
                 </button>
-                <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
+                <span className="text-sm text-codinit-elements-textSecondary flex items-center gap-1">
                   <div className="i-ph:check-circle w-4 h-4 text-green-500" />
                   Connected to Vercel
                 </span>
@@ -254,20 +254,20 @@ export default function VercelConnection() {
                 referrerPolicy="no-referrer"
                 crossOrigin="anonymous"
                 alt="User Avatar"
-                className="w-12 h-12 rounded-full border-2 border-bolt-elements-borderColorActive"
+                className="w-12 h-12 rounded-full border-2 border-codinit-elements-borderColorActive"
               />
               <div>
-                <h4 className="text-sm font-medium text-bolt-elements-textPrimary">
+                <h4 className="text-sm font-medium text-codinit-elements-textPrimary">
                   {connection.user?.username || connection.user?.user?.username || 'Vercel User'}
                 </h4>
-                <p className="text-sm text-bolt-elements-textSecondary">
+                <p className="text-sm text-codinit-elements-textSecondary">
                   {connection.user?.email || connection.user?.user?.email || 'No email available'}
                 </p>
               </div>
             </div>
 
             {fetchingStats ? (
-              <div className="flex items-center gap-2 text-sm text-bolt-elements-textSecondary">
+              <div className="flex items-center gap-2 text-sm text-codinit-elements-textSecondary">
                 <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
                 Fetching Vercel projects...
               </div>
@@ -275,7 +275,7 @@ export default function VercelConnection() {
               <div>
                 <button
                   onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
-                  className="w-full bg-transparent text-left text-sm font-medium text-bolt-elements-textPrimary mb-3 flex items-center gap-2"
+                  className="w-full bg-transparent text-left text-sm font-medium text-codinit-elements-textPrimary mb-3 flex items-center gap-2"
                 >
                   <div className="i-ph:buildings w-4 h-4" />
                   Your Projects ({connection.stats?.totalProjects || 0})
@@ -294,22 +294,22 @@ export default function VercelConnection() {
                         href={`https://vercel.com/dashboard/${project.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-4 rounded-lg border border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive transition-colors"
+                        className="block p-4 rounded-lg border border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive transition-colors"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h5 className="text-sm font-medium text-bolt-elements-textPrimary flex items-center gap-2">
-                              <div className="i-ph:globe w-4 h-4 text-bolt-elements-borderColorActive" />
+                            <h5 className="text-sm font-medium text-codinit-elements-textPrimary flex items-center gap-2">
+                              <div className="i-ph:globe w-4 h-4 text-codinit-elements-borderColorActive" />
                               {project.name}
                             </h5>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-bolt-elements-textSecondary">
+                            <div className="flex items-center gap-2 mt-2 text-xs text-codinit-elements-textSecondary">
                               {project.targets?.production?.alias && project.targets.production.alias.length > 0 ? (
                                 <>
                                   <a
                                     href={`https://${project.targets.production.alias.find((a: string) => a.endsWith('.vercel.app') && !a.includes('-projects.vercel.app')) || project.targets.production.alias[0]}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="hover:text-bolt-elements-borderColorActive"
+                                    className="hover:text-codinit-elements-borderColorActive"
                                   >
                                     {project.targets.production.alias.find(
                                       (a: string) => a.endsWith('.vercel.app') && !a.includes('-projects.vercel.app'),
@@ -327,7 +327,7 @@ export default function VercelConnection() {
                                     href={`https://${project.latestDeployments[0].url}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="hover:text-bolt-elements-borderColorActive"
+                                    className="hover:text-codinit-elements-borderColorActive"
                                   >
                                     {project.latestDeployments[0].url}
                                   </a>
@@ -341,7 +341,7 @@ export default function VercelConnection() {
                             </div>
                           </div>
                           {project.framework && (
-                            <div className="text-xs text-bolt-elements-textSecondary px-2 py-1 rounded-md bg-[#F0F0F0] dark:bg-[#252525]">
+                            <div className="text-xs text-codinit-elements-textSecondary px-2 py-1 rounded-md bg-[#F0F0F0] dark:bg-[#252525]">
                               <span className="flex items-center gap-1">
                                 <div className="i-ph:code w-3 h-3" />
                                 {project.framework}
@@ -353,7 +353,7 @@ export default function VercelConnection() {
                     ))}
                   </div>
                 ) : isProjectsExpanded ? (
-                  <div className="text-sm text-bolt-elements-textSecondary flex items-center gap-2">
+                  <div className="text-sm text-codinit-elements-textSecondary flex items-center gap-2">
                     <div className="i-ph:info w-4 h-4" />
                     No projects found in your Vercel account
                   </div>

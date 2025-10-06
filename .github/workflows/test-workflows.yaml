@@ -56,7 +56,7 @@ jobs:
       - name: Verify pnpm version
         run: |
           echo "pnpm version: $(pnpm --version)"
-          if [[ "$(pnpm --version)" == *"9.14.4"* ]]; then
+          if [[ "$(pnpm --version)" == *"10.18.0"* ]]; then
             echo "✅ Correct pnpm version"
           else
             echo "❌ Wrong pnpm version"
@@ -135,7 +135,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: '9.14.4'
+          version: '10.18.0'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -189,7 +189,7 @@ jobs:
       - name: Test Docker build (without push)
         run: |
           echo "Testing Docker build configuration..."
-          docker build --target bolt-ai-production . --no-cache --progress=plain
+          docker build --target codinit-ai-production . --no-cache --progress=plain
           echo "✅ Docker build test completed"
 
   test-results-summary:

@@ -114,7 +114,7 @@ function formatIssueBody(data: z.infer<typeof bugReportSchema>): string {
     }
 
     if (data.environmentInfo.boltVersion) {
-      body += `- bolt.diy: ${data.environmentInfo.boltVersion}\n`;
+      body += `- codinit.dev: ${data.environmentInfo.boltVersion}\n`;
     }
 
     if (data.environmentInfo.aiProviders) {
@@ -136,7 +136,7 @@ function formatIssueBody(data: z.infer<typeof bugReportSchema>): string {
     body += `**Contact:** ${data.contactEmail}\n\n`;
   }
 
-  body += '---\n*Submitted via bolt.diy bug report feature*';
+  body += '---\n*Submitted via codinit.dev bug report feature*';
 
   return body;
 }
@@ -207,7 +207,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
     // Initialize GitHub client
     const octokit = new Octokit({
       auth: githubToken,
-      userAgent: 'bolt.diy-bug-reporter',
+      userAgent: 'codinit.dev-bug-reporter',
     });
 
     // Create GitHub issue

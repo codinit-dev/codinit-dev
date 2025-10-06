@@ -67,11 +67,11 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   return (
     <div
       className={classNames(
-        'relative backdrop-blur-xl bg-bolt-elements-background-depth-1/95 p-4 rounded-2xl border border-bolt-elements-borderColor/50 w-full max-w-chat mx-auto z-prompt',
+        'relative backdrop-blur-xl bg-codinit-elements-background-depth-1/95 p-4 rounded-2xl border border-codinit-elements-borderColor/50 w-full max-w-chat mx-auto z-prompt',
         'shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]',
         'transition-all duration-300 ease-in-out',
         'hover:shadow-[0_12px_40px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_12px_40px_rgb(0,0,0,0.5)]',
-        'hover:border-bolt-elements-borderColorActive/70',
+        'hover:border-codinit-elements-borderColorActive/70',
       )}
     >
       <svg className={classNames(styles.PromptEffectContainer)}>
@@ -149,12 +149,12 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         )}
       </ClientOnly>
       {props.selectedElement && (
-        <div className="flex gap-2 items-center justify-between rounded-xl border border-bolt-elements-borderColor/60 bg-gradient-to-r from-accent-500/10 to-accent-600/10 text-bolt-elements-textPrimary py-2 px-3.5 mb-3 font-medium text-xs backdrop-blur-sm">
+        <div className="flex gap-2 items-center justify-between rounded-xl border border-codinit-elements-borderColor/60 bg-gradient-to-r from-accent-500/10 to-accent-600/10 text-codinit-elements-textPrimary py-2 px-3.5 mb-3 font-medium text-xs backdrop-blur-sm">
           <div className="flex gap-2 items-center lowercase">
             <code className="bg-accent-500 rounded-lg px-2 py-1 text-white font-semibold shadow-sm">
               {props?.selectedElement?.tagName}
             </code>
-            <span className="text-bolt-elements-textSecondary">selected for inspection</span>
+            <span className="text-codinit-elements-textSecondary">selected for inspection</span>
           </div>
           <button
             className="bg-transparent text-accent-500 hover:text-accent-600 transition-colors font-medium"
@@ -166,17 +166,17 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
       )}
       <div
         className={classNames(
-          'relative shadow-lg border border-bolt-elements-borderColor/60 backdrop-blur-sm rounded-xl',
-          'bg-bolt-elements-background-depth-2/50',
+          'relative shadow-lg border border-codinit-elements-borderColor/60 backdrop-blur-sm rounded-xl',
+          'bg-codinit-elements-background-depth-2/50',
           'transition-all duration-300',
-          'hover:border-bolt-elements-borderColorActive/50 hover:shadow-xl',
+          'hover:border-codinit-elements-borderColorActive/50 hover:shadow-xl',
           'focus-within:border-accent-500/50 focus-within:shadow-[0_0_0_3px_rgba(138,95,255,0.1)]',
         )}
       >
         <textarea
           ref={props.textareaRef}
           className={classNames(
-            'w-full pl-5 pt-4 pr-16 pb-2 outline-none resize-none text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary/70 bg-transparent text-sm',
+            'w-full pl-5 pt-4 pr-16 pb-2 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary/70 bg-transparent text-sm',
             'transition-all duration-300',
             'leading-relaxed',
           )}
@@ -190,11 +190,11 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           }}
           onDragLeave={(e) => {
             e.preventDefault();
-            e.currentTarget.style.border = '1px solid var(--bolt-elements-borderColor)';
+            e.currentTarget.style.border = '1px solid var(--codinit-elements-borderColor)';
           }}
           onDrop={(e) => {
             e.preventDefault();
-            e.currentTarget.style.border = '1px solid var(--bolt-elements-borderColor)';
+            e.currentTarget.style.border = '1px solid var(--codinit-elements-borderColor)';
 
             const files = Array.from(e.dataTransfer.files);
             files.forEach((file) => {
@@ -264,13 +264,13 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             />
           )}
         </ClientOnly>
-        <div className="flex justify-between items-center text-sm px-4 pb-3 pt-2 border-t border-bolt-elements-borderColor/30 mt-1">
+        <div className="flex justify-between items-center text-sm px-4 pb-3 pt-2 border-t border-codinit-elements-borderColor/30 mt-1">
           <div className="flex gap-1.5 items-center">
             <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
             <McpTools />
             <IconButton
               title="Upload file"
-              className="transition-all hover:scale-110 hover:bg-bolt-elements-item-backgroundAccent/50"
+              className="transition-all hover:scale-110 hover:bg-codinit-elements-item-backgroundAccent/50"
               onClick={() => props.handleFileUpload()}
             >
               <div className="i-ph:paperclip text-xl"></div>
@@ -288,7 +288,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               }}
             >
               {props.enhancingPrompt ? (
-                <div className="i-svg-spinners:90-ring-with-bg text-bolt-elements-loader-progress text-xl animate-spin"></div>
+                <div className="i-svg-spinners:90-ring-with-bg text-codinit-elements-loader-progress text-xl animate-spin"></div>
               ) : (
                 <div className="i-codinit:stars text-xl text-accent-500"></div>
               )}
@@ -307,7 +307,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                   'transition-all flex items-center gap-1.5 px-2 py-1.5 rounded-lg',
                   props.chatMode === 'discuss'
                     ? 'bg-gradient-to-r from-accent-500 to-accent-600 !text-white shadow-md shadow-accent-500/30'
-                    : 'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault hover:bg-bolt-elements-item-backgroundAccent/30',
+                    : 'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault hover:bg-codinit-elements-item-backgroundAccent/30',
                 )}
                 onClick={() => {
                   props.setChatMode?.(props.chatMode === 'discuss' ? 'build' : 'discuss');
@@ -322,8 +322,8 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               className={classNames(
                 'transition-all flex items-center gap-1.5 px-2 py-1.5 rounded-lg',
                 props.isModelSettingsCollapsed
-                  ? 'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent hover:bg-bolt-elements-item-backgroundAccent/80'
-                  : 'bg-bolt-elements-item-backgroundDefault text-bolt-elements-item-contentDefault hover:bg-bolt-elements-item-backgroundAccent/30',
+                  ? 'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent hover:bg-codinit-elements-item-backgroundAccent/80'
+                  : 'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault hover:bg-codinit-elements-item-backgroundAccent/30',
               )}
               onClick={() => props.setIsModelSettingsCollapsed(!props.isModelSettingsCollapsed)}
               disabled={!props.providerList || props.providerList.length === 0}
@@ -337,12 +337,12 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             </IconButton>
           </div>
           {props.input.length > 3 ? (
-            <div className="text-xs text-bolt-elements-textTertiary/80 flex items-center gap-1">
-              <kbd className="kdb px-2 py-1 rounded-md bg-bolt-elements-background-depth-3/80 border border-bolt-elements-borderColor/40 font-medium shadow-sm">
+            <div className="text-xs text-codinit-elements-textTertiary/80 flex items-center gap-1">
+              <kbd className="kdb px-2 py-1 rounded-md bg-codinit-elements-background-depth-3/80 border border-codinit-elements-borderColor/40 font-medium shadow-sm">
                 Shift
               </kbd>
               <span>+</span>
-              <kbd className="kdb px-2 py-1 rounded-md bg-bolt-elements-background-depth-3/80 border border-bolt-elements-borderColor/40 font-medium shadow-sm">
+              <kbd className="kdb px-2 py-1 rounded-md bg-codinit-elements-background-depth-3/80 border border-codinit-elements-borderColor/40 font-medium shadow-sm">
                 Return
               </kbd>
               <span className="ml-1">for new line</span>

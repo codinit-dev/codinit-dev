@@ -44,8 +44,8 @@ const WithTooltip = forwardRef(
                 max-h-[300px]
                 select-none
                 rounded-md
-                bg-bolt-elements-background-depth-3
-                text-bolt-elements-textPrimary
+                bg-codinit-elements-background-depth-3
+                text-codinit-elements-textPrimary
                 text-sm
                 leading-tight
                 shadow-lg
@@ -66,7 +66,7 @@ const WithTooltip = forwardRef(
               <div className="break-words">{tooltip}</div>
               <TooltipPrimitive.Arrow
                 className={`
-                  fill-bolt-elements-background-depth-3
+                  fill-codinit-elements-background-depth-3
                   ${arrowClassName}
                 `}
                 width={12}
@@ -106,13 +106,13 @@ export function Tooltip({
           side={side}
           align={align}
           className={classNames(
-            'z-50 overflow-hidden rounded-md bg-bolt-elements-background-depth-3 dark:bg-bolt-elements-background-depth-4 px-3 py-1.5 text-xs text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+            'z-50 overflow-hidden rounded-md bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-4 px-3 py-1.5 text-xs text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
             className,
           )}
           sideOffset={5}
         >
           {content}
-          <TooltipPrimitive.Arrow className="fill-bolt-elements-background-depth-3 dark:fill-bolt-elements-background-depth-4" />
+          <TooltipPrimitive.Arrow className="fill-codinit-elements-background-depth-3 dark:fill-codinit-elements-background-depth-4" />
         </TooltipPrimitive.Content>
       </TooltipPrimitive.Root>
     </TooltipPrimitive.Provider>

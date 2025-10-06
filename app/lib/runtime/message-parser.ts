@@ -3,12 +3,12 @@ import type { BoltArtifactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<boltArtifact';
-const ARTIFACT_TAG_CLOSE = '</boltArtifact>';
-const ARTIFACT_ACTION_TAG_OPEN = '<boltAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</boltAction>';
-const BOLT_QUICK_ACTIONS_OPEN = '<bolt-quick-actions>';
-const BOLT_QUICK_ACTIONS_CLOSE = '</bolt-quick-actions>';
+const ARTIFACT_TAG_OPEN = '<codinitArtifact';
+const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
+const ARTIFACT_ACTION_TAG_OPEN = '<codinitAction';
+const ARTIFACT_ACTION_TAG_CLOSE = '</codinitAction>';
+const BOLT_QUICK_ACTIONS_OPEN = '<codinit-quick-actions>';
+const BOLT_QUICK_ACTIONS_CLOSE = '</codinit-quick-actions>';
 
 const logger = createScopedLogger('MessageParser');
 
@@ -106,8 +106,8 @@ export class StreamingMessageParser {
         if (actionsBlockEnd !== -1) {
           const actionsBlockContent = input.slice(i + BOLT_QUICK_ACTIONS_OPEN.length, actionsBlockEnd);
 
-          // Find all <bolt-quick-action ...>label</bolt-quick-action> inside
-          const quickActionRegex = /<bolt-quick-action([^>]*)>([\s\S]*?)<\/bolt-quick-action>/g;
+          // Find all <codinit-quick-action ...>label</codinit-quick-action> inside
+          const quickActionRegex = /<codinit-quick-action([^>]*)>([\s\S]*?)<\/codinit-quick-action>/g;
           let match;
           const buttons = [];
 
@@ -388,7 +388,7 @@ export class StreamingMessageParser {
 
 const createArtifactElement: ElementFactory = (props) => {
   const elementProps = [
-    'class="__boltArtifact__"',
+    'class="__codinitArtifact__"',
     ...Object.entries(props).map(([key, value]) => {
       return `data-${camelToDashCase(key)}=${JSON.stringify(value)}`;
     }),
@@ -403,8 +403,8 @@ function camelToDashCase(input: string) {
 
 function createQuickActionElement(props: Record<string, string>, label: string) {
   const elementProps = [
-    'class="__boltQuickAction__"',
-    'data-bolt-quick-action="true"',
+    'class="__codinitQuickAction__"',
+    'data-codinit-quick-action="true"',
     ...Object.entries(props).map(([key, value]) => `data-${camelToDashCase(key)}=${JSON.stringify(value)}`),
   ];
 
@@ -412,5 +412,5 @@ function createQuickActionElement(props: Record<string, string>, label: string) 
 }
 
 function createQuickActionGroup(buttons: string[]) {
-  return `<div class=\"__boltQuickAction__\" data-bolt-quick-action=\"true\">${buttons.join('')}</div>`;
+  return `<div class=\"__codinitQuickAction__\" data-codinit-quick-action=\"true\">${buttons.join('')}</div>`;
 }

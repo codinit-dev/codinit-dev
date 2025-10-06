@@ -52,7 +52,7 @@ export class GitHubApiServiceClass {
       headers: {
         Accept: 'application/vnd.github.v3+json',
         Authorization: `${this._config.tokenType === 'classic' ? 'token' : 'Bearer'} ${this._config.token}`,
-        'User-Agent': 'Bolt.diy',
+        'User-Agent': 'codinit.dev',
         ...options.headers,
       },
       ...options,
@@ -138,7 +138,7 @@ export class GitHubApiServiceClass {
       headers: {
         Accept: 'application/vnd.github.v3+json',
         Authorization: `${this._config.tokenType === 'classic' ? 'token' : 'Bearer'} ${this._config.token}`,
-        'User-Agent': 'Bolt.diy',
+        'User-Agent': 'codinit.dev',
       },
     });
 
@@ -166,7 +166,7 @@ export class GitHubApiServiceClass {
       headers: {
         Accept: 'application/vnd.github.v3+json',
         Authorization: `${this._config.tokenType === 'classic' ? 'token' : 'Bearer'} ${this._config.token}`,
-        'User-Agent': 'Bolt.diy',
+        'User-Agent': 'codinit.dev',
       },
     });
 
@@ -194,7 +194,7 @@ export class GitHubApiServiceClass {
       headers: {
         Accept: 'application/vnd.github.v3+json',
         Authorization: `${this._config.tokenType === 'classic' ? 'token' : 'Bearer'} ${this._config.token}`,
-        'User-Agent': 'Bolt.diy',
+        'User-Agent': 'codinit.dev',
       },
     });
 

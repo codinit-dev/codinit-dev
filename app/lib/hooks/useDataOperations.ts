@@ -105,7 +105,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'bolt-settings.json';
+      a.download = 'codinit-settings.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -200,7 +200,7 @@ export function useDataOperations({
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `bolt-settings-${categoryIds.join('-')}.json`;
+        a.download = `codinit-settings-${categoryIds.join('-')}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -326,7 +326,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'bolt-chats.json';
+      a.download = 'codinit-chats.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -437,7 +437,7 @@ export function useDataOperations({
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'bolt-selected-chats.json';
+        a.download = 'codinit-selected-chats.json';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -936,7 +936,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'bolt-api-keys-template.json';
+      a.download = 'codinit-api-keys-template.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1011,7 +1011,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'bolt-api-keys.json';
+      a.download = 'codinit-api-keys.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

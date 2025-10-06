@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (0) > onActionClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (0) > onActionClose 1`] = `
 {
   "action": {
     "content": "npm install",
@@ -12,7 +12,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (0) > onActionOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (0) > onActionOpen 1`] = `
 {
   "action": {
     "content": "",
@@ -24,7 +24,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (0) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (0) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -34,7 +34,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (0) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (0) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -44,7 +44,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (1) > onActionClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (1) > onActionClose 1`] = `
 {
   "action": {
     "content": "npm install",
@@ -56,7 +56,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (1) > onActionClose 2`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (1) > onActionClose 2`] = `
 {
   "action": {
     "content": "some content
@@ -70,7 +70,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (1) > onActionOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (1) > onActionOpen 1`] = `
 {
   "action": {
     "content": "",
@@ -82,7 +82,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (1) > onActionOpen 2`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (1) > onActionOpen 2`] = `
 {
   "action": {
     "content": "",
@@ -95,7 +95,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (1) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (1) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -105,7 +105,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out bolt artifacts (1) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts with actions > should correctly parse chunks and strip out codinit artifacts (1) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -115,7 +115,7 @@ exports[`StreamingMessageParser > valid artifacts with actions > should correctl
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (0) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (0) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -125,7 +125,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (0) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (0) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -135,7 +135,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (1) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (1) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -145,7 +145,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (1) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (1) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -155,7 +155,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (2) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (2) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -165,7 +165,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (2) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (2) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -175,7 +175,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (3) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (3) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -185,7 +185,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (3) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (3) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -195,7 +195,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (4) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (4) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -205,7 +205,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (4) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (4) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -215,7 +215,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (5) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (5) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -225,7 +225,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (5) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (5) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -235,7 +235,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (6) > onArtifactClose 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (6) > onArtifactClose 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",
@@ -245,7 +245,7 @@ exports[`StreamingMessageParser > valid artifacts without actions > should corre
 }
 `;
 
-exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out bolt artifacts (6) > onArtifactOpen 1`] = `
+exports[`StreamingMessageParser > valid artifacts without actions > should correctly parse chunks and strip out codinit artifacts (6) > onArtifactOpen 1`] = `
 {
   "artifactId": "message_1-0",
   "id": "message_1-0",

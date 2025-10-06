@@ -5,7 +5,7 @@ import { Button } from '~/components/ui/Button';
 import { classNames } from '~/utils/classNames';
 
 type ChatData = {
-  messages?: Message[]; // Standard Bolt format
+  messages?: Message[]; // Standard codinit format
   description?: string; // Optional description
 };
 
@@ -65,10 +65,10 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
         variant="default"
         size="lg"
         className={classNames(
-          'group relative gap-2.5 bg-gradient-to-br from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-2',
-          'text-bolt-elements-textPrimary font-medium',
-          'hover:from-bolt-elements-background-depth-2 hover:to-bolt-elements-background-depth-3',
-          'border border-bolt-elements-borderColor/60 hover:border-accent-500/40',
+          'group relative gap-2.5 bg-gradient-to-br from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-2',
+          'text-codinit-elements-textPrimary font-medium',
+          'hover:from-codinit-elements-background-depth-2 hover:to-codinit-elements-background-depth-3',
+          'border border-codinit-elements-borderColor/60 hover:border-accent-500/40',
           'shadow-md hover:shadow-lg hover:shadow-accent-500/10',
           'h-11 px-5 py-2.5 min-w-[140px] justify-center',
           'rounded-xl transition-all duration-300 ease-out',
@@ -81,10 +81,10 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
       <ImportFolderButton
         importChat={importChat}
         className={classNames(
-          'group relative gap-2.5 bg-gradient-to-br from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-2',
-          'text-bolt-elements-textPrimary font-medium',
-          'hover:from-bolt-elements-background-depth-2 hover:to-bolt-elements-background-depth-3',
-          'border border-bolt-elements-borderColor/60 hover:border-green-500/40',
+          'group relative gap-2.5 bg-gradient-to-br from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-2',
+          'text-codinit-elements-textPrimary font-medium',
+          'hover:from-codinit-elements-background-depth-2 hover:to-codinit-elements-background-depth-3',
+          'border border-codinit-elements-borderColor/60 hover:border-green-500/40',
           'shadow-md hover:shadow-lg hover:shadow-green-500/10',
           'h-11 px-5 py-2.5 min-w-[140px] justify-center',
           'rounded-xl transition-all duration-300 ease-out',

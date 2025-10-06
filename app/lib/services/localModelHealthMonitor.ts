@@ -314,7 +314,7 @@ export class LocalModelHealthMonitor extends SimpleEventEmitter {
           isHealthy: false,
           responseTime: 0,
           error:
-            'CORS_ERROR: LM Studio server is blocking cross-origin requests. Try enabling CORS in LM Studio settings or use Bolt desktop app.',
+            'CORS_ERROR: LM Studio server is blocking cross-origin requests. Try enabling CORS in LM Studio settings or use codinit desktop app.',
         };
       }
 

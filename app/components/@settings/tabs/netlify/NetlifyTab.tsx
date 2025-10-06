@@ -630,16 +630,16 @@ export default function NetlifyTab() {
       <div className="mt-6">
         <Collapsible open={isStatsOpen} onOpenChange={setIsStatsOpen}>
           <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-bolt-elements-background dark:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive/70 dark:hover:border-bolt-elements-borderColorActive/70 transition-all duration-200 cursor-pointer">
+            <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 cursor-pointer">
               <div className="flex items-center gap-2">
-                <div className="i-ph:chart-bar w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
-                <span className="text-sm font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                <div className="i-ph:chart-bar w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
+                <span className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                   Netlify Stats
                 </span>
               </div>
               <div
                 className={classNames(
-                  'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-bolt-elements-textSecondary',
+                  'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-codinit-elements-textSecondary',
                   isStatsOpen ? 'rotate-180' : '',
                 )}
               />
@@ -648,43 +648,43 @@ export default function NetlifyTab() {
           <CollapsibleContent className="overflow-hidden">
             <div className="space-y-4 mt-4">
               {/* Netlify Overview Dashboard */}
-              <div className="mb-6 p-4 bg-bolt-elements-background-depth-1 rounded-lg border border-bolt-elements-borderColor">
-                <h4 className="text-sm font-medium text-bolt-elements-textPrimary mb-3">Netlify Overview</h4>
+              <div className="mb-6 p-4 bg-codinit-elements-background-depth-1 rounded-lg border border-codinit-elements-borderColor">
+                <h4 className="text-sm font-medium text-codinit-elements-textPrimary mb-3">Netlify Overview</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="text-2xl font-bold text-codinit-elements-textPrimary">
                       {connection.stats.totalSites}
                     </div>
-                    <div className="text-xs text-bolt-elements-textSecondary">Total Sites</div>
+                    <div className="text-xs text-codinit-elements-textSecondary">Total Sites</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="text-2xl font-bold text-codinit-elements-textPrimary">
                       {connection.stats.totalDeploys || deploymentCount}
                     </div>
-                    <div className="text-xs text-bolt-elements-textSecondary">Total Deployments</div>
+                    <div className="text-xs text-codinit-elements-textSecondary">Total Deployments</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="text-2xl font-bold text-codinit-elements-textPrimary">
                       {connection.stats.totalBuilds || 0}
                     </div>
-                    <div className="text-xs text-bolt-elements-textSecondary">Total Builds</div>
+                    <div className="text-xs text-codinit-elements-textSecondary">Total Builds</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-bolt-elements-textPrimary">
+                    <div className="text-2xl font-bold text-codinit-elements-textPrimary">
                       {sites.filter((site) => site.published_deploy?.state === 'ready').length}
                     </div>
-                    <div className="text-xs text-bolt-elements-textSecondary">Live Sites</div>
+                    <div className="text-xs text-codinit-elements-textSecondary">Live Sites</div>
                   </div>
                 </div>
               </div>
 
               {/* Advanced Analytics */}
               <div className="mb-6 space-y-4">
-                <h4 className="text-sm font-medium text-bolt-elements-textPrimary">Deployment Analytics</h4>
+                <h4 className="text-sm font-medium text-codinit-elements-textPrimary">Deployment Analytics</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-bolt-elements-background-depth-2 p-3 rounded-lg border border-bolt-elements-borderColor">
-                    <h6 className="text-xs font-medium text-bolt-elements-textPrimary flex items-center gap-2 mb-2">
-                      <div className="i-ph:chart-pie w-4 h-4 text-bolt-elements-item-contentAccent" />
+                  <div className="bg-codinit-elements-background-depth-2 p-3 rounded-lg border border-codinit-elements-borderColor">
+                    <h6 className="text-xs font-medium text-codinit-elements-textPrimary flex items-center gap-2 mb-2">
+                      <div className="i-ph:chart-pie w-4 h-4 text-codinit-elements-item-contentAccent" />
                       Success Rate
                     </h6>
                     <div className="space-y-1">
@@ -701,16 +701,16 @@ export default function NetlifyTab() {
                         ];
                       })().map((item, idx) => (
                         <div key={idx} className="flex justify-between text-xs">
-                          <span className="text-bolt-elements-textSecondary">{item.label}:</span>
-                          <span className="text-bolt-elements-textPrimary font-medium">{item.value}</span>
+                          <span className="text-codinit-elements-textSecondary">{item.label}:</span>
+                          <span className="text-codinit-elements-textPrimary font-medium">{item.value}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bg-bolt-elements-background-depth-2 p-3 rounded-lg border border-bolt-elements-borderColor">
-                    <h6 className="text-xs font-medium text-bolt-elements-textPrimary flex items-center gap-2 mb-2">
-                      <div className="i-ph:clock w-4 h-4 text-bolt-elements-item-contentAccent" />
+                  <div className="bg-codinit-elements-background-depth-2 p-3 rounded-lg border border-codinit-elements-borderColor">
+                    <h6 className="text-xs font-medium text-codinit-elements-textPrimary flex items-center gap-2 mb-2">
+                      <div className="i-ph:clock w-4 h-4 text-codinit-elements-item-contentAccent" />
                       Recent Activity
                     </h6>
                     <div className="space-y-1">
@@ -734,8 +734,8 @@ export default function NetlifyTab() {
                         ];
                       })().map((item, idx) => (
                         <div key={idx} className="flex justify-between text-xs">
-                          <span className="text-bolt-elements-textSecondary">{item.label}:</span>
-                          <span className="text-bolt-elements-textPrimary font-medium">{item.value}</span>
+                          <span className="text-codinit-elements-textSecondary">{item.label}:</span>
+                          <span className="text-codinit-elements-textPrimary font-medium">{item.value}</span>
                         </div>
                       ))}
                     </div>
@@ -745,7 +745,7 @@ export default function NetlifyTab() {
 
               {/* Site Health Metrics */}
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-bolt-elements-textPrimary mb-2">Site Health Overview</h4>
+                <h4 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Site Health Overview</h4>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {(() => {
                     const healthySites = sites.filter(
@@ -806,11 +806,11 @@ export default function NetlifyTab() {
                   })().map((metric, index) => (
                     <div
                       key={index}
-                      className={`flex flex-col p-3 rounded-lg border border-bolt-elements-borderColor ${metric.bgColor}`}
+                      className={`flex flex-col p-3 rounded-lg border border-codinit-elements-borderColor ${metric.bgColor}`}
                     >
                       <div className="flex items-center gap-2 mb-1">
                         <div className={`${metric.icon} w-4 h-4 ${metric.color}`} />
-                        <span className="text-xs text-bolt-elements-textSecondary">{metric.label}</span>
+                        <span className="text-xs text-codinit-elements-textSecondary">{metric.label}</span>
                       </div>
                       <span className={`text-lg font-medium ${metric.textColor}`}>{metric.value}</span>
                     </div>
@@ -821,48 +821,48 @@ export default function NetlifyTab() {
               <div className="flex flex-wrap items-center gap-4">
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                  className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                 >
-                  <div className="i-ph:buildings w-4 h-4 text-bolt-elements-item-contentAccent" />
+                  <div className="i-ph:buildings w-4 h-4 text-codinit-elements-item-contentAccent" />
                   <span>{connection.stats.totalSites} Sites</span>
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                  className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                 >
-                  <div className="i-ph:rocket-launch w-4 h-4 text-bolt-elements-item-contentAccent" />
+                  <div className="i-ph:rocket-launch w-4 h-4 text-codinit-elements-item-contentAccent" />
                   <span>{deploymentCount} Deployments</span>
                 </Badge>
                 <Badge
                   variant="outline"
-                  className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                  className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                 >
-                  <div className="i-ph:hammer w-4 h-4 text-bolt-elements-item-contentAccent" />
+                  <div className="i-ph:hammer w-4 h-4 text-codinit-elements-item-contentAccent" />
                   <span>{connection.stats.totalBuilds || 0} Builds</span>
                 </Badge>
                 {lastUpdated && (
                   <Badge
                     variant="outline"
-                    className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                    className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                   >
-                    <div className="i-ph:clock w-4 h-4 text-bolt-elements-item-contentAccent" />
+                    <div className="i-ph:clock w-4 h-4 text-codinit-elements-item-contentAccent" />
                     <span>Updated {formatDistanceToNow(new Date(lastUpdated))} ago</span>
                   </Badge>
                 )}
               </div>
               {sites.length > 0 && (
                 <div className="mt-4 space-y-4">
-                  <div className="bg-bolt-elements-background dark:bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor rounded-lg p-4">
+                  <div className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-4">
-                        <h4 className="text-sm font-medium flex items-center gap-2 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                          <div className="i-ph:buildings w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                        <h4 className="text-sm font-medium flex items-center gap-2 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+                          <div className="i-ph:buildings w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                           Your Sites ({sites.length})
                         </h4>
                         {sites.length > 8 && (
                           <button
                             onClick={() => setIsSitesExpanded(!isSitesExpanded)}
-                            className="text-xs text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-colors"
+                            className="text-xs text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary transition-colors"
                           >
                             {isSitesExpanded ? 'Show Less' : `Show All ${sites.length}`}
                           </button>
@@ -873,11 +873,11 @@ export default function NetlifyTab() {
                         size="sm"
                         onClick={() => fetchNetlifyStats(connection.token)}
                         disabled={fetchingStats}
-                        className="flex items-center gap-2 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive/10"
+                        className="flex items-center gap-2 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive/10"
                       >
                         <div
                           className={classNames(
-                            'i-ph:arrows-clockwise w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent',
+                            'i-ph:arrows-clockwise w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent',
                             { 'animate-spin': fetchingStats },
                           )}
                         />
@@ -889,10 +889,10 @@ export default function NetlifyTab() {
                         <div
                           key={site.id}
                           className={classNames(
-                            'bg-bolt-elements-background dark:bg-bolt-elements-background-depth-1 border rounded-lg p-4 transition-all cursor-pointer',
+                            'bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border rounded-lg p-4 transition-all cursor-pointer',
                             activeSiteIndex === index
-                              ? 'border-bolt-elements-item-contentAccent bg-bolt-elements-item-backgroundActive/10'
-                              : 'border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive/70',
+                              ? 'border-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive/10'
+                              : 'border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70',
                           )}
                           onClick={() => {
                             setActiveSiteIndex(index);
@@ -900,22 +900,22 @@ export default function NetlifyTab() {
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <div className="i-ph:cloud w-5 h-5 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
-                              <span className="font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                              <div className="i-ph:cloud w-5 h-5 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
+                              <span className="font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                                 {site.name}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Badge
                                 variant={site.published_deploy?.state === 'ready' ? 'default' : 'destructive'}
-                                className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                                className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                               >
                                 {site.published_deploy?.state === 'ready' ? (
                                   <div className="i-ph:check-circle w-4 h-4 text-green-500" />
                                 ) : (
                                   <div className="i-ph:x-circle w-4 h-4 text-red-500" />
                                 )}
-                                <span className="text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                                <span className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                                   {site.published_deploy?.state || 'Unknown'}
                                 </span>
                               </Badge>
@@ -928,31 +928,31 @@ export default function NetlifyTab() {
                                 href={site.ssl_url || site.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-sm flex items-center gap-1 transition-colors text-bolt-elements-link-text hover:text-bolt-elements-link-textHover dark:text-white dark:hover:text-bolt-elements-link-textHover"
+                                className="text-sm flex items-center gap-1 transition-colors text-codinit-elements-link-text hover:text-codinit-elements-link-textHover dark:text-white dark:hover:text-codinit-elements-link-textHover"
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <div className="i-ph:cloud w-3 h-3 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                <div className="i-ph:cloud w-3 h-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                 <span className="underline decoration-1 underline-offset-2">
                                   {site.ssl_url || site.url}
                                 </span>
                               </a>
                             </div>
-                            <div className="flex items-center gap-4 text-xs text-bolt-elements-textSecondary">
+                            <div className="flex items-center gap-4 text-xs text-codinit-elements-textSecondary">
                               {site.published_deploy?.framework && (
                                 <div className="flex items-center gap-1">
-                                  <div className="i-ph:cube w-3 h-3 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                  <div className="i-ph:cube w-3 h-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                   <span>{site.published_deploy.framework}</span>
                                 </div>
                               )}
                               {site.custom_domain && (
                                 <div className="flex items-center gap-1">
-                                  <div className="i-ph:globe w-3 h-3 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                  <div className="i-ph:globe w-3 h-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                   <span>Custom Domain</span>
                                 </div>
                               )}
                               {site.branch && (
                                 <div className="flex items-center gap-1">
-                                  <div className="i-ph:code w-3 h-3 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                  <div className="i-ph:code w-3 h-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                   <span>{site.branch}</span>
                                 </div>
                               )}
@@ -961,7 +961,7 @@ export default function NetlifyTab() {
 
                           {activeSiteIndex === index && (
                             <>
-                              <div className="mt-4 pt-3 border-t border-bolt-elements-borderColor">
+                              <div className="mt-4 pt-3 border-t border-codinit-elements-borderColor">
                                 <div className="flex items-center gap-2">
                                   {siteActions.map((action) => (
                                     <Button
@@ -982,10 +982,10 @@ export default function NetlifyTab() {
                                         setIsActionLoading(false);
                                       }}
                                       disabled={isActionLoading}
-                                      className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                                      className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                                     >
                                       <div
-                                        className={`${action.icon} w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent`}
+                                        className={`${action.icon} w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent`}
                                       />
                                       {action.name}
                                     </Button>
@@ -995,15 +995,15 @@ export default function NetlifyTab() {
                               {site.published_deploy && (
                                 <div className="mt-3 text-sm">
                                   <div className="flex items-center gap-1">
-                                    <div className="i-ph:clock w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
-                                    <span className="text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                                    <div className="i-ph:clock w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
+                                    <span className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                                       Published {formatDistanceToNow(new Date(site.published_deploy.published_at))} ago
                                     </span>
                                   </div>
                                   {site.published_deploy.branch && (
                                     <div className="flex items-center gap-1 mt-1">
-                                      <div className="i-ph:code w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
-                                      <span className="text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                                      <div className="i-ph:code w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
+                                      <span className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                                         Branch: {site.published_deploy.branch}
                                       </span>
                                     </div>
@@ -1017,17 +1017,17 @@ export default function NetlifyTab() {
                     </div>
                   </div>
                   {deploys.length > 0 && (
-                    <div className="bg-bolt-elements-background dark:bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor rounded-lg p-4">
+                    <div className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-4">
-                          <h4 className="text-sm font-medium flex items-center gap-2 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                            <div className="i-ph:buildings w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                          <h4 className="text-sm font-medium flex items-center gap-2 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+                            <div className="i-ph:buildings w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                             All Deployments ({deploys.length})
                           </h4>
                           {deploys.length > 10 && (
                             <button
                               onClick={() => setIsDeploysExpanded(!isDeploysExpanded)}
-                              className="text-xs text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-colors"
+                              className="text-xs text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary transition-colors"
                             >
                               {isDeploysExpanded ? 'Show Less' : `Show All ${deploys.length}`}
                             </button>
@@ -1038,7 +1038,7 @@ export default function NetlifyTab() {
                         {(isDeploysExpanded ? deploys : deploys.slice(0, 10)).map((deploy) => (
                           <div
                             key={deploy.id}
-                            className="bg-bolt-elements-background dark:bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor rounded-lg p-3"
+                            className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-3"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
@@ -1057,21 +1057,21 @@ export default function NetlifyTab() {
                                   ) : deploy.state === 'error' ? (
                                     <div className="i-ph:x-circle w-4 h-4 text-red-500" />
                                   ) : (
-                                    <div className="i-ph:buildings w-4 h-4 text-bolt-elements-item-contentAccent" />
+                                    <div className="i-ph:buildings w-4 h-4 text-codinit-elements-item-contentAccent" />
                                   )}
-                                  <span className="text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                                  <span className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                                     {deploy.state}
                                   </span>
                                 </Badge>
                               </div>
-                              <span className="text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                              <span className="text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                                 {formatDistanceToNow(new Date(deploy.created_at))} ago
                               </span>
                             </div>
                             {deploy.branch && (
-                              <div className="mt-2 text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary flex items-center gap-1">
-                                <div className="i-ph:code w-3 h-3 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
-                                <span className="text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                              <div className="mt-2 text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary flex items-center gap-1">
+                                <div className="i-ph:code w-3 h-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
+                                <span className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                                   Branch: {deploy.branch}
                                 </span>
                               </div>
@@ -1082,10 +1082,10 @@ export default function NetlifyTab() {
                                   href={deploy.deploy_url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-1 transition-colors text-bolt-elements-link-text hover:text-bolt-elements-link-textHover dark:text-white dark:hover:text-bolt-elements-link-textHover"
+                                  className="flex items-center gap-1 transition-colors text-codinit-elements-link-text hover:text-codinit-elements-link-textHover dark:text-white dark:hover:text-codinit-elements-link-textHover"
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  <div className="i-ph:cloud w-3 h-3 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                  <div className="i-ph:cloud w-3 h-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                   <span className="underline decoration-1 underline-offset-2">{deploy.deploy_url}</span>
                                 </a>
                               </div>
@@ -1102,9 +1102,9 @@ export default function NetlifyTab() {
                                   }
                                 }}
                                 disabled={isActionLoading}
-                                className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                                className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                               >
-                                <div className="i-ph:buildings w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                <div className="i-ph:buildings w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                 Publish
                               </Button>
                               {deploy.state === 'ready' ? (
@@ -1119,9 +1119,9 @@ export default function NetlifyTab() {
                                     }
                                   }}
                                   disabled={isActionLoading}
-                                  className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                                  className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                                 >
-                                  <div className="i-ph:lock-closed w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                  <div className="i-ph:lock-closed w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                   Lock
                                 </Button>
                               ) : (
@@ -1136,9 +1136,9 @@ export default function NetlifyTab() {
                                     }
                                   }}
                                   disabled={isActionLoading}
-                                  className="flex items-center gap-1 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary"
+                                  className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                                 >
-                                  <div className="i-ph:lock-open w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                                  <div className="i-ph:lock-open w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                   Unlock
                                 </Button>
                               )}
@@ -1151,10 +1151,10 @@ export default function NetlifyTab() {
 
                   {/* Builds Section */}
                   {connection.stats.builds && connection.stats.builds.length > 0 && (
-                    <div className="bg-bolt-elements-background dark:bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor rounded-lg p-4">
+                    <div className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="text-sm font-medium flex items-center gap-2 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
-                          <div className="i-ph:hammer w-4 h-4 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+                        <h4 className="text-sm font-medium flex items-center gap-2 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+                          <div className="i-ph:hammer w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                           Recent Builds ({connection.stats.builds.length})
                         </h4>
                       </div>
@@ -1162,7 +1162,7 @@ export default function NetlifyTab() {
                         {connection.stats.builds.slice(0, 8).map((build: any) => (
                           <div
                             key={build.id}
-                            className="bg-bolt-elements-background dark:bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor rounded-lg p-3"
+                            className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-3"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
@@ -1170,21 +1170,21 @@ export default function NetlifyTab() {
                                   {build.done ? (
                                     <div className="i-ph:check-circle w-4 h-4 text-green-500" />
                                   ) : (
-                                    <div className="i-ph:buildings w-4 h-4 text-bolt-elements-item-contentAccent" />
+                                    <div className="i-ph:buildings w-4 h-4 text-codinit-elements-item-contentAccent" />
                                   )}
-                                  <span className="text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                                  <span className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                                     {build.done ? 'Completed' : 'Building'}
                                   </span>
                                 </Badge>
                               </div>
-                              <span className="text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                              <span className="text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                                 {formatDistanceToNow(new Date(build.created_at))} ago
                               </span>
                             </div>
                             {build.commit_ref && (
-                              <div className="mt-2 text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary flex items-center gap-1">
-                                <div className="i-ph:code w-3 h-3 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
-                                <span className="text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                              <div className="mt-2 text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary flex items-center gap-1">
+                                <div className="i-ph:code w-3 h-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
+                                <span className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                                   {build.commit_ref.substring(0, 7)}
                                 </span>
                               </div>
@@ -1216,7 +1216,7 @@ export default function NetlifyTab() {
           <div className="text-[#00AD9F]">
             <NetlifyLogo />
           </div>
-          <h2 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+          <h2 className="text-lg font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
             Netlify Integration
           </h2>
         </div>
@@ -1226,7 +1226,7 @@ export default function NetlifyTab() {
               onClick={testConnection}
               disabled={connectionTest?.status === 'testing'}
               variant="outline"
-              className="flex items-center gap-2 hover:bg-bolt-elements-item-backgroundActive/10 hover:text-bolt-elements-textPrimary dark:hover:bg-bolt-elements-item-backgroundActive/10 dark:hover:text-bolt-elements-textPrimary transition-colors"
+              className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary transition-colors"
             >
               {connectionTest?.status === 'testing' ? (
                 <>
@@ -1244,7 +1244,7 @@ export default function NetlifyTab() {
         </div>
       </motion.div>
 
-      <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+      <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
         Connect and manage your Netlify sites with advanced deployment controls and site management
       </p>
 
@@ -1288,7 +1288,7 @@ export default function NetlifyTab() {
 
       {/* Main Connection Component */}
       <motion.div
-        className="bg-bolt-elements-background dark:bg-bolt-elements-background border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor rounded-lg"
+        className="bg-codinit-elements-background dark:bg-codinit-elements-background border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -1296,11 +1296,11 @@ export default function NetlifyTab() {
         <div className="p-6">
           {!connection.user ? (
             <div className="space-y-4">
-              <div className="text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 p-3 rounded-lg mb-4">
+              <div className="text-xs text-codinit-elements-textSecondary bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 p-3 rounded-lg mb-4">
                 <p className="flex items-center gap-1 mb-1">
-                  <span className="i-ph:lightbulb w-3.5 h-3.5 text-bolt-elements-icon-success dark:text-bolt-elements-icon-success" />
+                  <span className="i-ph:lightbulb w-3.5 h-3.5 text-codinit-elements-icon-success dark:text-codinit-elements-icon-success" />
                   <span className="font-medium">Tip:</span> You can also set the{' '}
-                  <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 rounded">
+                  <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
                     VITE_NETLIFY_ACCESS_TOKEN
                   </code>{' '}
                   environment variable to connect automatically.
@@ -1308,7 +1308,7 @@ export default function NetlifyTab() {
               </div>
 
               <div>
-                <label className="block text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary mb-2">
+                <label className="block text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mb-2">
                   API Token
                 </label>
                 <input
@@ -1320,17 +1320,17 @@ export default function NetlifyTab() {
                     'w-full px-3 py-2 rounded-lg text-sm',
                     'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
                     'border border-[#E5E5E5] dark:border-[#333333]',
-                    'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
-                    'focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive',
+                    'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                    'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
                     'disabled:opacity-50',
                   )}
                 />
-                <div className="mt-2 text-sm text-bolt-elements-textSecondary">
+                <div className="mt-2 text-sm text-codinit-elements-textSecondary">
                   <a
                     href="https://app.netlify.com/user/applications#personal-access-tokens"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
+                    className="text-codinit-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                   >
                     Get your token
                     <div className="i-ph:arrow-square-out w-4 h-4" />
@@ -1378,7 +1378,7 @@ export default function NetlifyTab() {
                   <div className="i-ph:plug w-4 h-4" />
                   Disconnect
                 </button>
-                <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
+                <span className="text-sm text-codinit-elements-textSecondary flex items-center gap-1">
                   <div className="i-ph:check-circle w-4 h-4 text-green-500" />
                   Connected to Netlify
                 </span>

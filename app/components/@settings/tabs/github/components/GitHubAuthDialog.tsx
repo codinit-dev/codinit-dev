@@ -47,25 +47,25 @@ export function GitHubAuthDialog({ isOpen, onClose, onSuccess }: GitHubAuthDialo
           onPointerDownOutside={handleClose}
         >
           <motion.div
-            className="bg-bolt-elements-background border border-bolt-elements-borderColor rounded-lg shadow-lg"
+            className="bg-codinit-elements-background border border-codinit-elements-borderColor rounded-lg shadow-lg"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
           >
             <div className="p-6 space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-bolt-elements-textPrimary">Connect to GitHub</h2>
+                <h2 className="text-lg font-semibold text-codinit-elements-textPrimary">Connect to GitHub</h2>
                 <button
                   onClick={handleClose}
-                  className="p-1 rounded-md hover:bg-bolt-elements-item-backgroundActive/10"
+                  className="p-1 rounded-md hover:bg-codinit-elements-item-backgroundActive/10"
                 >
-                  <div className="i-ph:x w-4 h-4 text-bolt-elements-textSecondary" />
+                  <div className="i-ph:x w-4 h-4 text-codinit-elements-textSecondary" />
                 </button>
               </div>
 
-              <div className="text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 p-3 rounded-lg">
+              <div className="text-xs text-codinit-elements-textSecondary bg-codinit-elements-background-depth-1 p-3 rounded-lg">
                 <p className="flex items-center gap-1 mb-1">
-                  <span className="i-ph:lightbulb w-3.5 h-3.5 text-bolt-elements-icon-success" />
+                  <span className="i-ph:lightbulb w-3.5 h-3.5 text-codinit-elements-icon-success" />
                   <span className="font-medium">Tip:</span> You need a GitHub token to deploy repositories.
                 </p>
                 <p>Required scopes: repo, read:org, read:user</p>
@@ -73,17 +73,17 @@ export function GitHubAuthDialog({ isOpen, onClose, onSuccess }: GitHubAuthDialo
 
               <form onSubmit={handleConnect} className="space-y-4">
                 <div>
-                  <label className="block text-sm text-bolt-elements-textSecondary mb-2">Token Type</label>
+                  <label className="block text-sm text-codinit-elements-textSecondary mb-2">Token Type</label>
                   <select
                     value={tokenType}
                     onChange={(e) => setTokenType(e.target.value as 'classic' | 'fine-grained')}
                     disabled={isConnecting}
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
-                      'bg-bolt-elements-background-depth-1',
-                      'border border-bolt-elements-borderColor',
-                      'text-bolt-elements-textPrimary',
-                      'focus:outline-none focus:ring-1 focus:ring-bolt-elements-item-contentAccent',
+                      'bg-codinit-elements-background-depth-1',
+                      'border border-codinit-elements-borderColor',
+                      'text-codinit-elements-textPrimary',
+                      'focus:outline-none focus:ring-1 focus:ring-codinit-elements-item-contentAccent',
                       'disabled:opacity-50',
                     )}
                   >
@@ -93,7 +93,7 @@ export function GitHubAuthDialog({ isOpen, onClose, onSuccess }: GitHubAuthDialo
                 </div>
 
                 <div>
-                  <label className="block text-sm text-bolt-elements-textSecondary mb-2">
+                  <label className="block text-sm text-codinit-elements-textSecondary mb-2">
                     {tokenType === 'classic' ? 'Personal Access Token' : 'Fine-grained Token'}
                   </label>
                   <input
@@ -106,19 +106,19 @@ export function GitHubAuthDialog({ isOpen, onClose, onSuccess }: GitHubAuthDialo
                     }`}
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
-                      'bg-bolt-elements-background-depth-1',
-                      'border border-bolt-elements-borderColor',
-                      'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
-                      'focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive',
+                      'bg-codinit-elements-background-depth-1',
+                      'border border-codinit-elements-borderColor',
+                      'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                      'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
                       'disabled:opacity-50',
                     )}
                   />
-                  <div className="mt-2 text-sm text-bolt-elements-textSecondary">
+                  <div className="mt-2 text-sm text-codinit-elements-textSecondary">
                     <a
                       href={`https://github.com/settings/tokens${tokenType === 'fine-grained' ? '/beta' : '/new'}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
+                      className="text-codinit-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                     >
                       Get your token
                       <div className="i-ph:arrow-square-out w-4 h-4" />
@@ -136,7 +136,7 @@ export function GitHubAuthDialog({ isOpen, onClose, onSuccess }: GitHubAuthDialo
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="px-4 py-2 text-sm text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary"
+                    className="px-4 py-2 text-sm text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary"
                   >
                     Cancel
                   </button>

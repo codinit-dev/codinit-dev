@@ -46,7 +46,7 @@ export function extractPropertiesFromMessage(message: Omit<Message, 'id'>): {
 
 export function simplifyBoltActions(input: string): string {
   // Using regex to match boltAction tags that have type="file"
-  const regex = /(<boltAction[^>]*type="file"[^>]*>)([\s\S]*?)(<\/boltAction>)/g;
+  const regex = /(<codinitAction[^>]*type="file"[^>]*>)([\s\S]*?)(<\/codinitAction>)/g;
 
   // Replace each matching occurrence
   return input.replace(regex, (_0, openingTag, _2, closingTag) => {
@@ -82,10 +82,10 @@ export function createFilesContext(files: FileMap, useRelativePath?: boolean) {
         filePath = path.replace('/home/project/', '');
       }
 
-      return `<boltAction type="file" filePath="${filePath}">${codeWithLinesNumbers}</boltAction>`;
+      return `<codinitAction type="file" filePath="${filePath}">${codeWithLinesNumbers}</codinitAction>`;
     });
 
-  return `<boltArtifact id="code-content" title="Code Content" >\n${fileContexts.join('\n')}\n</boltArtifact>`;
+  return `<codinitArtifact id="code-content" title="Code Content" >\n${fileContexts.join('\n')}\n</codinitArtifact>`;
 }
 
 export function extractCurrentContext(messages: Message[]) {
