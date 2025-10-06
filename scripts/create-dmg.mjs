@@ -7,7 +7,7 @@ import fs from 'fs/promises';
 const execAsync = promisify(exec);
 
 const dmgSpec = {
-  title: 'CodinIT Desktop',
+  title: 'CodinIT.dev',
   icon: 'public/icon.png',
   background: 'assets/dmg-background.png', // Optional - create if needed
   'icon-size': 80,
@@ -18,7 +18,7 @@ const dmgSpec = {
     },
   },
   contents: [
-    { x: 180, y: 170, type: 'file', path: 'dist/CodinIT Desktop-darwin-arm64/CodinIT Desktop.app' },
+    { x: 180, y: 170, type: 'file', path: 'dist/CodinIT.dev-darwin-arm64/CodinIT.dev.app' },
     { x: 420, y: 170, type: 'link', path: '/Applications' },
   ],
 };
@@ -33,7 +33,7 @@ async function createDMG() {
     console.log('📦 Building DMG...');
 
     // Create DMG
-    const { stdout, stderr } = await execAsync('npx appdmg dmg-spec.json dist/CodinIT-Desktop.dmg');
+    const { stdout, stderr } = await execAsync('npx appdmg dmg-spec.json dist/CodinIT.dev.dmg');
 
     if (stdout) {
       console.log(stdout);
@@ -43,7 +43,7 @@ async function createDMG() {
       console.error(stderr);
     }
 
-    console.log('✅ DMG created successfully: dist/CodinIT-Desktop.dmg');
+    console.log('✅ DMG created successfully: dist/CodinIT.dev.dmg');
 
     // Clean up
     await fs.unlink('dmg-spec.json');

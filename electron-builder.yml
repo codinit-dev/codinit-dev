@@ -1,22 +1,25 @@
-appId: com.codinit.desktop
-productName: CodinIT Desktop
+appId: com.codinit.dev
+productName: CodinIT.dev
 
 directories:
   buildResources: build
   output: dist
 
-# Only include built files - exclude everything else
+# Include built files and let electron-builder handle dependencies
 files:
   - build/electron/**/*
   - build/client/**/*
   - build/server/**/*
   - package.json
   - "!**/.git"
-  - "!**/node_modules/**"
   - "!dist"
   - "!src"
+  - "!app"
+  - "!electron"
+  - "!public"
+  - "!tests"
 
-# electron-builder will handle node_modules automatically from package.json
+# electron-builder will install production dependencies automatically
 
 extraMetadata:
   main: build/electron/main/index.mjs
@@ -26,12 +29,28 @@ asar: false
 
 mac:
   icon: public/icon.icns
-  target: dir
+  target: dmg
   identity: null
   hardenedRuntime: false
   gatekeeperAssess: false
   # macOS specific performance options
   type: development
+
+dmg:
+  title: ${productName} ${version}
+  icon: public/icon.icns
+  background: null
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 144
+      y: 180
+      type: file
+    - x: 396
+      y: 180
+      type: link
+      path: /Applications
 
 win:
   icon: public/icon.png
