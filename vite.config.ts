@@ -18,6 +18,16 @@ export default defineConfig((config) => {
     },
     build: {
       target: 'esnext',
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // Suppress warnings about mixed static/dynamic imports
+          if (warning.code === 'MODULE_LEVEL_DIRECTIVE' ||
+              (warning.message && warning.message.includes('is dynamically imported by') && warning.message.includes('but also statically imported by'))) {
+            return;
+          }
+          warn(warning);
+        },
+      },
     },
     plugins: [
       nodePolyfills({
