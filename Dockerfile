@@ -10,7 +10,7 @@ ENV CI=true
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
 # Install Python and make for node-gyp dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends python3 make \
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Accept (optional) build-time public URL for Remix/Vite (Coolify can pass it)
@@ -19,12 +19,10 @@ ENV VITE_PUBLIC_APP_URL=${VITE_PUBLIC_APP_URL}
 
 # Install deps efficiently
 COPY package.json pnpm-lock.yaml* ./
-RUN pnpm fetch
-
 # Copy source and build
 COPY . .
 # install with dev deps (needed to build)
-RUN pnpm install --offline --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Build the Remix app (SSR + client)
 RUN NODE_OPTIONS=--max-old-space-size=4096 pnpm run build
