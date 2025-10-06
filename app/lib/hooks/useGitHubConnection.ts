@@ -76,7 +76,7 @@ export function useGitHubConnection(): UseGitHubConnectionReturn {
         headers: {
           Accept: 'application/vnd.github.v3+json',
           Authorization: `${connection.tokenType === 'classic' ? 'token' : 'Bearer'} ${connection.token}`,
-          'User-Agent': 'Bolt.diy',
+          'User-Agent': 'codinit.dev',
         },
       });
 
@@ -119,7 +119,7 @@ export function useGitHubConnection(): UseGitHubConnectionReturn {
         headers: {
           Accept: 'application/vnd.github.v3+json',
           Authorization: `${tokenType === 'classic' ? 'token' : 'Bearer'} ${token}`,
-          'User-Agent': 'Bolt.diy',
+          'User-Agent': 'codinit.dev',
         },
       });
 
@@ -224,7 +224,7 @@ export function useGitHubConnection(): UseGitHubConnectionReturn {
         headers: {
           Accept: 'application/vnd.github.v3+json',
           Authorization: `${connection.tokenType === 'classic' ? 'token' : 'Bearer'} ${connection.token}`,
-          'User-Agent': 'Bolt.diy',
+          'User-Agent': 'codinit.dev',
         },
       });
 

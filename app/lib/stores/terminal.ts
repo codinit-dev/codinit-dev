@@ -30,7 +30,7 @@ export class TerminalStore {
       const wc = await this.#webcontainer;
       await this.#boltTerminal.init(wc, terminal);
     } catch (error: any) {
-      terminal.write(coloredText.red('Failed to spawn bolt shell\n\n') + error.message);
+      terminal.write(coloredText.red('Failed to spawn codinit shell\n\n') + error.message);
       return;
     }
   }

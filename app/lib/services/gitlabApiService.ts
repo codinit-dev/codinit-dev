@@ -296,7 +296,7 @@ export class GitLabApiService {
         visibility: isPrivate ? 'private' : 'public',
         initialize_with_readme: false, // Don't initialize with README to avoid conflicts
         default_branch: 'main', // Explicitly set default branch
-        description: `Project created from Bolt.diy`,
+        description: `Project created from codinit.dev`,
       }),
     });
 
@@ -443,7 +443,7 @@ export class GitLabApiService {
 
       const commitRequest: GitLabCommitRequest = {
         branch: 'main',
-        commit_message: 'Initial commit from Bolt.diy',
+        commit_message: 'Initial commit from codinit.dev',
         actions,
       };
 
@@ -476,7 +476,7 @@ export class GitLabApiService {
 
     const commitRequest: GitLabCommitRequest = {
       branch: 'main',
-      commit_message: 'Update from Bolt.diy',
+      commit_message: 'Update from codinit.dev',
       actions,
     };
 
@@ -493,7 +493,7 @@ export class GitLabApiService {
 
         const updateCommitRequest: GitLabCommitRequest = {
           branch: 'main',
-          commit_message: 'Update from Bolt.diy',
+          commit_message: 'Update from codinit.dev',
           actions: updateActions,
         };
 
