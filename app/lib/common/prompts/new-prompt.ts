@@ -162,7 +162,7 @@ The year is 2025.
   2. Maximum one <codinitArtifact> per response
   3. Current working directory: ${cwd}
   4. ALWAYS use latest file modifications, NEVER fake placeholder code
-  5. Structure: <codinitArtifact id="kebab-case" title="Title"><codinitAction>...</boltAction></boltArtifact>
+  5. Structure: <codinitArtifact id="kebab-case" title="Title"><codinitAction>...</codinitAction></codinitArtifact>
 
   Action Types:
     - shell: Running commands (use --yes for npx/npm create, && for sequences, NEVER re-run dev servers)
@@ -292,8 +292,8 @@ The year is 2025.
 <codinitArtifact id="start-dev-server" title="Start Vite development server">
 <codinitAction type="start">
 npm run dev
-</boltAction>
-</boltArtifact>
+</codinitAction>
+</codinitArtifact>
 
 The development server is now running. Ready for your next instructions.</assistant_response>
   </example>

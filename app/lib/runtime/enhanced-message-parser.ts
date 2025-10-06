@@ -51,7 +51,7 @@ export class EnhancedStreamingMessageParser extends StreamingMessageParser {
   }
 
   private _hasDetectedArtifacts(input: string): boolean {
-    return input.includes('<codinitArtifact') || input.includes('</boltArtifact>');
+    return input.includes('<codinitArtifact') || input.includes('</codinitArtifact>');
   }
 
   private _detectAndWrapCodeBlocks(messageId: string, input: string): string {
@@ -207,8 +207,8 @@ export class EnhancedStreamingMessageParser extends StreamingMessageParser {
     return `<codinitArtifact id="${artifactId}" title="${title}" type="bundled">
 <codinitAction type="file" filePath="${filePath}">
 ${content}
-</boltAction>
-</boltArtifact>`;
+</codinitAction>
+</codinitArtifact>`;
   }
 
   private _wrapInShellAction(content: string, messageId: string): string {
@@ -217,8 +217,8 @@ ${content}
     return `<codinitArtifact id="${artifactId}" title="Shell Command" type="shell">
 <codinitAction type="shell">
 ${content.trim()}
-</boltAction>
-</boltArtifact>`;
+</codinitAction>
+</codinitArtifact>`;
   }
 
   private _normalizeFilePath(filePath: string): string {

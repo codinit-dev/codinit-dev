@@ -138,7 +138,7 @@ export function useChatHistory() {
                         return `
                       <codinitAction type="file" filePath="${key}">
 ${value.content}
-                      </boltAction>
+                      </codinitAction>
                       `;
                       } else {
                         return ``;

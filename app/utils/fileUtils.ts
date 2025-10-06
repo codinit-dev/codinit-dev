@@ -112,10 +112,10 @@ ${Object.keys(files)
     (filePath) => `
 <codinitAction type="file" filePath="${filePath}">
 ${files[filePath].content}
-</boltAction>
+</codinitAction>
 `,
   )
   .join('\n')}
-</boltArtifact>
+</codinitArtifact>
   `;
 };

@@ -4,9 +4,9 @@ import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
 const ARTIFACT_TAG_OPEN = '<codinitArtifact';
-const ARTIFACT_TAG_CLOSE = '</boltArtifact>';
+const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
 const ARTIFACT_ACTION_TAG_OPEN = '<codinitAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</boltAction>';
+const ARTIFACT_ACTION_TAG_CLOSE = '</codinitAction>';
 const BOLT_QUICK_ACTIONS_OPEN = '<codinit-quick-actions>';
 const BOLT_QUICK_ACTIONS_CLOSE = '</codinit-quick-actions>';
 
@@ -403,7 +403,7 @@ function camelToDashCase(input: string) {
 
 function createQuickActionElement(props: Record<string, string>, label: string) {
   const elementProps = [
-    'class="__boltQuickAction__"',
+    'class="__codinitQuickAction__"',
     'data-codinit-quick-action="true"',
     ...Object.entries(props).map(([key, value]) => `data-${camelToDashCase(key)}=${JSON.stringify(value)}`),
   ];
@@ -412,5 +412,5 @@ function createQuickActionElement(props: Record<string, string>, label: string) 
 }
 
 function createQuickActionGroup(buttons: string[]) {
-  return `<div class=\"__boltQuickAction__\" data-codinit-quick-action=\"true\">${buttons.join('')}</div>`;
+  return `<div class=\"__codinitQuickAction__\" data-codinit-quick-action=\"true\">${buttons.join('')}</div>`;
 }

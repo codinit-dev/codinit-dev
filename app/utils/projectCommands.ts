@@ -116,12 +116,12 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
 
   if (commands.setupCommand) {
     commandString += `
-<codinitAction type="shell">${commands.setupCommand}</boltAction>`;
+<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<codinitAction type="start">${commands.startCommand}</boltAction>
+<codinitAction type="start">${commands.startCommand}</codinitAction>
 `;
   }
 
@@ -131,7 +131,7 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
 ${commands.followupMessage ? `\n\n${commands.followupMessage}` : ''}
 <codinitArtifact id="project-setup" title="Project Setup">
 ${commandString}
-</boltArtifact>`,
+</codinitArtifact>`,
     id: generateId(),
     createdAt: new Date(),
   };
