@@ -20,10 +20,10 @@ jobs:
           node-version: '20' # Use a suitable Node.js version
 
       - name: Install dependencies
-        run: npm install # Or yarn install, pnpm install depending on your project
+        run: pnpm install --no-prefer-frozen-lockfile # Or yarn install, npm install depending on your project
 
       - name: Build project
-        run: npm run build # Or your project's build command
+        run: pnpm run build # Or your project's build command
 
       - name: Get current date and time for tag
         id: date
