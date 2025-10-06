@@ -109,7 +109,6 @@ This PR tests:
 - [x] Quality gates 
 - [x] Security scanning
 - [x] Preview deployment
-- [x] Semantic PR validation
 
 **Testing checklist:**
 - [ ] All workflows complete successfully

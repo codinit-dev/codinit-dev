@@ -9,6 +9,10 @@ ENV CI=true
 # Use pnpm
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
+# Install Python and make for node-gyp dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make \
+    && rm -rf /var/lib/apt/lists/*
+
 # Accept (optional) build-time public URL for Remix/Vite (Coolify can pass it)
 ARG VITE_PUBLIC_APP_URL
 ENV VITE_PUBLIC_APP_URL=${VITE_PUBLIC_APP_URL}
