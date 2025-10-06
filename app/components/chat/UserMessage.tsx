@@ -47,7 +47,7 @@ export function UserMessage({ content, parts }: UserMessageProps) {
                 loading="eager"
                 decoding="sync"
               />
-              <span className="text-bolt-elements-textPrimary text-sm">
+              <span className="text-codinit-elements-textPrimary text-sm">
                 {profile?.username ? profile.username : ''}
               </span>
             </div>
@@ -77,7 +77,7 @@ export function UserMessage({ content, parts }: UserMessageProps) {
     <div className="flex flex-col bg-accent-500/10 backdrop-blur-sm px-5 p-3.5 w-auto rounded-lg ml-auto">
       <div className="flex gap-3.5 mb-4">
         {images.map((item, index) => (
-          <div className="relative flex rounded-lg border border-bolt-elements-borderColor overflow-hidden">
+          <div className="relative flex rounded-lg border border-codinit-elements-borderColor overflow-hidden">
             <div className="h-16 w-16 bg-transparent outline-none">
               <img
                 key={index}
@@ -96,6 +96,6 @@ export function UserMessage({ content, parts }: UserMessageProps) {
 }
 
 function stripMetadata(content: string) {
-  const artifactRegex = /<boltArtifact\s+[^>]*>[\s\S]*?<\/boltArtifact>/gm;
+  const artifactRegex = /<codinitArtifact\s+[^>]*>[\s\S]*?<\/boltArtifact>/gm;
   return content.replace(MODEL_REGEX, '').replace(PROVIDER_REGEX, '').replace(artifactRegex, '');
 }

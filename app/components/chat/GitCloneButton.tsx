@@ -130,11 +130,11 @@ ${skippedFiles.map((f) => `- ${f}`).join('\n')}`
     : ''
 }
 
-<boltArtifact id="imported-files" title="Git Cloned Files" type="bundled">
+<codinitArtifact id="imported-files" title="Git Cloned Files" type="bundled">
 ${fileContents
   .map(
     (file) =>
-      `<boltAction type="file" filePath="${file.path}">
+      `<codinitAction type="file" filePath="${file.path}">
 ${escapeBoltTags(file.content)}
 </boltAction>`,
   )
@@ -171,10 +171,10 @@ ${escapeBoltTags(file.content)}
         variant="default"
         size="lg"
         className={classNames(
-          'group relative gap-2.5 bg-gradient-to-br from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-2',
-          'text-bolt-elements-textPrimary font-medium',
-          'hover:from-bolt-elements-background-depth-2 hover:to-bolt-elements-background-depth-3',
-          'border border-bolt-elements-borderColor/60 hover:border-blue-500/40',
+          'group relative gap-2.5 bg-gradient-to-br from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-2',
+          'text-codinit-elements-textPrimary font-medium',
+          'hover:from-codinit-elements-background-depth-2 hover:to-codinit-elements-background-depth-3',
+          'border border-codinit-elements-borderColor/60 hover:border-blue-500/40',
           'shadow-md hover:shadow-lg hover:shadow-blue-500/10',
           'h-11 px-5 py-2.5 min-w-[140px] justify-center',
           'rounded-xl transition-all duration-300 ease-out',
@@ -190,15 +190,15 @@ ${escapeBoltTags(file.content)}
       {/* Provider Selection Dialog */}
       {isDialogOpen && !selectedProvider && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor max-w-md w-full">
+          <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor max-w-md w-full">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                <h3 className="text-lg font-semibold text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                   Choose Repository Provider
                 </h3>
                 <button
                   onClick={() => setIsDialogOpen(false)}
-                  className="p-2 rounded-lg bg-transparent hover:bg-bolt-elements-background-depth-1 dark:hover:bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary dark:hover:text-bolt-elements-textPrimary transition-all duration-200 hover:scale-105 active:scale-95"
+                  className="p-2 rounded-lg bg-transparent hover:bg-codinit-elements-background-depth-1 dark:hover:bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary transition-all duration-200 hover:scale-105 active:scale-95"
                 >
                   <X className="w-5 h-5 transition-transform duration-200 hover:rotate-90" />
                 </button>
@@ -207,17 +207,17 @@ ${escapeBoltTags(file.content)}
               <div className="space-y-3">
                 <button
                   onClick={() => setSelectedProvider('github')}
-                  className="w-full p-4 rounded-lg bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 hover:bg-bolt-elements-background-depth-2 dark:hover:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive dark:hover:border-bolt-elements-borderColorActive transition-all duration-200 text-left group"
+                  className="w-full p-4 rounded-lg bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive dark:hover:border-codinit-elements-borderColorActive transition-all duration-200 text-left group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/20 dark:group-hover:bg-blue-500/30 transition-colors">
                       <Github className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                      <div className="font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                      <div className="font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                         GitHub
                       </div>
-                      <div className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                      <div className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                         Clone from GitHub repositories
                       </div>
                     </div>
@@ -226,17 +226,17 @@ ${escapeBoltTags(file.content)}
 
                 <button
                   onClick={() => setSelectedProvider('gitlab')}
-                  className="w-full p-4 rounded-lg bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 hover:bg-bolt-elements-background-depth-2 dark:hover:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive dark:hover:border-bolt-elements-borderColorActive transition-all duration-200 text-left group"
+                  className="w-full p-4 rounded-lg bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive dark:hover:border-codinit-elements-borderColorActive transition-all duration-200 text-left group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center group-hover:bg-orange-500/20 dark:group-hover:bg-orange-500/30 transition-colors">
                       <GitBranch className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                     </div>
                     <div>
-                      <div className="font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                      <div className="font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                         GitLab
                       </div>
-                      <div className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                      <div className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                         Clone from GitLab repositories
                       </div>
                     </div>
@@ -251,17 +251,17 @@ ${escapeBoltTags(file.content)}
       {/* GitHub Repository Selection */}
       {isDialogOpen && selectedProvider === 'github' && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor w-full max-w-4xl max-h-[90vh] overflow-hidden">
-            <div className="p-6 border-b border-bolt-elements-borderColor dark:border-bolt-elements-borderColor flex items-center justify-between">
+          <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b border-codinit-elements-borderColor dark:border-codinit-elements-borderColor flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
                   <Github className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                  <h3 className="text-lg font-semibold text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                     Import GitHub Repository
                   </h3>
-                  <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                  <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                     Clone a repository from GitHub to your workspace
                   </p>
                 </div>
@@ -271,7 +271,7 @@ ${escapeBoltTags(file.content)}
                   setIsDialogOpen(false);
                   setSelectedProvider(null);
                 }}
-                className="p-2 rounded-lg bg-transparent hover:bg-bolt-elements-background-depth-1 dark:hover:bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary dark:hover:text-bolt-elements-textPrimary transition-all duration-200 hover:scale-105 active:scale-95"
+                className="p-2 rounded-lg bg-transparent hover:bg-codinit-elements-background-depth-1 dark:hover:bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 <X className="w-5 h-5 transition-transform duration-200 hover:rotate-90" />
               </button>
@@ -287,17 +287,17 @@ ${escapeBoltTags(file.content)}
       {/* GitLab Repository Selection */}
       {isDialogOpen && selectedProvider === 'gitlab' && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor w-full max-w-4xl max-h-[90vh] overflow-hidden">
-            <div className="p-6 border-b border-bolt-elements-borderColor dark:border-bolt-elements-borderColor flex items-center justify-between">
+          <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor w-full max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="p-6 border-b border-codinit-elements-borderColor dark:border-codinit-elements-borderColor flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-orange-500/10 dark:bg-orange-500/20 flex items-center justify-center">
                   <GitBranch className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
+                  <h3 className="text-lg font-semibold text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                     Import GitLab Repository
                   </h3>
-                  <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
+                  <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                     Clone a repository from GitLab to your workspace
                   </p>
                 </div>
@@ -307,7 +307,7 @@ ${escapeBoltTags(file.content)}
                   setIsDialogOpen(false);
                   setSelectedProvider(null);
                 }}
-                className="p-2 rounded-lg bg-transparent hover:bg-bolt-elements-background-depth-1 dark:hover:bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary dark:hover:text-bolt-elements-textPrimary transition-all duration-200 hover:scale-105 active:scale-95"
+                className="p-2 rounded-lg bg-transparent hover:bg-codinit-elements-background-depth-1 dark:hover:bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 <X className="w-5 h-5 transition-transform duration-200 hover:rotate-90" />
               </button>
