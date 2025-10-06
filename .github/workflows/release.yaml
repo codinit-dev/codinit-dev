@@ -1,0 +1,45 @@
+name: Release on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for git history
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a suitable Node.js version
+
+      - name: Install dependencies
+        run: npm install # Or yarn install, pnpm install depending on your project
+
+      - name: Build project
+        run: npm run build # Or your project's build command
+
+      - name: Get current date and time for tag
+        id: date
+        run: echo "tag=v$(date +'%Y.%m.%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.date.outputs.tag }}
+          release_name: Release ${{ steps.date.outputs.tag }}
+          body: |
+            Automated release based on push to main.
+            Commit: ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
