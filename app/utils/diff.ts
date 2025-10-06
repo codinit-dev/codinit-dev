@@ -95,7 +95,7 @@ export function extractRelativePath(filePath: string) {
  * - console.log('Hello, World!');
  * + console.log('Hello, codinit!');
  * </diff>
- * </bolt_file_modifications>
+ * </codinit_file_modifications>
  * ```
  */
 export function fileModificationsToHTML(modifications: FileModifications) {
