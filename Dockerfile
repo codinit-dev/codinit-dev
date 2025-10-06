@@ -2,6 +2,13 @@
 FROM node:22-bookworm-slim AS build
 WORKDIR /app
 
+# Install build dependencies for native modules (fs-xattr, etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
 # CI-friendly env
 ENV HUSKY=0
 ENV CI=true
@@ -57,7 +64,7 @@ CMD ["node", "build/server/index.js"]
 
 
 # ---- development stage ----
-FROM build AS codinit-development
+FROM build AS codinit-ai-development
 
 # Define environment variables for development
 ARG GROQ_API_KEY
@@ -92,4 +99,4 @@ RUN mkdir -p /app/run
 CMD ["pnpm", "run", "dev", "--host"]
 
 # ---- production stage alias ----
-FROM runtime AS codinit-production
+FROM runtime AS codinit-ai-production
