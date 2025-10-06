@@ -148,7 +148,7 @@ export function useGitLabDeploy() {
       return {
         success: true,
         files: fileContents,
-        projectName: artifact.title || 'bolt-project',
+        projectName: artifact.title || 'codinit-project',
       };
     } catch (err) {
       console.error('GitLab deploy error:', err);

@@ -138,8 +138,8 @@ export const DeployButton = ({
             isDeploying && deployingTo === 'netlify'
               ? 'border-teal-500 bg-teal-500/20'
               : netlifyConn.user
-                ? 'border-bolt-elements-borderColor hover:border-teal-500 hover:bg-teal-500/10 hover:scale-110'
-                : 'border-bolt-elements-borderColor/30 opacity-40 cursor-not-allowed',
+                ? 'border-codinit-elements-borderColor hover:border-teal-500 hover:bg-teal-500/10 hover:scale-110'
+                : 'border-codinit-elements-borderColor/30 opacity-40 cursor-not-allowed',
           )}
         >
           <img className="w-5 h-5" crossOrigin="anonymous" src="https://cdn.simpleicons.org/netlify" alt="Netlify" />
@@ -161,8 +161,8 @@ export const DeployButton = ({
             isDeploying && deployingTo === 'vercel'
               ? 'border-white bg-white/20'
               : vercelConn.user
-                ? 'border-bolt-elements-borderColor hover:border-white hover:bg-white/10 hover:scale-110'
-                : 'border-bolt-elements-borderColor/30 opacity-40 cursor-not-allowed',
+                ? 'border-codinit-elements-borderColor hover:border-white hover:bg-white/10 hover:scale-110'
+                : 'border-codinit-elements-borderColor/30 opacity-40 cursor-not-allowed',
           )}
         >
           <img
@@ -188,7 +188,7 @@ export const DeployButton = ({
             'flex items-center justify-center',
             isDeploying && deployingTo === 'github'
               ? 'border-gray-400 bg-gray-400/20'
-              : 'border-bolt-elements-borderColor hover:border-gray-400 hover:bg-gray-400/10 hover:scale-110',
+              : 'border-codinit-elements-borderColor hover:border-gray-400 hover:bg-gray-400/10 hover:scale-110',
           )}
         >
           <img
@@ -210,8 +210,8 @@ export const DeployButton = ({
             isDeploying && deployingTo === 'gitlab'
               ? 'border-orange-500 bg-orange-500/20'
               : gitlabIsConnected
-                ? 'border-bolt-elements-borderColor hover:border-orange-500 hover:bg-orange-500/10 hover:scale-110'
-                : 'border-bolt-elements-borderColor/30 opacity-40 cursor-not-allowed',
+                ? 'border-codinit-elements-borderColor hover:border-orange-500 hover:bg-orange-500/10 hover:scale-110'
+                : 'border-codinit-elements-borderColor/30 opacity-40 cursor-not-allowed',
           )}
         >
           <img className="w-5 h-5" crossOrigin="anonymous" src="https://cdn.simpleicons.org/gitlab" alt="GitLab" />
@@ -222,7 +222,7 @@ export const DeployButton = ({
           disabled
           title="Deploy to Cloudflare (Coming Soon)"
           className={classNames(
-            'w-9 h-9 rounded-lg border border-bolt-elements-borderColor/30',
+            'w-9 h-9 rounded-lg border border-codinit-elements-borderColor/30',
             'flex items-center justify-center',
             'opacity-30 cursor-not-allowed',
           )}
