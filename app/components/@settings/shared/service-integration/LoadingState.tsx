@@ -32,18 +32,18 @@ export function LoadingState({
       <div className="flex items-center gap-2">
         <div
           className={classNames(
-            'i-ph:spinner-gap animate-spin text-bolt-elements-item-contentAccent',
+            'i-ph:spinner-gap animate-spin text-codinit-elements-item-contentAccent',
             sizeClasses[size],
           )}
         />
-        <span className="text-bolt-elements-textSecondary">{message}</span>
+        <span className="text-codinit-elements-textSecondary">{message}</span>
       </div>
 
       {showProgress && (
         <div className="w-full max-w-xs">
-          <div className="w-full bg-bolt-elements-background-depth-2 rounded-full h-1">
+          <div className="w-full bg-codinit-elements-background-depth-2 rounded-full h-1">
             <motion.div
-              className="bg-bolt-elements-item-contentAccent h-1 rounded-full"
+              className="bg-codinit-elements-item-contentAccent h-1 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.3 }}
@@ -67,7 +67,7 @@ export function Skeleton({ className, lines = 1 }: SkeletonProps) {
         <div
           key={i}
           className={classNames(
-            'bg-bolt-elements-background-depth-2 rounded',
+            'bg-codinit-elements-background-depth-2 rounded',
             i === lines - 1 ? 'h-4' : 'h-4 mb-2',
             i === lines - 1 && lines > 1 ? 'w-3/4' : 'w-full',
           )}

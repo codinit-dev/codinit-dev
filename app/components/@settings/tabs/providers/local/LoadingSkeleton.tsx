@@ -13,7 +13,7 @@ export function LoadingSkeleton({ className, lines = 1, height = 'h-4' }: Loadin
       {Array.from({ length: lines }).map((_, i) => (
         <div
           key={i}
-          className={classNames('bg-bolt-elements-background-depth-3 rounded', height, 'animate-pulse')}
+          className={classNames('bg-codinit-elements-background-depth-3 rounded', height, 'animate-pulse')}
           style={{ animationDelay: `${i * 0.1}s` }}
         />
       ))}
@@ -30,20 +30,20 @@ export function ModelCardSkeleton({ className }: ModelCardSkeletonProps) {
     <div
       className={classNames(
         'border rounded-lg p-4',
-        'bg-bolt-elements-background-depth-2',
-        'border-bolt-elements-borderColor',
+        'bg-codinit-elements-background-depth-2',
+        'border-codinit-elements-borderColor',
         className,
       )}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 flex-1">
-          <div className="w-3 h-3 rounded-full bg-bolt-elements-textTertiary animate-pulse" />
+          <div className="w-3 h-3 rounded-full bg-codinit-elements-textTertiary animate-pulse" />
           <div className="space-y-2 flex-1">
             <LoadingSkeleton height="h-5" lines={1} className="w-3/4" />
             <LoadingSkeleton height="h-3" lines={1} className="w-1/2" />
           </div>
         </div>
-        <div className="w-4 h-4 bg-bolt-elements-textTertiary rounded animate-pulse" />
+        <div className="w-4 h-4 bg-codinit-elements-textTertiary rounded animate-pulse" />
       </div>
     </div>
   );
@@ -55,10 +55,10 @@ interface ProviderCardSkeletonProps {
 
 export function ProviderCardSkeleton({ className }: ProviderCardSkeletonProps) {
   return (
-    <div className={classNames('bg-bolt-elements-background-depth-2 rounded-xl p-5', className)}>
+    <div className={classNames('bg-codinit-elements-background-depth-2 rounded-xl p-5', className)}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4 flex-1">
-          <div className="w-12 h-12 rounded-xl bg-bolt-elements-background-depth-3 animate-pulse" />
+          <div className="w-12 h-12 rounded-xl bg-codinit-elements-background-depth-3 animate-pulse" />
           <div className="space-y-3 flex-1">
             <div className="space-y-2">
               <LoadingSkeleton height="h-5" lines={1} className="w-1/3" />
@@ -70,7 +70,7 @@ export function ProviderCardSkeleton({ className }: ProviderCardSkeletonProps) {
             </div>
           </div>
         </div>
-        <div className="w-10 h-6 bg-bolt-elements-background-depth-3 rounded-full animate-pulse" />
+        <div className="w-10 h-6 bg-codinit-elements-background-depth-3 rounded-full animate-pulse" />
       </div>
     </div>
   );
@@ -91,8 +91,8 @@ export function ModelManagerSkeleton({ className, cardCount = 3 }: ModelManagerS
           <LoadingSkeleton height="h-4" lines={1} className="w-64" />
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-24 h-8 bg-bolt-elements-background-depth-3 rounded-lg animate-pulse" />
-          <div className="w-16 h-8 bg-bolt-elements-background-depth-3 rounded-lg animate-pulse" />
+          <div className="w-24 h-8 bg-codinit-elements-background-depth-3 rounded-lg animate-pulse" />
+          <div className="w-16 h-8 bg-codinit-elements-background-depth-3 rounded-lg animate-pulse" />
         </div>
       </div>
 
