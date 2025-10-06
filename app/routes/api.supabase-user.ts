@@ -22,7 +22,7 @@ async function supabaseUserLoader({ request, context }: { request: Request; cont
     const response = await fetch('https://api.supabase.com/v1/projects', {
       headers: {
         Authorization: `Bearer ${supabaseToken}`,
-        'User-Agent': 'bolt.diy-app',
+        'User-Agent': 'codinit.dev-app',
       },
     });
 
@@ -105,7 +105,7 @@ async function supabaseUserAction({ request, context }: { request: Request; cont
       const response = await fetch('https://api.supabase.com/v1/projects', {
         headers: {
           Authorization: `Bearer ${supabaseToken}`,
-          'User-Agent': 'bolt.diy-app',
+          'User-Agent': 'codinit.dev-app',
         },
       });
 
@@ -159,7 +159,7 @@ async function supabaseUserAction({ request, context }: { request: Request; cont
       const response = await fetch(`https://api.supabase.com/v1/projects/${projectId}/api-keys`, {
         headers: {
           Authorization: `Bearer ${supabaseToken}`,
-          'User-Agent': 'bolt.diy-app',
+          'User-Agent': 'codinit.dev-app',
         },
       });
 
