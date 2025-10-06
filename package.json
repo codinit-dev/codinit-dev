@@ -229,7 +229,13 @@
   "pnpm": {
     "overrides": {
       "undici-types": "^7.13.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "electron",
+      "fs-xattr",
+      "keytar",
+      "macos-alias"
+    ]
   },
   "packageManager": "pnpm@10.18.0",
   "main": "build/electron/main/index.mjs"

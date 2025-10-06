@@ -44,8 +44,9 @@ ${fileArtifacts
     (file) => `<codinitAction type="file" filePath="${file.path}">
 ${escapeBoltTags(file.content)}
 </codinitAction>`,
+  )
   .join('\n\n')}
-</boltArtifact>`,
+</codinitArtifact>`,
     id: generateId(),
     createdAt: new Date(),
   };
