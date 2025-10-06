@@ -41,15 +41,6 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/Gerome-Elassaad/CodingIT
       name: CodingIT
-    - icon: fontawesome/brands/discourse
-      link: https://thinktank.ottomator.ai/
-      name: CodingIT Discourse
-    - icon: fontawesome/brands/x-twitter
-      link: https://x.com/bolt_diy
-      name: CodingIT on X
-    - icon: fontawesome/brands/bluesky
-      link: https://bsky.app/profile/CodingIT
-      name: CodingIT on Bluesky
 
 markdown_extensions:
   - pymdownx.highlight:
