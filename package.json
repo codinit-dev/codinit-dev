@@ -76,6 +76,7 @@
     "@codemirror/search": "^6.5.11",
     "@codemirror/state": "^6.5.2",
     "@codemirror/view": "^6.38.4",
+    "@electron/packager": "^18.4.4",
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@iconify-json/svg-spinners": "^1.2.4",
@@ -232,9 +233,7 @@
     },
     "onlyBuiltDependencies": [
       "electron",
-      "fs-xattr",
-      "keytar",
-      "macos-alias"
+      "fs-xattr"
     ]
   },
   "packageManager": "pnpm@10.18.0",
