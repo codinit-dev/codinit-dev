@@ -1,64 +1,50 @@
 appId: com.codinit.desktop
 productName: CodinIT Desktop
+
 directories:
   buildResources: build
   output: dist
+
+# Only include built files - exclude everything else
 files:
-  - build/**/*
-  - package.json
-  - node_modules/**/*
-  - icons/**
-  - electron-update.yml
-extraMetadata:
-  main: build/electron/main/index.mjs
-asarUnpack:
-  - resources/**
+  - build/electron/**/*
   - build/client/**/*
   - build/server/**/*
-  - electron-update.yml
+  - package.json
+  - "!**/.git"
+  - "!**/node_modules/**"
+  - "!dist"
+  - "!src"
+
+# electron-builder will handle node_modules automatically from package.json
+
+extraMetadata:
+  main: build/electron/main/index.mjs
+
+# Disable asar - it can cause hanging issues
+asar: false
 
 mac:
-  icon: assets/icons/icon.png
-  target:
-    - dmg
+  icon: public/icon.icns
+  target: dir
   identity: null
-  category: "public.app-category.developer-tools"
-  type: "distribution"
-  hardenedRuntime: true
-  entitlements: "assets/entitlements.mac.plist"
-  entitlementsInherit: "assets/entitlements.mac.plist"
+  hardenedRuntime: false
   gatekeeperAssess: false
+  # macOS specific performance options
+  type: development
 
 win:
-  icon: assets/icons/icon.ico
-  target:
-    - nsis
-  artifactName: ${name}-${version}-${os}-${arch}.${ext}
+  icon: public/icon.png
+  target: nsis
 
 linux:
-  icon: assets/icons/icon.png
-  target:
-    - AppImage
-    - deb
-  artifactName: ${name}-${version}-${os}-${arch}.${ext}
-  category: Development
+  icon: public/icon.png
+  target: AppImage
 
-nsis:
-  oneClick: false
-  allowToChangeInstallationDirectory: true
-  createDesktopShortcut: true
-  createStartMenuShortcut: true
-  shortcutName: ${productName}
-  artifactName: ${name}-${version}-${os}-${arch}-setup.${ext}
-
+# Performance and security optimizations
 npmRebuild: false
+nodeGypRebuild: false
+buildDependenciesFromSource: false
 
-publish:
-  provider: github
-  owner: Gerome-Elassaad
-  repo: codingit
-  private: true
-  releaseType: release
-
-electronDownload:
-  mirror: https://npmmirror.com/mirrors/electron/
+# Exclude all dev dependencies
+removePackageScripts: true
