@@ -43,8 +43,7 @@ ${fileArtifacts
   .map(
     (file) => `<codinitAction type="file" filePath="${file.path}">
 ${escapeBoltTags(file.content)}
-</boltAction>`,
-  )
+</codinitAction>`,
   .join('\n\n')}
 </boltArtifact>`,
     id: generateId(),
