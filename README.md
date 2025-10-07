@@ -1,12 +1,10 @@
-# CodinIT.dev
-
-![CodinIT.dev: AI-Powered Full-Stack Web Development in the Browser](https://github.com/user-attachments/assets/de684e88-a65c-42ea-b067-d1a3bc85a420)
+![CodinIT.dev](https://codinit.dev/hero-image.png)
 
 
 Welcome to CodinIT.dev, an AI-powered development platform that allows you to choose the LLM that you use for each prompt! Currently, you can use OpenAI, Anthropic, Ollama, OpenRouter, Gemini, LMStudio, Mistral, xAI, HuggingFace, DeepSeek, Groq, Cohere, Together, Perplexity, Moonshot (Kimi), Hyperbolic, GitHub Models, Amazon Bedrock, and OpenAI-like providers - and it is easily extended to use any other model supported by the Vercel AI SDK! See the instructions below for running this locally and extending it to include more models.
 
 -----
-Check the [CodinIT.dev Docs](https://docs.codinit.dev) for more official installation instructions and additional information.
+Check the [CodinIT.dev Docs](https://gerome-elassaad.github.io/codinit-app for more official installation instructions and additional information.
 
 -----
 
@@ -23,9 +21,6 @@ CodinIT.dev is an open-source AI-powered development platform built to provide t
 - [Configuring API Keys and Providers](#configuring-api-keys-and-providers)
 - [Setup Using Git (For Developers only)](#setup-using-git-for-developers-only)
 - [Available Scripts](#available-scripts)
-- [Contributing](#contributing)
-- [Roadmap](#roadmap)
-- [FAQ](#faq)
 
 ## Join the community
 
