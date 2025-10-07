@@ -4,7 +4,6 @@ CodinIT.dev allows you to choose the LLM that you use for each prompt! Currently
 
 ## Table of Contents
 
-- [Join the community!](#join-the-community)
 - [Features](#features)
 - [Setup](#setup)
   - [Prerequisites](#prerequisites)
@@ -26,14 +25,6 @@ CodinIT.dev allows you to choose the LLM that you use for each prompt! Currently
 - [Available Scripts](#available-scripts)
 - [Development](#development)
 - [Tips and Tricks](#tips-and-tricks)
-
----
-
-## Join the community!
-
-[Join the community!](https://thinktank.ottomator.ai)
-
-Also [this pinned post in our community](https://thinktank.ottomator.ai/t/videos-tutorial-helpful-content/3243) has a bunch of incredible resources for running and deploying CodinIT.dev yourself!
 
 ---
 
@@ -628,7 +619,6 @@ The documentation includes:
 
 ### Community Support
 - **GitHub Issues**: Report bugs and request features
-- **Community Forum**: Join discussions at [thinktank.ottomator.ai](https://thinktank.ottomator.ai)
 - **Contributing Guide**: Learn how to contribute to the project
 
 ## Tips and Tricks

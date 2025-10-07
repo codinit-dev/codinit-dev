@@ -116,7 +116,6 @@ CodinIT.dev provides multiple ways to access help and documentation:
 
     **Community Support:**
     - **GitHub Issues**: Report bugs and request features
-    - **Community Forum**: [thinktank.ottomator.ai](https://thinktank.ottomator.ai)
 
 ??? question "How do I get the best results with CodinIT.dev?"
 Follow these proven strategies for optimal results:
@@ -386,7 +385,7 @@ If the live preview isn't working:
 **Windows-specific issue**: Update the [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 
 ??? error "Miniflare or Wrangler errors in Windows"
-**Windows development environment**: Install Visual Studio C++ (version 14.40.33816 or later). More details in [GitHub Issues](https://github.com/stackblitz-labs/CodinIT.dev/issues/19)
+**Windows development environment**: Install Visual Studio C++ (version 14.40.33816 or later). More details in [GitHub Issues](https://github.com/Gerome-Elassaad/CodingIT/issues/)
 
 ??? error "Provider not showing up after adding it"
 If your custom LLM provider isn't appearing:
@@ -401,8 +400,5 @@ If your custom LLM provider isn't appearing:
 
 ## Get Help & Support
 
-!!! tip "Community Support"
-[Join the CodinIT.dev Community](https://thinktank.ottomator.ai/c/codinit-diy/17){target=\_blank} for discussions and help
-
 !!! bug "Report Issues"
-[Open an Issue](https://github.com/stackblitz-labs/CodinIT.dev/issues/19){target=\_blank} in our GitHub Repository
+[Open an Issue](https://github.com/Gerome-Elassaad/CodingIT/issues/){target=\_blank} in our GitHub Repository
