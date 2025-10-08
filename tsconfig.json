@@ -21,7 +21,8 @@
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./app/*"]
+      "~/*": ["./app/*"],
+      "#build/*": ["./build/*"]
     },
 
     "noEmit": true

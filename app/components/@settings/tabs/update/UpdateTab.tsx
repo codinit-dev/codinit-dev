@@ -577,7 +577,7 @@ const UpdateTab = () => {
           <DialogDescription>
             <div className="mt-4">
               <p className="text-sm text-codinit-elements-textSecondary mb-4">
-                A new version is available from <span className="font-mono">Gerome-Elassaad/CodingIT</span> (
+                A new version is available from <span className="font-mono">Gerome-Elassaad/codinit-app</span> (
                 {isLatestBranch ? 'main' : 'stable'} branch)
               </p>
 
