@@ -1,39 +1,35 @@
-import ignore from "ignore";
-import { useGit } from "~/lib/hooks/useGit";
-import type { Message } from "ai";
-import {
-  detectProjectCommands,
-  createCommandsMessage,
-  escapecodinitTags,
-} from "~/utils/projectCommands";
-import { generateId } from "~/utils/fileUtils";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { LoadingOverlay } from "~/components/ui/LoadingOverlay";
-import { RepositorySelectionDialog } from "~/components/@settings/tabs/connections/components/RepositorySelectionDialog";
-import { classNames } from "~/utils/classNames";
-import { Button } from "~/components/ui/Button";
-import type { IChatMetadata } from "~/lib/persistence/db";
+import ignore from 'ignore';
+import { useGit } from '~/lib/hooks/useGit';
+import type { Message } from 'ai';
+import { detectProjectCommands, createCommandsMessage, escapecodinitTags } from '~/utils/projectCommands';
+import { generateId } from '~/utils/fileUtils';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
+import { RepositorySelectionDialog } from '~/components/@settings/tabs/connections/components/RepositorySelectionDialog';
+import { classNames } from '~/utils/classNames';
+import { Button } from '~/components/ui/Button';
+import type { IChatMetadata } from '~/lib/persistence/db';
 
 const IGNORE_PATTERNS = [
-  "node_modules/**",
-  ".git/**",
-  ".github/**",
-  ".vscode/**",
-  "dist/**",
-  "build/**",
-  ".next/**",
-  "coverage/**",
-  ".cache/**",
-  ".idea/**",
-  "**/*.log",
-  "**/.DS_Store",
-  "**/npm-debug.log*",
-  "**/yarn-debug.log*",
-  "**/yarn-error.log*",
+  'node_modules/**',
+  '.git/**',
+  '.github/**',
+  '.vscode/**',
+  'dist/**',
+  'build/**',
+  '.next/**',
+  'coverage/**',
+  '.cache/**',
+  '.idea/**',
+  '**/*.log',
+  '**/.DS_Store',
+  '**/npm-debug.log*',
+  '**/yarn-debug.log*',
+  '**/yarn-error.log*',
 
   // Include this so npm install runs much faster '**/*lock.json',
-  "**/*lock.yaml",
+  '**/*lock.yaml',
 ];
 
 const ig = ignore().add(IGNORE_PATTERNS);
@@ -43,17 +39,10 @@ const MAX_TOTAL_SIZE = 500 * 1024; // 500KB total limit
 
 interface GitCloneButtonProps {
   className?: string;
-  importChat?: (
-    description: string,
-    messages: Message[],
-    metadata?: IChatMetadata,
-  ) => Promise<void>;
+  importChat?: (description: string, messages: Message[], metadata?: IChatMetadata) => Promise<void>;
 }
 
-export default function GitCloneButton({
-  importChat,
-  className,
-}: GitCloneButtonProps) {
+export default function GitCloneButton({ importChat, className }: GitCloneButtonProps) {
   const { ready, gitClone } = useGit();
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -69,10 +58,8 @@ export default function GitCloneButton({
       const { workdir, data } = await gitClone(repoUrl);
 
       if (importChat) {
-        const filePaths = Object.keys(data).filter(
-          (filePath) => !ig.ignores(filePath),
-        );
-        const textDecoder = new TextDecoder("utf-8");
+        const filePaths = Object.keys(data).filter((filePath) => !ig.ignores(filePath));
+        const textDecoder = new TextDecoder('utf-8');
 
         let totalSize = 0;
         const skippedFiles: string[] = [];
@@ -84,9 +71,7 @@ export default function GitCloneButton({
           // Skip binary files
           if (
             content instanceof Uint8Array &&
-            !filePath.match(
-              /\.(txt|md|astro|mjs|js|jsx|ts|tsx|json|html|css|scss|less|yml|yaml|xml|svg|vue|svelte)$/i,
-            )
+            !filePath.match(/\.(txt|md|astro|mjs|js|jsx|ts|tsx|json|html|css|scss|less|yml|yaml|xml|svg|vue|svelte)$/i)
           ) {
             skippedFiles.push(filePath);
             continue;
@@ -94,11 +79,7 @@ export default function GitCloneButton({
 
           try {
             const textContent =
-              encoding === "utf8"
-                ? content
-                : content instanceof Uint8Array
-                  ? textDecoder.decode(content)
-                  : "";
+              encoding === 'utf8' ? content : content instanceof Uint8Array ? textDecoder.decode(content) : '';
 
             if (!textContent) {
               continue;
@@ -108,9 +89,7 @@ export default function GitCloneButton({
             const fileSize = new TextEncoder().encode(textContent).length;
 
             if (fileSize > MAX_FILE_SIZE) {
-              skippedFiles.push(
-                `${filePath} (too large: ${Math.round(fileSize / 1024)}KB)`,
-              );
+              skippedFiles.push(`${filePath} (too large: ${Math.round(fileSize / 1024)}KB)`);
               continue;
             }
 
@@ -134,13 +113,13 @@ export default function GitCloneButton({
         const commandsMessage = createCommandsMessage(commands);
 
         const filesMessage: Message = {
-          role: "assistant",
+          role: 'assistant',
           content: `Cloning the repo ${repoUrl} into ${workdir}
 ${
   skippedFiles.length > 0
     ? `\nSkipped files (${skippedFiles.length}):
-${skippedFiles.map((f) => `- ${f}`).join("\n")}`
-    : ""
+${skippedFiles.map((f) => `- ${f}`).join('\n')}`
+    : ''
 }
 
 <codinitArtifact id="imported-files" title="Git Cloned Files" type="bundled">
@@ -151,7 +130,7 @@ ${fileContents
 ${escapecodinitTags(file.content)}
 </codinitAction>`,
   )
-  .join("\n")}
+  .join('\n')}
 </codinitArtifact>`,
           id: generateId(),
           createdAt: new Date(),
@@ -163,14 +142,11 @@ ${escapecodinitTags(file.content)}
           messages.push(commandsMessage);
         }
 
-        await importChat(
-          `Git Project:${repoUrl.split("/").slice(-1)[0]}`,
-          messages,
-        );
+        await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages);
       }
     } catch (error) {
-      console.error("Error during import:", error);
-      toast.error("Failed to import repository");
+      console.error('Error during import:', error);
+      toast.error('Failed to import repository');
     } finally {
       setLoading(false);
     }
@@ -184,12 +160,12 @@ ${escapecodinitTags(file.content)}
         variant="default"
         size="lg"
         className={classNames(
-          "gap-2 bg-codinit-elements-background-depth-1",
-          "text-codinit-elements-textPrimary",
-          "hover:bg-codinit-elements-background-depth-2",
-          "border border-codinit-elements-borderColor",
-          "h-10 px-4 py-2 min-w-[120px] justify-center",
-          "transition-all duration-200 ease-in-out",
+          'gap-2 bg-codinit-elements-background-depth-1',
+          'text-codinit-elements-textPrimary',
+          'hover:bg-codinit-elements-background-depth-2',
+          'border border-codinit-elements-borderColor',
+          'h-10 px-4 py-2 min-w-[120px] justify-center',
+          'transition-all duration-200 ease-in-out',
           className,
         )}
         disabled={!ready || loading}
@@ -198,15 +174,9 @@ ${escapecodinitTags(file.content)}
         Clone a Git Repo
       </Button>
 
-      <RepositorySelectionDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onSelect={handleClone}
-      />
+      <RepositorySelectionDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSelect={handleClone} />
 
-      {loading && (
-        <LoadingOverlay message="Please wait while we clone the repository..." />
-      )}
+      {loading && <LoadingOverlay message="Please wait while we clone the repository..." />}
     </>
   );
 }

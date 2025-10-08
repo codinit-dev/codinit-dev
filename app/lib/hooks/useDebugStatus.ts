@@ -1,12 +1,7 @@
-import { useState, useEffect } from "react";
-import {
-  getDebugStatus,
-  acknowledgeWarning,
-  acknowledgeError,
-  type DebugIssue,
-} from "~/lib/api/debug";
+import { useState, useEffect } from 'react';
+import { getDebugStatus, acknowledgeWarning, acknowledgeError, type DebugIssue } from '~/lib/api/debug';
 
-const ACKNOWLEDGED_DEBUG_ISSUES_KEY = "codinit_acknowledged_debug_issues";
+const ACKNOWLEDGED_DEBUG_ISSUES_KEY = 'codinit_acknowledged_debug_issues';
 
 const getAcknowledgedIssues = (): string[] => {
   try {
@@ -19,34 +14,29 @@ const getAcknowledgedIssues = (): string[] => {
 
 const setAcknowledgedIssues = (issueIds: string[]) => {
   try {
-    localStorage.setItem(
-      ACKNOWLEDGED_DEBUG_ISSUES_KEY,
-      JSON.stringify(issueIds),
-    );
+    localStorage.setItem(ACKNOWLEDGED_DEBUG_ISSUES_KEY, JSON.stringify(issueIds));
   } catch (error) {
-    console.error("Failed to persist acknowledged debug issues:", error);
+    console.error('Failed to persist acknowledged debug issues:', error);
   }
 };
 
 export const useDebugStatus = () => {
   const [hasActiveWarnings, setHasActiveWarnings] = useState(false);
   const [activeIssues, setActiveIssues] = useState<DebugIssue[]>([]);
-  const [acknowledgedIssueIds, setAcknowledgedIssueIds] = useState<string[]>(
-    () => getAcknowledgedIssues(),
-  );
+  const [acknowledgedIssueIds, setAcknowledgedIssueIds] = useState<string[]>(() => getAcknowledgedIssues());
 
   const checkDebugStatus = async () => {
     try {
       const status = await getDebugStatus();
       const issues: DebugIssue[] = [
-        ...status.warnings.map((w) => ({ ...w, type: "warning" as const })),
-        ...status.errors.map((e) => ({ ...e, type: "error" as const })),
+        ...status.warnings.map((w) => ({ ...w, type: 'warning' as const })),
+        ...status.errors.map((e) => ({ ...e, type: 'error' as const })),
       ].filter((issue) => !acknowledgedIssueIds.includes(issue.id));
 
       setActiveIssues(issues);
       setHasActiveWarnings(issues.length > 0);
     } catch (error) {
-      console.error("Failed to check debug status:", error);
+      console.error('Failed to check debug status:', error);
     }
   };
 
@@ -61,7 +51,7 @@ export const useDebugStatus = () => {
 
   const acknowledgeIssue = async (issue: DebugIssue) => {
     try {
-      if (issue.type === "warning") {
+      if (issue.type === 'warning') {
         await acknowledgeWarning(issue.id);
       } else {
         await acknowledgeError(issue.id);
@@ -73,7 +63,7 @@ export const useDebugStatus = () => {
       setActiveIssues((prev) => prev.filter((i) => i.id !== issue.id));
       setHasActiveWarnings(activeIssues.length > 1);
     } catch (error) {
-      console.error("Failed to acknowledge issue:", error);
+      console.error('Failed to acknowledge issue:', error);
     }
   };
 
@@ -81,22 +71,17 @@ export const useDebugStatus = () => {
     try {
       await Promise.all(
         activeIssues.map((issue) =>
-          issue.type === "warning"
-            ? acknowledgeWarning(issue.id)
-            : acknowledgeError(issue.id),
+          issue.type === 'warning' ? acknowledgeWarning(issue.id) : acknowledgeError(issue.id),
         ),
       );
 
-      const newAcknowledgedIds = [
-        ...acknowledgedIssueIds,
-        ...activeIssues.map((i) => i.id),
-      ];
+      const newAcknowledgedIds = [...acknowledgedIssueIds, ...activeIssues.map((i) => i.id)];
       setAcknowledgedIssueIds(newAcknowledgedIds);
       setAcknowledgedIssues(newAcknowledgedIds);
       setActiveIssues([]);
       setHasActiveWarnings(false);
     } catch (error) {
-      console.error("Failed to acknowledge all issues:", error);
+      console.error('Failed to acknowledge all issues:', error);
     }
   };
 

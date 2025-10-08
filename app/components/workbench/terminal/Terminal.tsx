@@ -1,18 +1,12 @@
-import { FitAddon } from "@xterm/addon-fit";
-import { WebLinksAddon } from "@xterm/addon-web-links";
-import { Terminal as XTerm } from "@xterm/xterm";
-import {
-  forwardRef,
-  memo,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
-import type { Theme } from "~/lib/stores/theme";
-import { createScopedLogger } from "~/utils/logger";
-import { getTerminalTheme } from "./theme";
+import { FitAddon } from '@xterm/addon-fit';
+import { WebLinksAddon } from '@xterm/addon-web-links';
+import { Terminal as XTerm } from '@xterm/xterm';
+import { forwardRef, memo, useEffect, useImperativeHandle, useRef } from 'react';
+import type { Theme } from '~/lib/stores/theme';
+import { createScopedLogger } from '~/utils/logger';
+import { getTerminalTheme } from './theme';
 
-const logger = createScopedLogger("Terminal");
+const logger = createScopedLogger('Terminal');
 
 export interface TerminalRef {
   reloadStyles: () => void;
@@ -29,10 +23,7 @@ export interface TerminalProps {
 
 export const Terminal = memo(
   forwardRef<TerminalRef, TerminalProps>(
-    (
-      { className, theme, readonly, id, onTerminalReady, onTerminalResize },
-      ref,
-    ) => {
+    ({ className, theme, readonly, id, onTerminalReady, onTerminalResize }, ref) => {
       const terminalElementRef = useRef<HTMLDivElement>(null);
       const terminalRef = useRef<XTerm>();
 
@@ -46,9 +37,9 @@ export const Terminal = memo(
           cursorBlink: true,
           convertEol: true,
           disableStdin: readonly,
-          theme: getTerminalTheme(readonly ? { cursor: "#00000000" } : {}),
+          theme: getTerminalTheme(readonly ? { cursor: '#00000000' } : {}),
           fontSize: 12,
-          fontFamily: "Menlo, courier-new, courier, monospace",
+          fontFamily: 'Menlo, courier-new, courier, monospace',
         });
 
         terminalRef.current = terminal;
@@ -78,9 +69,7 @@ export const Terminal = memo(
         const terminal = terminalRef.current!;
 
         // we render a transparent cursor in case the terminal is readonly
-        terminal.options.theme = getTerminalTheme(
-          readonly ? { cursor: "#00000000" } : {},
-        );
+        terminal.options.theme = getTerminalTheme(readonly ? { cursor: '#00000000' } : {});
 
         terminal.options.disableStdin = readonly;
       }, [theme, readonly]);
@@ -89,9 +78,7 @@ export const Terminal = memo(
         return {
           reloadStyles: () => {
             const terminal = terminalRef.current!;
-            terminal.options.theme = getTerminalTheme(
-              readonly ? { cursor: "#00000000" } : {},
-            );
+            terminal.options.theme = getTerminalTheme(readonly ? { cursor: '#00000000' } : {});
           },
         };
       }, []);

@@ -1,22 +1,22 @@
-import type { IconType } from "react-icons";
+import type { IconType } from 'react-icons';
 
 export type ProviderName =
-  | "AmazonBedrock"
-  | "Cohere"
-  | "Deepseek"
-  | "Google"
-  | "Groq"
-  | "HuggingFace"
-  | "Hyperbolic"
-  | "Mistral"
-  | "OpenRouter"
-  | "Perplexity"
-  | "Together"
-  | "XAI";
+  | 'AmazonBedrock'
+  | 'Cohere'
+  | 'Deepseek'
+  | 'Google'
+  | 'Groq'
+  | 'HuggingFace'
+  | 'Hyperbolic'
+  | 'Mistral'
+  | 'OpenRouter'
+  | 'Perplexity'
+  | 'Together'
+  | 'XAI';
 
 export type ServiceStatus = {
   provider: ProviderName;
-  status: "operational" | "degraded" | "down";
+  status: 'operational' | 'degraded' | 'down';
   lastChecked: string;
   statusUrl?: string;
   icon?: IconType;
@@ -49,7 +49,7 @@ export type ApiResponse = {
 };
 
 export type StatusCheckResult = {
-  status: "operational" | "degraded" | "down";
+  status: 'operational' | 'degraded' | 'down';
   message: string;
   incidents: string[];
 };

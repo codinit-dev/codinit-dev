@@ -1,19 +1,15 @@
-import { memo, useMemo } from "react";
-import ReactMarkdown, { type Components } from "react-markdown";
-import type { BundledLanguage } from "shiki";
-import { createScopedLogger } from "~/utils/logger";
-import {
-  rehypePlugins,
-  remarkPlugins,
-  allowedHTMLElements,
-} from "~/utils/markdown";
-import { Artifact } from "./Artifact";
-import { CodeBlock } from "./CodeBlock";
+import { memo, useMemo } from 'react';
+import ReactMarkdown, { type Components } from 'react-markdown';
+import type { BundledLanguage } from 'shiki';
+import { createScopedLogger } from '~/utils/logger';
+import { rehypePlugins, remarkPlugins, allowedHTMLElements } from '~/utils/markdown';
+import { Artifact } from './Artifact';
+import { CodeBlock } from './CodeBlock';
 
-import styles from "./Markdown.module.scss";
-import ThoughtBox from "./ThoughtBox";
+import styles from './Markdown.module.scss';
+import ThoughtBox from './ThoughtBox';
 
-const logger = createScopedLogger("MarkdownComponent");
+const logger = createScopedLogger('MarkdownComponent');
 
 interface MarkdownProps {
   children: string;
@@ -21,75 +17,66 @@ interface MarkdownProps {
   limitedMarkdown?: boolean;
 }
 
-export const Markdown = memo(
-  ({ children, html = false, limitedMarkdown = false }: MarkdownProps) => {
-    logger.trace("Render");
+export const Markdown = memo(({ children, html = false, limitedMarkdown = false }: MarkdownProps) => {
+  logger.trace('Render');
 
-    const components = useMemo(() => {
-      return {
-        div: ({ className, children, node, ...props }) => {
-          if (className?.includes("__codinitArtifact__")) {
-            const messageId = node?.properties.dataMessageId as string;
+  const components = useMemo(() => {
+    return {
+      div: ({ className, children, node, ...props }) => {
+        if (className?.includes('__codinitArtifact__')) {
+          const messageId = node?.properties.dataMessageId as string;
 
-            if (!messageId) {
-              logger.error(`Invalid message id ${messageId}`);
-            }
-
-            return <Artifact messageId={messageId} />;
+          if (!messageId) {
+            logger.error(`Invalid message id ${messageId}`);
           }
 
-          if (className?.includes("__codinitThought__")) {
-            return <ThoughtBox title="Thought process">{children}</ThoughtBox>;
-          }
+          return <Artifact messageId={messageId} />;
+        }
 
-          return (
-            <div className={className} {...props}>
-              {children}
-            </div>
-          );
-        },
-        pre: (props) => {
-          const { children, node, ...rest } = props;
+        if (className?.includes('__codinitThought__')) {
+          return <ThoughtBox title="Thought process">{children}</ThoughtBox>;
+        }
 
-          const [firstChild] = node?.children ?? [];
+        return (
+          <div className={className} {...props}>
+            {children}
+          </div>
+        );
+      },
+      pre: (props) => {
+        const { children, node, ...rest } = props;
 
-          if (
-            firstChild &&
-            firstChild.type === "element" &&
-            firstChild.tagName === "code" &&
-            firstChild.children[0].type === "text"
-          ) {
-            const { className, ...rest } = firstChild.properties;
-            const [, language = "plaintext"] =
-              /language-(\w+)/.exec(String(className) || "") ?? [];
+        const [firstChild] = node?.children ?? [];
 
-            return (
-              <CodeBlock
-                code={firstChild.children[0].value}
-                language={language as BundledLanguage}
-                {...rest}
-              />
-            );
-          }
+        if (
+          firstChild &&
+          firstChild.type === 'element' &&
+          firstChild.tagName === 'code' &&
+          firstChild.children[0].type === 'text'
+        ) {
+          const { className, ...rest } = firstChild.properties;
+          const [, language = 'plaintext'] = /language-(\w+)/.exec(String(className) || '') ?? [];
 
-          return <pre {...rest}>{children}</pre>;
-        },
-      } satisfies Components;
-    }, []);
+          return <CodeBlock code={firstChild.children[0].value} language={language as BundledLanguage} {...rest} />;
+        }
 
-    return (
-      <ReactMarkdown
-        allowedElements={allowedHTMLElements}
-        className={styles.MarkdownContent}
-        components={components}
-        remarkPlugins={remarkPlugins(limitedMarkdown)}
-        rehypePlugins={rehypePlugins(html)}
-      >
-        {stripCodeFenceFromArtifact(children)}
-      </ReactMarkdown>
-    );
-  },
-);
+        return <pre {...rest}>{children}</pre>;
+      },
+    } satisfies Components;
+  }, []);
+
+  return (
+    <ReactMarkdown
+      allowedElements={allowedHTMLElements}
+      className={styles.MarkdownContent}
+      components={components}
+      remarkPlugins={remarkPlugins(limitedMarkdown)}
+      rehypePlugins={rehypePlugins(html)}
+    >
+      {stripCodeFenceFromArtifact(children)}
+    </ReactMarkdown>
+  );
+});
 
 /**
  * Removes code fence markers (```) surrounding an artifact element while preserving the artifact content.
@@ -111,14 +98,12 @@ export const Markdown = memo(
  * - Safely handles edge cases like empty input or artifacts at start/end of content
  */
 export const stripCodeFenceFromArtifact = (content: string) => {
-  if (!content || !content.includes("__codinitArtifact__")) {
+  if (!content || !content.includes('__codinitArtifact__')) {
     return content;
   }
 
-  const lines = content.split("\n");
-  const artifactLineIndex = lines.findIndex((line) =>
-    line.includes("__codinitArtifact__"),
-  );
+  const lines = content.split('\n');
+  const artifactLineIndex = lines.findIndex((line) => line.includes('__codinitArtifact__'));
 
   // Return original content if artifact line not found
   if (artifactLineIndex === -1) {
@@ -126,19 +111,13 @@ export const stripCodeFenceFromArtifact = (content: string) => {
   }
 
   // Check previous line for code fence
-  if (
-    artifactLineIndex > 0 &&
-    lines[artifactLineIndex - 1]?.trim().match(/^```\w*$/)
-  ) {
-    lines[artifactLineIndex - 1] = "";
+  if (artifactLineIndex > 0 && lines[artifactLineIndex - 1]?.trim().match(/^```\w*$/)) {
+    lines[artifactLineIndex - 1] = '';
   }
 
-  if (
-    artifactLineIndex < lines.length - 1 &&
-    lines[artifactLineIndex + 1]?.trim().match(/^```$/)
-  ) {
-    lines[artifactLineIndex + 1] = "";
+  if (artifactLineIndex < lines.length - 1 && lines[artifactLineIndex + 1]?.trim().match(/^```$/)) {
+    lines[artifactLineIndex + 1] = '';
   }
 
-  return lines.join("\n");
+  return lines.join('\n');
 };

@@ -1,8 +1,8 @@
-import { useState } from "react";
-import type { ProviderInfo } from "~/types/model";
-import { createScopedLogger } from "~/utils/logger";
+import { useState } from 'react';
+import type { ProviderInfo } from '~/types/model';
+import { createScopedLogger } from '~/utils/logger';
 
-const logger = createScopedLogger("usePromptEnhancement");
+const logger = createScopedLogger('usePromptEnhancement');
 
 export function usePromptEnhancer() {
   const [enhancingPrompt, setEnhancingPrompt] = useState(false);
@@ -33,8 +33,8 @@ export function usePromptEnhancer() {
       requestBody.apiKeys = apiKeys;
     }
 
-    const response = await fetch("/api/enhancer", {
-      method: "POST",
+    const response = await fetch('/api/enhancer', {
+      method: 'POST',
       body: JSON.stringify(requestBody),
     });
 
@@ -45,11 +45,11 @@ export function usePromptEnhancer() {
     if (reader) {
       const decoder = new TextDecoder();
 
-      let _input = "";
+      let _input = '';
       let _error;
 
       try {
-        setInput("");
+        setInput('');
 
         while (true) {
           const { value, done } = await reader.read();
@@ -60,7 +60,7 @@ export function usePromptEnhancer() {
 
           _input += decoder.decode(value);
 
-          logger.trace("Set input", _input);
+          logger.trace('Set input', _input);
 
           setInput(_input);
         }

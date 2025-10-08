@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { classNames } from "~/utils/classNames";
-import { Progress } from "~/components/ui/Progress";
-import { useToast } from "~/components/ui/use-toast";
-import { useSettings } from "~/lib/hooks/useSettings";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { classNames } from '~/utils/classNames';
+import { Progress } from '~/components/ui/Progress';
+import { useToast } from '~/components/ui/use-toast';
+import { useSettings } from '~/lib/hooks/useSettings';
 
 interface OllamaModelInstallerProps {
   onModelInstalled: () => void;
@@ -25,7 +25,7 @@ interface ModelInfo {
   installedVersion?: string;
   latestVersion?: string;
   needsUpdate?: boolean;
-  status?: "idle" | "installing" | "updating" | "updated" | "error";
+  status?: 'idle' | 'installing' | 'updating' | 'updated' | 'error';
   details?: {
     family: string;
     parameter_size: string;
@@ -35,86 +35,86 @@ interface ModelInfo {
 
 const POPULAR_MODELS: ModelInfo[] = [
   {
-    name: "deepseek-coder:6.7b",
+    name: 'deepseek-coder:6.7b',
     desc: "DeepSeek's code generation model",
-    size: "4.1GB",
-    tags: ["coding", "popular"],
+    size: '4.1GB',
+    tags: ['coding', 'popular'],
   },
   {
-    name: "llama2:7b",
+    name: 'llama2:7b',
     desc: "Meta's Llama 2 (7B parameters)",
-    size: "3.8GB",
-    tags: ["general", "popular"],
+    size: '3.8GB',
+    tags: ['general', 'popular'],
   },
   {
-    name: "mistral:7b",
+    name: 'mistral:7b',
     desc: "Mistral's 7B model",
-    size: "4.1GB",
-    tags: ["general", "popular"],
+    size: '4.1GB',
+    tags: ['general', 'popular'],
   },
   {
-    name: "gemma:7b",
+    name: 'gemma:7b',
     desc: "Google's Gemma model",
-    size: "4.0GB",
-    tags: ["general", "new"],
+    size: '4.0GB',
+    tags: ['general', 'new'],
   },
   {
-    name: "codellama:7b",
+    name: 'codellama:7b',
     desc: "Meta's Code Llama model",
-    size: "4.1GB",
-    tags: ["coding", "popular"],
+    size: '4.1GB',
+    tags: ['coding', 'popular'],
   },
   {
-    name: "neural-chat:7b",
+    name: 'neural-chat:7b',
     desc: "Intel's Neural Chat model",
-    size: "4.1GB",
-    tags: ["chat", "popular"],
+    size: '4.1GB',
+    tags: ['chat', 'popular'],
   },
   {
-    name: "phi:latest",
+    name: 'phi:latest',
     desc: "Microsoft's Phi-2 model",
-    size: "2.7GB",
-    tags: ["small", "fast"],
+    size: '2.7GB',
+    tags: ['small', 'fast'],
   },
   {
-    name: "qwen:7b",
+    name: 'qwen:7b',
     desc: "Alibaba's Qwen model",
-    size: "4.1GB",
-    tags: ["general"],
+    size: '4.1GB',
+    tags: ['general'],
   },
   {
-    name: "solar:10.7b",
+    name: 'solar:10.7b',
     desc: "Upstage's Solar model",
-    size: "6.1GB",
-    tags: ["large", "powerful"],
+    size: '6.1GB',
+    tags: ['large', 'powerful'],
   },
   {
-    name: "openchat:7b",
-    desc: "Open-source chat model",
-    size: "4.1GB",
-    tags: ["chat", "popular"],
+    name: 'openchat:7b',
+    desc: 'Open-source chat model',
+    size: '4.1GB',
+    tags: ['chat', 'popular'],
   },
   {
-    name: "dolphin-phi:2.7b",
-    desc: "Lightweight chat model",
-    size: "1.6GB",
-    tags: ["small", "fast"],
+    name: 'dolphin-phi:2.7b',
+    desc: 'Lightweight chat model',
+    size: '1.6GB',
+    tags: ['small', 'fast'],
   },
   {
-    name: "stable-code:3b",
-    desc: "Lightweight coding model",
-    size: "1.8GB",
-    tags: ["coding", "small"],
+    name: 'stable-code:3b',
+    desc: 'Lightweight coding model',
+    size: '1.8GB',
+    tags: ['coding', 'small'],
   },
 ];
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) {
-    return "0 B";
+    return '0 B';
   }
 
   const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB"];
+  const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
@@ -133,33 +133,29 @@ function OllamaIcon({ className }: { className?: string }) {
   );
 }
 
-export default function OllamaModelInstaller({
-  onModelInstalled,
-}: OllamaModelInstallerProps) {
-  const [modelString, setModelString] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelInstallerProps) {
+  const [modelString, setModelString] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isInstalling, setIsInstalling] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
-  const [installProgress, setInstallProgress] =
-    useState<InstallProgress | null>(null);
+  const [installProgress, setInstallProgress] = useState<InstallProgress | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [models, setModels] = useState<ModelInfo[]>(POPULAR_MODELS);
   const { toast } = useToast();
   const { providers } = useSettings();
 
   // Get base URL from provider settings
-  const baseUrl =
-    providers?.Ollama?.settings?.baseUrl || "http://127.0.0.1:11434";
+  const baseUrl = providers?.Ollama?.settings?.baseUrl || 'http://127.0.0.1:11434';
 
   // Function to check installed models and their versions
   const checkInstalledModels = async () => {
     try {
       const response = await fetch(`${baseUrl}/api/tags`, {
-        method: "GET",
+        method: 'GET',
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch installed models");
+        throw new Error('Failed to fetch installed models');
       }
 
       const data = (await response.json()) as {
@@ -170,9 +166,7 @@ export default function OllamaModelInstaller({
       // Update models with installed versions
       setModels((prevModels) =>
         prevModels.map((model) => {
-          const installed = installedModels.find(
-            (m) => m.name.toLowerCase() === model.name.toLowerCase(),
-          );
+          const installed = installedModels.find((m) => m.name.toLowerCase() === model.name.toLowerCase());
 
           if (installed) {
             return {
@@ -187,7 +181,7 @@ export default function OllamaModelInstaller({
         }),
       );
     } catch (error) {
-      console.error("Error checking installed models:", error);
+      console.error('Error checking installed models:', error);
     }
   };
 
@@ -201,10 +195,10 @@ export default function OllamaModelInstaller({
 
     try {
       await checkInstalledModels();
-      toast("Model versions checked");
+      toast('Model versions checked');
     } catch (err) {
-      console.error("Failed to check model versions:", err);
-      toast("Failed to check model versions");
+      console.error('Failed to check model versions:', err);
+      toast('Failed to check model versions');
     } finally {
       setIsChecking(false);
     }
@@ -212,12 +206,10 @@ export default function OllamaModelInstaller({
 
   const filteredModels = models.filter((model) => {
     const matchesSearch =
-      searchQuery === "" ||
+      searchQuery === '' ||
       model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       model.desc.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTags =
-      selectedTags.length === 0 ||
-      selectedTags.some((tag) => model.tags.includes(tag));
+    const matchesTags = selectedTags.length === 0 || selectedTags.some((tag) => model.tags.includes(tag));
 
     return matchesSearch && matchesTags;
   });
@@ -230,19 +222,19 @@ export default function OllamaModelInstaller({
     try {
       setIsInstalling(true);
       setInstallProgress({
-        status: "Starting download...",
+        status: 'Starting download...',
         progress: 0,
-        downloadedSize: "0 B",
-        totalSize: "Calculating...",
-        speed: "0 B/s",
+        downloadedSize: '0 B',
+        totalSize: 'Calculating...',
+        speed: '0 B/s',
       });
-      setModelString("");
-      setSearchQuery("");
+      setModelString('');
+      setSearchQuery('');
 
       const response = await fetch(`${baseUrl}/api/pull`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name: modelToInstall }),
       });
@@ -254,7 +246,7 @@ export default function OllamaModelInstaller({
       const reader = response.body?.getReader();
 
       if (!reader) {
-        throw new Error("Failed to get response reader");
+        throw new Error('Failed to get response reader');
       }
 
       let lastTime = Date.now();
@@ -268,13 +260,13 @@ export default function OllamaModelInstaller({
         }
 
         const text = new TextDecoder().decode(value);
-        const lines = text.split("\n").filter(Boolean);
+        const lines = text.split('\n').filter(Boolean);
 
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
 
-            if ("status" in data) {
+            if ('status' in data) {
               const currentTime = Date.now();
               const timeDiff = (currentTime - lastTime) / 1000; // Convert to seconds
               const bytesDiff = (data.completed || 0) - lastBytes;
@@ -282,14 +274,9 @@ export default function OllamaModelInstaller({
 
               setInstallProgress({
                 status: data.status,
-                progress:
-                  data.completed && data.total
-                    ? (data.completed / data.total) * 100
-                    : 0,
+                progress: data.completed && data.total ? (data.completed / data.total) * 100 : 0,
                 downloadedSize: formatBytes(data.completed || 0),
-                totalSize: data.total
-                  ? formatBytes(data.total)
-                  : "Calculating...",
+                totalSize: data.total ? formatBytes(data.total) : 'Calculating...',
                 speed: formatSpeed(speed),
               });
 
@@ -297,24 +284,19 @@ export default function OllamaModelInstaller({
               lastBytes = data.completed || 0;
             }
           } catch (err) {
-            console.error("Error parsing progress:", err);
+            console.error('Error parsing progress:', err);
           }
         }
       }
 
-      toast(
-        "Successfully installed " +
-          modelToInstall +
-          ". The model list will refresh automatically.",
-      );
+      toast('Successfully installed ' + modelToInstall + '. The model list will refresh automatically.');
 
       // Ensure we call onModelInstalled after successful installation
       setTimeout(() => {
         onModelInstalled();
       }, 1000);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Unknown error occurred";
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       console.error(`Error installing ${modelToInstall}:`, errorMessage);
       toast(`Failed to install ${modelToInstall}. ${errorMessage}`);
     } finally {
@@ -325,16 +307,12 @@ export default function OllamaModelInstaller({
 
   const handleUpdateModel = async (modelToUpdate: string) => {
     try {
-      setModels((prev) =>
-        prev.map((m) =>
-          m.name === modelToUpdate ? { ...m, status: "updating" } : m,
-        ),
-      );
+      setModels((prev) => prev.map((m) => (m.name === modelToUpdate ? { ...m, status: 'updating' } : m)));
 
       const response = await fetch(`${baseUrl}/api/pull`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name: modelToUpdate }),
       });
@@ -346,7 +324,7 @@ export default function OllamaModelInstaller({
       const reader = response.body?.getReader();
 
       if (!reader) {
-        throw new Error("Failed to get response reader");
+        throw new Error('Failed to get response reader');
       }
 
       let lastTime = Date.now();
@@ -360,13 +338,13 @@ export default function OllamaModelInstaller({
         }
 
         const text = new TextDecoder().decode(value);
-        const lines = text.split("\n").filter(Boolean);
+        const lines = text.split('\n').filter(Boolean);
 
         for (const line of lines) {
           try {
             const data = JSON.parse(line);
 
-            if ("status" in data) {
+            if ('status' in data) {
               const currentTime = Date.now();
               const timeDiff = (currentTime - lastTime) / 1000;
               const bytesDiff = (data.completed || 0) - lastBytes;
@@ -374,14 +352,9 @@ export default function OllamaModelInstaller({
 
               setInstallProgress({
                 status: data.status,
-                progress:
-                  data.completed && data.total
-                    ? (data.completed / data.total) * 100
-                    : 0,
+                progress: data.completed && data.total ? (data.completed / data.total) * 100 : 0,
                 downloadedSize: formatBytes(data.completed || 0),
-                totalSize: data.total
-                  ? formatBytes(data.total)
-                  : "Calculating...",
+                totalSize: data.total ? formatBytes(data.total) : 'Calculating...',
                 speed: formatSpeed(speed),
               });
 
@@ -389,33 +362,26 @@ export default function OllamaModelInstaller({
               lastBytes = data.completed || 0;
             }
           } catch (err) {
-            console.error("Error parsing progress:", err);
+            console.error('Error parsing progress:', err);
           }
         }
       }
 
-      toast("Successfully updated " + modelToUpdate);
+      toast('Successfully updated ' + modelToUpdate);
 
       // Refresh model list after update
       await checkInstalledModels();
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Unknown error occurred";
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       console.error(`Error updating ${modelToUpdate}:`, errorMessage);
       toast(`Failed to update ${modelToUpdate}. ${errorMessage}`);
-      setModels((prev) =>
-        prev.map((m) =>
-          m.name === modelToUpdate ? { ...m, status: "error" } : m,
-        ),
-      );
+      setModels((prev) => prev.map((m) => (m.name === modelToUpdate ? { ...m, status: 'error' } : m)));
     } finally {
       setInstallProgress(null);
     }
   };
 
-  const allTags = Array.from(
-    new Set(POPULAR_MODELS.flatMap((model) => model.tags)),
-  );
+  const allTags = Array.from(new Set(POPULAR_MODELS.flatMap((model) => model.tags)));
 
   return (
     <div className="space-y-6">
@@ -423,23 +389,19 @@ export default function OllamaModelInstaller({
         <div className="flex items-center gap-3">
           <OllamaIcon className="w-8 h-8 text-purple-500" />
           <div>
-            <h3 className="text-lg font-semibold text-codinit-elements-textPrimary">
-              Ollama Models
-            </h3>
-            <p className="text-sm text-codinit-elements-textSecondary mt-1">
-              Install and manage your Ollama models
-            </p>
+            <h3 className="text-lg font-semibold text-codinit-elements-textPrimary">Ollama Models</h3>
+            <p className="text-sm text-codinit-elements-textSecondary mt-1">Install and manage your Ollama models</p>
           </div>
         </div>
         <motion.button
           onClick={handleCheckUpdates}
           disabled={isChecking}
           className={classNames(
-            "px-4 py-2 rounded-lg",
-            "bg-purple-500/10 text-purple-500",
-            "hover:bg-purple-500/20",
-            "transition-all duration-200",
-            "flex items-center gap-2",
+            'px-4 py-2 rounded-lg',
+            'bg-purple-500/10 text-purple-500',
+            'hover:bg-purple-500/20',
+            'transition-all duration-200',
+            'flex items-center gap-2',
           )}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -459,11 +421,11 @@ export default function OllamaModelInstaller({
             <input
               type="text"
               className={classNames(
-                "w-full px-4 py-3 rounded-xl",
-                "bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor",
-                "text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary",
-                "focus:outline-none focus:ring-2 focus:ring-purple-500/30",
-                "transition-all duration-200",
+                'w-full px-4 py-3 rounded-xl',
+                'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
+                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
+                'transition-all duration-200',
               )}
               placeholder="Search models or enter custom model name..."
               value={searchQuery || modelString}
@@ -475,7 +437,7 @@ export default function OllamaModelInstaller({
               disabled={isInstalling}
             />
             <p className="text-sm text-codinit-elements-textSecondary px-1">
-              Browse models at{" "}
+              Browse models at{' '}
               <a
                 href="https://ollama.com/library"
                 target="_blank"
@@ -484,7 +446,7 @@ export default function OllamaModelInstaller({
               >
                 ollama.com/library
                 <div className="i-ph:arrow-square-out text-sm" />
-              </a>{" "}
+              </a>{' '}
               and copy model names to install
             </p>
           </div>
@@ -493,12 +455,12 @@ export default function OllamaModelInstaller({
           onClick={() => handleInstallModel(modelString)}
           disabled={!modelString || isInstalling}
           className={classNames(
-            "rounded-lg px-4 py-2",
-            "bg-purple-500 text-white text-sm",
-            "hover:bg-purple-600",
-            "transition-all duration-200",
-            "flex items-center gap-2",
-            { "opacity-50 cursor-not-allowed": !modelString || isInstalling },
+            'rounded-lg px-4 py-2',
+            'bg-purple-500 text-white text-sm',
+            'hover:bg-purple-600',
+            'transition-all duration-200',
+            'flex items-center gap-2',
+            { 'opacity-50 cursor-not-allowed': !modelString || isInstalling },
           )}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -522,17 +484,13 @@ export default function OllamaModelInstaller({
           <button
             key={tag}
             onClick={() => {
-              setSelectedTags((prev) =>
-                prev.includes(tag)
-                  ? prev.filter((t) => t !== tag)
-                  : [...prev, tag],
-              );
+              setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
             }}
             className={classNames(
-              "px-3 py-1 rounded-full text-xs font-medium transition-all duration-200",
+              'px-3 py-1 rounded-full text-xs font-medium transition-all duration-200',
               selectedTags.includes(tag)
-                ? "bg-purple-500 text-white"
-                : "bg-codinit-elements-background-depth-3 text-codinit-elements-textSecondary hover:bg-codinit-elements-background-depth-4",
+                ? 'bg-purple-500 text-white'
+                : 'bg-codinit-elements-background-depth-3 text-codinit-elements-textSecondary hover:bg-codinit-elements-background-depth-4',
             )}
           >
             {tag}
@@ -545,37 +503,27 @@ export default function OllamaModelInstaller({
           <motion.div
             key={model.name}
             className={classNames(
-              "flex items-start gap-2 p-3 rounded-lg",
-              "bg-codinit-elements-background-depth-3",
-              "hover:bg-codinit-elements-background-depth-4",
-              "transition-all duration-200",
-              "relative group",
+              'flex items-start gap-2 p-3 rounded-lg',
+              'bg-codinit-elements-background-depth-3',
+              'hover:bg-codinit-elements-background-depth-4',
+              'transition-all duration-200',
+              'relative group',
             )}
           >
             <OllamaIcon className="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" />
             <div className="flex-1 space-y-1.5">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-codinit-elements-textPrimary font-mono text-sm">
-                    {model.name}
-                  </p>
-                  <p className="text-xs text-codinit-elements-textSecondary mt-0.5">
-                    {model.desc}
-                  </p>
+                  <p className="text-codinit-elements-textPrimary font-mono text-sm">{model.name}</p>
+                  <p className="text-xs text-codinit-elements-textSecondary mt-0.5">{model.desc}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-codinit-elements-textTertiary">
-                    {model.size}
-                  </span>
+                  <span className="text-xs text-codinit-elements-textTertiary">{model.size}</span>
                   {model.installedVersion && (
                     <div className="mt-0.5 flex flex-col items-end gap-0.5">
-                      <span className="text-xs text-codinit-elements-textTertiary">
-                        v{model.installedVersion}
-                      </span>
+                      <span className="text-xs text-codinit-elements-textTertiary">v{model.installedVersion}</span>
                       {model.needsUpdate && model.latestVersion && (
-                        <span className="text-xs text-purple-500">
-                          v{model.latestVersion} available
-                        </span>
+                        <span className="text-xs text-purple-500">v{model.latestVersion} available</span>
                       )}
                     </div>
                   )}
@@ -598,11 +546,11 @@ export default function OllamaModelInstaller({
                       <motion.button
                         onClick={() => handleUpdateModel(model.name)}
                         className={classNames(
-                          "px-2 py-0.5 rounded-lg text-xs",
-                          "bg-purple-500 text-white",
-                          "hover:bg-purple-600",
-                          "transition-all duration-200",
-                          "flex items-center gap-1",
+                          'px-2 py-0.5 rounded-lg text-xs',
+                          'bg-purple-500 text-white',
+                          'hover:bg-purple-600',
+                          'transition-all duration-200',
+                          'flex items-center gap-1',
                         )}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
@@ -611,19 +559,17 @@ export default function OllamaModelInstaller({
                         Update
                       </motion.button>
                     ) : (
-                      <span className="px-2 py-0.5 rounded-lg text-xs text-green-500 bg-green-500/10">
-                        Up to date
-                      </span>
+                      <span className="px-2 py-0.5 rounded-lg text-xs text-green-500 bg-green-500/10">Up to date</span>
                     )
                   ) : (
                     <motion.button
                       onClick={() => handleInstallModel(model.name)}
                       className={classNames(
-                        "px-2 py-0.5 rounded-lg text-xs",
-                        "bg-purple-500 text-white",
-                        "hover:bg-purple-600",
-                        "transition-all duration-200",
-                        "flex items-center gap-1",
+                        'px-2 py-0.5 rounded-lg text-xs',
+                        'bg-purple-500 text-white',
+                        'hover:bg-purple-600',
+                        'transition-all duration-200',
+                        'flex items-center gap-1',
                       )}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -640,25 +586,15 @@ export default function OllamaModelInstaller({
       </div>
 
       {installProgress && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-2"
-        >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-codinit-elements-textSecondary">
-              {installProgress.status}
-            </span>
+            <span className="text-codinit-elements-textSecondary">{installProgress.status}</span>
             <div className="flex items-center gap-4">
               <span className="text-codinit-elements-textTertiary">
                 {installProgress.downloadedSize} / {installProgress.totalSize}
               </span>
-              <span className="text-codinit-elements-textTertiary">
-                {installProgress.speed}
-              </span>
-              <span className="text-codinit-elements-textSecondary">
-                {Math.round(installProgress.progress)}%
-              </span>
+              <span className="text-codinit-elements-textTertiary">{installProgress.speed}</span>
+              <span className="text-codinit-elements-textSecondary">{Math.round(installProgress.progress)}%</span>
             </div>
           </div>
           <Progress value={installProgress.progress} className="h-1" />

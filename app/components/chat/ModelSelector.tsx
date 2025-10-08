@@ -1,8 +1,8 @@
-import type { ProviderInfo } from "~/types/model";
-import { useEffect, useState, useRef } from "react";
-import type { KeyboardEvent } from "react";
-import type { ModelInfo } from "~/lib/modules/llm/types";
-import { classNames } from "~/utils/classNames";
+import type { ProviderInfo } from '~/types/model';
+import { useEffect, useState, useRef } from 'react';
+import type { KeyboardEvent } from 'react';
+import type { ModelInfo } from '~/lib/modules/llm/types';
+import { classNames } from '~/utils/classNames';
 
 interface ModelSelectorProps {
   model?: string;
@@ -24,13 +24,13 @@ export const ModelSelector = ({
   providerList,
   modelLoading,
 }: ModelSelectorProps) => {
-  const [modelSearchQuery, setModelSearchQuery] = useState("");
+  const [modelSearchQuery, setModelSearchQuery] = useState('');
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
   const [focusedModelIndex, setFocusedModelIndex] = useState(-1);
   const modelSearchInputRef = useRef<HTMLInputElement>(null);
   const modelOptionsRef = useRef<(HTMLDivElement | null)[]>([]);
   const modelDropdownRef = useRef<HTMLDivElement>(null);
-  const [providerSearchQuery, setProviderSearchQuery] = useState("");
+  const [providerSearchQuery, setProviderSearchQuery] = useState('');
   const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
   const [focusedProviderIndex, setFocusedProviderIndex] = useState(-1);
   const providerSearchInputRef = useRef<HTMLInputElement>(null);
@@ -39,26 +39,20 @@ export const ModelSelector = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modelDropdownRef.current &&
-        !modelDropdownRef.current.contains(event.target as Node)
-      ) {
+      if (modelDropdownRef.current && !modelDropdownRef.current.contains(event.target as Node)) {
         setIsModelDropdownOpen(false);
-        setModelSearchQuery("");
+        setModelSearchQuery('');
       }
 
-      if (
-        providerDropdownRef.current &&
-        !providerDropdownRef.current.contains(event.target as Node)
-      ) {
+      if (providerDropdownRef.current && !providerDropdownRef.current.contains(event.target as Node)) {
         setIsProviderDropdownOpen(false);
-        setProviderSearchQuery("");
+        setProviderSearchQuery('');
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const filteredModels = [...modelList]
@@ -99,38 +93,31 @@ export const ModelSelector = ({
     }
 
     switch (e.key) {
-      case "ArrowDown":
+      case 'ArrowDown':
         e.preventDefault();
-        setFocusedModelIndex((prev) =>
-          prev + 1 >= filteredModels.length ? 0 : prev + 1,
-        );
+        setFocusedModelIndex((prev) => (prev + 1 >= filteredModels.length ? 0 : prev + 1));
         break;
-      case "ArrowUp":
+      case 'ArrowUp':
         e.preventDefault();
-        setFocusedModelIndex((prev) =>
-          prev - 1 < 0 ? filteredModels.length - 1 : prev - 1,
-        );
+        setFocusedModelIndex((prev) => (prev - 1 < 0 ? filteredModels.length - 1 : prev - 1));
         break;
-      case "Enter":
+      case 'Enter':
         e.preventDefault();
 
-        if (
-          focusedModelIndex >= 0 &&
-          focusedModelIndex < filteredModels.length
-        ) {
+        if (focusedModelIndex >= 0 && focusedModelIndex < filteredModels.length) {
           const selectedModel = filteredModels[focusedModelIndex];
           setModel?.(selectedModel.name);
           setIsModelDropdownOpen(false);
-          setModelSearchQuery("");
+          setModelSearchQuery('');
         }
 
         break;
-      case "Escape":
+      case 'Escape':
         e.preventDefault();
         setIsModelDropdownOpen(false);
-        setModelSearchQuery("");
+        setModelSearchQuery('');
         break;
-      case "Tab":
+      case 'Tab':
         if (!e.shiftKey && focusedModelIndex === filteredModels.length - 1) {
           setIsModelDropdownOpen(false);
         }
@@ -145,33 +132,24 @@ export const ModelSelector = ({
     }
 
     switch (e.key) {
-      case "ArrowDown":
+      case 'ArrowDown':
         e.preventDefault();
-        setFocusedProviderIndex((prev) =>
-          prev + 1 >= filteredProviders.length ? 0 : prev + 1,
-        );
+        setFocusedProviderIndex((prev) => (prev + 1 >= filteredProviders.length ? 0 : prev + 1));
         break;
-      case "ArrowUp":
+      case 'ArrowUp':
         e.preventDefault();
-        setFocusedProviderIndex((prev) =>
-          prev - 1 < 0 ? filteredProviders.length - 1 : prev - 1,
-        );
+        setFocusedProviderIndex((prev) => (prev - 1 < 0 ? filteredProviders.length - 1 : prev - 1));
         break;
-      case "Enter":
+      case 'Enter':
         e.preventDefault();
 
-        if (
-          focusedProviderIndex >= 0 &&
-          focusedProviderIndex < filteredProviders.length
-        ) {
+        if (focusedProviderIndex >= 0 && focusedProviderIndex < filteredProviders.length) {
           const selectedProvider = filteredProviders[focusedProviderIndex];
 
           if (setProvider) {
             setProvider(selectedProvider);
 
-            const firstModel = modelList.find(
-              (m) => m.provider === selectedProvider.name,
-            );
+            const firstModel = modelList.find((m) => m.provider === selectedProvider.name);
 
             if (firstModel && setModel) {
               setModel(firstModel.name);
@@ -179,20 +157,17 @@ export const ModelSelector = ({
           }
 
           setIsProviderDropdownOpen(false);
-          setProviderSearchQuery("");
+          setProviderSearchQuery('');
         }
 
         break;
-      case "Escape":
+      case 'Escape':
         e.preventDefault();
         setIsProviderDropdownOpen(false);
-        setProviderSearchQuery("");
+        setProviderSearchQuery('');
         break;
-      case "Tab":
-        if (
-          !e.shiftKey &&
-          focusedProviderIndex === filteredProviders.length - 1
-        ) {
+      case 'Tab':
+        if (!e.shiftKey && focusedProviderIndex === filteredProviders.length - 1) {
           setIsProviderDropdownOpen(false);
         }
 
@@ -203,18 +178,15 @@ export const ModelSelector = ({
   useEffect(() => {
     if (focusedModelIndex >= 0 && modelOptionsRef.current[focusedModelIndex]) {
       modelOptionsRef.current[focusedModelIndex]?.scrollIntoView({
-        block: "nearest",
+        block: 'nearest',
       });
     }
   }, [focusedModelIndex]);
 
   useEffect(() => {
-    if (
-      focusedProviderIndex >= 0 &&
-      providerOptionsRef.current[focusedProviderIndex]
-    ) {
+    if (focusedProviderIndex >= 0 && providerOptionsRef.current[focusedProviderIndex]) {
       providerOptionsRef.current[focusedProviderIndex]?.scrollIntoView({
-        block: "nearest",
+        block: 'nearest',
       });
     }
   }, [focusedProviderIndex]);
@@ -228,9 +200,7 @@ export const ModelSelector = ({
       const firstEnabledProvider = providerList[0];
       setProvider?.(firstEnabledProvider);
 
-      const firstModel = modelList.find(
-        (m) => m.provider === firstEnabledProvider.name,
-      );
+      const firstModel = modelList.find((m) => m.provider === firstEnabledProvider.name);
 
       if (firstModel) {
         setModel?.(firstModel.name);
@@ -242,8 +212,8 @@ export const ModelSelector = ({
     return (
       <div className="mb-2 p-4 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-prompt-background text-codinit-elements-textPrimary">
         <p className="text-center">
-          No providers are currently enabled. Please enable at least one
-          provider in the settings to start using the chat.
+          No providers are currently enabled. Please enable at least one provider in the settings to start using the
+          chat.
         </p>
       </div>
     );
@@ -252,24 +222,18 @@ export const ModelSelector = ({
   return (
     <div className="flex gap-2 flex-col sm:flex-row">
       {/* Provider Combobox */}
-      <div
-        className="relative flex w-full"
-        onKeyDown={handleProviderKeyDown}
-        ref={providerDropdownRef}
-      >
+      <div className="relative flex w-full" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
         <div
           className={classNames(
-            "w-full p-2 rounded-lg border border-codinit-elements-borderColor",
-            "bg-codinit-elements-prompt-background text-codinit-elements-textPrimary",
-            "focus-within:outline-none focus-within:ring-2 focus-within:ring-codinit-elements-focus",
-            "transition-all cursor-pointer",
-            isProviderDropdownOpen
-              ? "ring-2 ring-codinit-elements-focus"
-              : undefined,
+            'w-full p-2 rounded-lg border border-codinit-elements-borderColor',
+            'bg-codinit-elements-prompt-background text-codinit-elements-textPrimary',
+            'focus-within:outline-none focus-within:ring-2 focus-within:ring-codinit-elements-focus',
+            'transition-all cursor-pointer',
+            isProviderDropdownOpen ? 'ring-2 ring-codinit-elements-focus' : undefined,
           )}
           onClick={() => setIsProviderDropdownOpen(!isProviderDropdownOpen)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
+            if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               setIsProviderDropdownOpen(!isProviderDropdownOpen);
             }
@@ -281,13 +245,11 @@ export const ModelSelector = ({
           tabIndex={0}
         >
           <div className="flex items-center justify-between">
-            <div className="truncate">
-              {provider?.name || "Select provider"}
-            </div>
+            <div className="truncate">{provider?.name || 'Select provider'}</div>
             <div
               className={classNames(
-                "i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary opacity-75",
-                isProviderDropdownOpen ? "rotate-180" : undefined,
+                'i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary opacity-75',
+                isProviderDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
           </div>
@@ -308,11 +270,11 @@ export const ModelSelector = ({
                   onChange={(e) => setProviderSearchQuery(e.target.value)}
                   placeholder="Search providers..."
                   className={classNames(
-                    "w-full pl-2 py-1.5 rounded-md text-sm",
-                    "bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor",
-                    "text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary",
-                    "focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus",
-                    "transition-all",
+                    'w-full pl-2 py-1.5 rounded-md text-sm',
+                    'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
+                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary',
+                    'focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus',
+                    'transition-all',
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
@@ -326,24 +288,22 @@ export const ModelSelector = ({
 
             <div
               className={classNames(
-                "max-h-60 overflow-y-auto",
-                "sm:scrollbar-none",
-                "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2",
-                "[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor",
-                "[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColorHover",
-                "[&::-webkit-scrollbar-thumb]:rounded-full",
-                "[&::-webkit-scrollbar-track]:bg-codinit-elements-background-depth-2",
-                "[&::-webkit-scrollbar-track]:rounded-full",
-                "sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5",
-                "sm:hover:[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50",
-                "sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-codinit-elements-borderColor",
-                "sm:[&::-webkit-scrollbar-track]:bg-transparent",
+                'max-h-60 overflow-y-auto',
+                'sm:scrollbar-none',
+                '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
+                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColorHover',
+                '[&::-webkit-scrollbar-thumb]:rounded-full',
+                '[&::-webkit-scrollbar-track]:bg-codinit-elements-background-depth-2',
+                '[&::-webkit-scrollbar-track]:rounded-full',
+                'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
+                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
+                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-codinit-elements-borderColor',
+                'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
               {filteredProviders.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">
-                  No providers found
-                </div>
+                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No providers found</div>
               ) : (
                 filteredProviders.map((providerOption, index) => (
                   <div
@@ -352,17 +312,14 @@ export const ModelSelector = ({
                     role="option"
                     aria-selected={provider?.name === providerOption.name}
                     className={classNames(
-                      "px-3 py-2 text-sm cursor-pointer",
-                      "hover:bg-codinit-elements-background-depth-3",
-                      "text-codinit-elements-textPrimary",
-                      "outline-none",
-                      provider?.name === providerOption.name ||
-                        focusedProviderIndex === index
-                        ? "bg-codinit-elements-background-depth-2"
+                      'px-3 py-2 text-sm cursor-pointer',
+                      'hover:bg-codinit-elements-background-depth-3',
+                      'text-codinit-elements-textPrimary',
+                      'outline-none',
+                      provider?.name === providerOption.name || focusedProviderIndex === index
+                        ? 'bg-codinit-elements-background-depth-2'
                         : undefined,
-                      focusedProviderIndex === index
-                        ? "ring-1 ring-inset ring-codinit-elements-focus"
-                        : undefined,
+                      focusedProviderIndex === index ? 'ring-1 ring-inset ring-codinit-elements-focus' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -370,9 +327,7 @@ export const ModelSelector = ({
                       if (setProvider) {
                         setProvider(providerOption);
 
-                        const firstModel = modelList.find(
-                          (m) => m.provider === providerOption.name,
-                        );
+                        const firstModel = modelList.find((m) => m.provider === providerOption.name);
 
                         if (firstModel && setModel) {
                           setModel(firstModel.name);
@@ -380,7 +335,7 @@ export const ModelSelector = ({
                       }
 
                       setIsProviderDropdownOpen(false);
-                      setProviderSearchQuery("");
+                      setProviderSearchQuery('');
                     }}
                     tabIndex={focusedProviderIndex === index ? 0 : -1}
                   >
@@ -394,24 +349,18 @@ export const ModelSelector = ({
       </div>
 
       {/* Model Combobox */}
-      <div
-        className="relative flex w-full min-w-[70%]"
-        onKeyDown={handleModelKeyDown}
-        ref={modelDropdownRef}
-      >
+      <div className="relative flex w-full min-w-[70%]" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
         <div
           className={classNames(
-            "w-full p-2 rounded-lg border border-codinit-elements-borderColor",
-            "bg-codinit-elements-prompt-background text-codinit-elements-textPrimary",
-            "focus-within:outline-none focus-within:ring-2 focus-within:ring-codinit-elements-focus",
-            "transition-all cursor-pointer",
-            isModelDropdownOpen
-              ? "ring-2 ring-codinit-elements-focus"
-              : undefined,
+            'w-full p-2 rounded-lg border border-codinit-elements-borderColor',
+            'bg-codinit-elements-prompt-background text-codinit-elements-textPrimary',
+            'focus-within:outline-none focus-within:ring-2 focus-within:ring-codinit-elements-focus',
+            'transition-all cursor-pointer',
+            isModelDropdownOpen ? 'ring-2 ring-codinit-elements-focus' : undefined,
           )}
           onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
+            if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               setIsModelDropdownOpen(!isModelDropdownOpen);
             }
@@ -423,13 +372,11 @@ export const ModelSelector = ({
           tabIndex={0}
         >
           <div className="flex items-center justify-between">
-            <div className="truncate">
-              {modelList.find((m) => m.name === model)?.label || "Select model"}
-            </div>
+            <div className="truncate">{modelList.find((m) => m.name === model)?.label || 'Select model'}</div>
             <div
               className={classNames(
-                "i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary opacity-75",
-                isModelDropdownOpen ? "rotate-180" : undefined,
+                'i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary opacity-75',
+                isModelDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
           </div>
@@ -450,11 +397,11 @@ export const ModelSelector = ({
                   onChange={(e) => setModelSearchQuery(e.target.value)}
                   placeholder="Search models..."
                   className={classNames(
-                    "w-full pl-2 py-1.5 rounded-md text-sm",
-                    "bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor",
-                    "text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary",
-                    "focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus",
-                    "transition-all",
+                    'w-full pl-2 py-1.5 rounded-md text-sm',
+                    'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
+                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary',
+                    'focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus',
+                    'transition-all',
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
@@ -468,28 +415,24 @@ export const ModelSelector = ({
 
             <div
               className={classNames(
-                "max-h-60 overflow-y-auto",
-                "sm:scrollbar-none",
-                "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2",
-                "[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor",
-                "[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColorHover",
-                "[&::-webkit-scrollbar-thumb]:rounded-full",
-                "[&::-webkit-scrollbar-track]:bg-codinit-elements-background-depth-2",
-                "[&::-webkit-scrollbar-track]:rounded-full",
-                "sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5",
-                "sm:hover:[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50",
-                "sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-codinit-elements-borderColor",
-                "sm:[&::-webkit-scrollbar-track]:bg-transparent",
+                'max-h-60 overflow-y-auto',
+                'sm:scrollbar-none',
+                '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
+                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColorHover',
+                '[&::-webkit-scrollbar-thumb]:rounded-full',
+                '[&::-webkit-scrollbar-track]:bg-codinit-elements-background-depth-2',
+                '[&::-webkit-scrollbar-track]:rounded-full',
+                'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
+                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
+                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-codinit-elements-borderColor',
+                'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
-              {modelLoading === "all" || modelLoading === provider?.name ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">
-                  Loading...
-                </div>
+              {modelLoading === 'all' || modelLoading === provider?.name ? (
+                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">Loading...</div>
               ) : filteredModels.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">
-                  No models found
-                </div>
+                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No models found</div>
               ) : (
                 filteredModels.map((modelOption, index) => (
                   <div
@@ -498,22 +441,20 @@ export const ModelSelector = ({
                     role="option"
                     aria-selected={model === modelOption.name}
                     className={classNames(
-                      "px-3 py-2 text-sm cursor-pointer",
-                      "hover:bg-codinit-elements-background-depth-3",
-                      "text-codinit-elements-textPrimary",
-                      "outline-none",
+                      'px-3 py-2 text-sm cursor-pointer',
+                      'hover:bg-codinit-elements-background-depth-3',
+                      'text-codinit-elements-textPrimary',
+                      'outline-none',
                       model === modelOption.name || focusedModelIndex === index
-                        ? "bg-codinit-elements-background-depth-2"
+                        ? 'bg-codinit-elements-background-depth-2'
                         : undefined,
-                      focusedModelIndex === index
-                        ? "ring-1 ring-inset ring-codinit-elements-focus"
-                        : undefined,
+                      focusedModelIndex === index ? 'ring-1 ring-inset ring-codinit-elements-focus' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
                       setModel?.(modelOption.name);
                       setIsModelDropdownOpen(false);
-                      setModelSearchQuery("");
+                      setModelSearchQuery('');
                     }}
                     tabIndex={focusedModelIndex === index ? 0 : -1}
                   >

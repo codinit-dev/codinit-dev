@@ -1,6 +1,6 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { classNames } from "~/utils/classNames";
-import type { DeployAlert } from "~/types/actions";
+import { AnimatePresence, motion } from 'framer-motion';
+import { classNames } from '~/utils/classNames';
+import type { DeployAlert } from '~/types/actions';
 
 interface DeployAlertProps {
   alert: DeployAlert;
@@ -8,21 +8,8 @@ interface DeployAlertProps {
   postMessage: (message: string) => void;
 }
 
-export default function DeployChatAlert({
-  alert,
-  clearAlert,
-  postMessage,
-}: DeployAlertProps) {
-  const {
-    type,
-    title,
-    description,
-    content,
-    url,
-    stage,
-    buildStatus,
-    deployStatus,
-  } = alert;
+export default function DeployChatAlert({ alert, clearAlert, postMessage }: DeployAlertProps) {
+  const { type, title, description, content, url, stage, buildStatus, deployStatus } = alert;
 
   // Determine if we should show the deployment progress
   const showProgress = stage && (buildStatus || deployStatus);
@@ -46,12 +33,12 @@ export default function DeployChatAlert({
           >
             <div
               className={classNames(
-                "text-xl",
-                type === "success"
-                  ? "i-ph:check-circle-duotone text-codinit-elements-icon-success"
-                  : type === "error"
-                    ? "i-ph:warning-duotone text-codinit-elements-button-danger-text"
-                    : "i-ph:info-duotone text-codinit-elements-loader-progress",
+                'text-xl',
+                type === 'success'
+                  ? 'i-ph:check-circle-duotone text-codinit-elements-icon-success'
+                  : type === 'error'
+                    ? 'i-ph:warning-duotone text-codinit-elements-button-danger-text'
+                    : 'i-ph:info-duotone text-codinit-elements-loader-progress',
               )}
             ></div>
           </motion.div>
@@ -81,21 +68,21 @@ export default function DeployChatAlert({
                     <div className="flex items-center">
                       <div
                         className={classNames(
-                          "w-6 h-6 rounded-full flex items-center justify-center",
-                          buildStatus === "running"
-                            ? "bg-codinit-elements-loader-progress"
-                            : buildStatus === "complete"
-                              ? "bg-codinit-elements-icon-success"
-                              : buildStatus === "failed"
-                                ? "bg-codinit-elements-button-danger-background"
-                                : "bg-codinit-elements-textTertiary",
+                          'w-6 h-6 rounded-full flex items-center justify-center',
+                          buildStatus === 'running'
+                            ? 'bg-codinit-elements-loader-progress'
+                            : buildStatus === 'complete'
+                              ? 'bg-codinit-elements-icon-success'
+                              : buildStatus === 'failed'
+                                ? 'bg-codinit-elements-button-danger-background'
+                                : 'bg-codinit-elements-textTertiary',
                         )}
                       >
-                        {buildStatus === "running" ? (
+                        {buildStatus === 'running' ? (
                           <div className="i-svg-spinners:90-ring-with-bg text-white text-xs"></div>
-                        ) : buildStatus === "complete" ? (
+                        ) : buildStatus === 'complete' ? (
                           <div className="i-ph:check text-white text-xs"></div>
-                        ) : buildStatus === "failed" ? (
+                        ) : buildStatus === 'failed' ? (
                           <div className="i-ph:x text-white text-xs"></div>
                         ) : (
                           <span className="text-white text-xs">1</span>
@@ -107,10 +94,10 @@ export default function DeployChatAlert({
                     {/* Connector Line */}
                     <div
                       className={classNames(
-                        "h-0.5 w-8",
-                        buildStatus === "complete"
-                          ? "bg-codinit-elements-icon-success"
-                          : "bg-codinit-elements-textTertiary",
+                        'h-0.5 w-8',
+                        buildStatus === 'complete'
+                          ? 'bg-codinit-elements-icon-success'
+                          : 'bg-codinit-elements-textTertiary',
                       )}
                     ></div>
 
@@ -118,21 +105,21 @@ export default function DeployChatAlert({
                     <div className="flex items-center">
                       <div
                         className={classNames(
-                          "w-6 h-6 rounded-full flex items-center justify-center",
-                          deployStatus === "running"
-                            ? "bg-codinit-elements-loader-progress"
-                            : deployStatus === "complete"
-                              ? "bg-codinit-elements-icon-success"
-                              : deployStatus === "failed"
-                                ? "bg-codinit-elements-button-danger-background"
-                                : "bg-codinit-elements-textTertiary",
+                          'w-6 h-6 rounded-full flex items-center justify-center',
+                          deployStatus === 'running'
+                            ? 'bg-codinit-elements-loader-progress'
+                            : deployStatus === 'complete'
+                              ? 'bg-codinit-elements-icon-success'
+                              : deployStatus === 'failed'
+                                ? 'bg-codinit-elements-button-danger-background'
+                                : 'bg-codinit-elements-textTertiary',
                         )}
                       >
-                        {deployStatus === "running" ? (
+                        {deployStatus === 'running' ? (
                           <div className="i-svg-spinners:90-ring-with-bg text-white text-xs"></div>
-                        ) : deployStatus === "complete" ? (
+                        ) : deployStatus === 'complete' ? (
                           <div className="i-ph:check text-white text-xs"></div>
-                        ) : deployStatus === "failed" ? (
+                        ) : deployStatus === 'failed' ? (
                           <div className="i-ph:x text-white text-xs"></div>
                         ) : (
                           <span className="text-white text-xs">2</span>
@@ -149,7 +136,7 @@ export default function DeployChatAlert({
                   {content}
                 </div>
               )}
-              {url && type === "success" && (
+              {url && type === 'success' && (
                 <div className="mt-2">
                   <a
                     href={url}
@@ -171,21 +158,19 @@ export default function DeployChatAlert({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <div className={classNames("flex gap-2")}>
-                {type === "error" && (
+              <div className={classNames('flex gap-2')}>
+                {type === 'error' && (
                   <button
                     onClick={() =>
-                      postMessage(
-                        `*Fix this deployment error*\n\`\`\`\n${content || description}\n\`\`\`\n`,
-                      )
+                      postMessage(`*Fix this deployment error*\n\`\`\`\n${content || description}\n\`\`\`\n`)
                     }
                     className={classNames(
                       `px-2 py-1.5 rounded-md text-sm font-medium`,
-                      "bg-codinit-elements-button-primary-background",
-                      "hover:bg-codinit-elements-button-primary-backgroundHover",
-                      "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-danger-background",
-                      "text-codinit-elements-button-primary-text",
-                      "flex items-center gap-1.5",
+                      'bg-codinit-elements-button-primary-background',
+                      'hover:bg-codinit-elements-button-primary-backgroundHover',
+                      'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-danger-background',
+                      'text-codinit-elements-button-primary-text',
+                      'flex items-center gap-1.5',
                     )}
                   >
                     <div className="i-ph:chat-circle-duotone"></div>
@@ -196,10 +181,10 @@ export default function DeployChatAlert({
                   onClick={clearAlert}
                   className={classNames(
                     `px-2 py-1.5 rounded-md text-sm font-medium`,
-                    "bg-codinit-elements-button-secondary-background",
-                    "hover:bg-codinit-elements-button-secondary-backgroundHover",
-                    "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-secondary-background",
-                    "text-codinit-elements-button-secondary-text",
+                    'bg-codinit-elements-button-secondary-background',
+                    'hover:bg-codinit-elements-button-secondary-backgroundHover',
+                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-secondary-background',
+                    'text-codinit-elements-button-secondary-text',
                   )}
                 >
                   Dismiss

@@ -1,4 +1,4 @@
-import type { PromptOptions } from "~/lib/common/prompt-library";
+import type { PromptOptions } from '~/lib/common/prompt-library';
 
 export default (options: PromptOptions) => {
   const { cwd, allowedHtmlElements, supabase } = options;
@@ -29,8 +29,8 @@ You are codinit, an expert AI assistant and exceptional senior software develope
         ? 'You are not connected to Supabase. Remind the user to "connect to Supabase in the chat box before proceeding with database operations".'
         : !supabase.hasSelectedProject
           ? 'Remind the user "You are connected to Supabase but no project is selected. Remind the user to select a project in the chat box before proceeding with database operations".'
-          : ""
-      : ""
+          : ''
+      : ''
   } 
   IMPORTANT: Create a .env file if it doesnt exist and include the following variables:
   ${
@@ -40,7 +40,7 @@ You are codinit, an expert AI assistant and exceptional senior software develope
     supabase?.credentials?.anonKey
       ? `VITE_SUPABASE_URL=${supabase.credentials.supabaseUrl}
       VITE_SUPABASE_ANON_KEY=${supabase.credentials.anonKey}`
-      : "SUPABASE_URL=your_supabase_url\nSUPABASE_ANON_KEY=your_supabase_anon_key"
+      : 'SUPABASE_URL=your_supabase_url\nSUPABASE_ANON_KEY=your_supabase_anon_key'
   }
   NEVER modify any Supabase configuration or \`.env\` files.
 
@@ -220,7 +220,7 @@ You are codinit, an expert AI assistant and exceptional senior software develope
 </code_formatting_info>
 
 <message_formatting_info>
-  Available HTML elements: ${allowedHtmlElements.join(", ")}
+  Available HTML elements: ${allowedHtmlElements.join(', ')}
 </message_formatting_info>
 
 <chain_of_thought_instructions>

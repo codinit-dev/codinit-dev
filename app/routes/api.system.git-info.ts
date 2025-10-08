@@ -1,8 +1,4 @@
-import {
-  json,
-  type LoaderFunction,
-  type LoaderFunctionArgs,
-} from "@remix-run/cloudflare";
+import { json, type LoaderFunction, type LoaderFunctionArgs } from '@remix-run/cloudflare';
 
 interface GitInfo {
   local: {
@@ -65,87 +61,70 @@ declare const __GIT_REPO_NAME: string;
  * declare const __GIT_REPO_URL: string;
  */
 
-export const loader: LoaderFunction = async ({
-  request,
-  context,
-}: LoaderFunctionArgs & { context: AppContext }) => {
-  console.log("Git info API called with URL:", request.url);
+export const loader: LoaderFunction = async ({ request, context }: LoaderFunctionArgs & { context: AppContext }) => {
+  console.log('Git info API called with URL:', request.url);
 
   // Handle CORS preflight requests
-  if (request.method === "OPTIONS") {
+  if (request.method === 'OPTIONS') {
     return new Response(null, {
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
     });
   }
 
   const { searchParams } = new URL(request.url);
-  const action = searchParams.get("action");
+  const action = searchParams.get('action');
 
-  console.log("Git info action:", action);
+  console.log('Git info action:', action);
 
-  if (
-    action === "getUser" ||
-    action === "getRepos" ||
-    action === "getOrgs" ||
-    action === "getActivity"
-  ) {
+  if (action === 'getUser' || action === 'getRepos' || action === 'getOrgs' || action === 'getActivity') {
     // Use server-side token instead of client-side token
-    const serverGithubToken =
-      process.env.GITHUB_ACCESS_TOKEN || context.env?.GITHUB_ACCESS_TOKEN;
+    const serverGithubToken = process.env.GITHUB_ACCESS_TOKEN || context.env?.GITHUB_ACCESS_TOKEN;
     const cookieToken = request.headers
-      .get("Cookie")
-      ?.split(";")
-      .find((cookie) => cookie.trim().startsWith("githubToken="))
-      ?.split("=")[1];
+      .get('Cookie')
+      ?.split(';')
+      .find((cookie) => cookie.trim().startsWith('githubToken='))
+      ?.split('=')[1];
 
     // Also check for token in Authorization header
-    const authHeader = request.headers.get("Authorization");
-    const headerToken = authHeader?.startsWith("Bearer ")
-      ? authHeader.substring(7)
-      : null;
+    const authHeader = request.headers.get('Authorization');
+    const headerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
     const token = serverGithubToken || headerToken || cookieToken;
 
     console.log(
-      "Using GitHub token from:",
-      serverGithubToken
-        ? "server env"
-        : headerToken
-          ? "auth header"
-          : cookieToken
-            ? "cookie"
-            : "none",
+      'Using GitHub token from:',
+      serverGithubToken ? 'server env' : headerToken ? 'auth header' : cookieToken ? 'cookie' : 'none',
     );
 
     if (!token) {
-      console.error("No GitHub token available");
+      console.error('No GitHub token available');
       return json(
-        { error: "No GitHub token available" },
+        { error: 'No GitHub token available' },
         {
           status: 401,
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
           },
         },
       );
     }
 
     try {
-      if (action === "getUser") {
-        const response = await fetch("https://api.github.com/user", {
+      if (action === 'getUser') {
+        const response = await fetch('https://api.github.com/user', {
           headers: {
-            Accept: "application/vnd.github.v3+json",
+            Accept: 'application/vnd.github.v3+json',
             Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          console.error("GitHub user API error:", response.status);
+          console.error('GitHub user API error:', response.status);
           throw new Error(`GitHub API error: ${response.status}`);
         }
 
@@ -155,42 +134,37 @@ export const loader: LoaderFunction = async ({
           { user: userData },
           {
             headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
             },
           },
         );
       }
 
-      if (action === "getRepos") {
-        const reposResponse = await fetch(
-          "https://api.github.com/user/repos?per_page=100&sort=updated",
-          {
-            headers: {
-              Accept: "application/vnd.github.v3+json",
-              Authorization: `Bearer ${token}`,
-            },
+      if (action === 'getRepos') {
+        const reposResponse = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', {
+          headers: {
+            Accept: 'application/vnd.github.v3+json',
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         if (!reposResponse.ok) {
-          console.error("GitHub repos API error:", reposResponse.status);
+          console.error('GitHub repos API error:', reposResponse.status);
           throw new Error(`GitHub API error: ${reposResponse.status}`);
         }
 
         const repos = (await reposResponse.json()) as GitHubRepo[];
 
         // Get user's gists
-        const gistsResponse = await fetch("https://api.github.com/gists", {
+        const gistsResponse = await fetch('https://api.github.com/gists', {
           headers: {
-            Accept: "application/vnd.github.v3+json",
+            Accept: 'application/vnd.github.v3+json',
             Authorization: `Bearer ${token}`,
           },
         });
 
-        const gists = gistsResponse.ok
-          ? ((await gistsResponse.json()) as GitHubGist[])
-          : [];
+        const gists = gistsResponse.ok ? ((await gistsResponse.json()) as GitHubGist[]) : [];
 
         // Calculate language statistics
         const languageStats: Record<string, number> = {};
@@ -201,9 +175,8 @@ export const loader: LoaderFunction = async ({
           totalStars += repo.stargazers_count || 0;
           totalForks += repo.forks_count || 0;
 
-          if (repo.language && repo.language !== "null") {
-            languageStats[repo.language] =
-              (languageStats[repo.language] || 0) + 1;
+          if (repo.language && repo.language !== 'null') {
+            languageStats[repo.language] = (languageStats[repo.language] || 0) + 1;
           }
 
           /*
@@ -244,23 +217,23 @@ export const loader: LoaderFunction = async ({
           },
           {
             headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
             },
           },
         );
       }
 
-      if (action === "getOrgs") {
-        const response = await fetch("https://api.github.com/user/orgs", {
+      if (action === 'getOrgs') {
+        const response = await fetch('https://api.github.com/user/orgs', {
           headers: {
-            Accept: "application/vnd.github.v3+json",
+            Accept: 'application/vnd.github.v3+json',
             Authorization: `Bearer ${token}`,
           },
         });
 
         if (!response.ok) {
-          console.error("GitHub orgs API error:", response.status);
+          console.error('GitHub orgs API error:', response.status);
           throw new Error(`GitHub API error: ${response.status}`);
         }
 
@@ -270,46 +243,43 @@ export const loader: LoaderFunction = async ({
           { organizations: orgs },
           {
             headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
             },
           },
         );
       }
 
-      if (action === "getActivity") {
+      if (action === 'getActivity') {
         const username = request.headers
-          .get("Cookie")
-          ?.split(";")
-          .find((cookie) => cookie.trim().startsWith("githubUsername="))
-          ?.split("=")[1];
+          .get('Cookie')
+          ?.split(';')
+          .find((cookie) => cookie.trim().startsWith('githubUsername='))
+          ?.split('=')[1];
 
         if (!username) {
-          console.error("GitHub username not found in cookies");
+          console.error('GitHub username not found in cookies');
           return json(
-            { error: "GitHub username not found in cookies" },
+            { error: 'GitHub username not found in cookies' },
             {
               status: 400,
               headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
               },
             },
           );
         }
 
-        const response = await fetch(
-          `https://api.github.com/users/${username}/events?per_page=30`,
-          {
-            headers: {
-              Accept: "application/vnd.github.v3+json",
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`https://api.github.com/users/${username}/events?per_page=30`, {
+          headers: {
+            Accept: 'application/vnd.github.v3+json',
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         if (!response.ok) {
-          console.error("GitHub activity API error:", response.status);
+          console.error('GitHub activity API error:', response.status);
           throw new Error(`GitHub API error: ${response.status}`);
         }
 
@@ -319,21 +289,21 @@ export const loader: LoaderFunction = async ({
           { recentActivity: events },
           {
             headers: {
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
             },
           },
         );
       }
     } catch (error) {
-      console.error("GitHub API error:", error);
+      console.error('GitHub API error:', error);
       return json(
-        { error: error instanceof Error ? error.message : "Unknown error" },
+        { error: error instanceof Error ? error.message : 'Unknown error' },
         {
           status: 500,
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
           },
         },
       );
@@ -342,31 +312,21 @@ export const loader: LoaderFunction = async ({
 
   const gitInfo: GitInfo = {
     local: {
-      commitHash:
-        typeof __COMMIT_HASH !== "undefined" ? __COMMIT_HASH : "development",
-      branch: typeof __GIT_BRANCH !== "undefined" ? __GIT_BRANCH : "main",
-      commitTime:
-        typeof __GIT_COMMIT_TIME !== "undefined"
-          ? __GIT_COMMIT_TIME
-          : new Date().toISOString(),
-      author:
-        typeof __GIT_AUTHOR !== "undefined" ? __GIT_AUTHOR : "development",
-      email:
-        typeof __GIT_EMAIL !== "undefined" ? __GIT_EMAIL : "development@local",
-      remoteUrl:
-        typeof __GIT_REMOTE_URL !== "undefined" ? __GIT_REMOTE_URL : "local",
-      repoName:
-        typeof __GIT_REPO_NAME !== "undefined"
-          ? __GIT_REPO_NAME
-          : "codinit.dev",
+      commitHash: typeof __COMMIT_HASH !== 'undefined' ? __COMMIT_HASH : 'development',
+      branch: typeof __GIT_BRANCH !== 'undefined' ? __GIT_BRANCH : 'main',
+      commitTime: typeof __GIT_COMMIT_TIME !== 'undefined' ? __GIT_COMMIT_TIME : new Date().toISOString(),
+      author: typeof __GIT_AUTHOR !== 'undefined' ? __GIT_AUTHOR : 'development',
+      email: typeof __GIT_EMAIL !== 'undefined' ? __GIT_EMAIL : 'development@local',
+      remoteUrl: typeof __GIT_REMOTE_URL !== 'undefined' ? __GIT_REMOTE_URL : 'local',
+      repoName: typeof __GIT_REPO_NAME !== 'undefined' ? __GIT_REPO_NAME : 'codinit.dev',
     },
     timestamp: new Date().toISOString(),
   };
 
   return json(gitInfo, {
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     },
   });
 };

@@ -13,18 +13,15 @@ export function cleanStackTrace(stackTrace: string): string {
     const pathRegex = /^https?:\/\/[^\/]+\.webcontainer-api\.io\/(.*?)$/;
     const match = url.match(pathRegex);
 
-    return match?.[1] || "";
+    return match?.[1] || '';
   };
 
   // Split the stack trace into lines and process each line
   return stackTrace
-    .split("\n")
+    .split('\n')
     .map((line) => {
       // Match any URL in the line that contains webcontainer-api.io
-      return line.replace(
-        /(https?:\/\/[^\/]+\.webcontainer-api\.io\/[^\s\)]+)/g,
-        (match) => cleanUrl(match),
-      );
+      return line.replace(/(https?:\/\/[^\/]+\.webcontainer-api\.io\/[^\s\)]+)/g, (match) => cleanUrl(match));
     })
-    .join("\n");
+    .join('\n');
 }

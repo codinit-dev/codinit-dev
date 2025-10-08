@@ -1,10 +1,10 @@
-import type { AppLoadContext } from "@remix-run/cloudflare";
-import { RemixServer } from "@remix-run/react";
-import { isbot } from "isbot";
-import { renderToReadableStream } from "react-dom/server";
-import { renderHeadToString } from "remix-island";
-import { Head } from "./root";
-import { themeStore } from "~/lib/stores/theme";
+import type { AppLoadContext } from '@remix-run/cloudflare';
+import { RemixServer } from '@remix-run/react';
+import { isbot } from 'isbot';
+import { renderToReadableStream } from 'react-dom/server';
+import { renderHeadToString } from 'remix-island';
+import { Head } from './root';
+import { themeStore } from '~/lib/stores/theme';
 
 export default async function handleRequest(
   request: Request,
@@ -15,16 +15,13 @@ export default async function handleRequest(
 ) {
   // await initializeModelList({});
 
-  const readable = await renderToReadableStream(
-    <RemixServer context={remixContext} url={request.url} />,
-    {
-      signal: request.signal,
-      onError(error: unknown) {
-        console.error(error);
-        responseStatusCode = 500;
-      },
+  const readable = await renderToReadableStream(<RemixServer context={remixContext} url={request.url} />, {
+    signal: request.signal,
+    onError(error: unknown) {
+      console.error(error);
+      responseStatusCode = 500;
     },
-  );
+  });
 
   const body = new ReadableStream({
     start(controller) {
@@ -45,11 +42,7 @@ export default async function handleRequest(
           .read()
           .then(({ done, value }) => {
             if (done) {
-              controller.enqueue(
-                new Uint8Array(
-                  new TextEncoder().encode("</div></body></html>"),
-                ),
-              );
+              controller.enqueue(new Uint8Array(new TextEncoder().encode('</div></body></html>')));
               controller.close();
 
               return;
@@ -71,14 +64,14 @@ export default async function handleRequest(
     },
   });
 
-  if (isbot(request.headers.get("user-agent") || "")) {
+  if (isbot(request.headers.get('user-agent') || '')) {
     await readable.allReady;
   }
 
-  responseHeaders.set("Content-Type", "text/html");
+  responseHeaders.set('Content-Type', 'text/html');
 
-  responseHeaders.set("Cross-Origin-Embedder-Policy", "require-corp");
-  responseHeaders.set("Cross-Origin-Opener-Policy", "same-origin");
+  responseHeaders.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  responseHeaders.set('Cross-Origin-Opener-Policy', 'same-origin');
 
   return new Response(body, {
     headers: responseHeaders,

@@ -1,43 +1,39 @@
-import { useSearchParams } from "@remix-run/react";
-import { generateId, type Message } from "ai";
-import ignore from "ignore";
-import { useEffect, useState } from "react";
-import { ClientOnly } from "remix-utils/client-only";
-import { BaseChat } from "~/components/chat/BaseChat";
-import { Chat } from "~/components/chat/Chat.client";
-import { useGit } from "~/lib/hooks/useGit";
-import { useChatHistory } from "~/lib/persistence";
-import {
-  createCommandsMessage,
-  detectProjectCommands,
-  escapecodinitTags,
-} from "~/utils/projectCommands";
-import { LoadingOverlay } from "~/components/ui/LoadingOverlay";
-import { toast } from "react-toastify";
+import { useSearchParams } from '@remix-run/react';
+import { generateId, type Message } from 'ai';
+import ignore from 'ignore';
+import { useEffect, useState } from 'react';
+import { ClientOnly } from 'remix-utils/client-only';
+import { BaseChat } from '~/components/chat/BaseChat';
+import { Chat } from '~/components/chat/Chat.client';
+import { useGit } from '~/lib/hooks/useGit';
+import { useChatHistory } from '~/lib/persistence';
+import { createCommandsMessage, detectProjectCommands, escapecodinitTags } from '~/utils/projectCommands';
+import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
+import { toast } from 'react-toastify';
 
 const IGNORE_PATTERNS = [
-  "node_modules/**",
-  ".git/**",
-  ".github/**",
-  ".vscode/**",
-  "**/*.jpg",
-  "**/*.jpeg",
-  "**/*.png",
-  "dist/**",
-  "build/**",
-  ".next/**",
-  "coverage/**",
-  ".cache/**",
-  ".vscode/**",
-  ".idea/**",
-  "**/*.log",
-  "**/.DS_Store",
-  "**/npm-debug.log*",
-  "**/yarn-debug.log*",
-  "**/yarn-error.log*",
+  'node_modules/**',
+  '.git/**',
+  '.github/**',
+  '.vscode/**',
+  '**/*.jpg',
+  '**/*.jpeg',
+  '**/*.png',
+  'dist/**',
+  'build/**',
+  '.next/**',
+  'coverage/**',
+  '.cache/**',
+  '.vscode/**',
+  '.idea/**',
+  '**/*.log',
+  '**/.DS_Store',
+  '**/npm-debug.log*',
+  '**/yarn-debug.log*',
+  '**/yarn-error.log*',
 
   // Include this so npm install runs much faster '**/*lock.json',
-  "**/*lock.yaml",
+  '**/*lock.yaml',
 ];
 
 export function GitUrlImport() {
@@ -59,10 +55,8 @@ export function GitUrlImport() {
         const { workdir, data } = await gitClone(repoUrl);
 
         if (importChat) {
-          const filePaths = Object.keys(data).filter(
-            (filePath) => !ig.ignores(filePath),
-          );
-          const textDecoder = new TextDecoder("utf-8");
+          const filePaths = Object.keys(data).filter((filePath) => !ig.ignores(filePath));
+          const textDecoder = new TextDecoder('utf-8');
 
           const fileContents = filePaths
             .map((filePath) => {
@@ -70,11 +64,7 @@ export function GitUrlImport() {
               return {
                 path: filePath,
                 content:
-                  encoding === "utf8"
-                    ? content
-                    : content instanceof Uint8Array
-                      ? textDecoder.decode(content)
-                      : "",
+                  encoding === 'utf8' ? content : content instanceof Uint8Array ? textDecoder.decode(content) : '',
               };
             })
             .filter((f) => f.content);
@@ -83,7 +73,7 @@ export function GitUrlImport() {
           const commandsMessage = createCommandsMessage(commands);
 
           const filesMessage: Message = {
-            role: "assistant",
+            role: 'assistant',
             content: `Cloning the repo ${repoUrl} into ${workdir}
 <codinitArtifact id="imported-files" title="Git Cloned Files"  type="bundled">
 ${fileContents
@@ -93,7 +83,7 @@ ${fileContents
 ${escapecodinitTags(file.content)}
 </codinitAction>`,
   )
-  .join("\n")}
+  .join('\n')}
 </codinitArtifact>`,
             id: generateId(),
             createdAt: new Date(),
@@ -103,24 +93,20 @@ ${escapecodinitTags(file.content)}
 
           if (commandsMessage) {
             messages.push({
-              role: "user",
+              role: 'user',
               id: generateId(),
-              content: "Setup the codebase and Start the application",
+              content: 'Setup the codebase and Start the application',
             });
             messages.push(commandsMessage);
           }
 
-          await importChat(
-            `Git Project:${repoUrl.split("/").slice(-1)[0]}`,
-            messages,
-            { gitUrl: repoUrl },
-          );
+          await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
         }
       } catch (error) {
-        console.error("Error during import:", error);
-        toast.error("Failed to import repository");
+        console.error('Error during import:', error);
+        toast.error('Failed to import repository');
         setLoading(false);
-        window.location.href = "/";
+        window.location.href = '/';
 
         return;
       }
@@ -132,18 +118,18 @@ ${escapecodinitTags(file.content)}
       return;
     }
 
-    const url = searchParams.get("url");
+    const url = searchParams.get('url');
 
     if (!url) {
-      window.location.href = "/";
+      window.location.href = '/';
       return;
     }
 
     importRepo(url).catch((error) => {
-      console.error("Error importing repo:", error);
-      toast.error("Failed to import repository");
+      console.error('Error importing repo:', error);
+      toast.error('Failed to import repository');
       setLoading(false);
-      window.location.href = "/";
+      window.location.href = '/';
     });
     setImported(true);
   }, [searchParams, historyReady, gitReady, imported]);
@@ -153,9 +139,7 @@ ${escapecodinitTags(file.content)}
       {() => (
         <>
           <Chat />
-          {loading && (
-            <LoadingOverlay message="Please wait while we clone the repository..." />
-          )}
+          {loading && <LoadingOverlay message="Please wait while we clone the repository..." />}
         </>
       )}
     </ClientOnly>

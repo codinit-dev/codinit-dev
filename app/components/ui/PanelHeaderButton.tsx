@@ -1,5 +1,5 @@
-import { memo } from "react";
-import { classNames } from "~/utils/classNames";
+import { memo } from 'react';
+import { classNames } from '~/utils/classNames';
 
 interface PanelHeaderButtonProps {
   className?: string;
@@ -10,19 +10,13 @@ interface PanelHeaderButtonProps {
 }
 
 export const PanelHeaderButton = memo(
-  ({
-    className,
-    disabledClassName,
-    disabled = false,
-    children,
-    onClick,
-  }: PanelHeaderButtonProps) => {
+  ({ className, disabledClassName, disabled = false, children, onClick }: PanelHeaderButtonProps) => {
     return (
       <button
         className={classNames(
-          "flex items-center shrink-0 gap-1.5 px-1.5 rounded-md py-0.5 text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed",
+          'flex items-center shrink-0 gap-1.5 px-1.5 rounded-md py-0.5 text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed',
           {
-            [classNames("opacity-30", disabledClassName)]: disabled,
+            [classNames('opacity-30', disabledClassName)]: disabled,
           },
           className,
         )}

@@ -1,76 +1,76 @@
-import { BaseProvider } from "~/lib/modules/llm/base-provider";
-import type { ModelInfo } from "~/lib/modules/llm/types";
-import type { IProviderSetting } from "~/types/model";
-import type { LanguageModelV1 } from "ai";
-import { createCohere } from "@ai-sdk/cohere";
+import { BaseProvider } from '~/lib/modules/llm/base-provider';
+import type { ModelInfo } from '~/lib/modules/llm/types';
+import type { IProviderSetting } from '~/types/model';
+import type { LanguageModelV1 } from 'ai';
+import { createCohere } from '@ai-sdk/cohere';
 
 export default class CohereProvider extends BaseProvider {
-  name = "Cohere";
-  getApiKeyLink = "https://dashboard.cohere.com/api-keys";
+  name = 'Cohere';
+  getApiKeyLink = 'https://dashboard.cohere.com/api-keys';
 
   config = {
-    apiTokenKey: "COHERE_API_KEY",
+    apiTokenKey: 'COHERE_API_KEY',
   };
 
   staticModels: ModelInfo[] = [
     {
-      name: "command-r-plus-08-2024",
-      label: "Command R plus Latest",
-      provider: "Cohere",
+      name: 'command-r-plus-08-2024',
+      label: 'Command R plus Latest',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "command-r-08-2024",
-      label: "Command R Latest",
-      provider: "Cohere",
+      name: 'command-r-08-2024',
+      label: 'Command R Latest',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "command-r-plus",
-      label: "Command R plus",
-      provider: "Cohere",
+      name: 'command-r-plus',
+      label: 'Command R plus',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "command-r",
-      label: "Command R",
-      provider: "Cohere",
+      name: 'command-r',
+      label: 'Command R',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "command",
-      label: "Command",
-      provider: "Cohere",
+      name: 'command',
+      label: 'Command',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "command-nightly",
-      label: "Command Nightly",
-      provider: "Cohere",
+      name: 'command-nightly',
+      label: 'Command Nightly',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "command-light",
-      label: "Command Light",
-      provider: "Cohere",
+      name: 'command-light',
+      label: 'Command Light',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "command-light-nightly",
-      label: "Command Light Nightly",
-      provider: "Cohere",
+      name: 'command-light-nightly',
+      label: 'Command Light Nightly',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "c4ai-aya-expanse-8b",
-      label: "c4AI Aya Expanse 8b",
-      provider: "Cohere",
+      name: 'c4ai-aya-expanse-8b',
+      label: 'c4AI Aya Expanse 8b',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
     {
-      name: "c4ai-aya-expanse-32b",
-      label: "c4AI Aya Expanse 32b",
-      provider: "Cohere",
+      name: 'c4ai-aya-expanse-32b',
+      label: 'c4AI Aya Expanse 32b',
+      provider: 'Cohere',
       maxTokenAllowed: 4096,
     },
   ];
@@ -87,8 +87,8 @@ export default class CohereProvider extends BaseProvider {
       apiKeys,
       providerSettings: providerSettings?.[this.name],
       serverEnv: serverEnv as any,
-      defaultBaseUrlKey: "",
-      defaultApiTokenKey: "COHERE_API_KEY",
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'COHERE_API_KEY',
     });
 
     if (!apiKey) {

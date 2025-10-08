@@ -1,9 +1,9 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export interface TabConfig {
   id: string;
   visible: boolean;
-  window: "developer" | "user";
+  window: 'developer' | 'user';
   order: number;
   locked?: boolean;
 }
@@ -21,14 +21,12 @@ const DEFAULT_CONFIG = {
   developerTabs: [],
 };
 
-export const tabConfigurationStore = create<TabConfigurationStore>(
-  (set, get) => ({
-    ...DEFAULT_CONFIG,
-    get: () => ({
-      userTabs: get().userTabs,
-      developerTabs: get().developerTabs,
-    }),
-    set: (config) => set(config),
-    reset: () => set(DEFAULT_CONFIG),
+export const tabConfigurationStore = create<TabConfigurationStore>((set, get) => ({
+  ...DEFAULT_CONFIG,
+  get: () => ({
+    userTabs: get().userTabs,
+    developerTabs: get().developerTabs,
   }),
-);
+  set: (config) => set(config),
+  reset: () => set(DEFAULT_CONFIG),
+}));

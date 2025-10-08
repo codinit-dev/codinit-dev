@@ -1,9 +1,9 @@
-import React from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { motion } from "framer-motion";
-import type { RepositoryStats } from "~/types/GitHub";
-import { formatSize } from "~/utils/formatSize";
-import { RepositoryStats as RepoStats } from "~/components/ui";
+import React from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { motion } from 'framer-motion';
+import type { RepositoryStats } from '~/types/GitHub';
+import { formatSize } from '~/utils/formatSize';
+import { RepositoryStats as RepoStats } from '~/components/ui';
 
 interface StatsDialogProps {
   isOpen: boolean;
@@ -13,13 +13,7 @@ interface StatsDialogProps {
   isLargeRepo?: boolean;
 }
 
-export function StatsDialog({
-  isOpen,
-  onClose,
-  onConfirm,
-  stats,
-  isLargeRepo,
-}: StatsDialogProps) {
+export function StatsDialog({ isOpen, onClose, onConfirm, stats, isLargeRepo }: StatsDialogProps) {
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
@@ -56,9 +50,8 @@ export function StatsDialog({
                   <div className="p-3 bg-yellow-50 dark:bg-yellow-500/10 rounded-lg text-sm flex items-start gap-2">
                     <span className="i-ph:warning text-yellow-600 dark:text-yellow-500 w-4 h-4 flex-shrink-0 mt-0.5" />
                     <div className="text-yellow-800 dark:text-yellow-500">
-                      This repository is quite large (
-                      {formatSize(stats.totalSize)}). Importing it might take a
-                      while and could impact performance.
+                      This repository is quite large ({formatSize(stats.totalSize)}). Importing it might take a while
+                      and could impact performance.
                     </div>
                   </div>
                 )}

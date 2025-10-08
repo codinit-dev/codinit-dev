@@ -1,6 +1,6 @@
-import { getSystemPrompt } from "./prompts/prompts";
-import optimized from "./prompts/optimized";
-import { getFineTunedPrompt } from "./prompts/new-prompt";
+import { getSystemPrompt } from './prompts/prompts';
+import optimized from './prompts/optimized';
+import { getFineTunedPrompt } from './prompts/new-prompt';
 
 export interface PromptOptions {
   cwd: string;
@@ -26,19 +26,18 @@ export class PromptLibrary {
     }
   > = {
     default: {
-      label: "Default Prompt",
-      description: "This is the battle tested default system Prompt",
+      label: 'Default Prompt',
+      description: 'This is the battle tested default system Prompt',
       get: (options) => getSystemPrompt(options.cwd, options.supabase),
     },
     enhanced: {
-      label: "Fine Tuned Prompt",
-      description: "An fine tuned prompt for better results",
+      label: 'Fine Tuned Prompt',
+      description: 'An fine tuned prompt for better results',
       get: (options) => getFineTunedPrompt(options.cwd, options.supabase),
     },
     optimized: {
-      label: "Optimized Prompt (experimental)",
-      description:
-        "an Experimental version of the prompt for lower token usage",
+      label: 'Optimized Prompt (experimental)',
+      description: 'an Experimental version of the prompt for lower token usage',
       get: (options) => optimized(options),
     },
   };
@@ -56,7 +55,7 @@ export class PromptLibrary {
     const prompt = this.library[promptId];
 
     if (!prompt) {
-      throw "Prompt Now Found";
+      throw 'Prompt Now Found';
     }
 
     return this.library[promptId]?.get(options);

@@ -1,16 +1,16 @@
-import { useStore } from "@nanostores/react";
-import useViewport from "~/lib/hooks";
-import { chatStore } from "~/lib/stores/chat";
-import { netlifyConnection } from "~/lib/stores/netlify";
-import { vercelConnection } from "~/lib/stores/vercel";
-import { workbenchStore } from "~/lib/stores/workbench";
-import { classNames } from "~/utils/classNames";
-import { useEffect, useRef, useState } from "react";
-import { streamingState } from "~/lib/stores/streaming";
-import { NetlifyDeploymentLink } from "~/components/chat/NetlifyDeploymentLink.client";
-import { VercelDeploymentLink } from "~/components/chat/VercelDeploymentLink.client";
-import { useVercelDeploy } from "~/components/deploy/VercelDeploy.client";
-import { useNetlifyDeploy } from "~/components/deploy/NetlifyDeploy.client";
+import { useStore } from '@nanostores/react';
+import useViewport from '~/lib/hooks';
+import { chatStore } from '~/lib/stores/chat';
+import { netlifyConnection } from '~/lib/stores/netlify';
+import { vercelConnection } from '~/lib/stores/vercel';
+import { workbenchStore } from '~/lib/stores/workbench';
+import { classNames } from '~/utils/classNames';
+import { useEffect, useRef, useState } from 'react';
+import { streamingState } from '~/lib/stores/streaming';
+import { NetlifyDeploymentLink } from '~/components/chat/NetlifyDeploymentLink.client';
+import { VercelDeploymentLink } from '~/components/chat/VercelDeploymentLink.client';
+import { useVercelDeploy } from '~/components/deploy/VercelDeploy.client';
+import { useNetlifyDeploy } from '~/components/deploy/NetlifyDeploy.client';
 
 interface HeaderActionButtonsProps {}
 
@@ -23,9 +23,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   const previews = useStore(workbenchStore.previews);
   const activePreview = previews[activePreviewIndex];
   const [isDeploying, setIsDeploying] = useState(false);
-  const [deployingTo, setDeployingTo] = useState<"netlify" | "vercel" | null>(
-    null,
-  );
+  const [deployingTo, setDeployingTo] = useState<'netlify' | 'vercel' | null>(null);
   const isSmallViewport = useViewport(1024);
   const canHideChat = showWorkbench || !showChat;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -36,21 +34,18 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const onVercelDeploy = async () => {
     setIsDeploying(true);
-    setDeployingTo("vercel");
+    setDeployingTo('vercel');
 
     try {
       await handleVercelDeploy();
@@ -62,7 +57,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
 
   const onNetlifyDeploy = async () => {
     setIsDeploying(true);
-    setDeployingTo("netlify");
+    setDeployingTo('netlify');
 
     try {
       await handleNetlifyDeploy();
@@ -82,12 +77,9 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="px-4 hover:bg-codinit-elements-item-backgroundActive flex items-center gap-2"
           >
-            {isDeploying ? `Deploying to ${deployingTo}...` : "Deploy"}
+            {isDeploying ? `Deploying to ${deployingTo}...` : 'Deploy'}
             <div
-              className={classNames(
-                "i-ph:caret-down w-4 h-4 transition-transform",
-                isDropdownOpen ? "rotate-180" : "",
-              )}
+              className={classNames('i-ph:caret-down w-4 h-4 transition-transform', isDropdownOpen ? 'rotate-180' : '')}
             />
           </Button>
         </div>
@@ -111,9 +103,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
                 src="https://cdn.simpleicons.org/netlify"
               />
               <span className="mx-auto">
-                {!netlifyConn.user
-                  ? "No Netlify Account Connected"
-                  : "Deploy to Netlify"}
+                {!netlifyConn.user ? 'No Netlify Account Connected' : 'Deploy to Netlify'}
               </span>
               {netlifyConn.user && <NetlifyDeploymentLink />}
             </Button>
@@ -134,11 +124,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
                 src="https://cdn.simpleicons.org/vercel/white"
                 alt="vercel"
               />
-              <span className="mx-auto">
-                {!vercelConn.user
-                  ? "No Vercel Account Connected"
-                  : "Deploy to Vercel"}
-              </span>
+              <span className="mx-auto">{!vercelConn.user ? 'No Vercel Account Connected' : 'Deploy to Vercel'}</span>
               {vercelConn.user && <VercelDeploymentLink />}
             </Button>
             <Button
@@ -155,9 +141,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
                 src="https://cdn.simpleicons.org/cloudflare"
                 alt="cloudflare"
               />
-              <span className="mx-auto">
-                Deploy to Cloudflare (Coming Soon)
-              </span>
+              <span className="mx-auto">Deploy to Cloudflare (Coming Soon)</span>
             </Button>
           </div>
         )}
@@ -168,7 +152,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           disabled={!canHideChat || isSmallViewport} // expand button is disabled on mobile as it's not needed
           onClick={() => {
             if (canHideChat) {
-              chatStore.setKey("showChat", !showChat);
+              chatStore.setKey('showChat', !showChat);
             }
           }}
         >
@@ -179,7 +163,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           active={showWorkbench}
           onClick={() => {
             if (showWorkbench && !showChat) {
-              chatStore.setKey("showChat", true);
+              chatStore.setKey('showChat', true);
             }
 
             workbenchStore.showWorkbench.set(!showWorkbench);
@@ -200,23 +184,16 @@ interface ButtonProps {
   className?: string;
 }
 
-function Button({
-  active = false,
-  disabled = false,
-  children,
-  onClick,
-  className,
-}: ButtonProps) {
+function Button({ active = false, disabled = false, children, onClick, className }: ButtonProps) {
   return (
     <button
       className={classNames(
-        "flex items-center p-1.5",
+        'flex items-center p-1.5',
         {
-          "bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary":
+          'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
             !active,
-          "bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent":
-            active && !disabled,
-          "bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed":
+          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
+          'bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
             disabled,
         },
         className,

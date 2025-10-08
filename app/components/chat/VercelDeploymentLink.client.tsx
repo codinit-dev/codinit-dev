@@ -1,8 +1,8 @@
-import { useStore } from "@nanostores/react";
-import { vercelConnection } from "~/lib/stores/vercel";
-import { chatId } from "~/lib/persistence/useChatHistory";
-import * as Tooltip from "@radix-ui/react-tooltip";
-import { useEffect, useState } from "react";
+import { useStore } from '@nanostores/react';
+import { vercelConnection } from '~/lib/stores/vercel';
+import { chatId } from '~/lib/persistence/useChatHistory';
+import * as Tooltip from '@radix-ui/react-tooltip';
+import { useEffect, useState } from 'react';
 
 export function VercelDeploymentLink() {
   const connection = useStore(vercelConnection);
@@ -27,60 +27,45 @@ export function VercelDeploymentLink() {
 
       try {
         // Fetch projects directly from the API
-        const projectsResponse = await fetch(
-          "https://api.vercel.com/v9/projects",
-          {
-            headers: {
-              Authorization: `Bearer ${connection.token}`,
-              "Content-Type": "application/json",
-            },
-            cache: "no-store",
+        const projectsResponse = await fetch('https://api.vercel.com/v9/projects', {
+          headers: {
+            Authorization: `Bearer ${connection.token}`,
+            'Content-Type': 'application/json',
           },
-        );
+          cache: 'no-store',
+        });
 
         if (!projectsResponse.ok) {
-          throw new Error(
-            `Failed to fetch projects: ${projectsResponse.status}`,
-          );
+          throw new Error(`Failed to fetch projects: ${projectsResponse.status}`);
         }
 
         const projectsData = (await projectsResponse.json()) as any;
         const projects = projectsData.projects || [];
 
         // Extract the chat number from currentChatId
-        const chatNumber = currentChatId.split("-")[0];
+        const chatNumber = currentChatId.split('-')[0];
 
         // Find project by matching the chat number in the name
-        const project = projects.find((p: { name: string | string[] }) =>
-          p.name.includes(`codinit.dev-${chatNumber}`),
-        );
+        const project = projects.find((p: { name: string | string[] }) => p.name.includes(`codinit.dev-${chatNumber}`));
 
         if (project) {
           // Fetch project details including deployments
-          const projectDetailsResponse = await fetch(
-            `https://api.vercel.com/v9/projects/${project.id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${connection.token}`,
-                "Content-Type": "application/json",
-              },
-              cache: "no-store",
+          const projectDetailsResponse = await fetch(`https://api.vercel.com/v9/projects/${project.id}`, {
+            headers: {
+              Authorization: `Bearer ${connection.token}`,
+              'Content-Type': 'application/json',
             },
-          );
+            cache: 'no-store',
+          });
 
           if (projectDetailsResponse.ok) {
             const projectDetails = (await projectDetailsResponse.json()) as any;
 
             // Try to get URL from production aliases first
-            if (
-              projectDetails.targets?.production?.alias &&
-              projectDetails.targets.production.alias.length > 0
-            ) {
+            if (projectDetails.targets?.production?.alias && projectDetails.targets.production.alias.length > 0) {
               // Find the clean URL (without -projects.vercel.app)
               const cleanUrl = projectDetails.targets.production.alias.find(
-                (a: string) =>
-                  a.endsWith(".vercel.app") &&
-                  !a.includes("-projects.vercel.app"),
+                (a: string) => a.endsWith('.vercel.app') && !a.includes('-projects.vercel.app'),
               );
 
               if (cleanUrl) {
@@ -88,9 +73,7 @@ export function VercelDeploymentLink() {
                 return;
               } else {
                 // If no clean URL found, use the first alias
-                setDeploymentUrl(
-                  `https://${projectDetails.targets.production.alias[0]}`,
-                );
+                setDeploymentUrl(`https://${projectDetails.targets.production.alias[0]}`);
                 return;
               }
             }
@@ -102,19 +85,16 @@ export function VercelDeploymentLink() {
             {
               headers: {
                 Authorization: `Bearer ${connection.token}`,
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
               },
-              cache: "no-store",
+              cache: 'no-store',
             },
           );
 
           if (deploymentsResponse.ok) {
             const deploymentsData = (await deploymentsResponse.json()) as any;
 
-            if (
-              deploymentsData.deployments &&
-              deploymentsData.deployments.length > 0
-            ) {
+            if (deploymentsData.deployments && deploymentsData.deployments.length > 0) {
               setDeploymentUrl(`https://${deploymentsData.deployments[0].url}`);
               return;
             }
@@ -122,12 +102,9 @@ export function VercelDeploymentLink() {
         }
 
         // Fallback to API call if not found in fetched projects
-        const fallbackResponse = await fetch(
-          `/api/vercel-deploy?projectId=${projectId}&token=${connection.token}`,
-          {
-            method: "GET",
-          },
-        );
+        const fallbackResponse = await fetch(`/api/vercel-deploy?projectId=${projectId}&token=${connection.token}`, {
+          method: 'GET',
+        });
 
         const data = await fallbackResponse.json();
 
@@ -137,7 +114,7 @@ export function VercelDeploymentLink() {
           setDeploymentUrl((data as { project: { url: string } }).project.url);
         }
       } catch (err) {
-        console.error("Error fetching Vercel deployment:", err);
+        console.error('Error fetching Vercel deployment:', err);
       } finally {
         setIsLoading(false);
       }
@@ -163,9 +140,7 @@ export function VercelDeploymentLink() {
               e.stopPropagation();
             }}
           >
-            <div
-              className={`i-ph:link w-4 h-4 hover:text-blue-400 ${isLoading ? "animate-pulse" : ""}`}
-            />
+            <div className={`i-ph:link w-4 h-4 hover:text-blue-400 ${isLoading ? 'animate-pulse' : ''}`} />
           </a>
         </Tooltip.Trigger>
         <Tooltip.Portal>

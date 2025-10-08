@@ -1,5 +1,5 @@
-import type { LanguageModelV1 } from "ai";
-import type { IProviderSetting } from "~/types/model";
+import type { LanguageModelV1 } from 'ai';
+import type { IProviderSetting } from '~/types/model';
 
 export interface ModelInfo {
   name: string;

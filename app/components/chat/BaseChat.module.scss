@@ -1,5 +1,5 @@
 .BaseChat {
-  &[data-chat-visible="false"] {
+  &[data-chat-visible='false'] {
     --workbench-inner-width: 100%;
     --workbench-left: 0;
 
@@ -29,18 +29,10 @@
 }
 
 .PromptEffectLine {
-  width: calc(
-    100% - var(--prompt-container-offset) + var(--prompt-line-stroke-width)
-  );
-  height: calc(
-    100% - var(--prompt-container-offset) + var(--prompt-line-stroke-width)
-  );
-  x: calc(
-    var(--prompt-container-offset) / 2 - var(--prompt-line-stroke-width) / 2
-  );
-  y: calc(
-    var(--prompt-container-offset) / 2 - var(--prompt-line-stroke-width) / 2
-  );
+  width: calc(100% - var(--prompt-container-offset) + var(--prompt-line-stroke-width));
+  height: calc(100% - var(--prompt-container-offset) + var(--prompt-line-stroke-width));
+  x: calc(var(--prompt-container-offset) / 2 - var(--prompt-line-stroke-width) / 2);
+  y: calc(var(--prompt-container-offset) / 2 - var(--prompt-line-stroke-width) / 2);
   rx: calc(8px - var(--prompt-line-stroke-width));
   fill: transparent;
   stroke-width: var(--prompt-line-stroke-width);

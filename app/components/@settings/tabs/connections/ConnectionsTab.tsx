@@ -1,13 +1,13 @@
-import { motion } from "framer-motion";
-import React, { Suspense, useState } from "react";
-import { classNames } from "~/utils/classNames";
-import ConnectionDiagnostics from "./ConnectionDiagnostics";
-import { Button } from "~/components/ui/Button";
-import VercelConnection from "./VercelConnection";
+import { motion } from 'framer-motion';
+import React, { Suspense, useState } from 'react';
+import { classNames } from '~/utils/classNames';
+import ConnectionDiagnostics from './ConnectionDiagnostics';
+import { Button } from '~/components/ui/Button';
+import VercelConnection from './VercelConnection';
 
 // Use React.lazy for dynamic imports
-const GitHubConnection = React.lazy(() => import("./GithubConnection"));
-const NetlifyConnection = React.lazy(() => import("./NetlifyConnection"));
+const GitHubConnection = React.lazy(() => import('./GithubConnection'));
+const NetlifyConnection = React.lazy(() => import('./NetlifyConnection'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -74,10 +74,10 @@ export default function ConnectionsTab() {
           <button
             onClick={() => setIsEnvVarsExpanded(!isEnvVarsExpanded)}
             className={classNames(
-              "w-full bg-transparent flex items-center justify-between",
-              "hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary",
-              "dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary",
-              "rounded-md p-2 -m-2 transition-colors",
+              'w-full bg-transparent flex items-center justify-between',
+              'hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary',
+              'dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary',
+              'rounded-md p-2 -m-2 transition-colors',
             )}
           >
             <div className="flex items-center gap-2">
@@ -88,8 +88,8 @@ export default function ConnectionsTab() {
             </div>
             <div
               className={classNames(
-                "i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary transition-transform",
-                isEnvVarsExpanded ? "rotate-180" : "",
+                'i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary transition-transform',
+                isEnvVarsExpanded ? 'rotate-180' : '',
               )}
             />
           </button>
@@ -97,11 +97,10 @@ export default function ConnectionsTab() {
           {isEnvVarsExpanded && (
             <div className="mt-4">
               <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mb-2">
-                You can configure connections using environment variables in
-                your{" "}
+                You can configure connections using environment variables in your{' '}
                 <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
                   .env.local
-                </code>{" "}
+                </code>{' '}
                 file:
               </p>
               <div className="bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 p-3 rounded-md text-xs font-mono overflow-x-auto">
@@ -112,8 +111,7 @@ export default function ConnectionsTab() {
                   VITE_GITHUB_ACCESS_TOKEN=your_token_here
                 </div>
                 <div className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
-                  # Optional: Specify token type (defaults to 'classic' if not
-                  specified)
+                  # Optional: Specify token type (defaults to 'classic' if not specified)
                 </div>
                 <div className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                   VITE_GITHUB_TOKEN_TYPE=classic|fine-grained
@@ -131,21 +129,19 @@ export default function ConnectionsTab() {
                 </p>
                 <ul className="list-disc list-inside pl-2 space-y-1">
                   <li>
-                    <span className="font-medium">classic</span> - Personal
-                    Access Token with{" "}
+                    <span className="font-medium">classic</span> - Personal Access Token with{' '}
                     <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
                       repo, read:org, read:user
-                    </code>{" "}
+                    </code>{' '}
                     scopes
                   </li>
                   <li>
-                    <span className="font-medium">fine-grained</span> -
-                    Fine-grained token with Repository and Organization access
+                    <span className="font-medium">fine-grained</span> - Fine-grained token with Repository and
+                    Organization access
                   </li>
                 </ul>
                 <p className="mt-2">
-                  When set, these variables will be used automatically without
-                  requiring manual connection.
+                  When set, these variables will be used automatically without requiring manual connection.
                 </p>
               </div>
             </div>
@@ -172,18 +168,15 @@ export default function ConnectionsTab() {
           <span className="font-medium">Troubleshooting Tip:</span>
         </p>
         <p className="mb-2">
-          If you're having trouble with connections, try using the
-          troubleshooting tool at the top of this page. It can help diagnose and
-          fix common connection issues.
+          If you're having trouble with connections, try using the troubleshooting tool at the top of this page. It can
+          help diagnose and fix common connection issues.
         </p>
         <p>For persistent issues:</p>
         <ol className="list-decimal list-inside pl-4 mt-1">
           <li>Check your browser console for errors</li>
           <li>Verify that your tokens have the correct permissions</li>
           <li>Try clearing your browser cache and cookies</li>
-          <li>
-            Ensure your browser allows third-party cookies if using integrations
-          </li>
+          <li>Ensure your browser allows third-party cookies if using integrations</li>
         </ol>
       </div>
     </div>

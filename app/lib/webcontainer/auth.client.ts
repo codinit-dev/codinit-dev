@@ -3,4 +3,4 @@
  * to avoid importing `@webcontainer/api` in the server bundle.
  */
 
-export { auth, type AuthAPI } from "@webcontainer/api";
+export { auth, type AuthAPI } from '@webcontainer/api';

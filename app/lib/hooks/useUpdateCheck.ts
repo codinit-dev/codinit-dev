@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react";
-import { checkForUpdates, acknowledgeUpdate } from "~/lib/api/updates";
+import { useState, useEffect } from 'react';
+import { checkForUpdates, acknowledgeUpdate } from '~/lib/api/updates';
 
-const LAST_ACKNOWLEDGED_VERSION_KEY = "codinit_last_acknowledged_version";
+const LAST_ACKNOWLEDGED_VERSION_KEY = 'codinit_last_acknowledged_version';
 
 export const useUpdateCheck = () => {
   const [hasUpdate, setHasUpdate] = useState(false);
-  const [currentVersion, setCurrentVersion] = useState<string>("");
-  const [lastAcknowledgedVersion, setLastAcknowledgedVersion] = useState<
-    string | null
-  >(() => {
+  const [currentVersion, setCurrentVersion] = useState<string>('');
+  const [lastAcknowledgedVersion, setLastAcknowledgedVersion] = useState<string | null>(() => {
     try {
       return localStorage.getItem(LAST_ACKNOWLEDGED_VERSION_KEY);
     } catch {
@@ -25,7 +23,7 @@ export const useUpdateCheck = () => {
         // Only show update if it's a new version and hasn't been acknowledged
         setHasUpdate(available && version !== lastAcknowledgedVersion);
       } catch (error) {
-        console.error("Failed to check for updates:", error);
+        console.error('Failed to check for updates:', error);
       }
     };
 
@@ -46,13 +44,13 @@ export const useUpdateCheck = () => {
       try {
         localStorage.setItem(LAST_ACKNOWLEDGED_VERSION_KEY, version);
       } catch (error) {
-        console.error("Failed to persist acknowledged version:", error);
+        console.error('Failed to persist acknowledged version:', error);
       }
 
       setLastAcknowledgedVersion(version);
       setHasUpdate(false);
     } catch (error) {
-      console.error("Failed to acknowledge update:", error);
+      console.error('Failed to acknowledge update:', error);
     }
   };
 

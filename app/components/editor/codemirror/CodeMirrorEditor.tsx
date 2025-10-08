@@ -1,24 +1,8 @@
-import {
-  acceptCompletion,
-  autocompletion,
-  closeBrackets,
-} from "@codemirror/autocomplete";
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import {
-  bracketMatching,
-  foldGutter,
-  indentOnInput,
-  indentUnit,
-} from "@codemirror/language";
-import { searchKeymap } from "@codemirror/search";
-import {
-  Compartment,
-  EditorSelection,
-  EditorState,
-  StateEffect,
-  StateField,
-  type Extension,
-} from "@codemirror/state";
+import { acceptCompletion, autocompletion, closeBrackets } from '@codemirror/autocomplete';
+import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
+import { bracketMatching, foldGutter, indentOnInput, indentUnit } from '@codemirror/language';
+import { searchKeymap } from '@codemirror/search';
+import { Compartment, EditorSelection, EditorState, StateEffect, StateField, type Extension } from '@codemirror/state';
 import {
   drawSelection,
   dropCursor,
@@ -31,26 +15,20 @@ import {
   showTooltip,
   tooltips,
   type Tooltip,
-} from "@codemirror/view";
-import {
-  memo,
-  useEffect,
-  useRef,
-  useState,
-  type MutableRefObject,
-} from "react";
-import type { Theme } from "~/types/theme";
-import { classNames } from "~/utils/classNames";
-import { debounce } from "~/utils/debounce";
-import { createScopedLogger, renderLogger } from "~/utils/logger";
-import { isFileLocked, getCurrentChatId } from "~/utils/fileLocks";
-import { BinaryContent } from "./BinaryContent";
-import { getTheme, reconfigureTheme } from "./cm-theme";
-import { indentKeyBinding } from "./indent";
-import { getLanguage } from "./languages";
-import { createEnvMaskingExtension } from "./EnvMasking";
+} from '@codemirror/view';
+import { memo, useEffect, useRef, useState, type MutableRefObject } from 'react';
+import type { Theme } from '~/types/theme';
+import { classNames } from '~/utils/classNames';
+import { debounce } from '~/utils/debounce';
+import { createScopedLogger, renderLogger } from '~/utils/logger';
+import { isFileLocked, getCurrentChatId } from '~/utils/fileLocks';
+import { BinaryContent } from './BinaryContent';
+import { getTheme, reconfigureTheme } from './cm-theme';
+import { indentKeyBinding } from './indent';
+import { getLanguage } from './languages';
+import { createEnvMaskingExtension } from './EnvMasking';
 
-const logger = createScopedLogger("CodeMirrorEditor");
+const logger = createScopedLogger('CodeMirrorEditor');
 
 // Create a module-level reference to the current document for use in tooltip functions
 let currentDocRef: EditorDocument | undefined;
@@ -157,9 +135,9 @@ export const CodeMirrorEditor = memo(
     onSave,
     theme,
     settings,
-    className = "",
+    className = '',
   }: Props) => {
-    renderLogger.trace("CodeMirrorEditor");
+    renderLogger.trace('CodeMirrorEditor');
 
     const [languageCompartment] = useState(new Compartment());
 
@@ -195,7 +173,7 @@ export const CodeMirrorEditor = memo(
         return;
       }
 
-      if (typeof doc.scroll?.line === "number") {
+      if (typeof doc.scroll?.line === 'number') {
         const line = doc.scroll.line;
         const column = doc.scroll.column ?? 0;
 
@@ -205,36 +183,22 @@ export const CodeMirrorEditor = memo(
 
           // Only proceed if the line number is within the document's range
           if (line < totalLines) {
-            const linePos =
-              viewRef.current.state.doc.line(line + 1).from + column;
+            const linePos = viewRef.current.state.doc.line(line + 1).from + column;
             viewRef.current.dispatch({
               selection: { anchor: linePos },
               scrollIntoView: true,
             });
             viewRef.current.focus();
           } else {
-            logger.warn(
-              `Invalid line number ${line + 1} in ${totalLines}-line document`,
-            );
+            logger.warn(`Invalid line number ${line + 1} in ${totalLines}-line document`);
           }
         } catch (error) {
-          logger.error("Error scrolling to line:", error);
+          logger.error('Error scrolling to line:', error);
         }
-      } else if (
-        typeof doc.scroll?.top === "number" ||
-        typeof doc.scroll?.left === "number"
-      ) {
-        viewRef.current.scrollDOM.scrollTo(
-          doc.scroll.left ?? 0,
-          doc.scroll.top ?? 0,
-        );
+      } else if (typeof doc.scroll?.top === 'number' || typeof doc.scroll?.left === 'number') {
+        viewRef.current.scrollDOM.scrollTo(doc.scroll.left ?? 0, doc.scroll.top ?? 0);
       }
-    }, [
-      doc?.scroll?.line,
-      doc?.scroll?.column,
-      doc?.scroll?.top,
-      doc?.scroll?.left,
-    ]);
+    }, [doc?.scroll?.line, doc?.scroll?.column, doc?.scroll?.top, doc?.scroll?.left]);
 
     useEffect(() => {
       const onUpdate = debounce((update: EditorUpdate) => {
@@ -252,15 +216,9 @@ export const CodeMirrorEditor = memo(
 
           const selectionChanged =
             newSelection !== previousSelection &&
-            (newSelection === undefined ||
-              previousSelection === undefined ||
-              !newSelection.eq(previousSelection));
+            (newSelection === undefined || previousSelection === undefined || !newSelection.eq(previousSelection));
 
-          if (
-            docRef.current &&
-            (transactions.some((transaction) => transaction.docChanged) ||
-              selectionChanged)
-          ) {
+          if (docRef.current && (transactions.some((transaction) => transaction.docChanged) || selectionChanged)) {
             onUpdate({
               selection: view.state.selection,
               content: view.state.doc.toString(),
@@ -299,15 +257,10 @@ export const CodeMirrorEditor = memo(
       const theme = themeRef.current!;
 
       if (!doc) {
-        const state = newEditorState(
-          "",
-          theme,
-          settings,
-          onScrollRef,
-          debounceScroll,
-          onSaveRef,
-          [languageCompartment.of([]), envMaskingCompartment.of([])],
-        );
+        const state = newEditorState('', theme, settings, onScrollRef, debounceScroll, onSaveRef, [
+          languageCompartment.of([]),
+          envMaskingCompartment.of([]),
+        ]);
 
         view.setState(state);
 
@@ -320,27 +273,17 @@ export const CodeMirrorEditor = memo(
         return;
       }
 
-      if (doc.filePath === "") {
-        logger.warn("File path should not be empty");
+      if (doc.filePath === '') {
+        logger.warn('File path should not be empty');
       }
 
       let state = editorStates.get(doc.filePath);
 
       if (!state) {
-        state = newEditorState(
-          doc.value,
-          theme,
-          settings,
-          onScrollRef,
-          debounceScroll,
-          onSaveRef,
-          [
-            languageCompartment.of([]),
-            envMaskingCompartment.of([
-              createEnvMaskingExtension(() => docRef.current?.filePath),
-            ]),
-          ],
-        );
+        state = newEditorState(doc.value, theme, settings, onScrollRef, debounceScroll, onSaveRef, [
+          languageCompartment.of([]),
+          envMaskingCompartment.of([createEnvMaskingExtension(() => docRef.current?.filePath)]),
+        ]);
 
         editorStates.set(doc.filePath, state);
       }
@@ -368,7 +311,7 @@ export const CodeMirrorEditor = memo(
     }, [doc?.value, editable, doc?.filePath, autoFocusOnDocumentChange]);
 
     return (
-      <div className={classNames("relative h-full", className)}>
+      <div className={classNames('relative h-full', className)}>
         {doc?.isBinary && <BinaryContent />}
         <div className="h-full overflow-hidden" ref={containerRef} />
       </div>
@@ -378,7 +321,7 @@ export const CodeMirrorEditor = memo(
 
 export default CodeMirrorEditor;
 
-CodeMirrorEditor.displayName = "CodeMirrorEditor";
+CodeMirrorEditor.displayName = 'CodeMirrorEditor';
 
 function newEditorState(
   content: string,
@@ -406,7 +349,7 @@ function newEditorState(
         keydown: (event, view) => {
           if (view.state.readOnly) {
             view.dispatch({
-              effects: [readOnlyTooltipStateEffect.of(event.key !== "Escape")],
+              effects: [readOnlyTooltipStateEffect.of(event.key !== 'Escape')],
             });
 
             return true;
@@ -421,9 +364,9 @@ function newEditorState(
         ...defaultKeymap,
         ...historyKeymap,
         ...searchKeymap,
-        { key: "Tab", run: acceptCompletion },
+        { key: 'Tab', run: acceptCompletion },
         {
-          key: "Mod-s",
+          key: 'Mod-s',
           preventDefault: true,
           run: () => {
             onFileSaveRef.current?.();
@@ -432,12 +375,12 @@ function newEditorState(
         },
         indentKeyBinding,
       ]),
-      indentUnit.of("\t"),
+      indentUnit.of('\t'),
       autocompletion({
         closeOnBlur: false,
       }),
       tooltips({
-        position: "absolute",
+        position: 'absolute',
         parent: document.body,
         tooltipSpace: (view) => {
           const rect = view.dom.getBoundingClientRect();
@@ -465,9 +408,9 @@ function newEditorState(
       highlightActiveLine(),
       foldGutter({
         markerDOM: (open) => {
-          const icon = document.createElement("div");
+          const icon = document.createElement('div');
 
-          icon.className = `fold-icon ${open ? "i-ph-caret-down-bold" : "i-ph-caret-right-bold"}`;
+          icon.className = `fold-icon ${open ? 'i-ph-caret-down-bold' : 'i-ph-caret-right-bold'}`;
 
           return icon;
         },
@@ -483,7 +426,7 @@ function setNoDocument(view: EditorView) {
     changes: {
       from: 0,
       to: view.state.doc.length,
-      insert: "",
+      insert: '',
     },
   });
 
@@ -524,10 +467,7 @@ function setEditorDocument(
     }
 
     view.dispatch({
-      effects: [
-        languageCompartment.reconfigure([languageSupport]),
-        reconfigureTheme(theme),
-      ],
+      effects: [languageCompartment.reconfigure([languageSupport]), reconfigureTheme(theme)],
     });
 
     requestAnimationFrame(() => {
@@ -536,7 +476,7 @@ function setEditorDocument(
       const newLeft = doc.scroll?.left ?? 0;
       const newTop = doc.scroll?.top ?? 0;
 
-      if (typeof doc.scroll?.line === "number") {
+      if (typeof doc.scroll?.line === 'number') {
         const line = doc.scroll.line;
         const column = doc.scroll.column ?? 0;
 
@@ -553,12 +493,10 @@ function setEditorDocument(
             });
             view.focus();
           } else {
-            logger.warn(
-              `Invalid line number ${line + 1} in ${totalLines}-line document`,
-            );
+            logger.warn(`Invalid line number ${line + 1} in ${totalLines}-line document`);
           }
         } catch (error) {
-          logger.error("Error scrolling to line:", error);
+          logger.error('Error scrolling to line:', error);
         }
 
         return;
@@ -569,7 +507,7 @@ function setEditorDocument(
       if (autoFocus && editable) {
         if (needsScrolling) {
           view.scrollDOM.addEventListener(
-            "scroll",
+            'scroll',
             () => {
               view.focus();
             },
@@ -592,7 +530,7 @@ function getReadOnlyTooltip(state: EditorState) {
 
   // Get the current document from the module-level reference
   const currentDoc = currentDocRef;
-  let tooltipMessage = "Cannot edit file while AI response is being generated";
+  let tooltipMessage = 'Cannot edit file while AI response is being generated';
 
   // If we have a current document, check if it's locked
   if (currentDoc?.filePath) {
@@ -600,7 +538,7 @@ function getReadOnlyTooltip(state: EditorState) {
     const { locked } = isFileLocked(currentDoc.filePath, currentChatId);
 
     if (locked) {
-      tooltipMessage = "This file is locked and cannot be edited";
+      tooltipMessage = 'This file is locked and cannot be edited';
     }
   }
 
@@ -615,8 +553,8 @@ function getReadOnlyTooltip(state: EditorState) {
         strictSide: true,
         arrow: true,
         create: () => {
-          const divElement = document.createElement("div");
-          divElement.className = "cm-readonly-tooltip";
+          const divElement = document.createElement('div');
+          divElement.className = 'cm-readonly-tooltip';
           divElement.textContent = tooltipMessage;
 
           return { dom: divElement };

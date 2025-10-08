@@ -65,7 +65,7 @@ export interface GitHubStats {
 export interface GitHubConnection {
   user: GitHubUserResponse | null;
   token: string;
-  tokenType: "classic" | "fine-grained";
+  tokenType: 'classic' | 'fine-grained';
   stats?: GitHubStats;
 }
 

@@ -1,46 +1,46 @@
-import { BaseProvider } from "~/lib/modules/llm/base-provider";
-import type { ModelInfo } from "~/lib/modules/llm/types";
-import type { IProviderSetting } from "~/types/model";
-import type { LanguageModelV1 } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
+import { BaseProvider } from '~/lib/modules/llm/base-provider';
+import type { ModelInfo } from '~/lib/modules/llm/types';
+import type { IProviderSetting } from '~/types/model';
+import type { LanguageModelV1 } from 'ai';
+import { createOpenAI } from '@ai-sdk/openai';
 
 export default class OpenAIProvider extends BaseProvider {
-  name = "OpenAI";
-  getApiKeyLink = "https://platform.openai.com/api-keys";
+  name = 'OpenAI';
+  getApiKeyLink = 'https://platform.openai.com/api-keys';
 
   config = {
-    apiTokenKey: "OPENAI_API_KEY",
+    apiTokenKey: 'OPENAI_API_KEY',
   };
 
   staticModels: ModelInfo[] = [
     {
-      name: "gpt-4o",
-      label: "GPT-4o",
-      provider: "OpenAI",
+      name: 'gpt-4o',
+      label: 'GPT-4o',
+      provider: 'OpenAI',
       maxTokenAllowed: 8000,
     },
     {
-      name: "gpt-4o-mini",
-      label: "GPT-4o Mini",
-      provider: "OpenAI",
+      name: 'gpt-4o-mini',
+      label: 'GPT-4o Mini',
+      provider: 'OpenAI',
       maxTokenAllowed: 8000,
     },
     {
-      name: "gpt-4-turbo",
-      label: "GPT-4 Turbo",
-      provider: "OpenAI",
+      name: 'gpt-4-turbo',
+      label: 'GPT-4 Turbo',
+      provider: 'OpenAI',
       maxTokenAllowed: 8000,
     },
     {
-      name: "gpt-4",
-      label: "GPT-4",
-      provider: "OpenAI",
+      name: 'gpt-4',
+      label: 'GPT-4',
+      provider: 'OpenAI',
       maxTokenAllowed: 8000,
     },
     {
-      name: "gpt-3.5-turbo",
-      label: "GPT-3.5 Turbo",
-      provider: "OpenAI",
+      name: 'gpt-3.5-turbo',
+      label: 'GPT-3.5 Turbo',
+      provider: 'OpenAI',
       maxTokenAllowed: 8000,
     },
   ];
@@ -54,8 +54,8 @@ export default class OpenAIProvider extends BaseProvider {
       apiKeys,
       providerSettings: settings,
       serverEnv: serverEnv as any,
-      defaultBaseUrlKey: "",
-      defaultApiTokenKey: "OPENAI_API_KEY",
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'OPENAI_API_KEY',
     });
 
     if (!apiKey) {
@@ -73,10 +73,8 @@ export default class OpenAIProvider extends BaseProvider {
 
     const data = res.data.filter(
       (model: any) =>
-        model.object === "model" &&
-        (model.id.startsWith("gpt-") ||
-          model.id.startsWith("o") ||
-          model.id.startsWith("chatgpt-")) &&
+        model.object === 'model' &&
+        (model.id.startsWith('gpt-') || model.id.startsWith('o') || model.id.startsWith('chatgpt-')) &&
         !staticModelIds.includes(model.id),
     );
 
@@ -100,8 +98,8 @@ export default class OpenAIProvider extends BaseProvider {
       apiKeys,
       providerSettings: providerSettings?.[this.name],
       serverEnv: serverEnv as any,
-      defaultBaseUrlKey: "",
-      defaultApiTokenKey: "OPENAI_API_KEY",
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'OPENAI_API_KEY',
     });
 
     if (!apiKey) {

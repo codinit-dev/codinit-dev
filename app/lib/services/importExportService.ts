@@ -1,6 +1,6 @@
-import Cookies from "js-cookie";
-import { type Message } from "ai";
-import { getAllChats, deleteChat } from "~/lib/persistence/chats";
+import Cookies from 'js-cookie';
+import { type Message } from 'ai';
+import { getAllChats, deleteChat } from '~/lib/persistence/chats';
 
 interface ExtendedMessage extends Message {
   name?: string;
@@ -17,11 +17,9 @@ export class ImportExportService {
    * @param db The IndexedDB database instance
    * @returns A promise that resolves to the export data
    */
-  static async exportAllChats(
-    db: IDBDatabase,
-  ): Promise<{ chats: any[]; exportDate: string }> {
+  static async exportAllChats(db: IDBDatabase): Promise<{ chats: any[]; exportDate: string }> {
     if (!db) {
-      throw new Error("Database not initialized");
+      throw new Error('Database not initialized');
     }
 
     try {
@@ -31,7 +29,7 @@ export class ImportExportService {
       // Validate and sanitize each chat before export
       const sanitizedChats = chats.map((chat) => ({
         id: chat.id,
-        description: chat.description || "",
+        description: chat.description || '',
         messages: chat.messages.map((msg: ExtendedMessage) => ({
           id: msg.id,
           role: msg.role,
@@ -45,19 +43,15 @@ export class ImportExportService {
         metadata: chat.metadata || null,
       }));
 
-      console.log(
-        `Successfully prepared ${sanitizedChats.length} chats for export`,
-      );
+      console.log(`Successfully prepared ${sanitizedChats.length} chats for export`);
 
       return {
         chats: sanitizedChats,
         exportDate: new Date().toISOString(),
       };
     } catch (error) {
-      console.error("Error exporting chats:", error);
-      throw new Error(
-        `Failed to export chats: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      console.error('Error exporting chats:', error);
+      throw new Error(`Failed to export chats: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -75,16 +69,16 @@ export class ImportExportService {
         // Core settings
         core: {
           // User profile and main settings
-          codinit_user_profile: this._safeGetItem("codinit_user_profile"),
-          codinit_settings: this._safeGetItem("codinit_settings"),
-          codinit_profile: this._safeGetItem("codinit_profile"),
-          theme: this._safeGetItem("theme"),
+          codinit_user_profile: this._safeGetItem('codinit_user_profile'),
+          codinit_settings: this._safeGetItem('codinit_settings'),
+          codinit_profile: this._safeGetItem('codinit_profile'),
+          theme: this._safeGetItem('theme'),
         },
 
         // Provider settings (both local and cloud)
         providers: {
           // Provider configurations from localStorage
-          provider_settings: this._safeGetItem("provider_settings"),
+          provider_settings: this._safeGetItem('provider_settings'),
 
           // API keys from cookies
           apiKeys: allCookies.apiKeys,
@@ -100,45 +94,41 @@ export class ImportExportService {
         // Feature settings
         features: {
           // Feature flags
-          viewed_features: this._safeGetItem("codinit_viewed_features"),
-          developer_mode: this._safeGetItem("codinit_developer_mode"),
+          viewed_features: this._safeGetItem('codinit_viewed_features'),
+          developer_mode: this._safeGetItem('codinit_developer_mode'),
 
           // Context optimization
-          contextOptimizationEnabled: this._safeGetItem(
-            "contextOptimizationEnabled",
-          ),
+          contextOptimizationEnabled: this._safeGetItem('contextOptimizationEnabled'),
 
           // Auto-select template
-          autoSelectTemplate: this._safeGetItem("autoSelectTemplate"),
+          autoSelectTemplate: this._safeGetItem('autoSelectTemplate'),
 
           // Latest branch
-          isLatestBranch: this._safeGetItem("isLatestBranch"),
+          isLatestBranch: this._safeGetItem('isLatestBranch'),
 
           // Event logs
-          isEventLogsEnabled: this._safeGetItem("isEventLogsEnabled"),
+          isEventLogsEnabled: this._safeGetItem('isEventLogsEnabled'),
 
           // Energy saver settings
-          energySaverMode: this._safeGetItem("energySaverMode"),
-          autoEnergySaver: this._safeGetItem("autoEnergySaver"),
+          energySaverMode: this._safeGetItem('energySaverMode'),
+          autoEnergySaver: this._safeGetItem('autoEnergySaver'),
         },
 
         // UI configuration
         ui: {
           // Tab configuration
-          codinit_tab_configuration: this._safeGetItem(
-            "codinit_tab_configuration",
-          ),
+          codinit_tab_configuration: this._safeGetItem('codinit_tab_configuration'),
           tabConfiguration: allCookies.tabConfiguration,
 
           // Prompt settings
-          promptId: this._safeGetItem("promptId"),
+          promptId: this._safeGetItem('promptId'),
           cachedPrompt: allCookies.cachedPrompt,
         },
 
         // Connections
         connections: {
           // Netlify connection
-          netlify_connection: this._safeGetItem("netlify_connection"),
+          netlify_connection: this._safeGetItem('netlify_connection'),
 
           // GitHub connections
           ...this._getGitHubConnections(allCookies),
@@ -148,16 +138,12 @@ export class ImportExportService {
         debug: {
           // Debug settings
           isDebugEnabled: allCookies.isDebugEnabled,
-          acknowledged_debug_issues: this._safeGetItem(
-            "codinit_acknowledged_debug_issues",
-          ),
-          acknowledged_connection_issue: this._safeGetItem(
-            "codinit_acknowledged_connection_issue",
-          ),
+          acknowledged_debug_issues: this._safeGetItem('codinit_acknowledged_debug_issues'),
+          acknowledged_connection_issue: this._safeGetItem('codinit_acknowledged_connection_issue'),
 
           // Error logs
-          error_logs: this._safeGetItem("error_logs"),
-          codinit_read_logs: this._safeGetItem("codinit_read_logs"),
+          error_logs: this._safeGetItem('error_logs'),
+          codinit_read_logs: this._safeGetItem('codinit_read_logs'),
 
           // Event logs
           eventLogs: allCookies.eventLogs,
@@ -165,10 +151,8 @@ export class ImportExportService {
 
         // Update settings
         updates: {
-          update_settings: this._safeGetItem("update_settings"),
-          last_acknowledged_update: this._safeGetItem(
-            "codinit_last_acknowledged_version",
-          ),
+          update_settings: this._safeGetItem('update_settings'),
+          last_acknowledged_update: this._safeGetItem('codinit_last_acknowledged_version'),
         },
 
         // Chat snapshots (for chat history)
@@ -183,12 +167,12 @@ export class ImportExportService {
         // Export metadata
         _meta: {
           exportDate: new Date().toISOString(),
-          version: "2.0",
-          appVersion: process.env.NEXT_PUBLIC_VERSION || "unknown",
+          version: '2.0',
+          appVersion: process.env.NEXT_PUBLIC_VERSION || 'unknown',
         },
       };
     } catch (error) {
-      console.error("Error exporting settings:", error);
+      console.error('Error exporting settings:', error);
       throw error;
     }
   }
@@ -199,7 +183,7 @@ export class ImportExportService {
    */
   static async importSettings(importedData: any): Promise<void> {
     // Check if this is the new comprehensive format (v2.0)
-    const isNewFormat = importedData._meta?.version === "2.0";
+    const isNewFormat = importedData._meta?.version === '2.0';
 
     if (isNewFormat) {
       // Import using the new comprehensive format
@@ -217,7 +201,7 @@ export class ImportExportService {
   static importAPIKeys(keys: Record<string, any>): Record<string, string> {
     // Get existing keys from cookies
     const existingKeys = (() => {
-      const storedApiKeys = Cookies.get("apiKeys");
+      const storedApiKeys = Cookies.get('apiKeys');
       return storedApiKeys ? JSON.parse(storedApiKeys) : {};
     })();
 
@@ -225,16 +209,16 @@ export class ImportExportService {
     const newKeys = { ...existingKeys };
     Object.entries(keys).forEach(([key, value]) => {
       // Skip comment fields
-      if (key.startsWith("_")) {
+      if (key.startsWith('_')) {
         return;
       }
 
       // Skip base URL fields (they should be set in .env.local)
-      if (key.includes("_API_BASE_URL")) {
+      if (key.includes('_API_BASE_URL')) {
         return;
       }
 
-      if (typeof value !== "string") {
+      if (typeof value !== 'string') {
         throw new Error(`Invalid value for key: ${key}`);
       }
 
@@ -242,9 +226,9 @@ export class ImportExportService {
       let normalizedKey = key;
 
       // Check if this is the old format (e.g., "Anthropic_API_KEY")
-      if (key.includes("_API_KEY")) {
+      if (key.includes('_API_KEY')) {
         // Extract the provider name from the old format
-        normalizedKey = key.replace("_API_KEY", "");
+        normalizedKey = key.replace('_API_KEY', '');
       }
 
       /*
@@ -270,20 +254,20 @@ export class ImportExportService {
      * This matches how the application stores API keys in cookies
      */
     const template = {
-      Anthropic: "",
-      OpenAI: "",
-      Google: "",
-      Groq: "",
-      HuggingFace: "",
-      OpenRouter: "",
-      Deepseek: "",
-      Mistral: "",
-      OpenAILike: "",
-      Together: "",
-      xAI: "",
-      Perplexity: "",
-      Cohere: "",
-      AzureOpenAI: "",
+      Anthropic: '',
+      OpenAI: '',
+      Google: '',
+      Groq: '',
+      HuggingFace: '',
+      OpenRouter: '',
+      Deepseek: '',
+      Mistral: '',
+      OpenAILike: '',
+      Together: '',
+      xAI: '',
+      Perplexity: '',
+      Cohere: '',
+      AzureOpenAI: '',
     };
 
     // Add a comment to explain the format
@@ -300,7 +284,7 @@ export class ImportExportService {
    */
   static async resetAllSettings(db: IDBDatabase): Promise<void> {
     // 1. Clear all localStorage items related to application settings
-    const localStorageKeysToPreserve: string[] = ["debug_mode"]; // Keys to preserve if needed
+    const localStorageKeysToPreserve: string[] = ['debug_mode']; // Keys to preserve if needed
 
     // Get all localStorage keys
     const allLocalStorageKeys = Object.keys(localStorage);
@@ -336,7 +320,7 @@ export class ImportExportService {
 
     // 3. Clear all data from IndexedDB
     if (!db) {
-      console.warn("Database not initialized, skipping IndexedDB reset");
+      console.warn('Database not initialized, skipping IndexedDB reset');
     } else {
       // Get all chats and delete them
       const chats = await getAllChats(db);
@@ -346,9 +330,7 @@ export class ImportExportService {
     }
 
     // 4. Clear any chat snapshots
-    const snapshotKeys = Object.keys(localStorage).filter((key) =>
-      key.startsWith("snapshot:"),
-    );
+    const snapshotKeys = Object.keys(localStorage).filter((key) => key.startsWith('snapshot:'));
     snapshotKeys.forEach((key) => {
       try {
         localStorage.removeItem(key);
@@ -364,11 +346,11 @@ export class ImportExportService {
    */
   static async deleteAllChats(db: IDBDatabase): Promise<void> {
     // Clear chat history from localStorage
-    localStorage.removeItem("codinit_chat_history");
+    localStorage.removeItem('codinit_chat_history');
 
     // Clear chats from IndexedDB
     if (!db) {
-      throw new Error("Database not initialized");
+      throw new Error('Database not initialized');
     }
 
     // Get all chats and delete them one by one
@@ -402,22 +384,14 @@ export class ImportExportService {
       // Import provider_settings to localStorage
       if (data.providers.provider_settings) {
         try {
-          this._safeSetItem(
-            "provider_settings",
-            data.providers.provider_settings,
-          );
+          this._safeSetItem('provider_settings', data.providers.provider_settings);
         } catch (err) {
-          console.error("Error importing provider settings:", err);
+          console.error('Error importing provider settings:', err);
         }
       }
 
       // Import API keys and other provider cookies
-      const providerCookies = [
-        "apiKeys",
-        "selectedModel",
-        "selectedProvider",
-        "providers",
-      ];
+      const providerCookies = ['apiKeys', 'selectedModel', 'selectedProvider', 'providers'];
       providerCookies.forEach((key) => {
         if (data.providers[key]) {
           try {
@@ -447,25 +421,22 @@ export class ImportExportService {
       // Import localStorage UI settings
       if (data.ui.codinit_tab_configuration) {
         try {
-          this._safeSetItem(
-            "codinit_tab_configuration",
-            data.ui.codinit_tab_configuration,
-          );
+          this._safeSetItem('codinit_tab_configuration', data.ui.codinit_tab_configuration);
         } catch (err) {
-          console.error("Error importing tab configuration:", err);
+          console.error('Error importing tab configuration:', err);
         }
       }
 
       if (data.ui.promptId) {
         try {
-          this._safeSetItem("promptId", data.ui.promptId);
+          this._safeSetItem('promptId', data.ui.promptId);
         } catch (err) {
-          console.error("Error importing prompt ID:", err);
+          console.error('Error importing prompt ID:', err);
         }
       }
 
       // Import UI cookies
-      const uiCookies = ["tabConfiguration", "cachedPrompt"];
+      const uiCookies = ['tabConfiguration', 'cachedPrompt'];
       uiCookies.forEach((key) => {
         if (data.ui[key]) {
           try {
@@ -482,22 +453,15 @@ export class ImportExportService {
       // Import Netlify connection
       if (data.connections.netlify_connection) {
         try {
-          this._safeSetItem(
-            "netlify_connection",
-            data.connections.netlify_connection,
-          );
+          this._safeSetItem('netlify_connection', data.connections.netlify_connection);
         } catch (err) {
-          console.error("Error importing Netlify connection:", err);
+          console.error('Error importing Netlify connection:', err);
         }
       }
 
       // Import GitHub connections
       Object.entries(data.connections).forEach(([key, value]) => {
-        if (
-          key.startsWith("github_") &&
-          value !== null &&
-          value !== undefined
-        ) {
+        if (key.startsWith('github_') && value !== null && value !== undefined) {
           try {
             this._safeSetItem(key, value);
           } catch (err) {
@@ -511,10 +475,10 @@ export class ImportExportService {
     if (data.debug) {
       // Import debug localStorage settings
       const debugLocalStorageKeys = [
-        "codinit_acknowledged_debug_issues",
-        "codinit_acknowledged_connection_issue",
-        "error_logs",
-        "codinit_read_logs",
+        'codinit_acknowledged_debug_issues',
+        'codinit_acknowledged_connection_issue',
+        'error_logs',
+        'codinit_read_logs',
       ];
 
       debugLocalStorageKeys.forEach((key) => {
@@ -528,7 +492,7 @@ export class ImportExportService {
       });
 
       // Import debug cookies
-      const debugCookies = ["isDebugEnabled", "eventLogs"];
+      const debugCookies = ['isDebugEnabled', 'eventLogs'];
       debugCookies.forEach((key) => {
         if (data.debug[key]) {
           try {
@@ -544,20 +508,17 @@ export class ImportExportService {
     if (data.updates) {
       if (data.updates.update_settings) {
         try {
-          this._safeSetItem("update_settings", data.updates.update_settings);
+          this._safeSetItem('update_settings', data.updates.update_settings);
         } catch (err) {
-          console.error("Error importing update settings:", err);
+          console.error('Error importing update settings:', err);
         }
       }
 
       if (data.updates.last_acknowledged_update) {
         try {
-          this._safeSetItem(
-            "codinit_last_acknowledged_version",
-            data.updates.last_acknowledged_update,
-          );
+          this._safeSetItem('codinit_last_acknowledged_version', data.updates.last_acknowledged_update);
         } catch (err) {
-          console.error("Error importing last acknowledged update:", err);
+          console.error('Error importing last acknowledged update:', err);
         }
       }
     }
@@ -590,21 +551,21 @@ export class ImportExportService {
     Object.entries(data).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
         // Skip metadata fields
-        if (key === "exportDate" || key === "version" || key === "appVersion") {
+        if (key === 'exportDate' || key === 'version' || key === 'appVersion') {
           return;
         }
 
         try {
           // Try to determine if this should be a cookie or localStorage item
           const isCookie = [
-            "apiKeys",
-            "selectedModel",
-            "selectedProvider",
-            "providers",
-            "tabConfiguration",
-            "cachedPrompt",
-            "isDebugEnabled",
-            "eventLogs",
+            'apiKeys',
+            'selectedModel',
+            'selectedProvider',
+            'providers',
+            'tabConfiguration',
+            'cachedPrompt',
+            'isDebugEnabled',
+            'eventLogs',
           ].includes(key);
 
           if (isCookie) {
@@ -655,7 +616,7 @@ export class ImportExportService {
         }
       }
     } catch (err) {
-      console.error("Error getting all localStorage items:", err);
+      console.error('Error getting all localStorage items:', err);
     }
 
     return result;
@@ -666,15 +627,11 @@ export class ImportExportService {
    * @param _cookies The cookies object
    * @returns GitHub connections
    */
-  private static _getGitHubConnections(
-    _cookies: Record<string, string>,
-  ): Record<string, any> {
+  private static _getGitHubConnections(_cookies: Record<string, string>): Record<string, any> {
     const result: Record<string, any> = {};
 
     // Get GitHub connections from localStorage
-    const localStorageKeys = Object.keys(localStorage).filter((key) =>
-      key.startsWith("github_"),
-    );
+    const localStorageKeys = Object.keys(localStorage).filter((key) => key.startsWith('github_'));
     localStorageKeys.forEach((key) => {
       try {
         const value = localStorage.getItem(key);
@@ -696,9 +653,7 @@ export class ImportExportService {
     const result: Record<string, any> = {};
 
     // Get chat snapshots from localStorage
-    const snapshotKeys = Object.keys(localStorage).filter((key) =>
-      key.startsWith("snapshot:"),
-    );
+    const snapshotKeys = Object.keys(localStorage).filter((key) => key.startsWith('snapshot:'));
     snapshotKeys.forEach((key) => {
       try {
         const value = localStorage.getItem(key);
@@ -732,11 +687,7 @@ export class ImportExportService {
    */
   private static _safeSetCookie(key: string, value: any): void {
     try {
-      Cookies.set(
-        key,
-        typeof value === "string" ? value : JSON.stringify(value),
-        { expires: 365 },
-      );
+      Cookies.set(key, typeof value === 'string' ? value : JSON.stringify(value), { expires: 365 });
     } catch (err) {
       console.error(`Error setting cookie ${key}:`, err);
     }

@@ -2,8 +2,8 @@
  * @ts-nocheck
  * Preventing TS checks with files presented in the video for a better presentation.
  */
-import { MODEL_REGEX, PROVIDER_REGEX } from "~/utils/constants";
-import { Markdown } from "./Markdown";
+import { MODEL_REGEX, PROVIDER_REGEX } from '~/utils/constants';
+import { Markdown } from './Markdown';
 
 interface UserMessageProps {
   content: string | Array<{ type: string; text?: string; image?: string }>;
@@ -11,11 +11,9 @@ interface UserMessageProps {
 
 export function UserMessage({ content }: UserMessageProps) {
   if (Array.isArray(content)) {
-    const textItem = content.find((item) => item.type === "text");
-    const textContent = stripMetadata(textItem?.text || "");
-    const images = content.filter(
-      (item) => item.type === "image" && item.image,
-    );
+    const textItem = content.find((item) => item.type === 'text');
+    const textContent = stripMetadata(textItem?.text || '');
+    const images = content.filter((item) => item.type === 'image' && item.image);
 
     return (
       <div className="overflow-hidden flex items-center">
@@ -27,7 +25,7 @@ export function UserMessage({ content }: UserMessageProps) {
               src={item.image}
               alt={`Image ${index + 1}`}
               className="max-w-full h-auto rounded-lg"
-              style={{ maxHeight: "512px", objectFit: "contain" }}
+              style={{ maxHeight: '512px', objectFit: 'contain' }}
             />
           ))}
         </div>
@@ -45,10 +43,6 @@ export function UserMessage({ content }: UserMessageProps) {
 }
 
 function stripMetadata(content: string) {
-  const artifactRegex =
-    /<codinitArtifact\s+[^>]*>[\s\S]*?<\/codinitArtifact>/gm;
-  return content
-    .replace(MODEL_REGEX, "")
-    .replace(PROVIDER_REGEX, "")
-    .replace(artifactRegex, "");
+  const artifactRegex = /<codinitArtifact\s+[^>]*>[\s\S]*?<\/codinitArtifact>/gm;
+  return content.replace(MODEL_REGEX, '').replace(PROVIDER_REGEX, '').replace(artifactRegex, '');
 }

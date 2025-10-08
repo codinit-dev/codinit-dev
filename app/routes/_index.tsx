@@ -1,16 +1,16 @@
-import { json, type MetaFunction } from "@remix-run/cloudflare";
-import { ClientOnly } from "remix-utils/client-only";
-import { BaseChat } from "~/components/chat/BaseChat";
-import { Chat } from "~/components/chat/Chat.client";
-import { Header } from "~/components/header/Header";
-import BackgroundRays from "~/components/ui/BackgroundRays";
+import { json, type MetaFunction } from '@remix-run/cloudflare';
+import { ClientOnly } from 'remix-utils/client-only';
+import { BaseChat } from '~/components/chat/BaseChat';
+import { Chat } from '~/components/chat/Chat.client';
+import { Header } from '~/components/header/Header';
+import BackgroundRays from '~/components/ui/BackgroundRays';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "codinit" },
+    { title: 'codinit' },
     {
-      name: "description",
-      content: "Talk with codinit, an AI assistant from StackBlitz",
+      name: 'description',
+      content: 'Talk with codinit, an AI assistant from StackBlitz',
     },
   ];
 };

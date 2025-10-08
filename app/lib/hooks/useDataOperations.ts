@@ -1,8 +1,8 @@
-import { useState, useCallback } from "react";
-import { toast } from "react-toastify";
-import { ImportExportService } from "~/lib/services/importExportService";
-import { useIndexedDB } from "~/lib/hooks/useIndexedDB";
-import { generateId } from "ai";
+import { useState, useCallback } from 'react';
+import { toast } from 'react-toastify';
+import { ImportExportService } from '~/lib/services/importExportService';
+import { useIndexedDB } from '~/lib/hooks/useIndexedDB';
+import { generateId } from 'ai';
 
 interface UseDataOperationsProps {
   /**
@@ -49,7 +49,7 @@ export function useDataOperations({
   const [isImporting, setIsImporting] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false);
-  const [progressMessage, setProgressMessage] = useState<string>("");
+  const [progressMessage, setProgressMessage] = useState<string>('');
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const [lastOperation, setLastOperation] = useState<{
     type: string;
@@ -64,12 +64,12 @@ export function useDataOperations({
     setProgressPercent(percent);
 
     // Dismiss any existing progress toast before showing a new one
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
     toast.loading(`${message} (${percent}%)`, {
-      position: "bottom-right",
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast", // Use the same ID for all progress messages
+      toastId: 'progress-toast', // Use the same ID for all progress messages
     });
   }, []);
 
@@ -81,69 +81,66 @@ export function useDataOperations({
     setProgressPercent(0);
 
     // Dismiss any existing toast first
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
-    toast.loading("Preparing settings export...", {
-      position: "bottom-right",
+    toast.loading('Preparing settings export...', {
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast",
+      toastId: 'progress-toast',
     });
 
     try {
       // Step 1: Export settings
-      showProgress("Exporting settings", 25);
+      showProgress('Exporting settings', 25);
 
       const settingsData = await ImportExportService.exportSettings();
 
       // Step 2: Create blob
-      showProgress("Creating file", 50);
+      showProgress('Creating file', 50);
 
       const blob = new Blob([JSON.stringify(settingsData, null, 2)], {
-        type: "application/json",
+        type: 'application/json',
       });
 
       // Step 3: Download file
-      showProgress("Downloading file", 75);
+      showProgress('Downloading file', 75);
 
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "codinit-settings.json";
+      a.download = 'codinit-settings.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       // Step 4: Complete
-      showProgress("Completing export", 100);
+      showProgress('Completing export', 100);
 
       // Dismiss progress toast before showing success toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.success("Settings exported successfully", {
-        position: "bottom-right",
+      toast.success('Settings exported successfully', {
+        position: 'bottom-right',
         autoClose: 3000,
       });
 
       // Save operation for potential undo
-      setLastOperation({ type: "export-settings", data: settingsData });
+      setLastOperation({ type: 'export-settings', data: settingsData });
     } catch (error) {
-      console.error("Error exporting settings:", error);
+      console.error('Error exporting settings:', error);
 
       // Dismiss progress toast before showing error toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.error(
-        `Failed to export settings: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        },
-      );
+      toast.error(`Failed to export settings: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
     } finally {
       setIsExporting(false);
       setProgressPercent(0);
-      setProgressMessage("");
+      setProgressMessage('');
     }
   }, [showProgress]);
 
@@ -154,8 +151,8 @@ export function useDataOperations({
   const handleExportSelectedSettings = useCallback(
     async (categoryIds: string[]) => {
       if (!categoryIds || categoryIds.length === 0) {
-        toast.error("No settings categories selected", {
-          position: "bottom-right",
+        toast.error('No settings categories selected', {
+          position: 'bottom-right',
           autoClose: 3000,
         });
         return;
@@ -165,25 +162,22 @@ export function useDataOperations({
       setProgressPercent(0);
 
       // Dismiss any existing toast first
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.loading(
-        `Preparing export of ${categoryIds.length} settings categories...`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-          toastId: "progress-toast",
-        },
-      );
+      toast.loading(`Preparing export of ${categoryIds.length} settings categories...`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+        toastId: 'progress-toast',
+      });
 
       try {
         // Step 1: Export all settings
-        showProgress("Exporting settings", 20);
+        showProgress('Exporting settings', 20);
 
         const allSettings = await ImportExportService.exportSettings();
 
         // Step 2: Filter settings by category
-        showProgress("Filtering selected categories", 40);
+        showProgress('Filtering selected categories', 40);
 
         const filteredSettings: Record<string, any> = {
           exportDate: allSettings.exportDate,
@@ -197,60 +191,54 @@ export function useDataOperations({
         });
 
         // Step 3: Create blob
-        showProgress("Creating file", 60);
+        showProgress('Creating file', 60);
 
         const blob = new Blob([JSON.stringify(filteredSettings, null, 2)], {
-          type: "application/json",
+          type: 'application/json',
         });
 
         // Step 4: Download file
-        showProgress("Downloading file", 80);
+        showProgress('Downloading file', 80);
 
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
+        const a = document.createElement('a');
         a.href = url;
-        a.download = `codinit-settings-${categoryIds.join("-")}.json`;
+        a.download = `codinit-settings-${categoryIds.join('-')}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
         // Step 5: Complete
-        showProgress("Completing export", 100);
+        showProgress('Completing export', 100);
 
         // Dismiss progress toast before showing success toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.success(
-          `${categoryIds.length} settings categories exported successfully`,
-          {
-            position: "bottom-right",
-            autoClose: 3000,
-          },
-        );
+        toast.success(`${categoryIds.length} settings categories exported successfully`, {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
 
         // Save operation for potential undo
         setLastOperation({
-          type: "export-selected-settings",
+          type: 'export-selected-settings',
           data: { settings: filteredSettings, categories: categoryIds },
         });
       } catch (error) {
-        console.error("Error exporting selected settings:", error);
+        console.error('Error exporting selected settings:', error);
 
         // Dismiss progress toast before showing error toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.error(
-          `Failed to export settings: ${error instanceof Error ? error.message : "Unknown error"}`,
-          {
-            position: "bottom-right",
-            autoClose: 3000,
-          },
-        );
+        toast.error(`Failed to export settings: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
       } finally {
         setIsExporting(false);
         setProgressPercent(0);
-        setProgressMessage("");
+        setProgressMessage('');
       }
     },
     [showProgress],
@@ -261,14 +249,14 @@ export function useDataOperations({
    */
   const handleExportAllChats = useCallback(async () => {
     if (!db) {
-      toast.error("Database not available", {
-        position: "bottom-right",
+      toast.error('Database not available', {
+        position: 'bottom-right',
         autoClose: 3000,
       });
       return;
     }
 
-    console.log("Export: Using database", {
+    console.log('Export: Using database', {
       name: db.name,
       version: db.version,
       objectStoreNames: Array.from(db.objectStoreNames),
@@ -278,19 +266,19 @@ export function useDataOperations({
     setProgressPercent(0);
 
     // Dismiss any existing toast first
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
-    toast.loading("Preparing chats export...", {
-      position: "bottom-right",
+    toast.loading('Preparing chats export...', {
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast",
+      toastId: 'progress-toast',
     });
 
     try {
       // Step 1: Export chats
-      showProgress("Retrieving chats from database", 25);
+      showProgress('Retrieving chats from database', 25);
 
-      console.log("Database details:", {
+      console.log('Database details:', {
         name: db.name,
         version: db.version,
         objectStoreNames: Array.from(db.objectStoreNames),
@@ -299,27 +287,23 @@ export function useDataOperations({
       // Direct database query approach for more reliable access
       const directChats = await new Promise<any[]>((resolve, reject) => {
         try {
-          console.log(
-            `Creating transaction on '${db.name}' database, objectStore 'chats'`,
-          );
+          console.log(`Creating transaction on '${db.name}' database, objectStore 'chats'`);
 
-          const transaction = db.transaction(["chats"], "readonly");
-          const store = transaction.objectStore("chats");
+          const transaction = db.transaction(['chats'], 'readonly');
+          const store = transaction.objectStore('chats');
           const request = store.getAll();
 
           request.onsuccess = () => {
-            console.log(
-              `Found ${request.result ? request.result.length : 0} chats directly from database`,
-            );
+            console.log(`Found ${request.result ? request.result.length : 0} chats directly from database`);
             resolve(request.result || []);
           };
 
           request.onerror = () => {
-            console.error("Error querying chats store:", request.error);
+            console.error('Error querying chats store:', request.error);
             reject(request.error);
           };
         } catch (err) {
-          console.error("Error creating transaction:", err);
+          console.error('Error creating transaction:', err);
           reject(err);
         }
       });
@@ -333,54 +317,51 @@ export function useDataOperations({
       console.log(`Preparing to export ${exportData.chats.length} chats`);
 
       // Step 2: Create blob
-      showProgress("Creating file", 50);
+      showProgress('Creating file', 50);
 
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: "application/json",
+        type: 'application/json',
       });
 
       // Step 3: Download file
-      showProgress("Downloading file", 75);
+      showProgress('Downloading file', 75);
 
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "codinit-chats.json";
+      a.download = 'codinit-chats.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       // Step 4: Complete
-      showProgress("Completing export", 100);
+      showProgress('Completing export', 100);
 
       // Dismiss progress toast before showing success toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
       toast.success(`${exportData.chats.length} chats exported successfully`, {
-        position: "bottom-right",
+        position: 'bottom-right',
         autoClose: 3000,
       });
 
       // Save operation for potential undo
-      setLastOperation({ type: "export-chats", data: exportData });
+      setLastOperation({ type: 'export-chats', data: exportData });
     } catch (error) {
-      console.error("Error exporting chats:", error);
+      console.error('Error exporting chats:', error);
 
       // Dismiss progress toast before showing error toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.error(
-        `Failed to export chats: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        },
-      );
+      toast.error(`Failed to export chats: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
     } finally {
       setIsExporting(false);
       setProgressPercent(0);
-      setProgressMessage("");
+      setProgressMessage('');
     }
   }, [db, showProgress]);
 
@@ -391,16 +372,16 @@ export function useDataOperations({
   const handleExportSelectedChats = useCallback(
     async (chatIds: string[]) => {
       if (!db) {
-        toast.error("Database not available", {
-          position: "bottom-right",
+        toast.error('Database not available', {
+          position: 'bottom-right',
           autoClose: 3000,
         });
         return;
       }
 
       if (!chatIds || chatIds.length === 0) {
-        toast.error("No chats selected", {
-          position: "bottom-right",
+        toast.error('No chats selected', {
+          position: 'bottom-right',
           autoClose: 3000,
         });
         return;
@@ -410,20 +391,20 @@ export function useDataOperations({
       setProgressPercent(0);
 
       // Dismiss any existing toast first
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
       toast.loading(`Preparing export of ${chatIds.length} chats...`, {
-        position: "bottom-right",
+        position: 'bottom-right',
         autoClose: 3000,
-        toastId: "progress-toast",
+        toastId: 'progress-toast',
       });
 
       try {
         // Step 1: Get chats from database
-        showProgress("Retrieving chats from database", 25);
+        showProgress('Retrieving chats from database', 25);
 
-        const transaction = db.transaction(["chats"], "readonly");
-        const store = transaction.objectStore("chats");
+        const transaction = db.transaction(['chats'], 'readonly');
+        const store = transaction.objectStore('chats');
 
         // Create an array to store the promises for getting each chat
         const chatPromises = chatIds.map((chatId) => {
@@ -447,57 +428,54 @@ export function useDataOperations({
         };
 
         // Step 2: Create blob
-        showProgress("Creating file", 50);
+        showProgress('Creating file', 50);
 
         const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-          type: "application/json",
+          type: 'application/json',
         });
 
         // Step 3: Download file
-        showProgress("Downloading file", 75);
+        showProgress('Downloading file', 75);
 
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
+        const a = document.createElement('a');
         a.href = url;
-        a.download = "codinit-selected-chats.json";
+        a.download = 'codinit-selected-chats.json';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
         // Step 4: Complete
-        showProgress("Completing export", 100);
+        showProgress('Completing export', 100);
 
         // Dismiss progress toast before showing success toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
         toast.success(`${filteredChats.length} chats exported successfully`, {
-          position: "bottom-right",
+          position: 'bottom-right',
           autoClose: 3000,
         });
 
         // Save operation for potential undo
         setLastOperation({
-          type: "export-selected-chats",
+          type: 'export-selected-chats',
           data: { chatIds, chats: filteredChats },
         });
       } catch (error) {
-        console.error("Error exporting selected chats:", error);
+        console.error('Error exporting selected chats:', error);
 
         // Dismiss progress toast before showing error toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.error(
-          `Failed to export selected chats: ${error instanceof Error ? error.message : "Unknown error"}`,
-          {
-            position: "bottom-right",
-            autoClose: 3000,
-          },
-        );
+        toast.error(`Failed to export selected chats: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
       } finally {
         setIsExporting(false);
         setProgressPercent(0);
-        setProgressMessage("");
+        setProgressMessage('');
       }
     },
     [db, showProgress],
@@ -513,47 +491,47 @@ export function useDataOperations({
       setProgressPercent(0);
 
       // Dismiss any existing toast first
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
       toast.loading(`Importing settings from ${file.name}...`, {
-        position: "bottom-right",
+        position: 'bottom-right',
         autoClose: 3000,
-        toastId: "progress-toast",
+        toastId: 'progress-toast',
       });
 
       try {
         // Step 1: Read file
-        showProgress("Reading file", 20);
+        showProgress('Reading file', 20);
 
         const fileContent = await file.text();
 
         // Step 2: Parse JSON
-        showProgress("Parsing settings data", 40);
+        showProgress('Parsing settings data', 40);
 
         const importedData = JSON.parse(fileContent);
 
         // Step 3: Validate data
-        showProgress("Validating settings data", 60);
+        showProgress('Validating settings data', 60);
 
         // Save current settings for potential undo
         const currentSettings = await ImportExportService.exportSettings();
         setLastOperation({
-          type: "import-settings",
+          type: 'import-settings',
           data: { previous: currentSettings },
         });
 
         // Step 4: Import settings
-        showProgress("Applying settings", 80);
+        showProgress('Applying settings', 80);
         await ImportExportService.importSettings(importedData);
 
         // Step 5: Complete
-        showProgress("Completing import", 100);
+        showProgress('Completing import', 100);
 
         // Dismiss progress toast before showing success toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.success("Settings imported successfully", {
-          position: "bottom-right",
+        toast.success('Settings imported successfully', {
+          position: 'bottom-right',
           autoClose: 3000,
         });
 
@@ -561,22 +539,19 @@ export function useDataOperations({
           onReloadSettings();
         }
       } catch (error) {
-        console.error("Error importing settings:", error);
+        console.error('Error importing settings:', error);
 
         // Dismiss progress toast before showing error toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.error(
-          `Failed to import settings: ${error instanceof Error ? error.message : "Unknown error"}`,
-          {
-            position: "bottom-right",
-            autoClose: 3000,
-          },
-        );
+        toast.error(`Failed to import settings: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
       } finally {
         setIsImporting(false);
         setProgressPercent(0);
-        setProgressMessage("");
+        setProgressMessage('');
       }
     },
     [onReloadSettings, showProgress],
@@ -589,8 +564,8 @@ export function useDataOperations({
   const handleImportChats = useCallback(
     async (file: File) => {
       if (!db) {
-        toast.error("Database not available", {
-          position: "bottom-right",
+        toast.error('Database not available', {
+          position: 'bottom-right',
           autoClose: 3000,
         });
         return;
@@ -600,45 +575,41 @@ export function useDataOperations({
       setProgressPercent(0);
 
       // Dismiss any existing toast first
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
       toast.loading(`Importing chats from ${file.name}...`, {
-        position: "bottom-right",
+        position: 'bottom-right',
         autoClose: 3000,
-        toastId: "progress-toast",
+        toastId: 'progress-toast',
       });
 
       try {
         // Step 1: Read file
-        showProgress("Reading file", 20);
+        showProgress('Reading file', 20);
 
         const fileContent = await file.text();
 
         // Step 2: Parse JSON and validate structure
-        showProgress("Parsing chat data", 40);
+        showProgress('Parsing chat data', 40);
 
         const importedData = JSON.parse(fileContent);
 
         if (!importedData.chats || !Array.isArray(importedData.chats)) {
-          throw new Error(
-            "Invalid chat data format: missing or invalid chats array",
-          );
+          throw new Error('Invalid chat data format: missing or invalid chats array');
         }
 
         // Step 3: Validate each chat object
-        showProgress("Validating chat data", 60);
+        showProgress('Validating chat data', 60);
 
         const validatedChats = importedData.chats.map((chat: any) => {
           if (!chat.id || !Array.isArray(chat.messages)) {
-            throw new Error("Invalid chat format: missing required fields");
+            throw new Error('Invalid chat format: missing required fields');
           }
 
           // Ensure each message has required fields
           const validatedMessages = chat.messages.map((msg: any) => {
             if (!msg.role || !msg.content) {
-              throw new Error(
-                "Invalid message format: missing required fields",
-              );
+              throw new Error('Invalid message format: missing required fields');
             }
 
             return {
@@ -653,7 +624,7 @@ export function useDataOperations({
 
           return {
             id: chat.id,
-            description: chat.description || "",
+            description: chat.description || '',
             messages: validatedMessages,
             timestamp: chat.timestamp || new Date().toISOString(),
             urlId: chat.urlId || null,
@@ -662,19 +633,19 @@ export function useDataOperations({
         });
 
         // Step 4: Save current chats for potential undo
-        showProgress("Preparing database transaction", 70);
+        showProgress('Preparing database transaction', 70);
 
         const currentChats = await ImportExportService.exportAllChats(db);
         setLastOperation({
-          type: "import-chats",
+          type: 'import-chats',
           data: { previous: currentChats },
         });
 
         // Step 5: Import chats
         showProgress(`Importing ${validatedChats.length} chats`, 80);
 
-        const transaction = db.transaction(["chats"], "readwrite");
-        const store = transaction.objectStore("chats");
+        const transaction = db.transaction(['chats'], 'readwrite');
+        const store = transaction.objectStore('chats');
 
         let processed = 0;
 
@@ -696,13 +667,13 @@ export function useDataOperations({
         });
 
         // Step 6: Complete
-        showProgress("Completing import", 100);
+        showProgress('Completing import', 100);
 
         // Dismiss progress toast before showing success toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
         toast.success(`${validatedChats.length} chats imported successfully`, {
-          position: "bottom-right",
+          position: 'bottom-right',
           autoClose: 3000,
         });
 
@@ -710,22 +681,19 @@ export function useDataOperations({
           onReloadChats();
         }
       } catch (error) {
-        console.error("Error importing chats:", error);
+        console.error('Error importing chats:', error);
 
         // Dismiss progress toast before showing error toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.error(
-          `Failed to import chats: ${error instanceof Error ? error.message : "Unknown error"}`,
-          {
-            position: "bottom-right",
-            autoClose: 3000,
-          },
-        );
+        toast.error(`Failed to import chats: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
       } finally {
         setIsImporting(false);
         setProgressPercent(0);
-        setProgressMessage("");
+        setProgressMessage('');
       }
     },
     [db, onReloadChats, showProgress],
@@ -741,52 +709,48 @@ export function useDataOperations({
       setProgressPercent(0);
 
       // Dismiss any existing toast first
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
       toast.loading(`Importing API keys from ${file.name}...`, {
-        position: "bottom-right",
+        position: 'bottom-right',
         autoClose: 3000,
-        toastId: "progress-toast",
+        toastId: 'progress-toast',
       });
 
       try {
         // Step 1: Read file
-        showProgress("Reading file", 20);
+        showProgress('Reading file', 20);
 
         const fileContent = await file.text();
 
         // Step 2: Parse JSON
-        showProgress("Parsing API keys data", 40);
+        showProgress('Parsing API keys data', 40);
 
         const importedData = JSON.parse(fileContent);
 
         // Step 3: Validate data
-        showProgress("Validating API keys data", 60);
+        showProgress('Validating API keys data', 60);
 
         // Get current API keys from cookies for potential undo
-        const apiKeysStr = document.cookie
-          .split(";")
-          .find((row) => row.trim().startsWith("apiKeys="));
-        const currentApiKeys = apiKeysStr
-          ? JSON.parse(decodeURIComponent(apiKeysStr.split("=")[1]))
-          : {};
+        const apiKeysStr = document.cookie.split(';').find((row) => row.trim().startsWith('apiKeys='));
+        const currentApiKeys = apiKeysStr ? JSON.parse(decodeURIComponent(apiKeysStr.split('=')[1])) : {};
         setLastOperation({
-          type: "import-api-keys",
+          type: 'import-api-keys',
           data: { previous: currentApiKeys },
         });
 
         // Step 4: Import API keys
-        showProgress("Applying API keys", 80);
+        showProgress('Applying API keys', 80);
 
         const newKeys = ImportExportService.importAPIKeys(importedData);
         const apiKeysJson = JSON.stringify(newKeys);
         document.cookie = `apiKeys=${apiKeysJson}; path=/; max-age=31536000`;
 
         // Step 5: Complete
-        showProgress("Completing import", 100);
+        showProgress('Completing import', 100);
 
         // Dismiss progress toast before showing success toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
         // Count how many keys were imported
         const keyCount = Object.keys(newKeys).length;
@@ -796,30 +760,27 @@ export function useDataOperations({
 
         toast.success(
           `${keyCount} API keys imported successfully (${newKeyCount} new/updated)\n` +
-            "Note: Keys are stored in browser cookies. For server-side usage, add them to your .env.local file.",
-          { position: "bottom-right", autoClose: 5000 },
+            'Note: Keys are stored in browser cookies. For server-side usage, add them to your .env.local file.',
+          { position: 'bottom-right', autoClose: 5000 },
         );
 
         if (onReloadSettings) {
           onReloadSettings();
         }
       } catch (error) {
-        console.error("Error importing API keys:", error);
+        console.error('Error importing API keys:', error);
 
         // Dismiss progress toast before showing error toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.error(
-          `Failed to import API keys: ${error instanceof Error ? error.message : "Unknown error"}`,
-          {
-            position: "bottom-right",
-            autoClose: 3000,
-          },
-        );
+        toast.error(`Failed to import API keys: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+          position: 'bottom-right',
+          autoClose: 3000,
+        });
       } finally {
         setIsImporting(false);
         setProgressPercent(0);
-        setProgressMessage("");
+        setProgressMessage('');
       }
     },
     [onReloadSettings, showProgress],
@@ -833,37 +794,37 @@ export function useDataOperations({
     setProgressPercent(0);
 
     // Dismiss any existing toast first
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
-    toast.loading("Resetting settings...", {
-      position: "bottom-right",
+    toast.loading('Resetting settings...', {
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast",
+      toastId: 'progress-toast',
     });
 
     try {
       if (db) {
         // Step 1: Save current settings for potential undo
-        showProgress("Backing up current settings", 25);
+        showProgress('Backing up current settings', 25);
 
         const currentSettings = await ImportExportService.exportSettings();
         setLastOperation({
-          type: "reset-settings",
+          type: 'reset-settings',
           data: { previous: currentSettings },
         });
 
         // Step 2: Reset settings
-        showProgress("Resetting settings to defaults", 50);
+        showProgress('Resetting settings to defaults', 50);
         await ImportExportService.resetAllSettings(db);
 
         // Step 3: Complete
-        showProgress("Completing reset", 100);
+        showProgress('Completing reset', 100);
 
         // Dismiss progress toast before showing success toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.success("Settings reset successfully", {
-          position: "bottom-right",
+        toast.success('Settings reset successfully', {
+          position: 'bottom-right',
           autoClose: 3000,
         });
 
@@ -872,30 +833,27 @@ export function useDataOperations({
         }
       } else {
         // Dismiss progress toast before showing error toast
-        toast.dismiss("progress-toast");
+        toast.dismiss('progress-toast');
 
-        toast.error("Database not available", {
-          position: "bottom-right",
+        toast.error('Database not available', {
+          position: 'bottom-right',
           autoClose: 3000,
         });
       }
     } catch (error) {
-      console.error("Error resetting settings:", error);
+      console.error('Error resetting settings:', error);
 
       // Dismiss progress toast before showing error toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.error(
-        `Failed to reset settings: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        },
-      );
+      toast.error(`Failed to reset settings: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
     } finally {
       setIsResetting(false);
       setProgressPercent(0);
-      setProgressMessage("");
+      setProgressMessage('');
     }
   }, [db, onResetSettings, showProgress]);
 
@@ -904,8 +862,8 @@ export function useDataOperations({
    */
   const handleResetChats = useCallback(async () => {
     if (!db) {
-      toast.error("Database not available", {
-        position: "bottom-right",
+      toast.error('Database not available', {
+        position: 'bottom-right',
         autoClose: 3000,
       });
       return;
@@ -915,36 +873,36 @@ export function useDataOperations({
     setProgressPercent(0);
 
     // Dismiss any existing toast first
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
-    toast.loading("Deleting all chats...", {
-      position: "bottom-right",
+    toast.loading('Deleting all chats...', {
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast",
+      toastId: 'progress-toast',
     });
 
     try {
       // Step 1: Save current chats for potential undo
-      showProgress("Backing up current chats", 25);
+      showProgress('Backing up current chats', 25);
 
       const currentChats = await ImportExportService.exportAllChats(db);
       setLastOperation({
-        type: "reset-chats",
+        type: 'reset-chats',
         data: { previous: currentChats },
       });
 
       // Step 2: Delete chats
-      showProgress("Deleting chats from database", 50);
+      showProgress('Deleting chats from database', 50);
       await ImportExportService.deleteAllChats(db);
 
       // Step 3: Complete
-      showProgress("Completing deletion", 100);
+      showProgress('Completing deletion', 100);
 
       // Dismiss progress toast before showing success toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.success("All chats deleted successfully", {
-        position: "bottom-right",
+      toast.success('All chats deleted successfully', {
+        position: 'bottom-right',
         autoClose: 3000,
       });
 
@@ -952,22 +910,19 @@ export function useDataOperations({
         onResetChats();
       }
     } catch (error) {
-      console.error("Error resetting chats:", error);
+      console.error('Error resetting chats:', error);
 
       // Dismiss progress toast before showing error toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.error(
-        `Failed to delete chats: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        },
-      );
+      toast.error(`Failed to delete chats: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
     } finally {
       setIsResetting(false);
       setProgressPercent(0);
-      setProgressMessage("");
+      setProgressMessage('');
     }
   }, [db, onResetChats, showProgress]);
 
@@ -979,62 +934,59 @@ export function useDataOperations({
     setProgressPercent(0);
 
     // Dismiss any existing toast first
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
-    toast.loading("Creating API keys template...", {
-      position: "bottom-right",
+    toast.loading('Creating API keys template...', {
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast",
+      toastId: 'progress-toast',
     });
 
     try {
       // Step 1: Create template
-      showProgress("Creating template", 50);
+      showProgress('Creating template', 50);
 
       const templateData = ImportExportService.createAPIKeysTemplate();
 
       // Step 2: Download file
-      showProgress("Downloading template", 75);
+      showProgress('Downloading template', 75);
 
       const blob = new Blob([JSON.stringify(templateData, null, 2)], {
-        type: "application/json",
+        type: 'application/json',
       });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "codinit-api-keys-template.json";
+      a.download = 'codinit-api-keys-template.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       // Step 3: Complete
-      showProgress("Completing download", 100);
+      showProgress('Completing download', 100);
 
       // Dismiss progress toast before showing success toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.success("Template downloaded successfully", {
-        position: "bottom-right",
+      toast.success('Template downloaded successfully', {
+        position: 'bottom-right',
         autoClose: 3000,
       });
     } catch (error) {
-      console.error("Error downloading template:", error);
+      console.error('Error downloading template:', error);
 
       // Dismiss progress toast before showing error toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.error(
-        `Failed to download template: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        },
-      );
+      toast.error(`Failed to download template: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
     } finally {
       setIsDownloadingTemplate(false);
       setProgressPercent(0);
-      setProgressMessage("");
+      setProgressMessage('');
     }
   }, [showProgress]);
 
@@ -1046,76 +998,73 @@ export function useDataOperations({
     setProgressPercent(0);
 
     // Dismiss any existing toast first
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
-    toast.loading("Exporting API keys...", {
-      position: "bottom-right",
+    toast.loading('Exporting API keys...', {
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast",
+      toastId: 'progress-toast',
     });
 
     try {
       // Step 1: Get API keys from all sources
-      showProgress("Retrieving API keys", 25);
+      showProgress('Retrieving API keys', 25);
 
       // Create a fetch request to get API keys from server
-      const response = await fetch("/api/export-api-keys");
+      const response = await fetch('/api/export-api-keys');
 
       if (!response.ok) {
-        throw new Error("Failed to retrieve API keys from server");
+        throw new Error('Failed to retrieve API keys from server');
       }
 
       const apiKeys = await response.json();
 
       // Step 2: Create blob
-      showProgress("Creating file", 50);
+      showProgress('Creating file', 50);
 
       const blob = new Blob([JSON.stringify(apiKeys, null, 2)], {
-        type: "application/json",
+        type: 'application/json',
       });
 
       // Step 3: Download file
-      showProgress("Downloading file", 75);
+      showProgress('Downloading file', 75);
 
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = "codinit-api-keys.json";
+      a.download = 'codinit-api-keys.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       // Step 4: Complete
-      showProgress("Completing export", 100);
+      showProgress('Completing export', 100);
 
       // Dismiss progress toast before showing success toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.success("API keys exported successfully", {
-        position: "bottom-right",
+      toast.success('API keys exported successfully', {
+        position: 'bottom-right',
         autoClose: 3000,
       });
 
       // Save operation for potential undo
-      setLastOperation({ type: "export-api-keys", data: apiKeys });
+      setLastOperation({ type: 'export-api-keys', data: apiKeys });
     } catch (error) {
-      console.error("Error exporting API keys:", error);
+      console.error('Error exporting API keys:', error);
 
       // Dismiss progress toast before showing error toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.error(
-        `Failed to export API keys: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        },
-      );
+      toast.error(`Failed to export API keys: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
     } finally {
       setIsExporting(false);
       setProgressPercent(0);
-      setProgressMessage("");
+      setProgressMessage('');
     }
   }, [showProgress]);
 
@@ -1124,33 +1073,33 @@ export function useDataOperations({
    */
   const handleUndo = useCallback(async () => {
     if (!lastOperation || !db) {
-      toast.error("Nothing to undo", {
-        position: "bottom-right",
+      toast.error('Nothing to undo', {
+        position: 'bottom-right',
         autoClose: 3000,
       });
       return;
     }
 
     // Dismiss any existing toast first
-    toast.dismiss("progress-toast");
+    toast.dismiss('progress-toast');
 
-    toast.loading("Processing undo operation...", {
-      position: "bottom-right",
+    toast.loading('Processing undo operation...', {
+      position: 'bottom-right',
       autoClose: 3000,
-      toastId: "progress-toast",
+      toastId: 'progress-toast',
     });
 
     try {
       switch (lastOperation.type) {
-        case "import-settings": {
+        case 'import-settings': {
           // Restore previous settings
           await ImportExportService.importSettings(lastOperation.data.previous);
 
           // Dismiss progress toast before showing success toast
-          toast.dismiss("progress-toast");
+          toast.dismiss('progress-toast');
 
-          toast.success("Operation undone successfully", {
-            position: "bottom-right",
+          toast.success('Operation undone successfully', {
+            position: 'bottom-right',
             autoClose: 3000,
           });
 
@@ -1161,13 +1110,13 @@ export function useDataOperations({
           break;
         }
 
-        case "import-chats": {
+        case 'import-chats': {
           // Delete imported chats and restore previous state
           await ImportExportService.deleteAllChats(db);
 
           // Reimport previous chats
-          const transaction = db.transaction(["chats"], "readwrite");
-          const store = transaction.objectStore("chats");
+          const transaction = db.transaction(['chats'], 'readwrite');
+          const store = transaction.objectStore('chats');
 
           for (const chat of lastOperation.data.previous.chats) {
             store.put(chat);
@@ -1179,10 +1128,10 @@ export function useDataOperations({
           });
 
           // Dismiss progress toast before showing success toast
-          toast.dismiss("progress-toast");
+          toast.dismiss('progress-toast');
 
-          toast.success("Operation undone successfully", {
-            position: "bottom-right",
+          toast.success('Operation undone successfully', {
+            position: 'bottom-right',
             autoClose: 3000,
           });
 
@@ -1193,15 +1142,15 @@ export function useDataOperations({
           break;
         }
 
-        case "reset-settings": {
+        case 'reset-settings': {
           // Restore previous settings
           await ImportExportService.importSettings(lastOperation.data.previous);
 
           // Dismiss progress toast before showing success toast
-          toast.dismiss("progress-toast");
+          toast.dismiss('progress-toast');
 
-          toast.success("Operation undone successfully", {
-            position: "bottom-right",
+          toast.success('Operation undone successfully', {
+            position: 'bottom-right',
             autoClose: 3000,
           });
 
@@ -1212,10 +1161,10 @@ export function useDataOperations({
           break;
         }
 
-        case "reset-chats": {
+        case 'reset-chats': {
           // Restore previous chats
-          const chatTransaction = db.transaction(["chats"], "readwrite");
-          const chatStore = chatTransaction.objectStore("chats");
+          const chatTransaction = db.transaction(['chats'], 'readwrite');
+          const chatStore = chatTransaction.objectStore('chats');
 
           for (const chat of lastOperation.data.previous.chats) {
             chatStore.put(chat);
@@ -1227,10 +1176,10 @@ export function useDataOperations({
           });
 
           // Dismiss progress toast before showing success toast
-          toast.dismiss("progress-toast");
+          toast.dismiss('progress-toast');
 
-          toast.success("Operation undone successfully", {
-            position: "bottom-right",
+          toast.success('Operation undone successfully', {
+            position: 'bottom-right',
             autoClose: 3000,
           });
 
@@ -1241,7 +1190,7 @@ export function useDataOperations({
           break;
         }
 
-        case "import-api-keys": {
+        case 'import-api-keys': {
           // Restore previous API keys
           const previousAPIKeys = lastOperation.data.previous;
           const newKeys = ImportExportService.importAPIKeys(previousAPIKeys);
@@ -1249,10 +1198,10 @@ export function useDataOperations({
           document.cookie = `apiKeys=${apiKeysJson}; path=/; max-age=31536000`;
 
           // Dismiss progress toast before showing success toast
-          toast.dismiss("progress-toast");
+          toast.dismiss('progress-toast');
 
-          toast.success("Operation undone successfully", {
-            position: "bottom-right",
+          toast.success('Operation undone successfully', {
+            position: 'bottom-right',
             autoClose: 3000,
           });
 
@@ -1265,10 +1214,10 @@ export function useDataOperations({
 
         default:
           // Dismiss progress toast before showing error toast
-          toast.dismiss("progress-toast");
+          toast.dismiss('progress-toast');
 
-          toast.error("Cannot undo this operation", {
-            position: "bottom-right",
+          toast.error('Cannot undo this operation', {
+            position: 'bottom-right',
             autoClose: 3000,
           });
       }
@@ -1276,18 +1225,15 @@ export function useDataOperations({
       // Clear the last operation after undoing
       setLastOperation(null);
     } catch (error) {
-      console.error("Error undoing operation:", error);
+      console.error('Error undoing operation:', error);
 
       // Dismiss progress toast before showing error toast
-      toast.dismiss("progress-toast");
+      toast.dismiss('progress-toast');
 
-      toast.error(
-        `Failed to undo: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          position: "bottom-right",
-          autoClose: 3000,
-        },
-      );
+      toast.error(`Failed to undo: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        position: 'bottom-right',
+        autoClose: 3000,
+      });
     }
   }, [lastOperation, db, onReloadSettings, onReloadChats]);
 

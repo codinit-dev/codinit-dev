@@ -1,37 +1,31 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 
-export type SettingCategory =
-  | "profile"
-  | "file_sharing"
-  | "connectivity"
-  | "system"
-  | "services"
-  | "preferences";
+export type SettingCategory = 'profile' | 'file_sharing' | 'connectivity' | 'system' | 'services' | 'preferences';
 
 export type TabType =
-  | "profile"
-  | "settings"
-  | "notifications"
-  | "features"
-  | "data"
-  | "cloud-providers"
-  | "local-providers"
-  | "service-status"
-  | "connection"
-  | "debug"
-  | "event-logs"
-  | "update"
-  | "task-manager"
-  | "tab-management";
+  | 'profile'
+  | 'settings'
+  | 'notifications'
+  | 'features'
+  | 'data'
+  | 'cloud-providers'
+  | 'local-providers'
+  | 'service-status'
+  | 'connection'
+  | 'debug'
+  | 'event-logs'
+  | 'update'
+  | 'task-manager'
+  | 'tab-management';
 
-export type WindowType = "user" | "developer";
+export type WindowType = 'user' | 'developer';
 
 export interface UserProfile {
   nickname: any;
   name: string;
   email: string;
   avatar?: string;
-  theme: "light" | "dark" | "system";
+  theme: 'light' | 'dark' | 'system';
   notifications: boolean;
   password?: string;
   bio?: string;
@@ -60,11 +54,11 @@ export interface TabVisibilityConfig {
 }
 
 export interface DevTabConfig extends TabVisibilityConfig {
-  window: "developer";
+  window: 'developer';
 }
 
 export interface UserTabConfig extends TabVisibilityConfig {
-  window: "user";
+  window: 'user';
 }
 
 export interface TabWindowConfig {
@@ -73,38 +67,38 @@ export interface TabWindowConfig {
 }
 
 export const TAB_LABELS: Record<TabType, string> = {
-  profile: "Profile",
-  settings: "Settings",
-  notifications: "Notifications",
-  features: "Features",
-  data: "Data Management",
-  "cloud-providers": "Cloud Providers",
-  "local-providers": "Local Providers",
-  "service-status": "Service Status",
-  connection: "Connections",
-  debug: "Debug",
-  "event-logs": "Event Logs",
-  update: "Updates",
-  "task-manager": "Task Manager",
-  "tab-management": "Tab Management",
+  profile: 'Profile',
+  settings: 'Settings',
+  notifications: 'Notifications',
+  features: 'Features',
+  data: 'Data Management',
+  'cloud-providers': 'Cloud Providers',
+  'local-providers': 'Local Providers',
+  'service-status': 'Service Status',
+  connection: 'Connections',
+  debug: 'Debug',
+  'event-logs': 'Event Logs',
+  update: 'Updates',
+  'task-manager': 'Task Manager',
+  'tab-management': 'Tab Management',
 };
 
 export const categoryLabels: Record<SettingCategory, string> = {
-  profile: "Profile & Account",
-  file_sharing: "File Sharing",
-  connectivity: "Connectivity",
-  system: "System",
-  services: "Services",
-  preferences: "Preferences",
+  profile: 'Profile & Account',
+  file_sharing: 'File Sharing',
+  connectivity: 'Connectivity',
+  system: 'System',
+  services: 'Services',
+  preferences: 'Preferences',
 };
 
 export const categoryIcons: Record<SettingCategory, string> = {
-  profile: "i-ph:user-circle",
-  file_sharing: "i-ph:folder-simple",
-  connectivity: "i-ph:wifi-high",
-  system: "i-ph:gear",
-  services: "i-ph:cube",
-  preferences: "i-ph:sliders",
+  profile: 'i-ph:user-circle',
+  file_sharing: 'i-ph:folder-simple',
+  connectivity: 'i-ph:wifi-high',
+  system: 'i-ph:gear',
+  services: 'i-ph:cube',
+  preferences: 'i-ph:sliders',
 };
 
 export interface Profile {
@@ -113,7 +107,7 @@ export interface Profile {
   avatar?: string;
   preferences?: {
     notifications?: boolean;
-    theme?: "light" | "dark" | "system";
+    theme?: 'light' | 'dark' | 'system';
     language?: string;
     timezone?: string;
   };

@@ -1,15 +1,15 @@
-import { useStore } from "@nanostores/react";
-import React, { memo, useEffect, useRef, useState } from "react";
-import { Panel, type ImperativePanelHandle } from "react-resizable-panels";
-import { IconButton } from "~/components/ui/IconButton";
-import { shortcutEventEmitter } from "~/lib/hooks";
-import { themeStore } from "~/lib/stores/theme";
-import { workbenchStore } from "~/lib/stores/workbench";
-import { classNames } from "~/utils/classNames";
-import { Terminal, type TerminalRef } from "./Terminal";
-import { createScopedLogger } from "~/utils/logger";
+import { useStore } from '@nanostores/react';
+import React, { memo, useEffect, useRef, useState } from 'react';
+import { Panel, type ImperativePanelHandle } from 'react-resizable-panels';
+import { IconButton } from '~/components/ui/IconButton';
+import { shortcutEventEmitter } from '~/lib/hooks';
+import { themeStore } from '~/lib/stores/theme';
+import { workbenchStore } from '~/lib/stores/workbench';
+import { classNames } from '~/utils/classNames';
+import { Terminal, type TerminalRef } from './Terminal';
+import { createScopedLogger } from '~/utils/logger';
 
-const logger = createScopedLogger("Terminal");
+const logger = createScopedLogger('Terminal');
 
 const MAX_TERMINALS = 3;
 export const DEFAULT_TERMINAL_SIZE = 25;
@@ -51,12 +51,9 @@ export const TerminalTabs = memo(() => {
   }, [showTerminal]);
 
   useEffect(() => {
-    const unsubscribeFromEventEmitter = shortcutEventEmitter.on(
-      "toggleTerminal",
-      () => {
-        terminalToggledByShortcut.current = true;
-      },
-    );
+    const unsubscribeFromEventEmitter = shortcutEventEmitter.on('toggleTerminal', () => {
+      terminalToggledByShortcut.current = true;
+    });
 
     const unsubscribeFromThemeStore = themeStore.subscribe(() => {
       for (const ref of Object.values(terminalRefs.current)) {
@@ -99,11 +96,11 @@ export const TerminalTabs = memo(() => {
                     <button
                       key={index}
                       className={classNames(
-                        "flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full",
+                        'flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full',
                         {
-                          "bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary":
+                          'bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary':
                             isActive,
-                          "bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground":
+                          'bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground':
                             !isActive,
                         },
                       )}
@@ -117,11 +114,11 @@ export const TerminalTabs = memo(() => {
                       <button
                         key={index}
                         className={classNames(
-                          "flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full",
+                          'flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full',
                           {
-                            "bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textPrimary":
+                            'bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textPrimary':
                               isActive,
-                            "bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground":
+                            'bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground':
                               !isActive,
                           },
                         )}
@@ -135,9 +132,7 @@ export const TerminalTabs = memo(() => {
                 </React.Fragment>
               );
             })}
-            {terminalCount < MAX_TERMINALS && (
-              <IconButton icon="i-ph:plus" size="md" onClick={addTerminal} />
-            )}
+            {terminalCount < MAX_TERMINALS && <IconButton icon="i-ph:plus" size="md" onClick={addTerminal} />}
             <IconButton
               className="ml-auto"
               icon="i-ph:caret-down"
@@ -156,21 +151,14 @@ export const TerminalTabs = memo(() => {
                 <Terminal
                   key={index}
                   id={`terminal_${index}`}
-                  className={classNames(
-                    "h-full overflow-hidden modern-scrollbar-invert",
-                    {
-                      hidden: !isActive,
-                    },
-                  )}
+                  className={classNames('h-full overflow-hidden modern-scrollbar-invert', {
+                    hidden: !isActive,
+                  })}
                   ref={(ref) => {
                     terminalRefs.current.push(ref);
                   }}
-                  onTerminalReady={(terminal) =>
-                    workbenchStore.attachcodinitTerminal(terminal)
-                  }
-                  onTerminalResize={(cols, rows) =>
-                    workbenchStore.onTerminalResize(cols, rows)
-                  }
+                  onTerminalReady={(terminal) => workbenchStore.attachcodinitTerminal(terminal)}
+                  onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
                   theme={theme}
                 />
               );
@@ -179,21 +167,14 @@ export const TerminalTabs = memo(() => {
                 <Terminal
                   key={index}
                   id={`terminal_${index}`}
-                  className={classNames(
-                    "modern-scrollbar h-full overflow-hidden",
-                    {
-                      hidden: !isActive,
-                    },
-                  )}
+                  className={classNames('modern-scrollbar h-full overflow-hidden', {
+                    hidden: !isActive,
+                  })}
                   ref={(ref) => {
                     terminalRefs.current.push(ref);
                   }}
-                  onTerminalReady={(terminal) =>
-                    workbenchStore.attachTerminal(terminal)
-                  }
-                  onTerminalResize={(cols, rows) =>
-                    workbenchStore.onTerminalResize(cols, rows)
-                  }
+                  onTerminalReady={(terminal) => workbenchStore.attachTerminal(terminal)}
+                  onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
                   theme={theme}
                 />
               );

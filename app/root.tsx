@@ -1,49 +1,43 @@
-import { useStore } from "@nanostores/react";
-import type { LinksFunction } from "@remix-run/cloudflare";
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
-import tailwindReset from "@unocss/reset/tailwind-compat.css?url";
-import { themeStore } from "./lib/stores/theme";
-import { stripIndents } from "./utils/stripIndent";
-import { createHead } from "remix-island";
-import { useEffect } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { ClientOnly } from "remix-utils/client-only";
+import { useStore } from '@nanostores/react';
+import type { LinksFunction } from '@remix-run/cloudflare';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
+import { themeStore } from './lib/stores/theme';
+import { stripIndents } from './utils/stripIndent';
+import { createHead } from 'remix-island';
+import { useEffect } from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { ClientOnly } from 'remix-utils/client-only';
 
-import reactToastifyStyles from "react-toastify/dist/ReactToastify.css?url";
-import globalStyles from "./styles/index.scss?url";
-import xtermStyles from "@xterm/xterm/css/xterm.css?url";
+import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
+import globalStyles from './styles/index.scss?url';
+import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 
-import "virtual:uno.css";
+import 'virtual:uno.css';
 
 export const links: LinksFunction = () => [
   {
-    rel: "icon",
-    href: "/favicon.svg",
-    type: "image/svg+xml",
+    rel: 'icon',
+    href: '/favicon.svg',
+    type: 'image/svg+xml',
   },
-  { rel: "stylesheet", href: reactToastifyStyles },
-  { rel: "stylesheet", href: tailwindReset },
-  { rel: "stylesheet", href: globalStyles },
-  { rel: "stylesheet", href: xtermStyles },
+  { rel: 'stylesheet', href: reactToastifyStyles },
+  { rel: 'stylesheet', href: tailwindReset },
+  { rel: 'stylesheet', href: globalStyles },
+  { rel: 'stylesheet', href: xtermStyles },
   {
-    rel: "preconnect",
-    href: "https://fonts.googleapis.com",
-  },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
+    rel: 'preconnect',
+    href: 'https://fonts.googleapis.com',
   },
   {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+    rel: 'preconnect',
+    href: 'https://fonts.gstatic.com',
+    crossOrigin: 'anonymous',
+  },
+  {
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
   },
 ];
 
@@ -75,27 +69,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
 
   useEffect(() => {
-    document.querySelector("html")?.setAttribute("data-theme", theme);
+    document.querySelector('html')?.setAttribute('data-theme', theme);
   }, [theme]);
 
   return (
     <>
-      <ClientOnly>
-        {() => <DndProvider backend={HTML5Backend}>{children}</DndProvider>}
-      </ClientOnly>
+      <ClientOnly>{() => <DndProvider backend={HTML5Backend}>{children}</DndProvider>}</ClientOnly>
       <ScrollRestoration />
       <Scripts />
     </>
   );
 }
 
-import { logStore } from "./lib/stores/logs";
+import { logStore } from './lib/stores/logs';
 
 export default function App() {
   const theme = useStore(themeStore);
 
   useEffect(() => {
-    logStore.logSystem("Application initialized", {
+    logStore.logSystem('Application initialized', {
       theme,
       platform: navigator.platform,
       userAgent: navigator.userAgent,

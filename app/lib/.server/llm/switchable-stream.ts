@@ -13,7 +13,7 @@ export default class SwitchableStream extends TransformStream {
     });
 
     if (controllerRef === undefined) {
-      throw new Error("Controller not properly initialized");
+      throw new Error('Controller not properly initialized');
     }
 
     this._controller = controllerRef;
@@ -33,7 +33,7 @@ export default class SwitchableStream extends TransformStream {
 
   private async _pumpStream() {
     if (!this._currentReader || !this._controller) {
-      throw new Error("Stream is not properly initialized");
+      throw new Error('Stream is not properly initialized');
     }
 
     try {

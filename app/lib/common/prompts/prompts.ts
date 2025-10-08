@@ -1,6 +1,6 @@
-import { WORK_DIR } from "~/utils/constants";
-import { allowedHTMLElements } from "~/utils/markdown";
-import { stripIndents } from "~/utils/stripIndent";
+import { WORK_DIR } from '~/utils/constants';
+import { allowedHTMLElements } from '~/utils/markdown';
+import { stripIndents } from '~/utils/stripIndent';
 
 export const getSystemPrompt = (
   cwd: string = WORK_DIR,
@@ -81,8 +81,8 @@ You are codinit, an expert AI assistant and exceptional senior software develope
         ? 'You are not connected to Supabase. Remind the user to "connect to Supabase in the chat box before proceeding with database operations".'
         : !supabase.hasSelectedProject
           ? 'Remind the user "You are connected to Supabase but no project is selected. Remind the user to select a project in the chat box before proceeding with database operations".'
-          : ""
-      : ""
+          : ''
+      : ''
   } 
     IMPORTANT: Create a .env file if it doesnt exist${
       supabase?.isConnected &&
@@ -92,7 +92,7 @@ You are codinit, an expert AI assistant and exceptional senior software develope
         ? ` and include the following variables:
     VITE_SUPABASE_URL=${supabase.credentials.supabaseUrl}
     VITE_SUPABASE_ANON_KEY=${supabase.credentials.anonKey}`
-        : "."
+        : '.'
     }
   NEVER modify any Supabase configuration or \`.env\` files apart from creating the \`.env\`.
 
@@ -274,7 +274,7 @@ You are codinit, an expert AI assistant and exceptional senior software develope
 </code_formatting_info>
 
 <message_formatting_info>
-  You can make the output pretty by using only the following available HTML elements: ${allowedHTMLElements.map((tagName) => `<${tagName}>`).join(", ")}
+  You can make the output pretty by using only the following available HTML elements: ${allowedHTMLElements.map((tagName) => `<${tagName}>`).join(', ')}
 </message_formatting_info>
 
 <chain_of_thought_instructions>

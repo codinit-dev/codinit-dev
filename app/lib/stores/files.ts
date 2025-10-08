@@ -1,13 +1,13 @@
-import type { PathWatcherEvent, WebContainer } from "@webcontainer/api";
-import { getEncoding } from "istextorbinary";
-import { map, type MapStore } from "nanostores";
-import { Buffer } from "node:buffer";
-import { path } from "~/utils/path";
-import { bufferWatchEvents } from "~/utils/buffer";
-import { WORK_DIR } from "~/utils/constants";
-import { computeFileModifications } from "~/utils/diff";
-import { createScopedLogger } from "~/utils/logger";
-import { unreachable } from "~/utils/unreachable";
+import type { PathWatcherEvent, WebContainer } from '@webcontainer/api';
+import { getEncoding } from 'istextorbinary';
+import { map, type MapStore } from 'nanostores';
+import { Buffer } from 'node:buffer';
+import { path } from '~/utils/path';
+import { bufferWatchEvents } from '~/utils/buffer';
+import { WORK_DIR } from '~/utils/constants';
+import { computeFileModifications } from '~/utils/diff';
+import { createScopedLogger } from '~/utils/logger';
+import { unreachable } from '~/utils/unreachable';
 import {
   addLockedFile,
   removeLockedFile,
@@ -19,15 +19,15 @@ import {
   isPathInLockedFolder,
   migrateLegacyLocks,
   clearCache,
-} from "~/lib/persistence/lockedFiles";
-import { getCurrentChatId } from "~/utils/fileLocks";
+} from '~/lib/persistence/lockedFiles';
+import { getCurrentChatId } from '~/utils/fileLocks';
 
-const logger = createScopedLogger("FilesStore");
+const logger = createScopedLogger('FilesStore');
 
-const utf8TextDecoder = new TextDecoder("utf8", { fatal: true });
+const utf8TextDecoder = new TextDecoder('utf8', { fatal: true });
 
 export interface File {
-  type: "file";
+  type: 'file';
   content: string;
   isBinary: boolean;
   isLocked?: boolean;
@@ -35,7 +35,7 @@ export interface File {
 }
 
 export interface Folder {
-  type: "folder";
+  type: 'folder';
   isLocked?: boolean;
   lockedByFolder?: string; // Path of the folder that locked this folder (for nested folders)
 }
@@ -57,8 +57,7 @@ export class FilesStore {
    * Needs to be reset when the user sends another message and all changes have to be submitted
    * for the model to be aware of the changes.
    */
-  #modifiedFiles: Map<string, string> =
-    import.meta.hot?.data.modifiedFiles ?? new Map();
+  #modifiedFiles: Map<string, string> = import.meta.hot?.data.modifiedFiles ?? new Map();
 
   /**
    * Keeps track of deleted files and folders to prevent them from reappearing on reload
@@ -79,8 +78,8 @@ export class FilesStore {
 
     // Load deleted paths from localStorage if available
     try {
-      if (typeof localStorage !== "undefined") {
-        const deletedPathsJson = localStorage.getItem("codinit-deleted-paths");
+      if (typeof localStorage !== 'undefined') {
+        const deletedPathsJson = localStorage.getItem('codinit-deleted-paths');
 
         if (deletedPathsJson) {
           const deletedPaths = JSON.parse(deletedPathsJson);
@@ -91,7 +90,7 @@ export class FilesStore {
         }
       }
     } catch (error) {
-      logger.error("Failed to load deleted paths from localStorage", error);
+      logger.error('Failed to load deleted paths from localStorage', error);
     }
 
     // Load locked files from localStorage
@@ -105,7 +104,7 @@ export class FilesStore {
     }
 
     // Listen for URL changes to detect chat ID changes
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       let lastChatId = getCurrentChatId();
 
       // Use MutationObserver to detect URL changes (for SPA navigation)
@@ -113,9 +112,7 @@ export class FilesStore {
         const currentChatId = getCurrentChatId();
 
         if (currentChatId !== lastChatId) {
-          logger.info(
-            `Chat ID changed from ${lastChatId} to ${currentChatId}, reloading locks`,
-          );
+          logger.info(`Chat ID changed from ${lastChatId} to ${currentChatId}, reloading locks`);
           lastChatId = currentChatId;
           this.#loadLockedFiles(currentChatId);
         }
@@ -162,7 +159,7 @@ export class FilesStore {
       for (const lockedFile of lockedFiles) {
         const file = currentFiles[lockedFile.path];
 
-        if (file?.type === "file") {
+        if (file?.type === 'file') {
           updates[lockedFile.path] = {
             ...file,
             isLocked: true,
@@ -174,18 +171,14 @@ export class FilesStore {
       for (const lockedFolder of lockedFolders) {
         const folder = currentFiles[lockedFolder.path];
 
-        if (folder?.type === "folder") {
+        if (folder?.type === 'folder') {
           updates[lockedFolder.path] = {
             ...folder,
             isLocked: true,
           };
 
           // Also mark all files within the folder as locked
-          this.#applyLockToFolderContents(
-            currentFiles,
-            updates,
-            lockedFolder.path,
-          );
+          this.#applyLockToFolderContents(currentFiles, updates, lockedFolder.path);
         }
       }
 
@@ -194,11 +187,9 @@ export class FilesStore {
       }
 
       const endTime = performance.now();
-      logger.info(
-        `Loaded locked items in ${Math.round(endTime - startTime)}ms`,
-      );
+      logger.info(`Loaded locked items in ${Math.round(endTime - startTime)}ms`);
     } catch (error) {
-      logger.error("Failed to load locked files from localStorage", error);
+      logger.error('Failed to load locked files from localStorage', error);
     }
   }
 
@@ -208,19 +199,13 @@ export class FilesStore {
    * @param updates Updates to apply
    * @param folderPath Path of the folder to lock
    */
-  #applyLockToFolderContents(
-    currentFiles: FileMap,
-    updates: FileMap,
-    folderPath: string,
-  ) {
-    const folderPrefix = folderPath.endsWith("/")
-      ? folderPath
-      : `${folderPath}/`;
+  #applyLockToFolderContents(currentFiles: FileMap, updates: FileMap, folderPath: string) {
+    const folderPrefix = folderPath.endsWith('/') ? folderPath : `${folderPath}/`;
 
     // Find all files that are within this folder
     Object.entries(currentFiles).forEach(([path, file]) => {
       if (path.startsWith(folderPrefix) && file) {
-        if (file.type === "file") {
+        if (file.type === 'file') {
           updates[path] = {
             ...file,
             isLocked: true,
@@ -228,7 +213,7 @@ export class FilesStore {
             // Add a property to indicate this is locked by a parent folder
             lockedByFolder: folderPath,
           };
-        } else if (file.type === "folder") {
+        } else if (file.type === 'folder') {
           updates[path] = {
             ...file,
             isLocked: true,
@@ -281,7 +266,7 @@ export class FilesStore {
     const currentFiles = this.files.get();
     const currentChatId = chatId || getCurrentChatId();
 
-    if (!folder || folder.type !== "folder") {
+    if (!folder || folder.type !== 'folder') {
       logger.error(`Cannot lock non-existent folder: ${folderPath}`);
       return false;
     }
@@ -349,7 +334,7 @@ export class FilesStore {
     const currentFiles = this.files.get();
     const currentChatId = chatId || getCurrentChatId();
 
-    if (!folder || folder.type !== "folder") {
+    if (!folder || folder.type !== 'folder') {
       logger.error(`Cannot unlock non-existent folder: ${folderPath}`);
       return false;
     }
@@ -363,22 +348,17 @@ export class FilesStore {
     };
 
     // Find all files that are within this folder and unlock them
-    const folderPrefix = folderPath.endsWith("/")
-      ? folderPath
-      : `${folderPath}/`;
+    const folderPrefix = folderPath.endsWith('/') ? folderPath : `${folderPath}/`;
 
     Object.entries(currentFiles).forEach(([path, file]) => {
       if (path.startsWith(folderPrefix) && file) {
-        if (file.type === "file" && file.lockedByFolder === folderPath) {
+        if (file.type === 'file' && file.lockedByFolder === folderPath) {
           updates[path] = {
             ...file,
             isLocked: false,
             lockedByFolder: undefined,
           };
-        } else if (
-          file.type === "folder" &&
-          file.lockedByFolder === folderPath
-        ) {
+        } else if (file.type === 'folder' && file.lockedByFolder === folderPath) {
           updates[path] = {
             type: file.type,
             isLocked: false,
@@ -405,10 +385,7 @@ export class FilesStore {
    * @param chatId Optional chat ID (defaults to current chat)
    * @returns Object with locked status, lock mode, and what caused the lock
    */
-  isFileLocked(
-    filePath: string,
-    chatId?: string,
-  ): { locked: boolean; lockedBy?: string } {
+  isFileLocked(filePath: string, chatId?: string): { locked: boolean; lockedBy?: string } {
     const file = this.getFile(filePath);
     const currentChatId = chatId || getCurrentChatId();
 
@@ -469,10 +446,7 @@ export class FilesStore {
    * @param chatId Optional chat ID (defaults to current chat)
    * @returns Object with locked status, lock mode, and the folder that caused the lock
    */
-  isFileInLockedFolder(
-    filePath: string,
-    chatId?: string,
-  ): { locked: boolean; lockedBy?: string } {
+  isFileInLockedFolder(filePath: string, chatId?: string): { locked: boolean; lockedBy?: string } {
     const currentChatId = chatId || getCurrentChatId();
 
     // Use the optimized function from lockedFiles.ts
@@ -485,14 +459,11 @@ export class FilesStore {
    * @param chatId Optional chat ID (defaults to current chat)
    * @returns Object with locked status and lock mode
    */
-  isFolderLocked(
-    folderPath: string,
-    chatId?: string,
-  ): { isLocked: boolean; lockedBy?: string } {
+  isFolderLocked(folderPath: string, chatId?: string): { isLocked: boolean; lockedBy?: string } {
     const folder = this.getFileOrFolder(folderPath);
     const currentChatId = chatId || getCurrentChatId();
 
-    if (!folder || folder.type !== "folder") {
+    if (!folder || folder.type !== 'folder') {
       return { isLocked: false };
     }
 
@@ -529,7 +500,7 @@ export class FilesStore {
     }
 
     // For backward compatibility, only return file type dirents
-    if (dirent.type !== "file") {
+    if (dirent.type !== 'file') {
       return undefined;
     }
 
@@ -554,7 +525,7 @@ export class FilesStore {
     for (const [filePath, originalContent] of this.#modifiedFiles) {
       const file = this.files.get()[filePath];
 
-      if (file?.type !== "file") {
+      if (file?.type !== 'file') {
         continue;
       }
 
@@ -588,8 +559,8 @@ export class FilesStore {
 
       const oldContent = this.getFile(filePath)?.content;
 
-      if (!oldContent && oldContent !== "") {
-        unreachable("Expected content to be defined");
+      if (!oldContent && oldContent !== '') {
+        unreachable('Expected content to be defined');
       }
 
       await webcontainer.fs.writeFile(relativePath, content);
@@ -600,20 +571,19 @@ export class FilesStore {
 
       // Get the current lock state before updating
       const currentFile = this.files.get()[filePath];
-      const isLocked =
-        currentFile?.type === "file" ? currentFile.isLocked : false;
+      const isLocked = currentFile?.type === 'file' ? currentFile.isLocked : false;
 
       // we immediately update the file and don't rely on the `change` event coming from the watcher
       this.files.setKey(filePath, {
-        type: "file",
+        type: 'file',
         content,
         isBinary: false,
         isLocked,
       });
 
-      logger.info("File updated");
+      logger.info('File updated');
     } catch (error) {
-      logger.error("Failed to update file content\n\n", error);
+      logger.error('Failed to update file content\n\n', error);
 
       throw error;
     }
@@ -629,7 +599,7 @@ export class FilesStore {
     webcontainer.internal.watchPaths(
       {
         include: [`${WORK_DIR}/**`],
-        exclude: ["**/node_modules", ".git"],
+        exclude: ['**/node_modules', '.git'],
         includeContent: true,
       },
       bufferWatchEvents(100, this.#processEventBuffer.bind(this)),
@@ -677,7 +647,7 @@ export class FilesStore {
     const pathsToDelete = new Set<string>();
 
     // Precompute prefixes for efficient checking
-    const deletedPrefixes = [...this.#deletedPaths].map((p) => p + "/");
+    const deletedPrefixes = [...this.#deletedPaths].map((p) => p + '/');
 
     // Iterate through all current files/folders once
     for (const [path, dirent] of Object.entries(currentFiles)) {
@@ -709,7 +679,7 @@ export class FilesStore {
         const dirent = currentFiles[pathToDelete];
         updates[pathToDelete] = undefined; // Mark for deletion in the map update
 
-        if (dirent?.type === "file") {
+        if (dirent?.type === 'file') {
           this.#size--;
 
           if (this.#modifiedFiles.has(pathToDelete)) {
@@ -728,7 +698,7 @@ export class FilesStore {
 
     for (const { type, path: eventPath, buffer } of watchEvents) {
       // remove any trailing slashes
-      const sanitizedPath = eventPath.replace(/\/+$/g, "");
+      const sanitizedPath = eventPath.replace(/\/+$/g, '');
 
       // Skip processing if this file/folder was explicitly deleted
       if (this.#deletedPaths.has(sanitizedPath)) {
@@ -738,7 +708,7 @@ export class FilesStore {
       let isInDeletedFolder = false;
 
       for (const deletedPath of this.#deletedPaths) {
-        if (sanitizedPath.startsWith(deletedPath + "/")) {
+        if (sanitizedPath.startsWith(deletedPath + '/')) {
           isInDeletedFolder = true;
           break;
         }
@@ -749,12 +719,12 @@ export class FilesStore {
       }
 
       switch (type) {
-        case "add_dir": {
+        case 'add_dir': {
           // we intentionally add a trailing slash so we can distinguish files from folders in the file tree
-          this.files.setKey(sanitizedPath, { type: "folder" });
+          this.files.setKey(sanitizedPath, { type: 'folder' });
           break;
         }
-        case "remove_dir": {
+        case 'remove_dir': {
           this.files.setKey(sanitizedPath, undefined);
 
           for (const [direntPath] of Object.entries(this.files)) {
@@ -765,18 +735,18 @@ export class FilesStore {
 
           break;
         }
-        case "add_file":
-        case "change": {
-          if (type === "add_file") {
+        case 'add_file':
+        case 'change': {
+          if (type === 'add_file') {
             this.#size++;
           }
 
-          let content = "";
+          let content = '';
           const isBinary = isBinaryFile(buffer);
 
           if (isBinary && buffer) {
             // For binary files, we need to preserve the content as base64
-            content = Buffer.from(buffer).toString("base64");
+            content = Buffer.from(buffer).toString('base64');
           } else if (!isBinary) {
             content = this.#decodeFileContent(buffer);
 
@@ -784,40 +754,34 @@ export class FilesStore {
              * If the content is a single space and this is from our empty file workaround,
              * convert it back to an actual empty string
              */
-            if (content === " " && type === "add_file") {
-              content = "";
+            if (content === ' ' && type === 'add_file') {
+              content = '';
             }
           }
 
           const existingFile = this.files.get()[sanitizedPath];
 
-          if (
-            existingFile?.type === "file" &&
-            existingFile.isBinary &&
-            existingFile.content &&
-            !content
-          ) {
+          if (existingFile?.type === 'file' && existingFile.isBinary && existingFile.content && !content) {
             content = existingFile.content;
           }
 
           // Preserve lock state if the file already exists
-          const isLocked =
-            existingFile?.type === "file" ? existingFile.isLocked : false;
+          const isLocked = existingFile?.type === 'file' ? existingFile.isLocked : false;
 
           this.files.setKey(sanitizedPath, {
-            type: "file",
+            type: 'file',
             content,
             isBinary,
             isLocked,
           });
           break;
         }
-        case "remove_file": {
+        case 'remove_file': {
           this.#size--;
           this.files.setKey(sanitizedPath, undefined);
           break;
         }
-        case "update_directory": {
+        case 'update_directory': {
           // we don't care about these events
           break;
         }
@@ -827,18 +791,18 @@ export class FilesStore {
 
   #decodeFileContent(buffer?: Uint8Array) {
     if (!buffer || buffer.byteLength === 0) {
-      return "";
+      return '';
     }
 
     try {
       return utf8TextDecoder.decode(buffer);
     } catch (error) {
       console.log(error);
-      return "";
+      return '';
     }
   }
 
-  async createFile(filePath: string, content: string | Uint8Array = "") {
+  async createFile(filePath: string, content: string | Uint8Array = '') {
     const webcontainer = await this.#webcontainer;
 
     try {
@@ -850,7 +814,7 @@ export class FilesStore {
 
       const dirPath = path.dirname(relativePath);
 
-      if (dirPath !== ".") {
+      if (dirPath !== '.') {
         await webcontainer.fs.mkdir(dirPath, { recursive: true });
       }
 
@@ -859,9 +823,9 @@ export class FilesStore {
       if (isBinary) {
         await webcontainer.fs.writeFile(relativePath, Buffer.from(content));
 
-        const base64Content = Buffer.from(content).toString("base64");
+        const base64Content = Buffer.from(content).toString('base64');
         this.files.setKey(filePath, {
-          type: "file",
+          type: 'file',
           content: base64Content,
           isBinary: true,
           isLocked: false,
@@ -869,11 +833,11 @@ export class FilesStore {
 
         this.#modifiedFiles.set(filePath, base64Content);
       } else {
-        const contentToWrite = (content as string).length === 0 ? " " : content;
+        const contentToWrite = (content as string).length === 0 ? ' ' : content;
         await webcontainer.fs.writeFile(relativePath, contentToWrite);
 
         this.files.setKey(filePath, {
-          type: "file",
+          type: 'file',
           content: content as string,
           isBinary: false,
           isLocked: false,
@@ -886,7 +850,7 @@ export class FilesStore {
 
       return true;
     } catch (error) {
-      logger.error("Failed to create file\n\n", error);
+      logger.error('Failed to create file\n\n', error);
       throw error;
     }
   }
@@ -898,20 +862,18 @@ export class FilesStore {
       const relativePath = path.relative(webcontainer.workdir, folderPath);
 
       if (!relativePath) {
-        throw new Error(
-          `EINVAL: invalid folder path, create '${relativePath}'`,
-        );
+        throw new Error(`EINVAL: invalid folder path, create '${relativePath}'`);
       }
 
       await webcontainer.fs.mkdir(relativePath, { recursive: true });
 
-      this.files.setKey(folderPath, { type: "folder" });
+      this.files.setKey(folderPath, { type: 'folder' });
 
       logger.info(`Folder created: ${folderPath}`);
 
       return true;
     } catch (error) {
-      logger.error("Failed to create folder\n\n", error);
+      logger.error('Failed to create folder\n\n', error);
       throw error;
     }
   }
@@ -943,7 +905,7 @@ export class FilesStore {
 
       return true;
     } catch (error) {
-      logger.error("Failed to delete file\n\n", error);
+      logger.error('Failed to delete file\n\n', error);
       throw error;
     }
   }
@@ -955,9 +917,7 @@ export class FilesStore {
       const relativePath = path.relative(webcontainer.workdir, folderPath);
 
       if (!relativePath) {
-        throw new Error(
-          `EINVAL: invalid folder path, delete '${relativePath}'`,
-        );
+        throw new Error(`EINVAL: invalid folder path, delete '${relativePath}'`);
       }
 
       await webcontainer.fs.rm(relativePath, { recursive: true });
@@ -969,16 +929,16 @@ export class FilesStore {
       const allFiles = this.files.get();
 
       for (const [path, dirent] of Object.entries(allFiles)) {
-        if (path.startsWith(folderPath + "/")) {
+        if (path.startsWith(folderPath + '/')) {
           this.files.setKey(path, undefined);
 
           this.#deletedPaths.add(path);
 
-          if (dirent?.type === "file") {
+          if (dirent?.type === 'file') {
             this.#size--;
           }
 
-          if (dirent?.type === "file" && this.#modifiedFiles.has(path)) {
+          if (dirent?.type === 'file' && this.#modifiedFiles.has(path)) {
             this.#modifiedFiles.delete(path);
           }
         }
@@ -990,7 +950,7 @@ export class FilesStore {
 
       return true;
     } catch (error) {
-      logger.error("Failed to delete folder\n\n", error);
+      logger.error('Failed to delete folder\n\n', error);
       throw error;
     }
   }
@@ -998,14 +958,11 @@ export class FilesStore {
   // method to persist deleted paths to localStorage
   #persistDeletedPaths() {
     try {
-      if (typeof localStorage !== "undefined") {
-        localStorage.setItem(
-          "codinit-deleted-paths",
-          JSON.stringify([...this.#deletedPaths]),
-        );
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('codinit-deleted-paths', JSON.stringify([...this.#deletedPaths]));
       }
     } catch (error) {
-      logger.error("Failed to persist deleted paths to localStorage", error);
+      logger.error('Failed to persist deleted paths to localStorage', error);
     }
   }
 }
@@ -1015,9 +972,7 @@ function isBinaryFile(buffer: Uint8Array | undefined) {
     return false;
   }
 
-  return (
-    getEncoding(convertToBuffer(buffer), { chunkLength: 100 }) === "binary"
-  );
+  return getEncoding(convertToBuffer(buffer), { chunkLength: 100 }) === 'binary';
 }
 
 /**

@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import { classNames } from "~/utils/classNames";
-import { useStore } from "@nanostores/react";
-import {
-  netlifyConnection,
-  updateNetlifyConnection,
-  initializeNetlifyConnection,
-} from "~/lib/stores/netlify";
-import type {
-  NetlifySite,
-  NetlifyDeploy,
-  NetlifyBuild,
-  NetlifyUser,
-} from "~/types/netlify";
+import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { classNames } from '~/utils/classNames';
+import { useStore } from '@nanostores/react';
+import { netlifyConnection, updateNetlifyConnection, initializeNetlifyConnection } from '~/lib/stores/netlify';
+import type { NetlifySite, NetlifyDeploy, NetlifyBuild, NetlifyUser } from '~/types/netlify';
 import {
   CloudIcon,
   BuildingLibraryIcon,
@@ -25,15 +16,11 @@ import {
   LockClosedIcon,
   LockOpenIcon,
   RocketLaunchIcon,
-} from "@heroicons/react/24/outline";
-import { Button } from "~/components/ui/Button";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "~/components/ui/Collapsible";
-import { formatDistanceToNow } from "date-fns";
-import { Badge } from "~/components/ui/Badge";
+} from '@heroicons/react/24/outline';
+import { Button } from '~/components/ui/Button';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '~/components/ui/Collapsible';
+import { formatDistanceToNow } from 'date-fns';
+import { Badge } from '~/components/ui/Badge';
 
 // Add the Netlify logo SVG component at the top of the file
 const NetlifyLogo = () => (
@@ -51,18 +38,18 @@ interface SiteAction {
   icon: React.ComponentType<any>;
   action: (siteId: string) => Promise<void>;
   requiresConfirmation?: boolean;
-  variant?: "default" | "destructive" | "outline";
+  variant?: 'default' | 'destructive' | 'outline';
 }
 
 export default function NetlifyConnection() {
   const connection = useStore(netlifyConnection);
-  const [tokenInput, setTokenInput] = useState("");
+  const [tokenInput, setTokenInput] = useState('');
   const [fetchingStats, setFetchingStats] = useState(false);
   const [sites, setSites] = useState<NetlifySite[]>([]);
   const [deploys, setDeploys] = useState<NetlifyDeploy[]>([]);
   const [builds, setBuilds] = useState<NetlifyBuild[]>([]);
   const [deploymentCount, setDeploymentCount] = useState(0);
-  const [lastUpdated, setLastUpdated] = useState("");
+  const [lastUpdated, setLastUpdated] = useState('');
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [activeSiteIndex, setActiveSiteIndex] = useState(0);
   const [isActionLoading, setIsActionLoading] = useState(false);
@@ -71,78 +58,68 @@ export default function NetlifyConnection() {
   // Add site actions
   const siteActions: SiteAction[] = [
     {
-      name: "Clear Cache",
+      name: 'Clear Cache',
       icon: ArrowPathIcon,
       action: async (siteId: string) => {
         try {
-          const response = await fetch(
-            `https://api.netlify.com/api/v1/sites/${siteId}/cache`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${connection.token}`,
-              },
+          const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/cache`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${connection.token}`,
             },
-          );
+          });
 
           if (!response.ok) {
-            throw new Error("Failed to clear cache");
+            throw new Error('Failed to clear cache');
           }
 
-          toast.success("Site cache cleared successfully");
+          toast.success('Site cache cleared successfully');
         } catch (err: unknown) {
-          const error = err instanceof Error ? err.message : "Unknown error";
+          const error = err instanceof Error ? err.message : 'Unknown error';
           toast.error(`Failed to clear site cache: ${error}`);
         }
       },
     },
     {
-      name: "Delete Site",
+      name: 'Delete Site',
       icon: TrashIcon,
       action: async (siteId: string) => {
         try {
-          const response = await fetch(
-            `https://api.netlify.com/api/v1/sites/${siteId}`,
-            {
-              method: "DELETE",
-              headers: {
-                Authorization: `Bearer ${connection.token}`,
-              },
+          const response = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${connection.token}`,
             },
-          );
+          });
 
           if (!response.ok) {
-            throw new Error("Failed to delete site");
+            throw new Error('Failed to delete site');
           }
 
-          toast.success("Site deleted successfully");
+          toast.success('Site deleted successfully');
           fetchNetlifyStats(connection.token);
         } catch (err: unknown) {
-          const error = err instanceof Error ? err.message : "Unknown error";
+          const error = err instanceof Error ? err.message : 'Unknown error';
           toast.error(`Failed to delete site: ${error}`);
         }
       },
       requiresConfirmation: true,
-      variant: "destructive",
+      variant: 'destructive',
     },
   ];
 
   // Add deploy management functions
-  const handleDeploy = async (
-    siteId: string,
-    deployId: string,
-    action: "lock" | "unlock" | "publish",
-  ) => {
+  const handleDeploy = async (siteId: string, deployId: string, action: 'lock' | 'unlock' | 'publish') => {
     try {
       setIsActionLoading(true);
 
       const endpoint =
-        action === "publish"
+        action === 'publish'
           ? `https://api.netlify.com/api/v1/sites/${siteId}/deploys/${deployId}/restore`
           : `https://api.netlify.com/api/v1/deploys/${deployId}/${action}`;
 
       const response = await fetch(endpoint, {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${connection.token}`,
         },
@@ -155,7 +132,7 @@ export default function NetlifyConnection() {
       toast.success(`Deploy ${action}ed successfully`);
       fetchNetlifyStats(connection.token);
     } catch (err: unknown) {
-      const error = err instanceof Error ? err.message : "Unknown error";
+      const error = err instanceof Error ? err.message : 'Unknown error';
       toast.error(`Failed to ${action} deploy: ${error}`);
     } finally {
       setIsActionLoading(false);
@@ -169,11 +146,7 @@ export default function NetlifyConnection() {
 
   useEffect(() => {
     // Check if we have a connection with a token but no stats
-    if (
-      connection.user &&
-      connection.token &&
-      (!connection.stats || !connection.stats.sites)
-    ) {
+    if (connection.user && connection.token && (!connection.stats || !connection.stats.sites)) {
       fetchNetlifyStats(connection.token);
     }
 
@@ -183,20 +156,20 @@ export default function NetlifyConnection() {
       setDeploys(connection.stats.deploys || []);
       setBuilds(connection.stats.builds || []);
       setDeploymentCount(connection.stats.deploys?.length || 0);
-      setLastUpdated(connection.stats.lastDeployTime || "");
+      setLastUpdated(connection.stats.lastDeployTime || '');
     }
   }, [connection]);
 
   const handleConnect = async () => {
     if (!tokenInput) {
-      toast.error("Please enter a Netlify API token");
+      toast.error('Please enter a Netlify API token');
       return;
     }
 
     setIsConnecting(true);
 
     try {
-      const response = await fetch("https://api.netlify.com/api/v1/user", {
+      const response = await fetch('https://api.netlify.com/api/v1/user', {
         headers: {
           Authorization: `Bearer ${tokenInput}`,
         },
@@ -214,32 +187,29 @@ export default function NetlifyConnection() {
         token: tokenInput,
       });
 
-      toast.success("Connected to Netlify successfully");
+      toast.success('Connected to Netlify successfully');
 
       // Fetch stats after successful connection
       fetchNetlifyStats(tokenInput);
     } catch (error) {
-      console.error("Error connecting to Netlify:", error);
-      toast.error(
-        `Failed to connect to Netlify: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      console.error('Error connecting to Netlify:', error);
+      toast.error(`Failed to connect to Netlify: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsConnecting(false);
-      setTokenInput("");
+      setTokenInput('');
     }
   };
 
   const handleDisconnect = () => {
     // Clear from localStorage
-    localStorage.removeItem("netlify_connection");
+    localStorage.removeItem('netlify_connection');
 
     // Remove cookies
-    document.cookie =
-      "netlifyToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = 'netlifyToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
     // Update the store
-    updateNetlifyConnection({ user: null, token: "" });
-    toast.success("Disconnected from Netlify");
+    updateNetlifyConnection({ user: null, token: '' });
+    toast.success('Disconnected from Netlify');
   };
 
   const fetchNetlifyStats = async (token: string) => {
@@ -247,14 +217,11 @@ export default function NetlifyConnection() {
 
     try {
       // Fetch sites
-      const sitesResponse = await fetch(
-        "https://api.netlify.com/api/v1/sites",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const sitesResponse = await fetch('https://api.netlify.com/api/v1/sites', {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (!sitesResponse.ok) {
         throw new Error(`Failed to fetch sites: ${sitesResponse.statusText}`);
@@ -266,20 +233,17 @@ export default function NetlifyConnection() {
       // Fetch recent deploys for the first site (if any)
       let deploysData: NetlifyDeploy[] = [];
       let buildsData: NetlifyBuild[] = [];
-      let lastDeployTime = "";
+      let lastDeployTime = '';
 
       if (sitesData && sitesData.length > 0) {
         const firstSite = sitesData[0];
 
         // Fetch deploys
-        const deploysResponse = await fetch(
-          `https://api.netlify.com/api/v1/sites/${firstSite.id}/deploys`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const deploysResponse = await fetch(`https://api.netlify.com/api/v1/sites/${firstSite.id}/deploys`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         if (deploysResponse.ok) {
           deploysData = (await deploysResponse.json()) as NetlifyDeploy[];
@@ -292,14 +256,11 @@ export default function NetlifyConnection() {
             setLastUpdated(lastDeployTime);
 
             // Fetch builds for the site
-            const buildsResponse = await fetch(
-              `https://api.netlify.com/api/v1/sites/${firstSite.id}/builds`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
+            const buildsResponse = await fetch(`https://api.netlify.com/api/v1/sites/${firstSite.id}/builds`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
               },
-            );
+            });
 
             if (buildsResponse.ok) {
               buildsData = (await buildsResponse.json()) as NetlifyBuild[];
@@ -320,12 +281,10 @@ export default function NetlifyConnection() {
         },
       });
 
-      toast.success("Netlify stats updated");
+      toast.success('Netlify stats updated');
     } catch (error) {
-      console.error("Error fetching Netlify stats:", error);
-      toast.error(
-        `Failed to fetch Netlify stats: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      console.error('Error fetching Netlify stats:', error);
+      toast.error(`Failed to fetch Netlify stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setFetchingStats(false);
     }
@@ -349,8 +308,8 @@ export default function NetlifyConnection() {
               </div>
               <div
                 className={classNames(
-                  "i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-codinit-elements-textSecondary",
-                  isStatsOpen ? "rotate-180" : "",
+                  'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-codinit-elements-textSecondary',
+                  isStatsOpen ? 'rotate-180' : '',
                 )}
               />
             </div>
@@ -378,9 +337,7 @@ export default function NetlifyConnection() {
                     className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                   >
                     <ClockIcon className="h-4 w-4 text-codinit-elements-item-contentAccent" />
-                    <span>
-                      Updated {formatDistanceToNow(new Date(lastUpdated))} ago
-                    </span>
+                    <span>Updated {formatDistanceToNow(new Date(lastUpdated))} ago</span>
                   </Badge>
                 )}
               </div>
@@ -401,11 +358,11 @@ export default function NetlifyConnection() {
                       >
                         <ArrowPathIcon
                           className={classNames(
-                            "h-4 w-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent",
-                            { "animate-spin": fetchingStats },
+                            'h-4 w-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent',
+                            { 'animate-spin': fetchingStats },
                           )}
                         />
-                        {fetchingStats ? "Refreshing..." : "Refresh"}
+                        {fetchingStats ? 'Refreshing...' : 'Refresh'}
                       </Button>
                     </div>
                     <div className="space-y-3">
@@ -413,10 +370,10 @@ export default function NetlifyConnection() {
                         <div
                           key={site.id}
                           className={classNames(
-                            "bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border rounded-lg p-4 transition-all",
+                            'bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border rounded-lg p-4 transition-all',
                             activeSiteIndex === index
-                              ? "border-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive/10"
-                              : "border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70",
+                              ? 'border-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive/10'
+                              : 'border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70',
                           )}
                           onClick={() => {
                             setActiveSiteIndex(index);
@@ -431,20 +388,16 @@ export default function NetlifyConnection() {
                             </div>
                             <div className="flex items-center gap-2">
                               <Badge
-                                variant={
-                                  site.published_deploy?.state === "ready"
-                                    ? "default"
-                                    : "destructive"
-                                }
+                                variant={site.published_deploy?.state === 'ready' ? 'default' : 'destructive'}
                                 className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                               >
-                                {site.published_deploy?.state === "ready" ? (
+                                {site.published_deploy?.state === 'ready' ? (
                                   <CheckCircleIcon className="h-4 w-4 text-green-500" />
                                 ) : (
                                   <XCircleIcon className="h-4 w-4 text-red-500" />
                                 )}
                                 <span className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
-                                  {site.published_deploy?.state || "Unknown"}
+                                  {site.published_deploy?.state || 'Unknown'}
                                 </span>
                               </Badge>
                             </div>
@@ -472,17 +425,13 @@ export default function NetlifyConnection() {
                                   {siteActions.map((action) => (
                                     <Button
                                       key={action.name}
-                                      variant={action.variant || "outline"}
+                                      variant={action.variant || 'outline'}
                                       size="sm"
                                       onClick={async (e) => {
                                         e.stopPropagation();
 
                                         if (action.requiresConfirmation) {
-                                          if (
-                                            !confirm(
-                                              `Are you sure you want to ${action.name.toLowerCase()}?`,
-                                            )
-                                          ) {
+                                          if (!confirm(`Are you sure you want to ${action.name.toLowerCase()}?`)) {
                                             return;
                                           }
                                         }
@@ -505,13 +454,7 @@ export default function NetlifyConnection() {
                                   <div className="flex items-center gap-1">
                                     <ClockIcon className="h-4 w-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                     <span className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
-                                      Published{" "}
-                                      {formatDistanceToNow(
-                                        new Date(
-                                          site.published_deploy.published_at,
-                                        ),
-                                      )}{" "}
-                                      ago
+                                      Published {formatDistanceToNow(new Date(site.published_deploy.published_at))} ago
                                     </span>
                                   </div>
                                   {site.published_deploy.branch && (
@@ -548,17 +491,17 @@ export default function NetlifyConnection() {
                               <div className="flex items-center gap-2">
                                 <Badge
                                   variant={
-                                    deploy.state === "ready"
-                                      ? "default"
-                                      : deploy.state === "error"
-                                        ? "destructive"
-                                        : "outline"
+                                    deploy.state === 'ready'
+                                      ? 'default'
+                                      : deploy.state === 'error'
+                                        ? 'destructive'
+                                        : 'outline'
                                   }
                                   className="flex items-center gap-1"
                                 >
-                                  {deploy.state === "ready" ? (
+                                  {deploy.state === 'ready' ? (
                                     <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                                  ) : deploy.state === "error" ? (
+                                  ) : deploy.state === 'error' ? (
                                     <XCircleIcon className="h-4 w-4 text-red-500" />
                                   ) : (
                                     <BuildingLibraryIcon className="h-4 w-4 text-codinit-elements-item-contentAccent" />
@@ -569,10 +512,7 @@ export default function NetlifyConnection() {
                                 </Badge>
                               </div>
                               <span className="text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
-                                {formatDistanceToNow(
-                                  new Date(deploy.created_at),
-                                )}{" "}
-                                ago
+                                {formatDistanceToNow(new Date(deploy.created_at))} ago
                               </span>
                             </div>
                             {deploy.branch && (
@@ -593,9 +533,7 @@ export default function NetlifyConnection() {
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   <CloudIcon className="h-3 w-3 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
-                                  <span className="underline decoration-1 underline-offset-2">
-                                    {deploy.deploy_url}
-                                  </span>
+                                  <span className="underline decoration-1 underline-offset-2">{deploy.deploy_url}</span>
                                 </a>
                               </div>
                             )}
@@ -603,30 +541,18 @@ export default function NetlifyConnection() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() =>
-                                  handleDeploy(
-                                    sites[activeSiteIndex].id,
-                                    deploy.id,
-                                    "publish",
-                                  )
-                                }
+                                onClick={() => handleDeploy(sites[activeSiteIndex].id, deploy.id, 'publish')}
                                 disabled={isActionLoading}
                                 className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                               >
                                 <BuildingLibraryIcon className="h-4 w-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                                 Publish
                               </Button>
-                              {deploy.state === "ready" ? (
+                              {deploy.state === 'ready' ? (
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() =>
-                                    handleDeploy(
-                                      sites[activeSiteIndex].id,
-                                      deploy.id,
-                                      "lock",
-                                    )
-                                  }
+                                  onClick={() => handleDeploy(sites[activeSiteIndex].id, deploy.id, 'lock')}
                                   disabled={isActionLoading}
                                   className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                                 >
@@ -637,13 +563,7 @@ export default function NetlifyConnection() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  onClick={() =>
-                                    handleDeploy(
-                                      sites[activeSiteIndex].id,
-                                      deploy.id,
-                                      "unlock",
-                                    )
-                                  }
+                                  onClick={() => handleDeploy(sites[activeSiteIndex].id, deploy.id, 'unlock')}
                                   disabled={isActionLoading}
                                   className="flex items-center gap-1 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary"
                                 >
@@ -675,11 +595,7 @@ export default function NetlifyConnection() {
                               <div className="flex items-center gap-2">
                                 <Badge
                                   variant={
-                                    build.done && !build.error
-                                      ? "default"
-                                      : build.error
-                                        ? "destructive"
-                                        : "outline"
+                                    build.done && !build.error ? 'default' : build.error ? 'destructive' : 'outline'
                                   }
                                   className="flex items-center gap-1"
                                 >
@@ -691,19 +607,12 @@ export default function NetlifyConnection() {
                                     <CodeBracketIcon className="h-4 w-4" />
                                   )}
                                   <span className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
-                                    {build.done
-                                      ? build.error
-                                        ? "Failed"
-                                        : "Completed"
-                                      : "In Progress"}
+                                    {build.done ? (build.error ? 'Failed' : 'Completed') : 'In Progress'}
                                   </span>
                                 </Badge>
                               </div>
                               <span className="text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
-                                {formatDistanceToNow(
-                                  new Date(build.created_at),
-                                )}{" "}
-                                ago
+                                {formatDistanceToNow(new Date(build.created_at))} ago
                               </span>
                             </div>
                             {build.error && (
@@ -734,9 +643,7 @@ export default function NetlifyConnection() {
             <div className="text-[#00AD9F]">
               <NetlifyLogo />
             </div>
-            <h2 className="text-lg font-medium text-codinit-elements-textPrimary">
-              Netlify Connection
-            </h2>
+            <h2 className="text-lg font-medium text-codinit-elements-textPrimary">Netlify Connection</h2>
           </div>
         </div>
 
@@ -751,12 +658,12 @@ export default function NetlifyConnection() {
               onChange={(e) => setTokenInput(e.target.value)}
               placeholder="Enter your Netlify API token"
               className={classNames(
-                "w-full px-3 py-2 rounded-lg text-sm",
-                "bg-[#F8F8F8] dark:bg-[#1A1A1A]",
-                "border border-[#E5E5E5] dark:border-[#333333]",
-                "text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary",
-                "focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive",
-                "disabled:opacity-50",
+                'w-full px-3 py-2 rounded-lg text-sm',
+                'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                'border border-[#E5E5E5] dark:border-[#333333]',
+                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
+                'disabled:opacity-50',
               )}
             />
             <div className="mt-2 text-sm text-codinit-elements-textSecondary">
@@ -775,11 +682,11 @@ export default function NetlifyConnection() {
                 onClick={handleConnect}
                 disabled={isConnecting || !tokenInput}
                 className={classNames(
-                  "px-4 py-2 rounded-lg text-sm flex items-center gap-2",
-                  "bg-[#303030] text-white",
-                  "hover:bg-[#5E41D0] hover:text-white",
-                  "disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
-                  "transform active:scale-95",
+                  'px-4 py-2 rounded-lg text-sm flex items-center gap-2',
+                  'bg-[#303030] text-white',
+                  'hover:bg-[#5E41D0] hover:text-white',
+                  'disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200',
+                  'transform active:scale-95',
                 )}
               >
                 {isConnecting ? (
@@ -802,9 +709,9 @@ export default function NetlifyConnection() {
               <button
                 onClick={handleDisconnect}
                 className={classNames(
-                  "px-4 py-2 rounded-lg text-sm flex items-center gap-2",
-                  "bg-red-500 text-white",
-                  "hover:bg-red-600",
+                  'px-4 py-2 rounded-lg text-sm flex items-center gap-2',
+                  'bg-red-500 text-white',
+                  'hover:bg-red-600',
                 )}
               >
                 <div className="i-ph:plug w-4 h-4" />

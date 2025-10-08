@@ -1,23 +1,23 @@
-import type { ActionFunctionArgs, LoaderFunction } from "@remix-run/cloudflare";
-import { json } from "@remix-run/cloudflare";
+import type { ActionFunctionArgs, LoaderFunction } from '@remix-run/cloudflare';
+import { json } from '@remix-run/cloudflare';
 
 // Only import child_process if we're not in a Cloudflare environment
 let execSync: any;
 
 try {
   // Check if we're in a Node.js environment
-  if (typeof process !== "undefined" && process.platform) {
+  if (typeof process !== 'undefined' && process.platform) {
     // Using dynamic import to avoid require()
     const childProcess = { execSync: null };
     execSync = childProcess.execSync;
   }
 } catch {
   // In Cloudflare environment, this will fail, which is expected
-  console.log("Running in Cloudflare environment, child_process not available");
+  console.log('Running in Cloudflare environment, child_process not available');
 }
 
 // For development environments, we'll always provide mock data if real data isn't available
-const isDevelopment = process.env.NODE_ENV === "development";
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 interface ProcessInfo {
   pid: number;
@@ -36,11 +36,11 @@ const getProcessInfo = (): ProcessInfo[] => {
       return [
         {
           pid: 0,
-          name: "N/A",
+          name: 'N/A',
           cpu: 0,
           memory: 0,
           timestamp: new Date().toISOString(),
-          error: "Process information is not available in this environment",
+          error: 'Process information is not available in this environment',
         },
       ];
     }
@@ -58,19 +58,15 @@ const getProcessInfo = (): ProcessInfo[] => {
     let cpuCount = 1;
 
     try {
-      if (platform === "darwin") {
-        const cpuInfo = execSync("sysctl -n hw.ncpu", { encoding: "utf-8" })
-          .toString()
-          .trim();
+      if (platform === 'darwin') {
+        const cpuInfo = execSync('sysctl -n hw.ncpu', { encoding: 'utf-8' }).toString().trim();
         cpuCount = parseInt(cpuInfo, 10) || 1;
-      } else if (platform === "linux") {
-        const cpuInfo = execSync("nproc", { encoding: "utf-8" })
-          .toString()
-          .trim();
+      } else if (platform === 'linux') {
+        const cpuInfo = execSync('nproc', { encoding: 'utf-8' }).toString().trim();
         cpuCount = parseInt(cpuInfo, 10) || 1;
-      } else if (platform === "win32") {
-        const cpuInfo = execSync("wmic cpu get NumberOfCores", {
-          encoding: "utf-8",
+      } else if (platform === 'win32') {
+        const cpuInfo = execSync('wmic cpu get NumberOfCores', {
+          encoding: 'utf-8',
         })
           .toString()
           .trim();
@@ -78,23 +74,23 @@ const getProcessInfo = (): ProcessInfo[] => {
         cpuCount = match ? parseInt(match[0], 10) : 1;
       }
     } catch (error) {
-      console.error("Failed to get CPU count:", error);
+      console.error('Failed to get CPU count:', error);
 
       // Default to 1 if we can't get the count
       cpuCount = 1;
     }
 
-    if (platform === "darwin") {
+    if (platform === 'darwin') {
       // macOS - use ps command to get process information
       try {
-        const output = execSync("ps -eo pid,pcpu,pmem,comm -r | head -n 11", {
-          encoding: "utf-8",
+        const output = execSync('ps -eo pid,pcpu,pmem,comm -r | head -n 11', {
+          encoding: 'utf-8',
         })
           .toString()
           .trim();
 
         // Skip the header line
-        const lines = output.split("\n").slice(1);
+        const lines = output.split('\n').slice(1);
 
         processes = lines.map((line: string) => {
           const parts = line.trim().split(/\s+/);
@@ -106,11 +102,11 @@ const getProcessInfo = (): ProcessInfo[] => {
            */
           const cpu = parseFloat(parts[1]) / cpuCount;
           const memory = parseFloat(parts[2]);
-          const command = parts.slice(3).join(" ");
+          const command = parts.slice(3).join(' ');
 
           return {
             pid,
-            name: command.split("/").pop() || command,
+            name: command.split('/').pop() || command,
             cpu,
             memory,
             command,
@@ -118,29 +114,29 @@ const getProcessInfo = (): ProcessInfo[] => {
           };
         });
       } catch (error) {
-        console.error("Failed to get macOS process info:", error);
+        console.error('Failed to get macOS process info:', error);
 
         // Try alternative command
         try {
-          const output = execSync("top -l 1 -stats pid,cpu,mem,command -n 10", {
-            encoding: "utf-8",
+          const output = execSync('top -l 1 -stats pid,cpu,mem,command -n 10', {
+            encoding: 'utf-8',
           })
             .toString()
             .trim();
 
           // Parse top output - skip the first few lines of header
-          const lines = output.split("\n").slice(6);
+          const lines = output.split('\n').slice(6);
 
           processes = lines.map((line: string) => {
             const parts = line.trim().split(/\s+/);
             const pid = parseInt(parts[0], 10);
             const cpu = parseFloat(parts[1]);
             const memory = parseFloat(parts[2]);
-            const command = parts.slice(3).join(" ");
+            const command = parts.slice(3).join(' ');
 
             return {
               pid,
-              name: command.split("/").pop() || command,
+              name: command.split('/').pop() || command,
               cpu,
               memory,
               command,
@@ -148,34 +144,28 @@ const getProcessInfo = (): ProcessInfo[] => {
             };
           });
         } catch (fallbackError) {
-          console.error(
-            "Failed to get macOS process info with fallback:",
-            fallbackError,
-          );
+          console.error('Failed to get macOS process info with fallback:', fallbackError);
           return [
             {
               pid: 0,
-              name: "N/A",
+              name: 'N/A',
               cpu: 0,
               memory: 0,
               timestamp: new Date().toISOString(),
-              error: "Process information is not available in this environment",
+              error: 'Process information is not available in this environment',
             },
           ];
         }
       }
-    } else if (platform === "linux") {
+    } else if (platform === 'linux') {
       // Linux - use ps command to get process information
       try {
-        const output = execSync(
-          "ps -eo pid,pcpu,pmem,comm --sort=-pmem | head -n 11",
-          { encoding: "utf-8" },
-        )
+        const output = execSync('ps -eo pid,pcpu,pmem,comm --sort=-pmem | head -n 11', { encoding: 'utf-8' })
           .toString()
           .trim();
 
         // Skip the header line
-        const lines = output.split("\n").slice(1);
+        const lines = output.split('\n').slice(1);
 
         processes = lines.map((line: string) => {
           const parts = line.trim().split(/\s+/);
@@ -184,11 +174,11 @@ const getProcessInfo = (): ProcessInfo[] => {
           // Normalize CPU percentage by dividing by CPU count
           const cpu = parseFloat(parts[1]) / cpuCount;
           const memory = parseFloat(parts[2]);
-          const command = parts.slice(3).join(" ");
+          const command = parts.slice(3).join(' ');
 
           return {
             pid,
-            name: command.split("/").pop() || command,
+            name: command.split('/').pop() || command,
             cpu,
             memory,
             command,
@@ -196,18 +186,18 @@ const getProcessInfo = (): ProcessInfo[] => {
           };
         });
       } catch (error) {
-        console.error("Failed to get Linux process info:", error);
+        console.error('Failed to get Linux process info:', error);
 
         // Try alternative command
         try {
-          const output = execSync("top -b -n 1 | head -n 17", {
-            encoding: "utf-8",
+          const output = execSync('top -b -n 1 | head -n 17', {
+            encoding: 'utf-8',
           })
             .toString()
             .trim();
 
           // Parse top output - skip the first few lines of header
-          const lines = output.split("\n").slice(7);
+          const lines = output.split('\n').slice(7);
 
           processes = lines.map((line: string) => {
             const parts = line.trim().split(/\s+/);
@@ -218,7 +208,7 @@ const getProcessInfo = (): ProcessInfo[] => {
 
             return {
               pid,
-              name: command.split("/").pop() || command,
+              name: command.split('/').pop() || command,
               cpu,
               memory,
               command,
@@ -226,36 +216,31 @@ const getProcessInfo = (): ProcessInfo[] => {
             };
           });
         } catch (fallbackError) {
-          console.error(
-            "Failed to get Linux process info with fallback:",
-            fallbackError,
-          );
+          console.error('Failed to get Linux process info with fallback:', fallbackError);
           return [
             {
               pid: 0,
-              name: "N/A",
+              name: 'N/A',
               cpu: 0,
               memory: 0,
               timestamp: new Date().toISOString(),
-              error: "Process information is not available in this environment",
+              error: 'Process information is not available in this environment',
             },
           ];
         }
       }
-    } else if (platform === "win32") {
+    } else if (platform === 'win32') {
       // Windows - use PowerShell to get process information
       try {
         const output = execSync(
-          "powershell \"Get-Process | Sort-Object -Property WorkingSet64 -Descending | Select-Object -First 10 Id, CPU, @{Name='Memory';Expression={$_.WorkingSet64/1MB}}, ProcessName | ConvertTo-Json\"",
-          { encoding: "utf-8" },
+          'powershell "Get-Process | Sort-Object -Property WorkingSet64 -Descending | Select-Object -First 10 Id, CPU, @{Name=\'Memory\';Expression={$_.WorkingSet64/1MB}}, ProcessName | ConvertTo-Json"',
+          { encoding: 'utf-8' },
         )
           .toString()
           .trim();
 
         const processData = JSON.parse(output);
-        const processArray = Array.isArray(processData)
-          ? processData
-          : [processData];
+        const processArray = Array.isArray(processData) ? processData : [processData];
 
         processes = processArray.map((proc: any) => ({
           pid: proc.Id,
@@ -267,24 +252,20 @@ const getProcessInfo = (): ProcessInfo[] => {
           timestamp: new Date().toISOString(),
         }));
       } catch (error) {
-        console.error("Failed to get Windows process info:", error);
+        console.error('Failed to get Windows process info:', error);
 
         // Try alternative command using tasklist
         try {
-          const output = execSync("tasklist /FO CSV", { encoding: "utf-8" })
-            .toString()
-            .trim();
+          const output = execSync('tasklist /FO CSV', { encoding: 'utf-8' }).toString().trim();
 
           // Parse CSV output - skip the header line
-          const lines = output.split("\n").slice(1);
+          const lines = output.split('\n').slice(1);
 
           processes = lines.slice(0, 10).map((line: string) => {
             // Parse CSV format
-            const parts = line
-              .split(",")
-              .map((part: string) => part.replace(/^"(.+)"$/, "$1"));
+            const parts = line.split(',').map((part: string) => part.replace(/^"(.+)"$/, '$1'));
             const pid = parseInt(parts[1], 10);
-            const memoryStr = parts[4].replace(/[^\d]/g, "");
+            const memoryStr = parts[4].replace(/[^\d]/g, '');
             const memory = parseInt(memoryStr, 10) / 1024; // Convert KB to MB
 
             return {
@@ -296,18 +277,15 @@ const getProcessInfo = (): ProcessInfo[] => {
             };
           });
         } catch (fallbackError) {
-          console.error(
-            "Failed to get Windows process info with fallback:",
-            fallbackError,
-          );
+          console.error('Failed to get Windows process info with fallback:', fallbackError);
           return [
             {
               pid: 0,
-              name: "N/A",
+              name: 'N/A',
               cpu: 0,
               memory: 0,
               timestamp: new Date().toISOString(),
-              error: "Process information is not available in this environment",
+              error: 'Process information is not available in this environment',
             },
           ];
         }
@@ -317,18 +295,18 @@ const getProcessInfo = (): ProcessInfo[] => {
       return [
         {
           pid: 0,
-          name: "N/A",
+          name: 'N/A',
           cpu: 0,
           memory: 0,
           timestamp: new Date().toISOString(),
-          error: "Process information is not available in this environment",
+          error: 'Process information is not available in this environment',
         },
       ];
     }
 
     return processes;
   } catch (error) {
-    console.error("Failed to get process info:", error);
+    console.error('Failed to get process info:', error);
 
     if (isDevelopment) {
       return getMockProcessInfo();
@@ -337,11 +315,11 @@ const getProcessInfo = (): ProcessInfo[] => {
     return [
       {
         pid: 0,
-        name: "N/A",
+        name: 'N/A',
         cpu: 0,
         memory: 0,
         timestamp: new Date().toISOString(),
-        error: "Process information is not available in this environment",
+        error: 'Process information is not available in this environment',
       },
     ];
   }
@@ -362,82 +340,82 @@ const getMockProcessInfo = (): ProcessInfo[] => {
   return [
     {
       pid: 1,
-      name: "Browser",
+      name: 'Browser',
       cpu: randomHighCPU(),
       memory: 25 + randomMem(),
-      command: "Browser Process",
+      command: 'Browser Process',
       timestamp,
     },
     {
       pid: 2,
-      name: "System",
+      name: 'System',
       cpu: 5 + randomCPU(),
       memory: 10 + randomMem(),
-      command: "System Process",
+      command: 'System Process',
       timestamp,
     },
     {
       pid: 3,
-      name: "codinit",
+      name: 'codinit',
       cpu: randomHighCPU(),
       memory: 15 + randomMem(),
-      command: "codinit AI Process",
+      command: 'codinit AI Process',
       timestamp,
     },
     {
       pid: 4,
-      name: "node",
+      name: 'node',
       cpu: randomCPU(),
       memory: randomHighMem(),
-      command: "Node.js Process",
+      command: 'Node.js Process',
       timestamp,
     },
     {
       pid: 5,
-      name: "wrangler",
+      name: 'wrangler',
       cpu: randomCPU(),
       memory: randomMem(),
-      command: "Wrangler Process",
+      command: 'Wrangler Process',
       timestamp,
     },
     {
       pid: 6,
-      name: "vscode",
+      name: 'vscode',
       cpu: randomCPU(),
       memory: 12 + randomMem(),
-      command: "VS Code Process",
+      command: 'VS Code Process',
       timestamp,
     },
     {
       pid: 7,
-      name: "chrome",
+      name: 'chrome',
       cpu: randomHighCPU(),
       memory: 20 + randomMem(),
-      command: "Chrome Browser",
+      command: 'Chrome Browser',
       timestamp,
     },
     {
       pid: 8,
-      name: "finder",
+      name: 'finder',
       cpu: 1 + randomCPU(),
       memory: 3 + randomMem(),
-      command: "Finder Process",
+      command: 'Finder Process',
       timestamp,
     },
     {
       pid: 9,
-      name: "terminal",
+      name: 'terminal',
       cpu: 2 + randomCPU(),
       memory: 5 + randomMem(),
-      command: "Terminal Process",
+      command: 'Terminal Process',
       timestamp,
     },
     {
       pid: 10,
-      name: "cloudflared",
+      name: 'cloudflared',
       cpu: randomCPU(),
       memory: randomMem(),
-      command: "Cloudflare Tunnel",
+      command: 'Cloudflare Tunnel',
       timestamp,
     },
   ];
@@ -447,7 +425,7 @@ export const loader: LoaderFunction = async ({ request: _request }) => {
   try {
     return json(getProcessInfo());
   } catch (error) {
-    console.error("Failed to get process info:", error);
+    console.error('Failed to get process info:', error);
     return json(getMockProcessInfo(), { status: 500 });
   }
 };
@@ -456,7 +434,7 @@ export const action = async ({ request: _request }: ActionFunctionArgs) => {
   try {
     return json(getProcessInfo());
   } catch (error) {
-    console.error("Failed to get process info:", error);
+    console.error('Failed to get process info:', error);
     return json(getMockProcessInfo(), { status: 500 });
   }
 };

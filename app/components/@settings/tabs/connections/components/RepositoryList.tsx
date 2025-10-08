@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import type { GitHubRepoInfo } from "~/types/GitHub";
-import { EmptyState, StatusIndicator } from "~/components/ui";
-import { RepositoryCard } from "./RepositoryCard";
-import { RepositoryDialogContext } from "./RepositoryDialogContext";
+import React, { useContext } from 'react';
+import type { GitHubRepoInfo } from '~/types/GitHub';
+import { EmptyState, StatusIndicator } from '~/components/ui';
+import { RepositoryCard } from './RepositoryCard';
+import { RepositoryDialogContext } from './RepositoryDialogContext';
 
 interface RepositoryListProps {
   repos: GitHubRepoInfo[];
@@ -11,25 +11,14 @@ interface RepositoryListProps {
   activeTab: string;
 }
 
-export function RepositoryList({
-  repos,
-  isLoading,
-  onSelect,
-  activeTab,
-}: RepositoryListProps) {
+export function RepositoryList({ repos, isLoading, onSelect, activeTab }: RepositoryListProps) {
   // Access the parent component's setShowAuthDialog function
   const { setShowAuthDialog } = useContext(RepositoryDialogContext);
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-8 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
-        <StatusIndicator
-          status="loading"
-          pulse={true}
-          size="lg"
-          label="Loading repositories..."
-          className="mb-2"
-        />
+        <StatusIndicator status="loading" pulse={true} size="lg" label="Loading repositories..." className="mb-2" />
         <p className="text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
           This may take a moment
         </p>
@@ -38,7 +27,7 @@ export function RepositoryList({
   }
 
   if (repos.length === 0) {
-    if (activeTab === "my-repos") {
+    if (activeTab === 'my-repos') {
       return (
         <EmptyState
           icon="i-ph:folder-simple-dashed"
@@ -62,11 +51,7 @@ export function RepositoryList({
   return (
     <div className="space-y-3">
       {repos.map((repo) => (
-        <RepositoryCard
-          key={repo.full_name}
-          repo={repo}
-          onSelect={() => onSelect(repo)}
-        />
+        <RepositoryCard key={repo.full_name} repo={repo} onSelect={() => onSelect(repo)} />
       ))}
     </div>
   );

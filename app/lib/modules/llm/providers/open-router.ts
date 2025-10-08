@@ -1,8 +1,8 @@
-import { BaseProvider } from "~/lib/modules/llm/base-provider";
-import type { ModelInfo } from "~/lib/modules/llm/types";
-import type { IProviderSetting } from "~/types/model";
-import type { LanguageModelV1 } from "ai";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { BaseProvider } from '~/lib/modules/llm/base-provider';
+import type { ModelInfo } from '~/lib/modules/llm/types';
+import type { IProviderSetting } from '~/types/model';
+import type { LanguageModelV1 } from 'ai';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
 interface OpenRouterModel {
   name: string;
@@ -19,66 +19,66 @@ interface OpenRouterModelsResponse {
 }
 
 export default class OpenRouterProvider extends BaseProvider {
-  name = "OpenRouter";
-  getApiKeyLink = "https://openrouter.ai/settings/keys";
+  name = 'OpenRouter';
+  getApiKeyLink = 'https://openrouter.ai/settings/keys';
 
   config = {
-    apiTokenKey: "OPEN_ROUTER_API_KEY",
+    apiTokenKey: 'OPEN_ROUTER_API_KEY',
   };
 
   staticModels: ModelInfo[] = [
     {
-      name: "anthropic/claude-3.5-sonnet",
-      label: "Anthropic: Claude 3.5 Sonnet (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'anthropic/claude-3.5-sonnet',
+      label: 'Anthropic: Claude 3.5 Sonnet (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "anthropic/claude-3-haiku",
-      label: "Anthropic: Claude 3 Haiku (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'anthropic/claude-3-haiku',
+      label: 'Anthropic: Claude 3 Haiku (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "deepseek/deepseek-coder",
-      label: "Deepseek-Coder V2 236B (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'deepseek/deepseek-coder',
+      label: 'Deepseek-Coder V2 236B (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "google/gemini-flash-1.5",
-      label: "Google Gemini Flash 1.5 (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'google/gemini-flash-1.5',
+      label: 'Google Gemini Flash 1.5 (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "google/gemini-pro-1.5",
-      label: "Google Gemini Pro 1.5 (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'google/gemini-pro-1.5',
+      label: 'Google Gemini Pro 1.5 (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "x-ai/grok-beta",
-      label: "xAI Grok Beta (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'x-ai/grok-beta',
+      label: 'xAI Grok Beta (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "mistralai/mistral-nemo",
-      label: "OpenRouter Mistral Nemo (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'mistralai/mistral-nemo',
+      label: 'OpenRouter Mistral Nemo (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "qwen/qwen-110b-chat",
-      label: "OpenRouter Qwen 110b Chat (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'qwen/qwen-110b-chat',
+      label: 'OpenRouter Qwen 110b Chat (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 8000,
     },
     {
-      name: "cohere/command",
-      label: "Cohere Command (OpenRouter)",
-      provider: "OpenRouter",
+      name: 'cohere/command',
+      label: 'Cohere Command (OpenRouter)',
+      provider: 'OpenRouter',
       maxTokenAllowed: 4096,
     },
   ];
@@ -89,9 +89,9 @@ export default class OpenRouterProvider extends BaseProvider {
     _serverEnv: Record<string, string> = {},
   ): Promise<ModelInfo[]> {
     try {
-      const response = await fetch("https://openrouter.ai/api/v1/models", {
+      const response = await fetch('https://openrouter.ai/api/v1/models', {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
@@ -106,7 +106,7 @@ export default class OpenRouterProvider extends BaseProvider {
           maxTokenAllowed: 8000,
         }));
     } catch (error) {
-      console.error("Error getting OpenRouter models:", error);
+      console.error('Error getting OpenRouter models:', error);
       return [];
     }
   }
@@ -123,8 +123,8 @@ export default class OpenRouterProvider extends BaseProvider {
       apiKeys,
       providerSettings: providerSettings?.[this.name],
       serverEnv: serverEnv as any,
-      defaultBaseUrlKey: "",
-      defaultApiTokenKey: "OPEN_ROUTER_API_KEY",
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'OPEN_ROUTER_API_KEY',
     });
 
     if (!apiKey) {

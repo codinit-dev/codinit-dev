@@ -1,10 +1,10 @@
-import type { IProviderSetting } from "~/types/model";
-import { BaseProvider } from "./base-provider";
-import type { ModelInfo, ProviderInfo } from "./types";
-import * as providers from "./registry";
-import { createScopedLogger } from "~/utils/logger";
+import type { IProviderSetting } from '~/types/model';
+import { BaseProvider } from './base-provider';
+import type { ModelInfo, ProviderInfo } from './types';
+import * as providers from './registry';
+import { createScopedLogger } from '~/utils/logger';
 
-const logger = createScopedLogger("LLMManager");
+const logger = createScopedLogger('LLMManager');
 export class LLMManager {
   private static _instance: LLMManager;
   private _providers: Map<string, BaseProvider> = new Map();
@@ -36,26 +36,18 @@ export class LLMManager {
 
       // Look for exported classes that extend BaseProvider
       for (const exportedItem of Object.values(providers)) {
-        if (
-          typeof exportedItem === "function" &&
-          exportedItem.prototype instanceof BaseProvider
-        ) {
+        if (typeof exportedItem === 'function' && exportedItem.prototype instanceof BaseProvider) {
           const provider = new exportedItem();
 
           try {
             this.registerProvider(provider);
           } catch (error: any) {
-            logger.warn(
-              "Failed To Register Provider: ",
-              provider.name,
-              "error:",
-              error.message,
-            );
+            logger.warn('Failed To Register Provider: ', provider.name, 'error:', error.message);
           }
         }
       }
     } catch (error) {
-      logger.error("Error registering providers:", error);
+      logger.error('Error registering providers:', error);
     }
   }
 
@@ -65,7 +57,7 @@ export class LLMManager {
       return;
     }
 
-    logger.info("Registering Provider: ", provider.name);
+    logger.info('Registering Provider: ', provider.name);
     this._providers.set(provider.name, provider);
     this._modelList = [...this._modelList, ...provider.staticModels];
   }
@@ -89,14 +81,10 @@ export class LLMManager {
   }): Promise<ModelInfo[]> {
     const { apiKeys, providerSettings, serverEnv } = options;
 
-    let enabledProviders = Array.from(this._providers.values()).map(
-      (p) => p.name,
-    );
+    let enabledProviders = Array.from(this._providers.values()).map((p) => p.name);
 
     if (providerSettings && Object.keys(providerSettings).length > 0) {
-      enabledProviders = enabledProviders.filter(
-        (p) => providerSettings[p].enabled,
-      );
+      enabledProviders = enabledProviders.filter((p) => providerSettings[p].enabled);
     }
 
     // Get dynamic models from all providers that support them
@@ -104,10 +92,7 @@ export class LLMManager {
       Array.from(this._providers.values())
         .filter((provider) => enabledProviders.includes(provider.name))
         .filter(
-          (
-            provider,
-          ): provider is BaseProvider &
-            Required<Pick<ProviderInfo, "getDynamicModels">> =>
+          (provider): provider is BaseProvider & Required<Pick<ProviderInfo, 'getDynamicModels'>> =>
             !!provider.getDynamicModels,
         )
         .map(async (provider) => {
@@ -118,40 +103,25 @@ export class LLMManager {
           }
 
           const dynamicModels = await provider
-            .getDynamicModels(
-              apiKeys,
-              providerSettings?.[provider.name],
-              serverEnv,
-            )
+            .getDynamicModels(apiKeys, providerSettings?.[provider.name], serverEnv)
             .then((models) => {
-              logger.info(
-                `Caching ${models.length} dynamic models for ${provider.name}`,
-              );
+              logger.info(`Caching ${models.length} dynamic models for ${provider.name}`);
               provider.storeDynamicModels(options, models);
 
               return models;
             })
             .catch((err) => {
-              logger.error(
-                `Error getting dynamic models ${provider.name} :`,
-                err,
-              );
+              logger.error(`Error getting dynamic models ${provider.name} :`, err);
               return [];
             });
 
           return dynamicModels;
         }),
     );
-    const staticModels = Array.from(this._providers.values()).flatMap(
-      (p) => p.staticModels || [],
-    );
+    const staticModels = Array.from(this._providers.values()).flatMap((p) => p.staticModels || []);
     const dynamicModelsFlat = dynamicModels.flat();
-    const dynamicModelKeys = dynamicModelsFlat.map(
-      (d) => `${d.name}-${d.provider}`,
-    );
-    const filteredStaticModesl = staticModels.filter(
-      (m) => !dynamicModelKeys.includes(`${m.name}-${m.provider}`),
-    );
+    const dynamicModelKeys = dynamicModelsFlat.map((d) => `${d.name}-${d.provider}`);
+    const filteredStaticModesl = staticModels.filter((m) => !dynamicModelKeys.includes(`${m.name}-${m.provider}`));
 
     // Combine static and dynamic models
     const modelList = [...dynamicModelsFlat, ...filteredStaticModesl];
@@ -192,9 +162,7 @@ export class LLMManager {
     });
 
     if (cachedModels) {
-      logger.info(
-        `Found ${cachedModels.length} cached models for ${provider.name}`,
-      );
+      logger.info(`Found ${cachedModels.length} cached models for ${provider.name}`);
       return [...cachedModels, ...staticModels];
     }
 
@@ -213,9 +181,7 @@ export class LLMManager {
         return [];
       });
     const dynamicModelsName = dynamicModels.map((d) => d.name);
-    const filteredStaticList = staticModels.filter(
-      (m) => !dynamicModelsName.includes(m.name),
-    );
+    const filteredStaticList = staticModels.filter((m) => !dynamicModelsName.includes(m.name));
     const modelList = [...dynamicModels, ...filteredStaticList];
     modelList.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -235,7 +201,7 @@ export class LLMManager {
     const firstProvider = this._providers.values().next().value;
 
     if (!firstProvider) {
-      throw new Error("No providers registered");
+      throw new Error('No providers registered');
     }
 
     return firstProvider;

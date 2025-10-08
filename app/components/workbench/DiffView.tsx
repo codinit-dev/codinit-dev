@@ -1,16 +1,16 @@
-import { memo, useMemo, useState, useEffect, useCallback } from "react";
-import { useStore } from "@nanostores/react";
-import { workbenchStore } from "~/lib/stores/workbench";
-import type { FileMap } from "~/lib/stores/files";
-import type { EditorDocument } from "~/components/editor/codemirror/CodeMirrorEditor";
-import { diffLines, type Change } from "diff";
-import { getHighlighter } from "shiki";
-import "~/styles/diff-view.css";
-import { diffFiles, extractRelativePath } from "~/utils/diff";
-import { ActionRunner } from "~/lib/runtime/action-runner";
-import type { FileHistory } from "~/types/actions";
-import { getLanguageFromExtension } from "~/utils/getLanguageFromExtension";
-import { themeStore } from "~/lib/stores/theme";
+import { memo, useMemo, useState, useEffect, useCallback } from 'react';
+import { useStore } from '@nanostores/react';
+import { workbenchStore } from '~/lib/stores/workbench';
+import type { FileMap } from '~/lib/stores/files';
+import type { EditorDocument } from '~/components/editor/codemirror/CodeMirrorEditor';
+import { diffLines, type Change } from 'diff';
+import { getHighlighter } from 'shiki';
+import '~/styles/diff-view.css';
+import { diffFiles, extractRelativePath } from '~/utils/diff';
+import { ActionRunner } from '~/lib/runtime/action-runner';
+import type { FileHistory } from '~/types/actions';
+import { getLanguageFromExtension } from '~/utils/getLanguageFromExtension';
+import { themeStore } from '~/lib/stores/theme';
 
 interface CodeComparisonProps {
   beforeCode: string;
@@ -24,11 +24,11 @@ interface CodeComparisonProps {
 interface DiffBlock {
   lineNumber: number;
   content: string;
-  type: "added" | "removed" | "unchanged";
+  type: 'added' | 'removed' | 'unchanged';
   correspondingLine?: number;
   charChanges?: Array<{
     value: string;
-    type: "added" | "removed" | "unchanged";
+    type: 'added' | 'removed' | 'unchanged';
   }>;
 }
 
@@ -37,39 +37,29 @@ interface FullscreenButtonProps {
   isFullscreen: boolean;
 }
 
-const FullscreenButton = memo(
-  ({ onClick, isFullscreen }: FullscreenButtonProps) => (
-    <button
-      onClick={onClick}
-      className="ml-4 p-1 rounded hover:bg-codinit-elements-background-depth-3 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary transition-colors"
-      title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-    >
-      <div className={isFullscreen ? "i-ph:corners-in" : "i-ph:corners-out"} />
-    </button>
-  ),
-);
+const FullscreenButton = memo(({ onClick, isFullscreen }: FullscreenButtonProps) => (
+  <button
+    onClick={onClick}
+    className="ml-4 p-1 rounded hover:bg-codinit-elements-background-depth-3 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary transition-colors"
+    title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+  >
+    <div className={isFullscreen ? 'i-ph:corners-in' : 'i-ph:corners-out'} />
+  </button>
+));
 
-const FullscreenOverlay = memo(
-  ({
-    isFullscreen,
-    children,
-  }: {
-    isFullscreen: boolean;
-    children: React.ReactNode;
-  }) => {
-    if (!isFullscreen) {
-      return <>{children}</>;
-    }
+const FullscreenOverlay = memo(({ isFullscreen, children }: { isFullscreen: boolean; children: React.ReactNode }) => {
+  if (!isFullscreen) {
+    return <>{children}</>;
+  }
 
-    return (
-      <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-6">
-        <div className="w-full h-full max-w-[90vw] max-h-[90vh] bg-codinit-elements-background-depth-2 rounded-lg border border-codinit-elements-borderColor shadow-xl overflow-hidden">
-          {children}
-        </div>
+  return (
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-6">
+      <div className="w-full h-full max-w-[90vw] max-h-[90vh] bg-codinit-elements-background-depth-2 rounded-lg border border-codinit-elements-borderColor shadow-xl overflow-hidden">
+        {children}
       </div>
-    );
-  },
-);
+    </div>
+  );
+});
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 const BINARY_REGEX = /[\x00-\x08\x0E-\x1F]/;
@@ -94,8 +84,8 @@ const processChanges = (beforeCode: string, afterCode: string) => {
     // Normalize line endings and content
     const normalizeContent = (content: string): string[] => {
       return content
-        .replace(/\r\n/g, "\n")
-        .split("\n")
+        .replace(/\r\n/g, '\n')
+        .split('\n')
         .map((line) => line.trimEnd());
     };
 
@@ -103,7 +93,7 @@ const processChanges = (beforeCode: string, afterCode: string) => {
     const afterLines = normalizeContent(afterCode);
 
     // Early return if files are identical
-    if (beforeLines.join("\n") === afterLines.join("\n")) {
+    if (beforeLines.join('\n') === afterLines.join('\n')) {
       return {
         beforeLines,
         afterLines,
@@ -126,16 +116,12 @@ const processChanges = (beforeCode: string, afterCode: string) => {
       j = 0;
 
     while (i < beforeLines.length || j < afterLines.length) {
-      if (
-        i < beforeLines.length &&
-        j < afterLines.length &&
-        beforeLines[i] === afterLines[j]
-      ) {
+      if (i < beforeLines.length && j < afterLines.length && beforeLines[i] === afterLines[j]) {
         // Unchanged line
         unifiedBlocks.push({
           lineNumber: j,
           content: afterLines[j],
-          type: "unchanged",
+          type: 'unchanged',
           correspondingLine: i,
         });
         i++;
@@ -146,13 +132,7 @@ const processChanges = (beforeCode: string, afterCode: string) => {
         const lookAhead = 3; // Number of lines to look ahead
 
         // Try to find matching lines ahead
-        for (
-          let k = 1;
-          k <= lookAhead &&
-          i + k < beforeLines.length &&
-          j + k < afterLines.length;
-          k++
-        ) {
+        for (let k = 1; k <= lookAhead && i + k < beforeLines.length && j + k < afterLines.length; k++) {
           if (beforeLines[i + k] === afterLines[j]) {
             // Found match in after lines - mark lines as removed
             for (let l = 0; l < k; l++) {
@@ -160,9 +140,9 @@ const processChanges = (beforeCode: string, afterCode: string) => {
               unifiedBlocks.push({
                 lineNumber: i + l,
                 content: beforeLines[i + l],
-                type: "removed",
+                type: 'removed',
                 correspondingLine: j,
-                charChanges: [{ value: beforeLines[i + l], type: "removed" }],
+                charChanges: [{ value: beforeLines[i + l], type: 'removed' }],
               });
             }
             i += k;
@@ -175,9 +155,9 @@ const processChanges = (beforeCode: string, afterCode: string) => {
               unifiedBlocks.push({
                 lineNumber: j + l,
                 content: afterLines[j + l],
-                type: "added",
+                type: 'added',
                 correspondingLine: i,
-                charChanges: [{ value: afterLines[j + l], type: "added" }],
+                charChanges: [{ value: afterLines[j + l], type: 'added' }],
               });
             }
             j += k;
@@ -208,21 +188,14 @@ const processChanges = (beforeCode: string, afterCode: string) => {
             while (
               suffixLength < beforeLine.length - prefixLength &&
               suffixLength < afterLine.length - prefixLength &&
-              beforeLine[beforeLine.length - 1 - suffixLength] ===
-                afterLine[afterLine.length - 1 - suffixLength]
+              beforeLine[beforeLine.length - 1 - suffixLength] === afterLine[afterLine.length - 1 - suffixLength]
             ) {
               suffixLength++;
             }
 
             const prefix = beforeLine.slice(0, prefixLength);
-            const beforeMiddle = beforeLine.slice(
-              prefixLength,
-              beforeLine.length - suffixLength,
-            );
-            const afterMiddle = afterLine.slice(
-              prefixLength,
-              afterLine.length - suffixLength,
-            );
+            const beforeMiddle = beforeLine.slice(prefixLength, beforeLine.length - suffixLength);
+            const afterMiddle = afterLine.slice(prefixLength, afterLine.length - suffixLength);
             const suffix = beforeLine.slice(beforeLine.length - suffixLength);
 
             if (beforeMiddle || afterMiddle) {
@@ -232,12 +205,12 @@ const processChanges = (beforeCode: string, afterCode: string) => {
                 unifiedBlocks.push({
                   lineNumber: i,
                   content: beforeLine,
-                  type: "removed",
+                  type: 'removed',
                   correspondingLine: j,
                   charChanges: [
-                    { value: prefix, type: "unchanged" },
-                    { value: beforeMiddle, type: "removed" },
-                    { value: suffix, type: "unchanged" },
+                    { value: prefix, type: 'unchanged' },
+                    { value: beforeMiddle, type: 'removed' },
+                    { value: suffix, type: 'unchanged' },
                   ],
                 });
                 i++;
@@ -248,12 +221,12 @@ const processChanges = (beforeCode: string, afterCode: string) => {
                 unifiedBlocks.push({
                   lineNumber: j,
                   content: afterLine,
-                  type: "added",
+                  type: 'added',
                   correspondingLine: i - 1,
                   charChanges: [
-                    { value: prefix, type: "unchanged" },
-                    { value: afterMiddle, type: "added" },
-                    { value: suffix, type: "unchanged" },
+                    { value: prefix, type: 'unchanged' },
+                    { value: afterMiddle, type: 'added' },
+                    { value: suffix, type: 'unchanged' },
                   ],
                 });
                 j++;
@@ -265,9 +238,9 @@ const processChanges = (beforeCode: string, afterCode: string) => {
                 unifiedBlocks.push({
                   lineNumber: i,
                   content: beforeLines[i],
-                  type: "removed",
+                  type: 'removed',
                   correspondingLine: j,
-                  charChanges: [{ value: beforeLines[i], type: "removed" }],
+                  charChanges: [{ value: beforeLines[i], type: 'removed' }],
                 });
                 i++;
               }
@@ -277,9 +250,9 @@ const processChanges = (beforeCode: string, afterCode: string) => {
                 unifiedBlocks.push({
                   lineNumber: j,
                   content: afterLines[j],
-                  type: "added",
+                  type: 'added',
                   correspondingLine: i - 1,
-                  charChanges: [{ value: afterLines[j], type: "added" }],
+                  charChanges: [{ value: afterLines[j], type: 'added' }],
                 });
                 j++;
               }
@@ -291,9 +264,9 @@ const processChanges = (beforeCode: string, afterCode: string) => {
               unifiedBlocks.push({
                 lineNumber: i,
                 content: beforeLines[i],
-                type: "removed",
+                type: 'removed',
                 correspondingLine: j,
-                charChanges: [{ value: beforeLines[i], type: "removed" }],
+                charChanges: [{ value: beforeLines[i], type: 'removed' }],
               });
               i++;
             }
@@ -303,9 +276,9 @@ const processChanges = (beforeCode: string, afterCode: string) => {
               unifiedBlocks.push({
                 lineNumber: j,
                 content: afterLines[j],
-                type: "added",
+                type: 'added',
                 correspondingLine: i - 1,
-                charChanges: [{ value: afterLines[j], type: "added" }],
+                charChanges: [{ value: afterLines[j], type: 'added' }],
               });
               j++;
             }
@@ -315,9 +288,7 @@ const processChanges = (beforeCode: string, afterCode: string) => {
     }
 
     // Sort blocks by line number
-    const processedBlocks = unifiedBlocks.sort(
-      (a, b) => a.lineNumber - b.lineNumber,
-    );
+    const processedBlocks = unifiedBlocks.sort((a, b) => a.lineNumber - b.lineNumber);
 
     return {
       beforeLines,
@@ -328,7 +299,7 @@ const processChanges = (beforeCode: string, afterCode: string) => {
       isBinary: false,
     };
   } catch (error) {
-    console.error("Error processing changes:", error);
+    console.error('Error processing changes:', error);
     return {
       beforeLines: [],
       afterLines: [],
@@ -342,38 +313,33 @@ const processChanges = (beforeCode: string, afterCode: string) => {
 };
 
 const lineNumberStyles =
-  "w-9 shrink-0 pl-2 py-1 text-left font-mono text-codinit-elements-textTertiary border-r border-codinit-elements-borderColor bg-codinit-elements-background-depth-1";
+  'w-9 shrink-0 pl-2 py-1 text-left font-mono text-codinit-elements-textTertiary border-r border-codinit-elements-borderColor bg-codinit-elements-background-depth-1';
 const lineContentStyles =
-  "px-1 py-1 font-mono whitespace-pre flex-1 group-hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textPrimary";
-const diffPanelStyles = "h-full overflow-auto diff-panel-content";
+  'px-1 py-1 font-mono whitespace-pre flex-1 group-hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textPrimary';
+const diffPanelStyles = 'h-full overflow-auto diff-panel-content';
 
 // Updated color styles for better consistency
 const diffLineStyles = {
-  added: "bg-green-500/10 dark:bg-green-500/20 border-l-4 border-green-500",
-  removed: "bg-red-500/10 dark:bg-red-500/20 border-l-4 border-red-500",
-  unchanged: "",
+  added: 'bg-green-500/10 dark:bg-green-500/20 border-l-4 border-green-500',
+  removed: 'bg-red-500/10 dark:bg-red-500/20 border-l-4 border-red-500',
+  unchanged: '',
 };
 
 const changeColorStyles = {
-  added:
-    "text-green-700 dark:text-green-500 bg-green-500/10 dark:bg-green-500/20",
-  removed: "text-red-700 dark:text-red-500 bg-red-500/10 dark:bg-red-500/20",
-  unchanged: "text-codinit-elements-textPrimary",
+  added: 'text-green-700 dark:text-green-500 bg-green-500/10 dark:bg-green-500/20',
+  removed: 'text-red-700 dark:text-red-500 bg-red-500/10 dark:bg-red-500/20',
+  unchanged: 'text-codinit-elements-textPrimary',
 };
 
-const renderContentWarning = (type: "binary" | "error") => (
+const renderContentWarning = (type: 'binary' | 'error') => (
   <div className="h-full flex items-center justify-center p-4">
     <div className="text-center text-codinit-elements-textTertiary">
-      <div
-        className={`i-ph:${type === "binary" ? "file-x" : "warning-circle"} text-4xl text-red-400 mb-2 mx-auto`}
-      />
+      <div className={`i-ph:${type === 'binary' ? 'file-x' : 'warning-circle'} text-4xl text-red-400 mb-2 mx-auto`} />
       <p className="font-medium text-codinit-elements-textPrimary">
-        {type === "binary" ? "Binary file detected" : "Error processing file"}
+        {type === 'binary' ? 'Binary file detected' : 'Error processing file'}
       </p>
       <p className="text-sm mt-1">
-        {type === "binary"
-          ? "Diff view is not available for binary files"
-          : "Could not generate diff preview"}
+        {type === 'binary' ? 'Diff view is not available for binary files' : 'Could not generate diff preview'}
       </p>
     </div>
   </div>
@@ -394,9 +360,7 @@ const NoChangesView = memo(
     <div className="h-full flex flex-col items-center justify-center p-4">
       <div className="text-center text-codinit-elements-textTertiary">
         <div className="i-ph:files text-4xl text-green-400 mb-2 mx-auto" />
-        <p className="font-medium text-codinit-elements-textPrimary">
-          Files are identical
-        </p>
+        <p className="font-medium text-codinit-elements-textPrimary">Files are identical</p>
         <p className="text-sm mt-1">Both versions match exactly</p>
       </div>
       <div className="mt-4 w-full max-w-2xl bg-codinit-elements-background-depth-1 rounded-lg border border-codinit-elements-borderColor overflow-hidden">
@@ -404,7 +368,7 @@ const NoChangesView = memo(
           Current Content
         </div>
         <div className="overflow-auto max-h-96">
-          {beforeCode.split("\n").map((line, index) => (
+          {beforeCode.split('\n').map((line, index) => (
             <div key={index} className="flex group min-w-fit">
               <div className={lineNumberStyles}>{index + 1}</div>
               <div className={lineContentStyles}>
@@ -415,11 +379,10 @@ const NoChangesView = memo(
                       ? highlighter
                           .codeToHtml(line, {
                             lang: language,
-                            theme:
-                              theme === "dark" ? "github-dark" : "github-light",
+                            theme: theme === 'dark' ? 'github-dark' : 'github-light',
                           })
-                          .replace(/<\/?pre[^>]*>/g, "")
-                          .replace(/<\/?code[^>]*>/g, "")
+                          .replace(/<\/?pre[^>]*>/g, '')
+                          .replace(/<\/?code[^>]*>/g, '')
                       : line,
                   }}
                 />
@@ -434,10 +397,7 @@ const NoChangesView = memo(
 
 // Otimização do processamento de diferenças com memoização
 const useProcessChanges = (beforeCode: string, afterCode: string) => {
-  return useMemo(
-    () => processChanges(beforeCode, afterCode),
-    [beforeCode, afterCode],
-  );
+  return useMemo(() => processChanges(beforeCode, afterCode), [beforeCode, afterCode]);
 };
 
 // Componente otimizado para renderização de linhas de código
@@ -453,7 +413,7 @@ const CodeLine = memo(
   }: {
     lineNumber: number;
     content: string;
-    type: "added" | "removed" | "unchanged";
+    type: 'added' | 'removed' | 'unchanged';
     highlighter: any;
     language: string;
     block: DiffBlock;
@@ -462,15 +422,15 @@ const CodeLine = memo(
     const bgColor = diffLineStyles[type];
 
     const renderContent = () => {
-      if (type === "unchanged" || !block.charChanges) {
+      if (type === 'unchanged' || !block.charChanges) {
         const highlightedCode = highlighter
           ? highlighter
               .codeToHtml(content, {
                 lang: language,
-                theme: theme === "dark" ? "github-dark" : "github-light",
+                theme: theme === 'dark' ? 'github-dark' : 'github-light',
               })
-              .replace(/<\/?pre[^>]*>/g, "")
-              .replace(/<\/?code[^>]*>/g, "")
+              .replace(/<\/?pre[^>]*>/g, '')
+              .replace(/<\/?code[^>]*>/g, '')
           : content;
         return <span dangerouslySetInnerHTML={{ __html: highlightedCode }} />;
       }
@@ -484,19 +444,13 @@ const CodeLine = memo(
               ? highlighter
                   .codeToHtml(change.value, {
                     lang: language,
-                    theme: theme === "dark" ? "github-dark" : "github-light",
+                    theme: theme === 'dark' ? 'github-dark' : 'github-light',
                   })
-                  .replace(/<\/?pre[^>]*>/g, "")
-                  .replace(/<\/?code[^>]*>/g, "")
+                  .replace(/<\/?pre[^>]*>/g, '')
+                  .replace(/<\/?code[^>]*>/g, '')
               : change.value;
 
-            return (
-              <span
-                key={index}
-                className={changeClass}
-                dangerouslySetInnerHTML={{ __html: highlightedCode }}
-              />
-            );
+            return <span key={index} className={changeClass} dangerouslySetInnerHTML={{ __html: highlightedCode }} />;
           })}
         </>
       );
@@ -507,13 +461,9 @@ const CodeLine = memo(
         <div className={lineNumberStyles}>{lineNumber + 1}</div>
         <div className={`${lineContentStyles} ${bgColor}`}>
           <span className="mr-2 text-codinit-elements-textTertiary">
-            {type === "added" && (
-              <span className="text-green-700 dark:text-green-500">+</span>
-            )}
-            {type === "removed" && (
-              <span className="text-red-700 dark:text-red-500">-</span>
-            )}
-            {type === "unchanged" && " "}
+            {type === 'added' && <span className="text-green-700 dark:text-green-500">+</span>}
+            {type === 'removed' && <span className="text-red-700 dark:text-red-500">-</span>}
+            {type === 'unchanged' && ' '}
           </span>
           {renderContent()}
         </div>
@@ -554,11 +504,11 @@ const FileInfo = memo(
       return changes.reduce(
         (acc: { additions: number; deletions: number }, change: Change) => {
           if (change.added) {
-            acc.additions += change.value.split("\n").length;
+            acc.additions += change.value.split('\n').length;
           }
 
           if (change.removed) {
-            acc.deletions += change.value.split("\n").length;
+            acc.deletions += change.value.split('\n').length;
           }
 
           return acc;
@@ -578,289 +528,231 @@ const FileInfo = memo(
             <>
               {showStats && (
                 <div className="flex items-center gap-1 text-xs">
-                  {additions > 0 && (
-                    <span className="text-green-700 dark:text-green-500">
-                      +{additions}
-                    </span>
-                  )}
-                  {deletions > 0 && (
-                    <span className="text-red-700 dark:text-red-500">
-                      -{deletions}
-                    </span>
-                  )}
+                  {additions > 0 && <span className="text-green-700 dark:text-green-500">+{additions}</span>}
+                  {deletions > 0 && <span className="text-red-700 dark:text-red-500">-{deletions}</span>}
                 </div>
               )}
-              <span className="text-yellow-600 dark:text-yellow-400">
-                Modified
-              </span>
-              <span className="text-codinit-elements-textTertiary text-xs">
-                {new Date().toLocaleTimeString()}
-              </span>
+              <span className="text-yellow-600 dark:text-yellow-400">Modified</span>
+              <span className="text-codinit-elements-textTertiary text-xs">{new Date().toLocaleTimeString()}</span>
             </>
           ) : (
-            <span className="text-green-700 dark:text-green-400">
-              No Changes
-            </span>
+            <span className="text-green-700 dark:text-green-400">No Changes</span>
           )}
-          <FullscreenButton
-            onClick={onToggleFullscreen}
-            isFullscreen={isFullscreen}
-          />
+          <FullscreenButton onClick={onToggleFullscreen} isFullscreen={isFullscreen} />
         </span>
       </div>
     );
   },
 );
 
-const InlineDiffComparison = memo(
-  ({ beforeCode, afterCode, filename, language }: CodeComparisonProps) => {
-    const [isFullscreen, setIsFullscreen] = useState(false);
-    const [highlighter, setHighlighter] = useState<any>(null);
-    const theme = useStore(themeStore);
+const InlineDiffComparison = memo(({ beforeCode, afterCode, filename, language }: CodeComparisonProps) => {
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [highlighter, setHighlighter] = useState<any>(null);
+  const theme = useStore(themeStore);
 
-    const toggleFullscreen = useCallback(() => {
-      setIsFullscreen((prev) => !prev);
-    }, []);
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
 
-    const { unifiedBlocks, hasChanges, isBinary, error } = useProcessChanges(
-      beforeCode,
-      afterCode,
-    );
+  const { unifiedBlocks, hasChanges, isBinary, error } = useProcessChanges(beforeCode, afterCode);
 
-    useEffect(() => {
-      getHighlighter({
-        themes: ["github-dark", "github-light"],
-        langs: [
-          "typescript",
-          "javascript",
-          "json",
-          "html",
-          "css",
-          "jsx",
-          "tsx",
-          "python",
-          "php",
-          "java",
-          "c",
-          "cpp",
-          "csharp",
-          "go",
-          "ruby",
-          "rust",
-          "plaintext",
-        ],
-      }).then(setHighlighter);
-    }, []);
+  useEffect(() => {
+    getHighlighter({
+      themes: ['github-dark', 'github-light'],
+      langs: [
+        'typescript',
+        'javascript',
+        'json',
+        'html',
+        'css',
+        'jsx',
+        'tsx',
+        'python',
+        'php',
+        'java',
+        'c',
+        'cpp',
+        'csharp',
+        'go',
+        'ruby',
+        'rust',
+        'plaintext',
+      ],
+    }).then(setHighlighter);
+  }, []);
 
-    if (isBinary || error) {
-      return renderContentWarning(isBinary ? "binary" : "error");
-    }
+  if (isBinary || error) {
+    return renderContentWarning(isBinary ? 'binary' : 'error');
+  }
 
-    return (
-      <FullscreenOverlay isFullscreen={isFullscreen}>
-        <div className="w-full h-full flex flex-col">
-          <FileInfo
-            filename={filename}
-            hasChanges={hasChanges}
-            onToggleFullscreen={toggleFullscreen}
-            isFullscreen={isFullscreen}
-            beforeCode={beforeCode}
-            afterCode={afterCode}
-          />
-          <div className={diffPanelStyles}>
-            {hasChanges ? (
-              <div className="overflow-x-auto min-w-full">
-                {unifiedBlocks.map((block, index) => (
-                  <CodeLine
-                    key={`${block.lineNumber}-${index}`}
-                    lineNumber={block.lineNumber}
-                    content={block.content}
-                    type={block.type}
-                    highlighter={highlighter}
-                    language={language}
-                    block={block}
-                    theme={theme}
-                  />
-                ))}
-              </div>
-            ) : (
-              <NoChangesView
-                beforeCode={beforeCode}
-                language={language}
-                highlighter={highlighter}
-                theme={theme}
-              />
-            )}
-          </div>
+  return (
+    <FullscreenOverlay isFullscreen={isFullscreen}>
+      <div className="w-full h-full flex flex-col">
+        <FileInfo
+          filename={filename}
+          hasChanges={hasChanges}
+          onToggleFullscreen={toggleFullscreen}
+          isFullscreen={isFullscreen}
+          beforeCode={beforeCode}
+          afterCode={afterCode}
+        />
+        <div className={diffPanelStyles}>
+          {hasChanges ? (
+            <div className="overflow-x-auto min-w-full">
+              {unifiedBlocks.map((block, index) => (
+                <CodeLine
+                  key={`${block.lineNumber}-${index}`}
+                  lineNumber={block.lineNumber}
+                  content={block.content}
+                  type={block.type}
+                  highlighter={highlighter}
+                  language={language}
+                  block={block}
+                  theme={theme}
+                />
+              ))}
+            </div>
+          ) : (
+            <NoChangesView beforeCode={beforeCode} language={language} highlighter={highlighter} theme={theme} />
+          )}
         </div>
-      </FullscreenOverlay>
-    );
-  },
-);
+      </div>
+    </FullscreenOverlay>
+  );
+});
 
 interface DiffViewProps {
   fileHistory: Record<string, FileHistory>;
-  setFileHistory: React.Dispatch<
-    React.SetStateAction<Record<string, FileHistory>>
-  >;
+  setFileHistory: React.Dispatch<React.SetStateAction<Record<string, FileHistory>>>;
   actionRunner: ActionRunner;
 }
 
-export const DiffView = memo(
-  ({ fileHistory, setFileHistory }: DiffViewProps) => {
-    const files = useStore(workbenchStore.files) as FileMap;
-    const selectedFile = useStore(workbenchStore.selectedFile);
-    const currentDocument = useStore(
-      workbenchStore.currentDocument,
-    ) as EditorDocument;
-    const unsavedFiles = useStore(workbenchStore.unsavedFiles);
+export const DiffView = memo(({ fileHistory, setFileHistory }: DiffViewProps) => {
+  const files = useStore(workbenchStore.files) as FileMap;
+  const selectedFile = useStore(workbenchStore.selectedFile);
+  const currentDocument = useStore(workbenchStore.currentDocument) as EditorDocument;
+  const unsavedFiles = useStore(workbenchStore.unsavedFiles);
 
-    useEffect(() => {
-      if (selectedFile && currentDocument) {
-        const file = files[selectedFile];
+  useEffect(() => {
+    if (selectedFile && currentDocument) {
+      const file = files[selectedFile];
 
-        if (!file || !("content" in file)) {
-          return;
-        }
+      if (!file || !('content' in file)) {
+        return;
+      }
 
-        const existingHistory = fileHistory[selectedFile];
-        const currentContent = currentDocument.value;
+      const existingHistory = fileHistory[selectedFile];
+      const currentContent = currentDocument.value;
 
-        // Normalizar o conteúdo para comparação
-        const normalizedCurrentContent = currentContent
-          .replace(/\r\n/g, "\n")
-          .trim();
-        const normalizedOriginalContent = (
-          existingHistory?.originalContent || file.content
-        )
-          .replace(/\r\n/g, "\n")
-          .trim();
+      // Normalizar o conteúdo para comparação
+      const normalizedCurrentContent = currentContent.replace(/\r\n/g, '\n').trim();
+      const normalizedOriginalContent = (existingHistory?.originalContent || file.content)
+        .replace(/\r\n/g, '\n')
+        .trim();
 
-        // Se não há histórico existente, criar um novo apenas se houver diferenças
-        if (!existingHistory) {
-          if (normalizedCurrentContent !== normalizedOriginalContent) {
-            const newChanges = diffLines(file.content, currentContent);
-            setFileHistory((prev) => ({
-              ...prev,
-              [selectedFile]: {
-                originalContent: file.content,
-                lastModified: Date.now(),
-                changes: newChanges,
-                versions: [
-                  {
-                    timestamp: Date.now(),
-                    content: currentContent,
-                  },
-                ],
-                changeSource: "auto-save",
-              },
-            }));
-          }
-
-          return;
-        }
-
-        // Se já existe histórico, verificar se há mudanças reais desde a última versão
-        const lastVersion =
-          existingHistory.versions[existingHistory.versions.length - 1];
-        const normalizedLastContent = lastVersion?.content
-          .replace(/\r\n/g, "\n")
-          .trim();
-
-        if (normalizedCurrentContent === normalizedLastContent) {
-          return; // Não criar novo histórico se o conteúdo é o mesmo
-        }
-
-        // Verificar se há mudanças significativas usando diffFiles
-        const relativePath = extractRelativePath(selectedFile);
-        const unifiedDiff = diffFiles(
-          relativePath,
-          existingHistory.originalContent,
-          currentContent,
-        );
-
-        if (unifiedDiff) {
-          const newChanges = diffLines(
-            existingHistory.originalContent,
-            currentContent,
-          );
-
-          // Verificar se as mudanças são significativas
-          const hasSignificantChanges = newChanges.some(
-            (change) =>
-              (change.added || change.removed) &&
-              change.value.trim().length > 0,
-          );
-
-          if (hasSignificantChanges) {
-            const newHistory: FileHistory = {
-              originalContent: existingHistory.originalContent,
+      // Se não há histórico existente, criar um novo apenas se houver diferenças
+      if (!existingHistory) {
+        if (normalizedCurrentContent !== normalizedOriginalContent) {
+          const newChanges = diffLines(file.content, currentContent);
+          setFileHistory((prev) => ({
+            ...prev,
+            [selectedFile]: {
+              originalContent: file.content,
               lastModified: Date.now(),
-              changes: [...existingHistory.changes, ...newChanges].slice(-100), // Limitar histórico de mudanças
+              changes: newChanges,
               versions: [
-                ...existingHistory.versions,
                 {
                   timestamp: Date.now(),
                   content: currentContent,
                 },
-              ].slice(-10), // Manter apenas as 10 últimas versões
-              changeSource: "auto-save",
-            };
+              ],
+              changeSource: 'auto-save',
+            },
+          }));
+        }
 
-            setFileHistory((prev) => ({ ...prev, [selectedFile]: newHistory }));
-          }
+        return;
+      }
+
+      // Se já existe histórico, verificar se há mudanças reais desde a última versão
+      const lastVersion = existingHistory.versions[existingHistory.versions.length - 1];
+      const normalizedLastContent = lastVersion?.content.replace(/\r\n/g, '\n').trim();
+
+      if (normalizedCurrentContent === normalizedLastContent) {
+        return; // Não criar novo histórico se o conteúdo é o mesmo
+      }
+
+      // Verificar se há mudanças significativas usando diffFiles
+      const relativePath = extractRelativePath(selectedFile);
+      const unifiedDiff = diffFiles(relativePath, existingHistory.originalContent, currentContent);
+
+      if (unifiedDiff) {
+        const newChanges = diffLines(existingHistory.originalContent, currentContent);
+
+        // Verificar se as mudanças são significativas
+        const hasSignificantChanges = newChanges.some(
+          (change) => (change.added || change.removed) && change.value.trim().length > 0,
+        );
+
+        if (hasSignificantChanges) {
+          const newHistory: FileHistory = {
+            originalContent: existingHistory.originalContent,
+            lastModified: Date.now(),
+            changes: [...existingHistory.changes, ...newChanges].slice(-100), // Limitar histórico de mudanças
+            versions: [
+              ...existingHistory.versions,
+              {
+                timestamp: Date.now(),
+                content: currentContent,
+              },
+            ].slice(-10), // Manter apenas as 10 últimas versões
+            changeSource: 'auto-save',
+          };
+
+          setFileHistory((prev) => ({ ...prev, [selectedFile]: newHistory }));
         }
       }
-    }, [
-      selectedFile,
-      currentDocument?.value,
-      files,
-      setFileHistory,
-      unsavedFiles,
-    ]);
-
-    if (!selectedFile || !currentDocument) {
-      return (
-        <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary">
-          Select a file to view differences
-        </div>
-      );
     }
+  }, [selectedFile, currentDocument?.value, files, setFileHistory, unsavedFiles]);
 
-    const file = files[selectedFile];
-    const originalContent = file && "content" in file ? file.content : "";
-    const currentContent = currentDocument.value;
-
-    const history = fileHistory[selectedFile];
-    const effectiveOriginalContent =
-      history?.originalContent || originalContent;
-    const language = getLanguageFromExtension(
-      selectedFile.split(".").pop() || "",
+  if (!selectedFile || !currentDocument) {
+    return (
+      <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary">
+        Select a file to view differences
+      </div>
     );
+  }
 
-    try {
-      return (
-        <div className="h-full overflow-hidden">
-          <InlineDiffComparison
-            beforeCode={effectiveOriginalContent}
-            afterCode={currentContent}
-            language={language}
-            filename={selectedFile}
-            lightTheme="github-light"
-            darkTheme="github-dark"
-          />
+  const file = files[selectedFile];
+  const originalContent = file && 'content' in file ? file.content : '';
+  const currentContent = currentDocument.value;
+
+  const history = fileHistory[selectedFile];
+  const effectiveOriginalContent = history?.originalContent || originalContent;
+  const language = getLanguageFromExtension(selectedFile.split('.').pop() || '');
+
+  try {
+    return (
+      <div className="h-full overflow-hidden">
+        <InlineDiffComparison
+          beforeCode={effectiveOriginalContent}
+          afterCode={currentContent}
+          language={language}
+          filename={selectedFile}
+          lightTheme="github-light"
+          darkTheme="github-dark"
+        />
+      </div>
+    );
+  } catch (error) {
+    console.error('DiffView render error:', error);
+    return (
+      <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-red-400">
+        <div className="text-center">
+          <div className="i-ph:warning-circle text-4xl mb-2" />
+          <p>Failed to render diff view</p>
         </div>
-      );
-    } catch (error) {
-      console.error("DiffView render error:", error);
-      return (
-        <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-red-400">
-          <div className="text-center">
-            <div className="i-ph:warning-circle text-4xl mb-2" />
-            <p>Failed to render diff view</p>
-          </div>
-        </div>
-      );
-    }
-  },
-);
+      </div>
+    );
+  }
+});

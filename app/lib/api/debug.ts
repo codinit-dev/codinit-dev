@@ -20,7 +20,7 @@ export interface DebugStatus {
 export interface DebugIssue {
   id: string;
   message: string;
-  type: "warning" | "error";
+  type: 'warning' | 'error';
   timestamp: string;
   details?: Record<string, unknown>;
 }
@@ -36,14 +36,14 @@ export const getDebugStatus = async (): Promise<DebugStatus> => {
 
   try {
     // Check memory usage
-    if (performance && "memory" in performance) {
+    if (performance && 'memory' in performance) {
       const memory = (performance as any).memory;
 
       if (memory.usedJSHeapSize > memory.jsHeapSizeLimit * 0.8) {
         issues.warnings.push({
-          id: "high-memory-usage",
-          message: "High memory usage detected",
-          type: "warning",
+          id: 'high-memory-usage',
+          message: 'High memory usage detected',
+          type: 'warning',
           timestamp: new Date().toISOString(),
           details: {
             used: memory.usedJSHeapSize,
@@ -60,9 +60,9 @@ export const getDebugStatus = async (): Promise<DebugStatus> => {
 
       if (usageRatio > 0.9) {
         issues.warnings.push({
-          id: "storage-quota-warning",
-          message: "Storage quota nearly reached",
-          type: "warning",
+          id: 'storage-quota-warning',
+          message: 'Storage quota nearly reached',
+          type: 'warning',
           timestamp: new Date().toISOString(),
           details: {
             used: estimate.usage,
@@ -73,7 +73,7 @@ export const getDebugStatus = async (): Promise<DebugStatus> => {
     }
 
     // Check for console errors (if any)
-    const errorLogs = localStorage.getItem("error_logs");
+    const errorLogs = localStorage.getItem('error_logs');
 
     if (errorLogs) {
       const errors = JSON.parse(errorLogs);
@@ -81,7 +81,7 @@ export const getDebugStatus = async (): Promise<DebugStatus> => {
         issues.errors.push({
           id: `error-${error.timestamp}`,
           message: error.message,
-          type: "error",
+          type: 'error',
           timestamp: error.timestamp,
           details: error.details,
         });
@@ -89,16 +89,12 @@ export const getDebugStatus = async (): Promise<DebugStatus> => {
     }
 
     // Filter out acknowledged issues
-    issues.warnings = issues.warnings.filter(
-      (warning) => !acknowledgedIssues.has(warning.id),
-    );
-    issues.errors = issues.errors.filter(
-      (error) => !acknowledgedIssues.has(error.id),
-    );
+    issues.warnings = issues.warnings.filter((warning) => !acknowledgedIssues.has(warning.id));
+    issues.errors = issues.errors.filter((error) => !acknowledgedIssues.has(error.id));
 
     return issues;
   } catch (error) {
-    console.error("Error getting debug status:", error);
+    console.error('Error getting debug status:', error);
     return issues;
   }
 };
@@ -112,16 +108,14 @@ export const acknowledgeError = async (id: string): Promise<void> => {
 
   // Also remove from error logs if present
   try {
-    const errorLogs = localStorage.getItem("error_logs");
+    const errorLogs = localStorage.getItem('error_logs');
 
     if (errorLogs) {
       const errors = JSON.parse(errorLogs);
-      const updatedErrors = errors.filter(
-        (error: any) => `error-${error.timestamp}` !== id,
-      );
-      localStorage.setItem("error_logs", JSON.stringify(updatedErrors));
+      const updatedErrors = errors.filter((error: any) => `error-${error.timestamp}` !== id);
+      localStorage.setItem('error_logs', JSON.stringify(updatedErrors));
     }
   } catch (error) {
-    console.error("Error acknowledging error:", error);
+    console.error('Error acknowledging error:', error);
   }
 };

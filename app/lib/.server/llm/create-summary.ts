@@ -1,24 +1,11 @@
-import {
-  generateText,
-  type CoreTool,
-  type GenerateTextResult,
-  type Message,
-} from "ai";
-import type { IProviderSetting } from "~/types/model";
-import {
-  DEFAULT_MODEL,
-  DEFAULT_PROVIDER,
-  PROVIDER_LIST,
-} from "~/utils/constants";
-import {
-  extractCurrentContext,
-  extractPropertiesFromMessage,
-  simplifycodinitActions,
-} from "./utils";
-import { createScopedLogger } from "~/utils/logger";
-import { LLMManager } from "~/lib/modules/llm/manager";
+import { generateText, type CoreTool, type GenerateTextResult, type Message } from 'ai';
+import type { IProviderSetting } from '~/types/model';
+import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROVIDER_LIST } from '~/utils/constants';
+import { extractCurrentContext, extractPropertiesFromMessage, simplifycodinitActions } from './utils';
+import { createScopedLogger } from '~/utils/logger';
+import { LLMManager } from '~/lib/modules/llm/manager';
 
-const logger = createScopedLogger("create-summary");
+const logger = createScopedLogger('create-summary');
 
 export async function createSummary(props: {
   messages: Message[];
@@ -27,36 +14,24 @@ export async function createSummary(props: {
   providerSettings?: Record<string, IProviderSetting>;
   promptId?: string;
   contextOptimization?: boolean;
-  onFinish?: (
-    resp: GenerateTextResult<Record<string, CoreTool<any, any>>, never>,
-  ) => void;
+  onFinish?: (resp: GenerateTextResult<Record<string, CoreTool<any, any>>, never>) => void;
 }) {
-  const {
-    messages,
-    env: serverEnv,
-    apiKeys,
-    providerSettings,
-    onFinish,
-  } = props;
+  const { messages, env: serverEnv, apiKeys, providerSettings, onFinish } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
   const processedMessages = messages.map((message) => {
-    if (message.role === "user") {
-      const { model, provider, content } =
-        extractPropertiesFromMessage(message);
+    if (message.role === 'user') {
+      const { model, provider, content } = extractPropertiesFromMessage(message);
       currentModel = model;
       currentProvider = provider;
 
       return { ...message, content };
-    } else if (message.role == "assistant") {
+    } else if (message.role == 'assistant') {
       let content = message.content;
 
       content = simplifycodinitActions(content);
-      content = content.replace(
-        /<div class=\\"__codinitThought__\\">.*?<\/div>/s,
-        "",
-      );
-      content = content.replace(/<think>.*?<\/think>/s, "");
+      content = content.replace(/<div class=\\"__codinitThought__\\">.*?<\/div>/s, '');
+      content = content.replace(/<think>.*?<\/think>/s, '');
 
       return { ...message, content };
     }
@@ -64,10 +39,8 @@ export async function createSummary(props: {
     return message;
   });
 
-  const provider =
-    PROVIDER_LIST.find((p) => p.name === currentProvider) || DEFAULT_PROVIDER;
-  const staticModels =
-    LLMManager.getInstance().getStaticModelListFromProvider(provider);
+  const provider = PROVIDER_LIST.find((p) => p.name === currentProvider) || DEFAULT_PROVIDER;
+  const staticModels = LLMManager.getInstance().getStaticModelListFromProvider(provider);
   let modelDetails = staticModels.find((m) => m.name === currentModel);
 
   if (!modelDetails) {
@@ -100,7 +73,7 @@ export async function createSummary(props: {
   let summaryText: string | undefined = undefined;
   let chatId: string | undefined = undefined;
 
-  if (summary && summary.type === "chatSummary") {
+  if (summary && summary.type === 'chatSummary') {
     chatId = summary.chatId;
     summaryText = `Below is the Chat Summary till now, this is chat summary before the conversation provided by the user 
 you should also use this as historical message while providing the response to the user.        
@@ -119,12 +92,11 @@ ${summary.summary}`;
     }
   }
 
-  logger.debug("Sliced Messages:", slicedMessages.length);
+  logger.debug('Sliced Messages:', slicedMessages.length);
 
   const extractTextContent = (message: Message) =>
     Array.isArray(message.content)
-      ? (message.content.find((item) => item.type === "text")
-          ?.text as string) || ""
+      ? (message.content.find((item) => item.type === 'text')?.text as string) || ''
       : message.content;
 
   // select files from the list of code file from the project that might be useful for the current request from the user
@@ -201,7 +173,7 @@ ${slicedMessages
   .map((x) => {
     return `---\n[${x.role}] ${extractTextContent(x)}\n---`;
   })
-  .join("\n")}
+  .join('\n')}
 </new_chats>
 ---
 

@@ -1,5 +1,5 @@
-import type { WebContainer } from "@webcontainer/api";
-import { WORK_DIR } from "./constants";
+import type { WebContainer } from '@webcontainer/api';
+import { WORK_DIR } from './constants';
 
 // Global object to track watcher state
 const watcherState = {
@@ -12,14 +12,12 @@ const watcherState = {
 // Try to load the fallback state from localStorage
 function tryLoadFallbackState(): boolean {
   try {
-    if (typeof localStorage !== "undefined") {
-      const state = localStorage.getItem("codinit-file-watcher-fallback");
-      return state === "true";
+    if (typeof localStorage !== 'undefined') {
+      const state = localStorage.getItem('codinit-file-watcher-fallback');
+      return state === 'true';
     }
   } catch {
-    console.warn(
-      "[FileWatcher] Failed to load fallback state from localStorage",
-    );
+    console.warn('[FileWatcher] Failed to load fallback state from localStorage');
   }
   return false;
 }
@@ -27,14 +25,11 @@ function tryLoadFallbackState(): boolean {
 // Save the fallback state to localStorage
 function saveFallbackState(state: boolean) {
   try {
-    if (typeof localStorage !== "undefined") {
-      localStorage.setItem(
-        "codinit-file-watcher-fallback",
-        state ? "true" : "false",
-      );
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('codinit-file-watcher-fallback', state ? 'true' : 'false');
     }
   } catch {
-    console.warn("[FileWatcher] Failed to save fallback state to localStorage");
+    console.warn('[FileWatcher] Failed to save fallback state to localStorage');
   }
 }
 
@@ -46,11 +41,7 @@ function saveFallbackState(state: boolean) {
  * @param callback Function to call when files change
  * @returns An object with a close method
  */
-export async function safeWatch(
-  webcontainer: WebContainer,
-  pattern: string = "**/*",
-  callback: () => void,
-) {
+export async function safeWatch(webcontainer: WebContainer, pattern: string = '**/*', callback: () => void) {
   // Register the callback
   if (!watcherState.callbacks.has(pattern)) {
     watcherState.callbacks.set(pattern, new Set());
@@ -85,7 +76,7 @@ export async function safeWatch(
     watcherState.watchingPaths.add(pattern);
 
     // Use the native watch events
-    (watcher as any).addEventListener("change", () => {
+    (watcher as any).addEventListener('change', () => {
       // Call all callbacks for this pattern
       const callbacks = watcherState.callbacks.get(pattern);
 
@@ -111,15 +102,13 @@ export async function safeWatch(
             }
           }
         } catch (error) {
-          console.warn("[FileWatcher] Error closing watcher:", error);
+          console.warn('[FileWatcher] Error closing watcher:', error);
         }
       },
     };
   } catch (error) {
-    console.warn("[FileWatcher] Native file watching failed:", error);
-    console.info(
-      "[FileWatcher] Falling back to polling mechanism for file changes",
-    );
+    console.warn('[FileWatcher] Native file watching failed:', error);
+    console.info('[FileWatcher] Falling back to polling mechanism for file changes');
 
     // Switch to fallback mode for all future watches
     watcherState.fallbackEnabled = true;
@@ -166,8 +155,8 @@ function ensurePollingActive() {
   }, 3000); // Poll every 3 seconds
 
   // Clean up interval when window unloads
-  if (typeof window !== "undefined") {
-    window.addEventListener("beforeunload", () => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('beforeunload', () => {
       if (watcherState.pollingInterval) {
         clearInterval(watcherState.pollingInterval);
         watcherState.pollingInterval = null;
@@ -184,14 +173,14 @@ export function safeWatchPaths(
 ) {
   // Create a valid mock event to prevent undefined errors
   const createMockEvent = () => ({
-    type: "change",
+    type: 'change',
     path: `${WORK_DIR}/mock-path.txt`,
     buffer: new Uint8Array(0),
   });
 
   // Start with polling if we already know native watching doesn't work
   if (watcherState.fallbackEnabled) {
-    console.info("[FileWatcher] Using fallback polling for watchPaths");
+    console.info('[FileWatcher] Using fallback polling for watchPaths');
     ensurePollingActive();
 
     const interval = setInterval(() => {
@@ -213,8 +202,8 @@ export function safeWatchPaths(
   try {
     return webcontainer.internal.watchPaths(config, callback);
   } catch (error) {
-    console.warn("[FileWatcher] Native watchPaths failed:", error);
-    console.info("[FileWatcher] Using fallback polling for watchPaths");
+    console.warn('[FileWatcher] Native watchPaths failed:', error);
+    console.info('[FileWatcher] Using fallback polling for watchPaths');
 
     // Mark as using fallback
     watcherState.fallbackEnabled = true;

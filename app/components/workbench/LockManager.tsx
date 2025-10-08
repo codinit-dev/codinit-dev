@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import { workbenchStore } from "~/lib/stores/workbench";
-import { classNames } from "~/utils/classNames";
-import { Checkbox } from "~/components/ui/Checkbox";
-import { toast } from "~/components/ui/use-toast";
+import { useState, useEffect } from 'react';
+import { workbenchStore } from '~/lib/stores/workbench';
+import { classNames } from '~/utils/classNames';
+import { Checkbox } from '~/components/ui/Checkbox';
+import { toast } from '~/components/ui/use-toast';
 
 interface LockedItem {
   path: string;
-  type: "file" | "folder";
+  type: 'file' | 'folder';
 }
 
 export function LockManager() {
   const [lockedItems, setLockedItems] = useState<LockedItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [filter, setFilter] = useState<"all" | "files" | "folders">("all");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState<'all' | 'files' | 'folders'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Load locked items
   useEffect(() => {
@@ -30,15 +30,15 @@ export function LockManager() {
           return;
         }
 
-        if (item.type === "file" && item.isLocked) {
+        if (item.type === 'file' && item.isLocked) {
           items.push({
             path,
-            type: "file",
+            type: 'file',
           });
-        } else if (item.type === "folder" && item.isLocked) {
+        } else if (item.type === 'folder' && item.isLocked) {
           items.push({
             path,
-            type: "folder",
+            type: 'folder',
           });
         }
       });
@@ -58,19 +58,16 @@ export function LockManager() {
   const filteredAndSortedItems = lockedItems
     .filter((item) => {
       // Apply type filter
-      if (filter === "files" && item.type !== "file") {
+      if (filter === 'files' && item.type !== 'file') {
         return false;
       }
 
-      if (filter === "folders" && item.type !== "folder") {
+      if (filter === 'folders' && item.type !== 'folder') {
         return false;
       }
 
       // Apply search filter
-      if (
-        searchTerm &&
-        !item.path.toLowerCase().includes(searchTerm.toLowerCase())
-      ) {
+      if (searchTerm && !item.path.toLowerCase().includes(searchTerm.toLowerCase())) {
         return false;
       }
 
@@ -94,12 +91,10 @@ export function LockManager() {
   };
 
   // Handle selecting/deselecting all visible items
-  const handleSelectAll = (checked: boolean | "indeterminate") => {
+  const handleSelectAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
       // Select all filtered items
-      const allVisiblePaths = new Set(
-        filteredAndSortedItems.map((item) => item.path),
-      );
+      const allVisiblePaths = new Set(filteredAndSortedItems.map((item) => item.path));
       setSelectedItems(allVisiblePaths);
     } else {
       // Deselect all (clear selection)
@@ -110,7 +105,7 @@ export function LockManager() {
   // Handle unlocking selected items
   const handleUnlockSelected = () => {
     if (selectedItems.size === 0) {
-      toast.error("No items selected to unlock.");
+      toast.error('No items selected to unlock.');
       return;
     }
 
@@ -119,7 +114,7 @@ export function LockManager() {
       const item = lockedItems.find((i) => i.path === path);
 
       if (item) {
-        if (item.type === "file") {
+        if (item.type === 'file') {
           workbenchStore.unlockFile(path);
         } else {
           workbenchStore.unlockFolder(path);
@@ -136,16 +131,12 @@ export function LockManager() {
   };
 
   // Determine the state of the "Select All" checkbox
-  const isAllSelected =
-    filteredAndSortedItems.length > 0 &&
-    selectedItems.size === filteredAndSortedItems.length;
-  const isSomeSelected =
-    selectedItems.size > 0 &&
-    selectedItems.size < filteredAndSortedItems.length;
-  const selectAllCheckedState: boolean | "indeterminate" = isAllSelected
+  const isAllSelected = filteredAndSortedItems.length > 0 && selectedItems.size === filteredAndSortedItems.length;
+  const isSomeSelected = selectedItems.size > 0 && selectedItems.size < filteredAndSortedItems.length;
+  const selectAllCheckedState: boolean | 'indeterminate' = isAllSelected
     ? true
     : isSomeSelected
-      ? "indeterminate"
+      ? 'indeterminate'
       : false;
 
   return (
@@ -213,10 +204,8 @@ export function LockManager() {
               <li
                 key={item.path}
                 className={classNames(
-                  "text-codinit-elements-textTertiary flex items-center gap-2 px-2 py-1 rounded hover:bg-codinit-elements-background-depth-2 transition-colors group",
-                  selectedItems.has(item.path)
-                    ? "bg-codinit-elements-background-depth-2"
-                    : "",
+                  'text-codinit-elements-textTertiary flex items-center gap-2 px-2 py-1 rounded hover:bg-codinit-elements-background-depth-2 transition-colors group',
+                  selectedItems.has(item.path) ? 'bg-codinit-elements-background-depth-2' : '',
                 )}
               >
                 <Checkbox
@@ -227,38 +216,30 @@ export function LockManager() {
                 />
                 <span
                   className={classNames(
-                    "shrink-0 text-codinit-elements-textTertiary text-xs",
-                    item.type === "file"
-                      ? "i-ph:file-text-duotone"
-                      : "i-ph:folder-duotone",
+                    'shrink-0 text-codinit-elements-textTertiary text-xs',
+                    item.type === 'file' ? 'i-ph:file-text-duotone' : 'i-ph:folder-duotone',
                   )}
                 />
-                <span
-                  id={`item-label-${item.path}`}
-                  className="truncate flex-1 text-xs"
-                  title={item.path}
-                >
-                  {item.path.replace("/home/project/", "")}
+                <span id={`item-label-${item.path}`} className="truncate flex-1 text-xs" title={item.path}>
+                  {item.path.replace('/home/project/', '')}
                 </span>
                 {/* ... rest of the item details and buttons ... */}
                 <span
                   className={classNames(
-                    "inline-flex items-center px-1 rounded-sm text-xs",
-                    "bg-red-500/10 text-red-500",
+                    'inline-flex items-center px-1 rounded-sm text-xs',
+                    'bg-red-500/10 text-red-500',
                   )}
                 ></span>
                 <button
                   className="flex items-center px-1 py-0.5 text-xs rounded bg-transparent hover:bg-codinit-elements-background-depth-3"
                   onClick={() => {
-                    if (item.type === "file") {
+                    if (item.type === 'file') {
                       workbenchStore.unlockFile(item.path);
                     } else {
                       workbenchStore.unlockFolder(item.path);
                     }
 
-                    toast.success(
-                      `${item.path.replace("/home/project/", "")} unlocked`,
-                    );
+                    toast.success(`${item.path.replace('/home/project/', '')} unlocked`);
                   }}
                   title="Unlock"
                 >
@@ -273,8 +254,7 @@ export function LockManager() {
       {/* Footer */}
       <div className="px-2 py-1 border-t border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 text-xs text-codinit-elements-textTertiary flex justify-between items-center">
         <div>
-          {filteredAndSortedItems.length} item(s) • {selectedItems.size}{" "}
-          selected
+          {filteredAndSortedItems.length} item(s) • {selectedItems.size} selected
         </div>
       </div>
     </div>

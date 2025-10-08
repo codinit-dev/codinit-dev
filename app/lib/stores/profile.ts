@@ -1,4 +1,4 @@
-import { atom } from "nanostores";
+import { atom } from 'nanostores';
 
 interface Profile {
   username: string;
@@ -7,16 +7,13 @@ interface Profile {
 }
 
 // Initialize with stored profile or defaults
-const storedProfile =
-  typeof window !== "undefined"
-    ? localStorage.getItem("codinit_profile")
-    : null;
+const storedProfile = typeof window !== 'undefined' ? localStorage.getItem('codinit_profile') : null;
 const initialProfile: Profile = storedProfile
   ? JSON.parse(storedProfile)
   : {
-      username: "",
-      bio: "",
-      avatar: "",
+      username: '',
+      bio: '',
+      avatar: '',
     };
 
 export const profileStore = atom<Profile>(initialProfile);
@@ -25,7 +22,7 @@ export const updateProfile = (updates: Partial<Profile>) => {
   profileStore.set({ ...profileStore.get(), ...updates });
 
   // Persist to localStorage
-  if (typeof window !== "undefined") {
-    localStorage.setItem("codinit_profile", JSON.stringify(profileStore.get()));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('codinit_profile', JSON.stringify(profileStore.get()));
   }
 };

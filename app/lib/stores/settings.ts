@@ -1,16 +1,16 @@
-import { atom, map } from "nanostores";
-import { PROVIDER_LIST } from "~/utils/constants";
-import type { IProviderConfig } from "~/types/model";
+import { atom, map } from 'nanostores';
+import { PROVIDER_LIST } from '~/utils/constants';
+import type { IProviderConfig } from '~/types/model';
 import type {
   TabVisibilityConfig,
   TabWindowConfig,
   UserTabConfig,
   DevTabConfig,
-} from "~/components/@settings/core/types";
-import { DEFAULT_TAB_CONFIG } from "~/components/@settings/core/constants";
-import Cookies from "js-cookie";
-import { toggleTheme } from "./theme";
-import { create } from "zustand";
+} from '~/components/@settings/core/types';
+import { DEFAULT_TAB_CONFIG } from '~/components/@settings/core/constants';
+import Cookies from 'js-cookie';
+import { toggleTheme } from './theme';
+import { create } from 'zustand';
 
 export interface Shortcut {
   key: string;
@@ -29,38 +29,38 @@ export interface Shortcuts {
   toggleTerminal: Shortcut;
 }
 
-export const URL_CONFIGURABLE_PROVIDERS = ["Ollama", "LMStudio", "OpenAILike"];
-export const LOCAL_PROVIDERS = ["OpenAILike", "LMStudio", "Ollama"];
+export const URL_CONFIGURABLE_PROVIDERS = ['Ollama', 'LMStudio', 'OpenAILike'];
+export const LOCAL_PROVIDERS = ['OpenAILike', 'LMStudio', 'Ollama'];
 
 export type ProviderSetting = Record<string, IProviderConfig>;
 
 // Simplified shortcuts store with only theme toggle
 export const shortcutsStore = map<Shortcuts>({
   toggleTheme: {
-    key: "d",
+    key: 'd',
     metaKey: true,
     altKey: true,
     shiftKey: true,
     action: () => toggleTheme(),
-    description: "Toggle theme",
+    description: 'Toggle theme',
     isPreventDefault: true,
   },
   toggleTerminal: {
-    key: "`",
+    key: '`',
     ctrlOrMetaKey: true,
     action: () => {
       // This will be handled by the terminal component
     },
-    description: "Toggle terminal",
+    description: 'Toggle terminal',
     isPreventDefault: true,
   },
 });
 
 // Create a single key for provider settings
-const PROVIDER_SETTINGS_KEY = "provider_settings";
+const PROVIDER_SETTINGS_KEY = 'provider_settings';
 
 // Add this helper function at the top of the file
-const isBrowser = typeof window !== "undefined";
+const isBrowser = typeof window !== 'undefined';
 
 // Initialize provider settings from both localStorage and defaults
 const getInitialProviderSettings = (): ProviderSetting => {
@@ -90,7 +90,7 @@ const getInitialProviderSettings = (): ProviderSetting => {
           }
         });
       } catch (error) {
-        console.error("Error parsing saved provider settings:", error);
+        console.error('Error parsing saved provider settings:', error);
       }
     }
   }
@@ -98,15 +98,10 @@ const getInitialProviderSettings = (): ProviderSetting => {
   return initialSettings;
 };
 
-export const providersStore = map<ProviderSetting>(
-  getInitialProviderSettings(),
-);
+export const providersStore = map<ProviderSetting>(getInitialProviderSettings());
 
 // Create a function to update provider settings that handles both store and persistence
-export const updateProviderSettings = (
-  provider: string,
-  settings: ProviderSetting,
-) => {
+export const updateProviderSettings = (provider: string, settings: ProviderSetting) => {
   const currentSettings = providersStore.get();
 
   // Create new provider config with updated settings
@@ -130,12 +125,12 @@ export const isDebugMode = atom(false);
 
 // Define keys for localStorage
 const SETTINGS_KEYS = {
-  LATEST_BRANCH: "isLatestBranch",
-  AUTO_SELECT_TEMPLATE: "autoSelectTemplate",
-  CONTEXT_OPTIMIZATION: "contextOptimizationEnabled",
-  EVENT_LOGS: "isEventLogsEnabled",
-  PROMPT_ID: "promptId",
-  DEVELOPER_MODE: "isDeveloperMode",
+  LATEST_BRANCH: 'isLatestBranch',
+  AUTO_SELECT_TEMPLATE: 'autoSelectTemplate',
+  CONTEXT_OPTIMIZATION: 'contextOptimizationEnabled',
+  EVENT_LOGS: 'isEventLogsEnabled',
+  PROMPT_ID: 'promptId',
+  DEVELOPER_MODE: 'isDeveloperMode',
 } as const;
 
 // Initialize settings from localStorage or defaults
@@ -160,18 +155,10 @@ const getInitialSettings = () => {
 
   return {
     latestBranch: getStoredBoolean(SETTINGS_KEYS.LATEST_BRANCH, false),
-    autoSelectTemplate: getStoredBoolean(
-      SETTINGS_KEYS.AUTO_SELECT_TEMPLATE,
-      true,
-    ),
-    contextOptimization: getStoredBoolean(
-      SETTINGS_KEYS.CONTEXT_OPTIMIZATION,
-      true,
-    ),
+    autoSelectTemplate: getStoredBoolean(SETTINGS_KEYS.AUTO_SELECT_TEMPLATE, true),
+    contextOptimization: getStoredBoolean(SETTINGS_KEYS.CONTEXT_OPTIMIZATION, true),
     eventLogs: getStoredBoolean(SETTINGS_KEYS.EVENT_LOGS, true),
-    promptId: isBrowser
-      ? localStorage.getItem(SETTINGS_KEYS.PROMPT_ID) || "default"
-      : "default",
+    promptId: isBrowser ? localStorage.getItem(SETTINGS_KEYS.PROMPT_ID) || 'default' : 'default',
     developerMode: getStoredBoolean(SETTINGS_KEYS.DEVELOPER_MODE, false),
   };
 };
@@ -180,12 +167,8 @@ const getInitialSettings = () => {
 const initialSettings = getInitialSettings();
 
 export const latestBranchStore = atom<boolean>(initialSettings.latestBranch);
-export const autoSelectStarterTemplate = atom<boolean>(
-  initialSettings.autoSelectTemplate,
-);
-export const enableContextOptimizationStore = atom<boolean>(
-  initialSettings.contextOptimization,
-);
+export const autoSelectStarterTemplate = atom<boolean>(initialSettings.autoSelectTemplate);
+export const enableContextOptimizationStore = atom<boolean>(initialSettings.contextOptimization);
 export const isEventLogsEnabled = atom<boolean>(initialSettings.eventLogs);
 export const promptStore = atom<string>(initialSettings.promptId);
 
@@ -197,18 +180,12 @@ export const updateLatestBranch = (enabled: boolean) => {
 
 export const updateAutoSelectTemplate = (enabled: boolean) => {
   autoSelectStarterTemplate.set(enabled);
-  localStorage.setItem(
-    SETTINGS_KEYS.AUTO_SELECT_TEMPLATE,
-    JSON.stringify(enabled),
-  );
+  localStorage.setItem(SETTINGS_KEYS.AUTO_SELECT_TEMPLATE, JSON.stringify(enabled));
 };
 
 export const updateContextOptimization = (enabled: boolean) => {
   enableContextOptimizationStore.set(enabled);
-  localStorage.setItem(
-    SETTINGS_KEYS.CONTEXT_OPTIMIZATION,
-    JSON.stringify(enabled),
-  );
+  localStorage.setItem(SETTINGS_KEYS.CONTEXT_OPTIMIZATION, JSON.stringify(enabled));
 };
 
 export const updateEventLogs = (enabled: boolean) => {
@@ -224,12 +201,8 @@ export const updatePromptId = (id: string) => {
 // Initialize tab configuration from localStorage or defaults
 const getInitialTabConfiguration = (): TabWindowConfig => {
   const defaultConfig: TabWindowConfig = {
-    userTabs: DEFAULT_TAB_CONFIG.filter(
-      (tab): tab is UserTabConfig => tab.window === "user",
-    ),
-    developerTabs: DEFAULT_TAB_CONFIG.filter(
-      (tab): tab is DevTabConfig => tab.window === "developer",
-    ),
+    userTabs: DEFAULT_TAB_CONFIG.filter((tab): tab is UserTabConfig => tab.window === 'user'),
+    developerTabs: DEFAULT_TAB_CONFIG.filter((tab): tab is DevTabConfig => tab.window === 'developer'),
   };
 
   if (!isBrowser) {
@@ -237,7 +210,7 @@ const getInitialTabConfiguration = (): TabWindowConfig => {
   }
 
   try {
-    const saved = localStorage.getItem("codinit_tab_configuration");
+    const saved = localStorage.getItem('codinit_tab_configuration');
 
     if (!saved) {
       return defaultConfig;
@@ -251,39 +224,31 @@ const getInitialTabConfiguration = (): TabWindowConfig => {
 
     // Ensure proper typing of loaded configuration
     return {
-      userTabs: parsed.userTabs.filter(
-        (tab: TabVisibilityConfig): tab is UserTabConfig =>
-          tab.window === "user",
-      ),
+      userTabs: parsed.userTabs.filter((tab: TabVisibilityConfig): tab is UserTabConfig => tab.window === 'user'),
       developerTabs: parsed.developerTabs.filter(
-        (tab: TabVisibilityConfig): tab is DevTabConfig =>
-          tab.window === "developer",
+        (tab: TabVisibilityConfig): tab is DevTabConfig => tab.window === 'developer',
       ),
     };
   } catch (error) {
-    console.warn("Failed to parse tab configuration:", error);
+    console.warn('Failed to parse tab configuration:', error);
     return defaultConfig;
   }
 };
 
 // console.log('Initial tab configuration:', getInitialTabConfiguration());
 
-export const tabConfigurationStore = map<TabWindowConfig>(
-  getInitialTabConfiguration(),
-);
+export const tabConfigurationStore = map<TabWindowConfig>(getInitialTabConfiguration());
 
 // Helper function to update tab configuration
 export const updateTabConfiguration = (config: TabVisibilityConfig) => {
   const currentConfig = tabConfigurationStore.get();
-  console.log("Current tab configuration before update:", currentConfig);
+  console.log('Current tab configuration before update:', currentConfig);
 
-  const isUserTab = config.window === "user";
-  const targetArray = isUserTab ? "userTabs" : "developerTabs";
+  const isUserTab = config.window === 'user';
+  const targetArray = isUserTab ? 'userTabs' : 'developerTabs';
 
   // Only update the tab in its respective window
-  const updatedTabs = currentConfig[targetArray].map((tab) =>
-    tab.id === config.id ? { ...config } : tab,
-  );
+  const updatedTabs = currentConfig[targetArray].map((tab) => (tab.id === config.id ? { ...config } : tab));
 
   // If tab doesn't exist in this window yet, add it
   if (!updatedTabs.find((tab) => tab.id === config.id)) {
@@ -296,32 +261,25 @@ export const updateTabConfiguration = (config: TabVisibilityConfig) => {
     [targetArray]: updatedTabs,
   };
 
-  console.log("New tab configuration after update:", newConfig);
+  console.log('New tab configuration after update:', newConfig);
 
   tabConfigurationStore.set(newConfig);
-  Cookies.set("tabConfiguration", JSON.stringify(newConfig), {
+  Cookies.set('tabConfiguration', JSON.stringify(newConfig), {
     expires: 365, // Set cookie to expire in 1 year
-    path: "/",
-    sameSite: "strict",
+    path: '/',
+    sameSite: 'strict',
   });
 };
 
 // Helper function to reset tab configuration
 export const resetTabConfiguration = () => {
   const defaultConfig: TabWindowConfig = {
-    userTabs: DEFAULT_TAB_CONFIG.filter(
-      (tab): tab is UserTabConfig => tab.window === "user",
-    ),
-    developerTabs: DEFAULT_TAB_CONFIG.filter(
-      (tab): tab is DevTabConfig => tab.window === "developer",
-    ),
+    userTabs: DEFAULT_TAB_CONFIG.filter((tab): tab is UserTabConfig => tab.window === 'user'),
+    developerTabs: DEFAULT_TAB_CONFIG.filter((tab): tab is DevTabConfig => tab.window === 'developer'),
   };
 
   tabConfigurationStore.set(defaultConfig);
-  localStorage.setItem(
-    "codinit_tab_configuration",
-    JSON.stringify(defaultConfig),
-  );
+  localStorage.setItem('codinit_tab_configuration', JSON.stringify(defaultConfig));
 };
 
 // Developer mode store with persistence
@@ -346,19 +304,19 @@ interface SettingsStore {
 
 export const useSettingsStore = create<SettingsStore>((set) => ({
   isOpen: false,
-  selectedTab: "user", // Default tab
+  selectedTab: 'user', // Default tab
 
   openSettings: () => {
     set({
       isOpen: true,
-      selectedTab: "user", // Always open to user tab
+      selectedTab: 'user', // Always open to user tab
     });
   },
 
   closeSettings: () => {
     set({
       isOpen: false,
-      selectedTab: "user", // Reset to user tab when closing
+      selectedTab: 'user', // Reset to user tab when closing
     });
   },
 

@@ -1,19 +1,15 @@
-import type { Message } from "ai";
-import { toast } from "react-toastify";
-import { ImportFolderButton } from "~/components/chat/ImportFolderButton";
-import { Button } from "~/components/ui/Button";
-import { classNames } from "~/utils/classNames";
+import type { Message } from 'ai';
+import { toast } from 'react-toastify';
+import { ImportFolderButton } from '~/components/chat/ImportFolderButton';
+import { Button } from '~/components/ui/Button';
+import { classNames } from '~/utils/classNames';
 
 type ChatData = {
   messages?: Message[]; // Standard codinit format
   description?: string; // Optional description
 };
 
-export function ImportButtons(
-  importChat:
-    | ((description: string, messages: Message[]) => Promise<void>)
-    | undefined,
-) {
+export function ImportButtons(importChat: ((description: string, messages: Message[]) => Promise<void>) | undefined) {
   return (
     <div className="flex flex-col items-center justify-center w-auto">
       <input
@@ -35,36 +31,29 @@ export function ImportButtons(
 
                   // Standard format
                   if (Array.isArray(data.messages)) {
-                    await importChat(
-                      data.description || "Imported Chat",
-                      data.messages,
-                    );
-                    toast.success("Chat imported successfully");
+                    await importChat(data.description || 'Imported Chat', data.messages);
+                    toast.success('Chat imported successfully');
 
                     return;
                   }
 
-                  toast.error("Invalid chat file format");
+                  toast.error('Invalid chat file format');
                 } catch (error: unknown) {
                   if (error instanceof Error) {
-                    toast.error("Failed to parse chat file: " + error.message);
+                    toast.error('Failed to parse chat file: ' + error.message);
                   } else {
-                    toast.error("Failed to parse chat file");
+                    toast.error('Failed to parse chat file');
                   }
                 }
               };
-              reader.onerror = () => toast.error("Failed to read chat file");
+              reader.onerror = () => toast.error('Failed to read chat file');
               reader.readAsText(file);
             } catch (error) {
-              toast.error(
-                error instanceof Error
-                  ? error.message
-                  : "Failed to import chat",
-              );
+              toast.error(error instanceof Error ? error.message : 'Failed to import chat');
             }
-            e.target.value = ""; // Reset file input
+            e.target.value = ''; // Reset file input
           } else {
-            toast.error("Something went wrong");
+            toast.error('Something went wrong');
           }
         }}
       />
@@ -72,18 +61,18 @@ export function ImportButtons(
         <div className="flex gap-2">
           <Button
             onClick={() => {
-              const input = document.getElementById("chat-import");
+              const input = document.getElementById('chat-import');
               input?.click();
             }}
             variant="default"
             size="lg"
             className={classNames(
-              "gap-2 bg-codinit-elements-background-depth-1",
-              "text-codinit-elements-textPrimary",
-              "hover:bg-codinit-elements-background-depth-2",
-              "border border-codinit-elements-borderColor",
-              "h-10 px-4 py-2 min-w-[120px] justify-center",
-              "transition-all duration-200 ease-in-out",
+              'gap-2 bg-codinit-elements-background-depth-1',
+              'text-codinit-elements-textPrimary',
+              'hover:bg-codinit-elements-background-depth-2',
+              'border border-codinit-elements-borderColor',
+              'h-10 px-4 py-2 min-w-[120px] justify-center',
+              'transition-all duration-200 ease-in-out',
             )}
           >
             <span className="i-ph:upload-simple w-4 h-4" />
@@ -92,12 +81,12 @@ export function ImportButtons(
           <ImportFolderButton
             importChat={importChat}
             className={classNames(
-              "gap-2 bg-codinit-elements-background-depth-1",
-              "text-codinit-elements-textPrimary",
-              "hover:bg-codinit-elements-background-depth-2",
-              "border border-[rgba(0,0,0,0.08)] dark:border-[rgba(255,255,255,0.08)]",
-              "h-10 px-4 py-2 min-w-[120px] justify-center",
-              "transition-all duration-200 ease-in-out rounded-lg",
+              'gap-2 bg-codinit-elements-background-depth-1',
+              'text-codinit-elements-textPrimary',
+              'hover:bg-codinit-elements-background-depth-2',
+              'border border-[rgba(0,0,0,0.08)] dark:border-[rgba(255,255,255,0.08)]',
+              'h-10 px-4 py-2 min-w-[120px] justify-center',
+              'transition-all duration-200 ease-in-out rounded-lg',
             )}
           />
         </div>

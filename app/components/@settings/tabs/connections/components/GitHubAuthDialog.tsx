@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { motion } from "framer-motion";
-import { toast } from "react-toastify";
-import Cookies from "js-cookie";
-import type { GitHubUserResponse } from "~/types/GitHub";
+import React, { useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
+import type { GitHubUserResponse } from '~/types/GitHub';
 
 interface GitHubAuthDialogProps {
   isOpen: boolean;
@@ -11,11 +11,9 @@ interface GitHubAuthDialogProps {
 }
 
 export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [tokenType, setTokenType] = useState<"classic" | "fine-grained">(
-    "classic",
-  );
+  const [tokenType, setTokenType] = useState<'classic' | 'fine-grained'>('classic');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +25,9 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("https://api.github.com/user", {
+      const response = await fetch('https://api.github.com/user', {
         headers: {
-          Accept: "application/vnd.github.v3+json",
+          Accept: 'application/vnd.github.v3+json',
           Authorization: `Bearer ${token}`,
         },
       });
@@ -49,34 +47,26 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
           connected_at: new Date().toISOString(),
         };
 
-        localStorage.setItem(
-          "github_connection",
-          JSON.stringify(connectionData),
-        );
+        localStorage.setItem('github_connection', JSON.stringify(connectionData));
 
         // Set cookies for API requests
-        Cookies.set("githubToken", token);
-        Cookies.set("githubUsername", userData.login);
-        Cookies.set(
-          "git:github.com",
-          JSON.stringify({ username: token, password: "x-oauth-basic" }),
-        );
+        Cookies.set('githubToken', token);
+        Cookies.set('githubUsername', userData.login);
+        Cookies.set('git:github.com', JSON.stringify({ username: token, password: 'x-oauth-basic' }));
 
         toast.success(`Successfully connected as ${userData.login}`);
-        setToken("");
+        setToken('');
         onClose();
       } else {
         if (response.status === 401) {
-          toast.error("Invalid GitHub token. Please check and try again.");
+          toast.error('Invalid GitHub token. Please check and try again.');
         } else {
-          toast.error(
-            `GitHub API error: ${response.status} ${response.statusText}`,
-          );
+          toast.error(`GitHub API error: ${response.status} ${response.statusText}`);
         }
       }
     } catch (error) {
-      console.error("Error connecting to GitHub:", error);
-      toast.error("Failed to connect to GitHub. Please try again.");
+      console.error('Error connecting to GitHub:', error);
+      toast.error('Failed to connect to GitHub. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -95,19 +85,15 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
           >
             <Dialog.Content className="bg-white dark:bg-[#1A1A1A] rounded-lg shadow-xl max-w-sm w-full mx-4 overflow-hidden">
               <div className="p-4 space-y-3">
-                <h2 className="text-lg font-semibold text-[#111111] dark:text-white">
-                  Access Private Repositories
-                </h2>
+                <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Access Private Repositories</h2>
 
                 <p className="text-sm text-[#666666] dark:text-[#999999]">
-                  To access private repositories, you need to connect your
-                  GitHub account by providing a personal access token.
+                  To access private repositories, you need to connect your GitHub account by providing a personal access
+                  token.
                 </p>
 
                 <div className="bg-[#F9F9F9] dark:bg-[#252525] p-4 rounded-lg space-y-3">
-                  <h3 className="text-base font-medium text-[#111111] dark:text-white">
-                    Connect with GitHub Token
-                  </h3>
+                  <h3 className="text-base font-medium text-[#111111] dark:text-white">Connect with GitHub Token</h3>
 
                   <form onSubmit={handleSubmit} className="space-y-3">
                     <div>
@@ -122,7 +108,7 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                         className="w-full px-3 py-1.5 rounded-lg border border-[#E5E5E5] dark:border-[#333333] bg-white dark:bg-[#1A1A1A] text-[#111111] dark:text-white placeholder-[#999999] text-sm"
                       />
                       <div className="mt-1 text-xs text-[#666666] dark:text-[#999999]">
-                        Get your token at{" "}
+                        Get your token at{' '}
                         <a
                           href="https://github.com/settings/tokens"
                           target="_blank"
@@ -135,31 +121,25 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="block text-sm text-[#666666] dark:text-[#999999]">
-                        Token Type
-                      </label>
+                      <label className="block text-sm text-[#666666] dark:text-[#999999]">Token Type</label>
                       <div className="flex gap-4">
                         <label className="flex items-center gap-2">
                           <input
                             type="radio"
-                            checked={tokenType === "classic"}
-                            onChange={() => setTokenType("classic")}
+                            checked={tokenType === 'classic'}
+                            onChange={() => setTokenType('classic')}
                             className="w-3.5 h-3.5 accent-purple-500"
                           />
-                          <span className="text-sm text-[#111111] dark:text-white">
-                            Classic
-                          </span>
+                          <span className="text-sm text-[#111111] dark:text-white">Classic</span>
                         </label>
                         <label className="flex items-center gap-2">
                           <input
                             type="radio"
-                            checked={tokenType === "fine-grained"}
-                            onChange={() => setTokenType("fine-grained")}
+                            checked={tokenType === 'fine-grained'}
+                            onChange={() => setTokenType('fine-grained')}
                             className="w-3.5 h-3.5 accent-purple-500"
                           />
-                          <span className="text-sm text-[#111111] dark:text-white">
-                            Fine-grained
-                          </span>
+                          <span className="text-sm text-[#111111] dark:text-white">Fine-grained</span>
                         </label>
                       </div>
                     </div>
@@ -169,7 +149,7 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                       disabled={isSubmitting}
                       className="w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                     >
-                      {isSubmitting ? "Connecting..." : "Connect to GitHub"}
+                      {isSubmitting ? 'Connecting...' : 'Connect to GitHub'}
                     </button>
                   </form>
                 </div>
@@ -180,22 +160,13 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                     Accessing Private Repositories
                   </h3>
                   <p className="text-xs text-amber-700 dark:text-amber-400">
-                    Important things to know about accessing private
-                    repositories:
+                    Important things to know about accessing private repositories:
                   </p>
                   <ul className="list-disc pl-4 text-xs text-amber-700 dark:text-amber-400 space-y-0.5">
-                    <li>
-                      You must be granted access to the repository by its owner
-                    </li>
+                    <li>You must be granted access to the repository by its owner</li>
                     <li>Your GitHub token must have the 'repo' scope</li>
-                    <li>
-                      For organization repositories, you may need additional
-                      permissions
-                    </li>
-                    <li>
-                      No token can give you access to repositories you don't
-                      have permission for
-                    </li>
+                    <li>For organization repositories, you may need additional permissions</li>
+                    <li>No token can give you access to repositories you don't have permission for</li>
                   </ul>
                 </div>
               </div>

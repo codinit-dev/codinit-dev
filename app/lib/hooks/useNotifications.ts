@@ -1,17 +1,11 @@
-import { useState, useEffect } from "react";
-import {
-  getNotifications,
-  markNotificationRead,
-  type Notification,
-} from "~/lib/api/notifications";
-import { logStore } from "~/lib/stores/logs";
-import { useStore } from "@nanostores/react";
+import { useState, useEffect } from 'react';
+import { getNotifications, markNotificationRead, type Notification } from '~/lib/api/notifications';
+import { logStore } from '~/lib/stores/logs';
+import { useStore } from '@nanostores/react';
 
 export const useNotifications = () => {
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
-  const [unreadNotifications, setUnreadNotifications] = useState<
-    Notification[]
-  >([]);
+  const [unreadNotifications, setUnreadNotifications] = useState<Notification[]>([]);
   const logs = useStore(logStore.logs);
 
   const checkNotifications = async () => {
@@ -21,7 +15,7 @@ export const useNotifications = () => {
       setUnreadNotifications(unread);
       setHasUnreadNotifications(unread.length > 0);
     } catch (error) {
-      console.error("Failed to check notifications:", error);
+      console.error('Failed to check notifications:', error);
     }
   };
 
@@ -39,7 +33,7 @@ export const useNotifications = () => {
       await markNotificationRead(notificationId);
       await checkNotifications();
     } catch (error) {
-      console.error("Failed to mark notification as read:", error);
+      console.error('Failed to mark notification as read:', error);
     }
   };
 
@@ -49,7 +43,7 @@ export const useNotifications = () => {
       await Promise.all(notifications.map((n) => markNotificationRead(n.id)));
       await checkNotifications();
     } catch (error) {
-      console.error("Failed to mark all notifications as read:", error);
+      console.error('Failed to mark all notifications as read:', error);
     }
   };
 

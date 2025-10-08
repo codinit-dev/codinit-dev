@@ -1,30 +1,21 @@
-import {
-  generateText,
-  type CoreTool,
-  type GenerateTextResult,
-  type Message,
-} from "ai";
-import ignore from "ignore";
-import type { IProviderSetting } from "~/types/model";
-import { IGNORE_PATTERNS, type FileMap } from "./constants";
-import {
-  DEFAULT_MODEL,
-  DEFAULT_PROVIDER,
-  PROVIDER_LIST,
-} from "~/utils/constants";
+import { generateText, type CoreTool, type GenerateTextResult, type Message } from 'ai';
+import ignore from 'ignore';
+import type { IProviderSetting } from '~/types/model';
+import { IGNORE_PATTERNS, type FileMap } from './constants';
+import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROVIDER_LIST } from '~/utils/constants';
 import {
   createFilesContext,
   extractCurrentContext,
   extractPropertiesFromMessage,
   simplifycodinitActions,
-} from "./utils";
-import { createScopedLogger } from "~/utils/logger";
-import { LLMManager } from "~/lib/modules/llm/manager";
+} from './utils';
+import { createScopedLogger } from '~/utils/logger';
+import { LLMManager } from '~/lib/modules/llm/manager';
 
 // Common patterns to ignore, similar to .gitignore
 
 const ig = ignore().add(IGNORE_PATTERNS);
-const logger = createScopedLogger("select-context");
+const logger = createScopedLogger('select-context');
 
 export async function selectContext(props: {
   messages: Message[];
@@ -35,39 +26,25 @@ export async function selectContext(props: {
   promptId?: string;
   contextOptimization?: boolean;
   summary: string;
-  onFinish?: (
-    resp: GenerateTextResult<Record<string, CoreTool<any, any>>, never>,
-  ) => void;
+  onFinish?: (resp: GenerateTextResult<Record<string, CoreTool<any, any>>, never>) => void;
 }) {
-  const {
-    messages,
-    env: serverEnv,
-    apiKeys,
-    files,
-    providerSettings,
-    summary,
-    onFinish,
-  } = props;
+  const { messages, env: serverEnv, apiKeys, files, providerSettings, summary, onFinish } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
   const processedMessages = messages.map((message) => {
-    if (message.role === "user") {
-      const { model, provider, content } =
-        extractPropertiesFromMessage(message);
+    if (message.role === 'user') {
+      const { model, provider, content } = extractPropertiesFromMessage(message);
       currentModel = model;
       currentProvider = provider;
 
       return { ...message, content };
-    } else if (message.role == "assistant") {
+    } else if (message.role == 'assistant') {
       let content = message.content;
 
       content = simplifycodinitActions(content);
 
-      content = content.replace(
-        /<div class=\\"__codinitThought__\\">.*?<\/div>/s,
-        "",
-      );
-      content = content.replace(/<think>.*?<\/think>/s, "");
+      content = content.replace(/<div class=\\"__codinitThought__\\">.*?<\/div>/s, '');
+      content = content.replace(/<think>.*?<\/think>/s, '');
 
       return { ...message, content };
     }
@@ -75,10 +52,8 @@ export async function selectContext(props: {
     return message;
   });
 
-  const provider =
-    PROVIDER_LIST.find((p) => p.name === currentProvider) || DEFAULT_PROVIDER;
-  const staticModels =
-    LLMManager.getInstance().getStaticModelListFromProvider(provider);
+  const provider = PROVIDER_LIST.find((p) => p.name === currentProvider) || DEFAULT_PROVIDER;
+  const staticModels = LLMManager.getInstance().getStaticModelListFromProvider(provider);
   let modelDetails = staticModels.find((m) => m.name === currentModel);
 
   if (!modelDetails) {
@@ -110,21 +85,21 @@ export async function selectContext(props: {
 
   let filePaths = getFilePaths(files || {});
   filePaths = filePaths.filter((x) => {
-    const relPath = x.replace("/home/project/", "");
+    const relPath = x.replace('/home/project/', '');
     return !ig.ignores(relPath);
   });
 
-  let context = "";
+  let context = '';
   const currrentFiles: string[] = [];
   const contextFiles: FileMap = {};
 
-  if (codeContext?.type === "codeContext") {
+  if (codeContext?.type === 'codeContext') {
     const codeContextFiles: string[] = codeContext.files;
     Object.keys(files || {}).forEach((path) => {
       let relativePath = path;
 
-      if (path.startsWith("/home/project/")) {
-        relativePath = path.replace("/home/project/", "");
+      if (path.startsWith('/home/project/')) {
+        relativePath = path.replace('/home/project/', '');
       }
 
       if (codeContextFiles.includes(relativePath)) {
@@ -139,16 +114,13 @@ export async function selectContext(props: {
 
   const extractTextContent = (message: Message) =>
     Array.isArray(message.content)
-      ? (message.content.find((item) => item.type === "text")
-          ?.text as string) || ""
+      ? (message.content.find((item) => item.type === 'text')?.text as string) || ''
       : message.content;
 
-  const lastUserMessage = processedMessages
-    .filter((x) => x.role == "user")
-    .pop();
+  const lastUserMessage = processedMessages.filter((x) => x.role == 'user').pop();
 
   if (!lastUserMessage) {
-    throw new Error("No user message found");
+    throw new Error('No user message found');
   }
 
   // select files from the list of code file from the project that might be useful for the current request from the user
@@ -158,7 +130,7 @@ export async function selectContext(props: {
 
         AVAILABLE FILES PATHS
         ---
-        ${filePaths.map((path) => `- ${path}`).join("\n")}
+        ${filePaths.map((path) => `- ${path}`).join('\n')}
         ---
 
         You have following code loaded in the context buffer that you can refer to:
@@ -210,22 +182,20 @@ export async function selectContext(props: {
   });
 
   const response = resp.text;
-  const updateContextBuffer = response.match(
-    /<updateContextBuffer>([\s\S]*?)<\/updateContextBuffer>/,
-  );
+  const updateContextBuffer = response.match(/<updateContextBuffer>([\s\S]*?)<\/updateContextBuffer>/);
 
   if (!updateContextBuffer) {
-    throw new Error("Invalid response. Please follow the response format");
+    throw new Error('Invalid response. Please follow the response format');
   }
 
   const includeFiles =
     updateContextBuffer[1]
       .match(/<includeFile path="(.*?)"/gm)
-      ?.map((x) => x.replace('<includeFile path="', "").replace('"', "")) || [];
+      ?.map((x) => x.replace('<includeFile path="', '').replace('"', '')) || [];
   const excludeFiles =
     updateContextBuffer[1]
       .match(/<excludeFile path="(.*?)"/gm)
-      ?.map((x) => x.replace('<excludeFile path="', "").replace('"', "")) || [];
+      ?.map((x) => x.replace('<excludeFile path="', '').replace('"', '')) || [];
 
   const filteredFiles: FileMap = {};
   excludeFiles.forEach((path) => {
@@ -234,7 +204,7 @@ export async function selectContext(props: {
   includeFiles.forEach((path) => {
     let fullPath = path;
 
-    if (!path.startsWith("/home/project/")) {
+    if (!path.startsWith('/home/project/')) {
       fullPath = `/home/project/${path}`;
     }
 
@@ -271,7 +241,7 @@ export async function selectContext(props: {
 export function getFilePaths(files: FileMap) {
   let filePaths = Object.keys(files);
   filePaths = filePaths.filter((x) => {
-    const relPath = x.replace("/home/project/", "");
+    const relPath = x.replace('/home/project/', '');
     return !ig.ignores(relPath);
   });
 

@@ -1,23 +1,15 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
-import type { FileMap } from "~/lib/stores/files";
-import { classNames } from "~/utils/classNames";
-import { createScopedLogger, renderLogger } from "~/utils/logger";
-import * as ContextMenu from "@radix-ui/react-context-menu";
-import type { FileHistory } from "~/types/actions";
-import { diffLines, type Change } from "diff";
-import { workbenchStore } from "~/lib/stores/workbench";
-import { toast } from "react-toastify";
-import { path } from "~/utils/path";
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import type { FileMap } from '~/lib/stores/files';
+import { classNames } from '~/utils/classNames';
+import { createScopedLogger, renderLogger } from '~/utils/logger';
+import * as ContextMenu from '@radix-ui/react-context-menu';
+import type { FileHistory } from '~/types/actions';
+import { diffLines, type Change } from 'diff';
+import { workbenchStore } from '~/lib/stores/workbench';
+import { toast } from 'react-toastify';
+import { path } from '~/utils/path';
 
-const logger = createScopedLogger("FileTree");
+const logger = createScopedLogger('FileTree');
 
 const NODE_PADDING_LEFT = 8;
 const DEFAULT_HIDDEN_FILES = [/\/node_modules\//, /\/\.next/, /\/\.astro/];
@@ -58,12 +50,9 @@ export const FileTree = memo(
     unsavedFiles,
     fileHistory = {},
   }: Props) => {
-    renderLogger.trace("FileTree");
+    renderLogger.trace('FileTree');
 
-    const computedHiddenFiles = useMemo(
-      () => [...DEFAULT_HIDDEN_FILES, ...(hiddenFiles ?? [])],
-      [hiddenFiles],
-    );
+    const computedHiddenFiles = useMemo(() => [...DEFAULT_HIDDEN_FILES, ...(hiddenFiles ?? [])], [hiddenFiles]);
 
     const fileList = useMemo(() => {
       return buildFileList(files, rootFolder, hideRoot, computedHiddenFiles);
@@ -71,23 +60,13 @@ export const FileTree = memo(
 
     const [collapsedFolders, setCollapsedFolders] = useState(() => {
       return collapsed
-        ? new Set(
-            fileList
-              .filter((item) => item.kind === "folder")
-              .map((item) => item.fullPath),
-          )
+        ? new Set(fileList.filter((item) => item.kind === 'folder').map((item) => item.fullPath))
         : new Set<string>();
     });
 
     useEffect(() => {
       if (collapsed) {
-        setCollapsedFolders(
-          new Set(
-            fileList
-              .filter((item) => item.kind === "folder")
-              .map((item) => item.fullPath),
-          ),
-        );
+        setCollapsedFolders(new Set(fileList.filter((item) => item.kind === 'folder').map((item) => item.fullPath)));
         return;
       }
 
@@ -95,7 +74,7 @@ export const FileTree = memo(
         const newCollapsed = new Set<string>();
 
         for (const folder of fileList) {
-          if (folder.kind === "folder" && prevCollapsed.has(folder.fullPath)) {
+          if (folder.kind === 'folder' && prevCollapsed.has(folder.fullPath)) {
             newCollapsed.add(folder.fullPath);
           }
         }
@@ -157,34 +136,23 @@ export const FileTree = memo(
 
     const onCopyRelativePath = (fileOrFolder: FileNode | FolderNode) => {
       try {
-        navigator.clipboard.writeText(
-          fileOrFolder.fullPath.substring((rootFolder || "").length),
-        );
+        navigator.clipboard.writeText(fileOrFolder.fullPath.substring((rootFolder || '').length));
       } catch (error) {
         logger.error(error);
       }
     };
 
     return (
-      <div
-        className={classNames(
-          "text-sm",
-          className,
-          "overflow-y-auto modern-scrollbar",
-        )}
-      >
+      <div className={classNames('text-sm', className, 'overflow-y-auto modern-scrollbar')}>
         {filteredFileList.map((fileOrFolder) => {
           switch (fileOrFolder.kind) {
-            case "file": {
+            case 'file': {
               return (
                 <File
                   key={fileOrFolder.id}
                   selected={selectedFile === fileOrFolder.fullPath}
                   file={fileOrFolder}
-                  unsavedChanges={
-                    unsavedFiles instanceof Set &&
-                    unsavedFiles.has(fileOrFolder.fullPath)
-                  }
+                  unsavedChanges={unsavedFiles instanceof Set && unsavedFiles.has(fileOrFolder.fullPath)}
                   fileHistory={fileHistory}
                   onCopyPath={() => {
                     onCopyPath(fileOrFolder);
@@ -198,15 +166,12 @@ export const FileTree = memo(
                 />
               );
             }
-            case "folder": {
+            case 'folder': {
               return (
                 <Folder
                   key={fileOrFolder.id}
                   folder={fileOrFolder}
-                  selected={
-                    allowFolderSelection &&
-                    selectedFile === fileOrFolder.fullPath
-                  }
+                  selected={allowFolderSelection && selectedFile === fileOrFolder.fullPath}
                   collapsed={collapsedFolders.has(fileOrFolder.fullPath)}
                   onCopyPath={() => {
                     onCopyPath(fileOrFolder);
@@ -247,13 +212,7 @@ interface FolderContextMenuProps {
   children: ReactNode;
 }
 
-function ContextMenuItem({
-  onSelect,
-  children,
-}: {
-  onSelect?: () => void;
-  children: ReactNode;
-}) {
+function ContextMenuItem({ onSelect, children }: { onSelect?: () => void; children: ReactNode }) {
   return (
     <ContextMenu.Item
       onSelect={onSelect}
@@ -265,13 +224,7 @@ function ContextMenuItem({
   );
 }
 
-function InlineInput({
-  depth,
-  placeholder,
-  initialValue = "",
-  onSubmit,
-  onCancel,
-}: InlineInputProps) {
+function InlineInput({ depth, placeholder, initialValue = '', onSubmit, onCancel }: InlineInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -290,13 +243,13 @@ function InlineInput({
   }, [initialValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       const value = inputRef.current?.value.trim();
 
       if (value) {
         onSubmit(value);
       }
-    } else if (e.key === "Escape") {
+    } else if (e.key === 'Escape') {
       onCancel();
     }
   };
@@ -334,14 +287,14 @@ function FileContextMenu({
   const [isCreatingFile, setIsCreatingFile] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const depth = useMemo(() => fullPath.split("/").length, [fullPath]);
+  const depth = useMemo(() => fullPath.split('/').length, [fullPath]);
   const fileName = useMemo(() => path.basename(fullPath), [fullPath]);
 
   const isFolder = useMemo(() => {
     const files = workbenchStore.files.get();
     const fileEntry = files[fullPath];
 
-    return !fileEntry || fileEntry.type === "folder";
+    return !fileEntry || fileEntry.type === 'folder';
   }, [fullPath]);
 
   const targetPath = useMemo(() => {
@@ -366,7 +319,7 @@ function FileContextMenu({
       e.stopPropagation();
 
       const items = Array.from(e.dataTransfer.items);
-      const files = items.filter((item) => item.kind === "file");
+      const files = items.filter((item) => item.kind === 'file');
 
       for (const item of files) {
         const file = item.getAsFile();
@@ -379,10 +332,7 @@ function FileContextMenu({
             const arrayBuffer = await file.arrayBuffer();
             const binaryContent = new Uint8Array(arrayBuffer);
 
-            const success = await workbenchStore.createFile(
-              filePath,
-              binaryContent,
-            );
+            const success = await workbenchStore.createFile(filePath, binaryContent);
 
             if (success) {
               toast.success(`File ${file.name} uploaded successfully`);
@@ -403,12 +353,12 @@ function FileContextMenu({
 
   const handleCreateFile = async (fileName: string) => {
     const newFilePath = path.join(targetPath, fileName);
-    const success = await workbenchStore.createFile(newFilePath, "");
+    const success = await workbenchStore.createFile(newFilePath, '');
 
     if (success) {
-      toast.success("File created successfully");
+      toast.success('File created successfully');
     } else {
-      toast.error("Failed to create file");
+      toast.error('Failed to create file');
     }
 
     setIsCreatingFile(false);
@@ -419,9 +369,9 @@ function FileContextMenu({
     const success = await workbenchStore.createFolder(newFolderPath);
 
     if (success) {
-      toast.success("Folder created successfully");
+      toast.success('Folder created successfully');
     } else {
-      toast.error("Failed to create folder");
+      toast.error('Failed to create folder');
     }
 
     setIsCreatingFolder(false);
@@ -429,11 +379,7 @@ function FileContextMenu({
 
   const handleDelete = async () => {
     try {
-      if (
-        !confirm(
-          `Are you sure you want to delete ${isFolder ? "folder" : "file"}: ${fileName}?`,
-        )
-      ) {
+      if (!confirm(`Are you sure you want to delete ${isFolder ? 'folder' : 'file'}: ${fileName}?`)) {
         return;
       }
 
@@ -446,12 +392,12 @@ function FileContextMenu({
       }
 
       if (success) {
-        toast.success(`${isFolder ? "Folder" : "File"} deleted successfully`);
+        toast.success(`${isFolder ? 'Folder' : 'File'} deleted successfully`);
       } else {
-        toast.error(`Failed to delete ${isFolder ? "folder" : "file"}`);
+        toast.error(`Failed to delete ${isFolder ? 'folder' : 'file'}`);
       }
     } catch (error) {
-      toast.error(`Error deleting ${isFolder ? "folder" : "file"}`);
+      toast.error(`Error deleting ${isFolder ? 'folder' : 'file'}`);
       logger.error(error);
     }
   };
@@ -544,8 +490,8 @@ function FileContextMenu({
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={classNames("relative", {
-              "bg-codinit-elements-background-depth-2 border border-dashed border-codinit-elements-item-contentAccent rounded-md":
+            className={classNames('relative', {
+              'bg-codinit-elements-background-depth-2 border border-dashed border-codinit-elements-item-contentAccent rounded-md':
                 isDragging,
             })}
           >
@@ -573,9 +519,7 @@ function FileContextMenu({
             </ContextMenu.Group>
             <ContextMenu.Group className="p-1">
               <ContextMenuItem onSelect={onCopyPath}>Copy path</ContextMenuItem>
-              <ContextMenuItem onSelect={onCopyRelativePath}>
-                Copy relative path
-              </ContextMenuItem>
+              <ContextMenuItem onSelect={onCopyRelativePath}>Copy relative path</ContextMenuItem>
             </ContextMenu.Group>
             {/* Add lock/unlock options for files and folders */}
             <ContextMenu.Group className="p-1 border-t-px border-solid border-codinit-elements-borderColor">
@@ -616,7 +560,7 @@ function FileContextMenu({
               <ContextMenuItem onSelect={handleDelete}>
                 <div className="flex items-center gap-2 text-red-500">
                   <div className="i-ph:trash" />
-                  Delete {isFolder ? "Folder" : "File"}
+                  Delete {isFolder ? 'Folder' : 'File'}
                 </div>
               </ContextMenuItem>
             </ContextMenu.Group>
@@ -643,34 +587,22 @@ function FileContextMenu({
   );
 }
 
-function Folder({
-  folder,
-  collapsed,
-  selected = false,
-  onCopyPath,
-  onCopyRelativePath,
-  onClick,
-}: FolderProps) {
+function Folder({ folder, collapsed, selected = false, onCopyPath, onCopyRelativePath, onClick }: FolderProps) {
   // Check if the folder is locked
   const { isLocked } = workbenchStore.isFolderLocked(folder.fullPath);
 
   return (
-    <FileContextMenu
-      onCopyPath={onCopyPath}
-      onCopyRelativePath={onCopyRelativePath}
-      fullPath={folder.fullPath}
-    >
+    <FileContextMenu onCopyPath={onCopyPath} onCopyRelativePath={onCopyRelativePath} fullPath={folder.fullPath}>
       <NodeButton
-        className={classNames("group", {
-          "bg-transparent text-codinit-elements-item-contentDefault hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive":
+        className={classNames('group', {
+          'bg-transparent text-codinit-elements-item-contentDefault hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive':
             !selected,
-          "bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent":
-            selected,
+          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': selected,
         })}
         depth={folder.depth}
         iconClasses={classNames({
-          "i-ph:caret-right scale-98": collapsed,
-          "i-ph:caret-down scale-98": !collapsed,
+          'i-ph:caret-right scale-98': collapsed,
+          'i-ph:caret-down scale-98': !collapsed,
         })}
         onClick={onClick}
       >
@@ -678,11 +610,8 @@ function Folder({
           <div className="flex-1 truncate pr-2">{folder.name}</div>
           {isLocked && (
             <span
-              className={classNames(
-                "shrink-0",
-                "i-ph:lock-simple scale-80 text-red-500",
-              )}
-              title={"Folder is locked"}
+              className={classNames('shrink-0', 'i-ph:lock-simple scale-80 text-red-500')}
+              title={'Folder is locked'}
             />
           )}
         </div>
@@ -722,14 +651,9 @@ function File({
       return { additions: 0, deletions: 0 };
     }
 
-    const normalizedOriginal = fileModifications.originalContent.replace(
-      /\r\n/g,
-      "\n",
-    );
+    const normalizedOriginal = fileModifications.originalContent.replace(/\r\n/g, '\n');
     const normalizedCurrent =
-      fileModifications.versions[
-        fileModifications.versions.length - 1
-      ]?.content.replace(/\r\n/g, "\n") || "";
+      fileModifications.versions[fileModifications.versions.length - 1]?.content.replace(/\r\n/g, '\n') || '';
 
     if (normalizedOriginal === normalizedCurrent) {
       return { additions: 0, deletions: 0 };
@@ -744,11 +668,11 @@ function File({
     return changes.reduce(
       (acc: { additions: number; deletions: number }, change: Change) => {
         if (change.added) {
-          acc.additions += change.value.split("\n").length;
+          acc.additions += change.value.split('\n').length;
         }
 
         if (change.removed) {
-          acc.deletions += change.value.split("\n").length;
+          acc.deletions += change.value.split('\n').length;
         }
 
         return acc;
@@ -760,53 +684,39 @@ function File({
   const showStats = additions > 0 || deletions > 0;
 
   return (
-    <FileContextMenu
-      onCopyPath={onCopyPath}
-      onCopyRelativePath={onCopyRelativePath}
-      fullPath={fullPath}
-    >
+    <FileContextMenu onCopyPath={onCopyPath} onCopyRelativePath={onCopyRelativePath} fullPath={fullPath}>
       <NodeButton
-        className={classNames("group", {
-          "bg-transparent hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-item-contentDefault":
+        className={classNames('group', {
+          'bg-transparent hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-item-contentDefault':
             !selected,
-          "bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent":
-            selected,
+          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': selected,
         })}
         depth={depth}
-        iconClasses={classNames("i-ph:file-duotone scale-98", {
-          "group-hover:text-codinit-elements-item-contentActive": !selected,
+        iconClasses={classNames('i-ph:file-duotone scale-98', {
+          'group-hover:text-codinit-elements-item-contentActive': !selected,
         })}
         onClick={onClick}
       >
         <div
-          className={classNames("flex items-center", {
-            "group-hover:text-codinit-elements-item-contentActive": !selected,
+          className={classNames('flex items-center', {
+            'group-hover:text-codinit-elements-item-contentActive': !selected,
           })}
         >
           <div className="flex-1 truncate pr-2">{name}</div>
           <div className="flex items-center gap-1">
             {showStats && (
               <div className="flex items-center gap-1 text-xs">
-                {additions > 0 && (
-                  <span className="text-green-500">+{additions}</span>
-                )}
-                {deletions > 0 && (
-                  <span className="text-red-500">-{deletions}</span>
-                )}
+                {additions > 0 && <span className="text-green-500">+{additions}</span>}
+                {deletions > 0 && <span className="text-red-500">-{deletions}</span>}
               </div>
             )}
             {locked && (
               <span
-                className={classNames(
-                  "shrink-0",
-                  "i-ph:lock-simple scale-80 text-red-500",
-                )}
-                title={"File is locked"}
+                className={classNames('shrink-0', 'i-ph:lock-simple scale-80 text-red-500')}
+                title={'File is locked'}
               />
             )}
-            {unsavedChanges && (
-              <span className="i-ph:circle-fill scale-68 shrink-0 text-orange-500" />
-            )}
+            {unsavedChanges && <span className="i-ph:circle-fill scale-68 shrink-0 text-orange-500" />}
           </div>
         </div>
       </NodeButton>
@@ -822,23 +732,17 @@ interface ButtonProps {
   onClick?: () => void;
 }
 
-function NodeButton({
-  depth,
-  iconClasses,
-  onClick,
-  className,
-  children,
-}: ButtonProps) {
+function NodeButton({ depth, iconClasses, onClick, className, children }: ButtonProps) {
   return (
     <button
       className={classNames(
-        "flex items-center gap-1.5 w-full pr-2 border-2 border-transparent text-faded py-0.5",
+        'flex items-center gap-1.5 w-full pr-2 border-2 border-transparent text-faded py-0.5',
         className,
       )}
       style={{ paddingLeft: `${6 + depth * NODE_PADDING_LEFT}px` }}
       onClick={() => onClick?.()}
     >
-      <div className={classNames("scale-120 shrink-0", iconClasses)}></div>
+      <div className={classNames('scale-120 shrink-0', iconClasses)}></div>
       <div className="truncate w-full text-left">{children}</div>
     </button>
   );
@@ -854,16 +758,16 @@ interface BaseNode {
 }
 
 interface FileNode extends BaseNode {
-  kind: "file";
+  kind: 'file';
 }
 
 interface FolderNode extends BaseNode {
-  kind: "folder";
+  kind: 'folder';
 }
 
 function buildFileList(
   files: FileMap,
-  rootFolder = "/",
+  rootFolder = '/',
   hideRoot: boolean,
   hiddenFiles: Array<string | RegExp>,
 ): Node[] {
@@ -872,26 +776,26 @@ function buildFileList(
 
   let defaultDepth = 0;
 
-  if (rootFolder === "/" && !hideRoot) {
+  if (rootFolder === '/' && !hideRoot) {
     defaultDepth = 1;
     fileList.push({
-      kind: "folder",
-      name: "/",
+      kind: 'folder',
+      name: '/',
       depth: 0,
       id: 0,
-      fullPath: "/",
+      fullPath: '/',
     });
   }
 
   for (const [filePath, dirent] of Object.entries(files)) {
-    const segments = filePath.split("/").filter((segment) => segment);
+    const segments = filePath.split('/').filter((segment) => segment);
     const fileName = segments.at(-1);
 
     if (!fileName || isHiddenFile(filePath, fileName, hiddenFiles)) {
       continue;
     }
 
-    let currentPath = "";
+    let currentPath = '';
 
     let i = 0;
     let depth = 0;
@@ -900,17 +804,14 @@ function buildFileList(
       const name = segments[i];
       const fullPath = (currentPath += `/${name}`);
 
-      if (
-        !fullPath.startsWith(rootFolder) ||
-        (hideRoot && fullPath === rootFolder)
-      ) {
+      if (!fullPath.startsWith(rootFolder) || (hideRoot && fullPath === rootFolder)) {
         i++;
         continue;
       }
 
-      if (i === segments.length - 1 && dirent?.type === "file") {
+      if (i === segments.length - 1 && dirent?.type === 'file') {
         fileList.push({
-          kind: "file",
+          kind: 'file',
           id: fileList.length,
           name,
           fullPath,
@@ -920,7 +821,7 @@ function buildFileList(
         folderPaths.add(fullPath);
 
         fileList.push({
-          kind: "folder",
+          kind: 'folder',
           id: fileList.length,
           name,
           fullPath,
@@ -936,13 +837,9 @@ function buildFileList(
   return sortFileList(rootFolder, fileList, hideRoot);
 }
 
-function isHiddenFile(
-  filePath: string,
-  fileName: string,
-  hiddenFiles: Array<string | RegExp>,
-) {
+function isHiddenFile(filePath: string, fileName: string, hiddenFiles: Array<string | RegExp>) {
   return hiddenFiles.some((pathOrRegex) => {
-    if (typeof pathOrRegex === "string") {
+    if (typeof pathOrRegex === 'string') {
       return fileName === pathOrRegex;
     }
 
@@ -963,12 +860,8 @@ function isHiddenFile(
  *
  * @returns A new array of nodes sorted in depth-first order.
  */
-function sortFileList(
-  rootFolder: string,
-  nodeList: Node[],
-  hideRoot: boolean,
-): Node[] {
-  logger.trace("sortFileList");
+function sortFileList(rootFolder: string, nodeList: Node[], hideRoot: boolean): Node[] {
+  logger.trace('sortFileList');
 
   const nodeMap = new Map<string, Node>();
   const childrenMap = new Map<string, Node[]>();
@@ -979,9 +872,9 @@ function sortFileList(
   for (const node of nodeList) {
     nodeMap.set(node.fullPath, node);
 
-    const parentPath = node.fullPath.slice(0, node.fullPath.lastIndexOf("/"));
+    const parentPath = node.fullPath.slice(0, node.fullPath.lastIndexOf('/'));
 
-    if (parentPath !== rootFolder.slice(0, rootFolder.lastIndexOf("/"))) {
+    if (parentPath !== rootFolder.slice(0, rootFolder.lastIndexOf('/'))) {
       if (!childrenMap.has(parentPath)) {
         childrenMap.set(parentPath, []);
       }
@@ -1003,7 +896,7 @@ function sortFileList(
 
     if (children) {
       for (const child of children) {
-        if (child.kind === "folder") {
+        if (child.kind === 'folder') {
           depthFirstTraversal(child.fullPath);
         } else {
           sortedList.push(child);
@@ -1028,11 +921,11 @@ function sortFileList(
 
 function compareNodes(a: Node, b: Node): number {
   if (a.kind !== b.kind) {
-    return a.kind === "folder" ? -1 : 1;
+    return a.kind === 'folder' ? -1 : 1;
   }
 
   return a.name.localeCompare(b.name, undefined, {
     numeric: true,
-    sensitivity: "base",
+    sensitivity: 'base',
   });
 }

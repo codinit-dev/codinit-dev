@@ -1,16 +1,10 @@
-import { useEffect } from "react";
-import { useSupabaseConnection } from "~/lib/hooks/useSupabaseConnection";
-import { classNames } from "~/utils/classNames";
-import { useStore } from "@nanostores/react";
-import { chatId } from "~/lib/persistence/useChatHistory";
-import { fetchSupabaseStats } from "~/lib/stores/supabase";
-import {
-  Dialog,
-  DialogRoot,
-  DialogClose,
-  DialogTitle,
-  DialogButton,
-} from "~/components/ui/Dialog";
+import { useEffect } from 'react';
+import { useSupabaseConnection } from '~/lib/hooks/useSupabaseConnection';
+import { classNames } from '~/utils/classNames';
+import { useStore } from '@nanostores/react';
+import { chatId } from '~/lib/persistence/useChatHistory';
+import { fetchSupabaseStats } from '~/lib/stores/supabase';
+import { Dialog, DialogRoot, DialogClose, DialogTitle, DialogButton } from '~/components/ui/Dialog';
 
 export function SupabaseConnection() {
   const {
@@ -37,24 +31,16 @@ export function SupabaseConnection() {
       setIsDialogOpen(true);
     };
 
-    document.addEventListener(
-      "open-supabase-connection",
-      handleOpenConnectionDialog,
-    );
+    document.addEventListener('open-supabase-connection', handleOpenConnectionDialog);
 
     return () => {
-      document.removeEventListener(
-        "open-supabase-connection",
-        handleOpenConnectionDialog,
-      );
+      document.removeEventListener('open-supabase-connection', handleOpenConnectionDialog);
     };
   }, [setIsDialogOpen]);
 
   useEffect(() => {
     if (isConnected && currentChatId) {
-      const savedProjectId = localStorage.getItem(
-        `supabase-project-${currentChatId}`,
-      );
+      const savedProjectId = localStorage.getItem(`supabase-project-${currentChatId}`);
 
       /*
        * If there's no saved project for this chat but there is a global selected project,
@@ -62,14 +48,8 @@ export function SupabaseConnection() {
        */
       if (!savedProjectId && supabaseConn.selectedProjectId) {
         // Save the current global project to this chat
-        localStorage.setItem(
-          `supabase-project-${currentChatId}`,
-          supabaseConn.selectedProjectId,
-        );
-      } else if (
-        savedProjectId &&
-        savedProjectId !== supabaseConn.selectedProjectId
-      ) {
+        localStorage.setItem(`supabase-project-${currentChatId}`, supabaseConn.selectedProjectId);
+      } else if (savedProjectId && savedProjectId !== supabaseConn.selectedProjectId) {
         selectProject(savedProjectId);
       }
     }
@@ -77,10 +57,7 @@ export function SupabaseConnection() {
 
   useEffect(() => {
     if (currentChatId && supabaseConn.selectedProjectId) {
-      localStorage.setItem(
-        `supabase-project-${currentChatId}`,
-        supabaseConn.selectedProjectId,
-      );
+      localStorage.setItem(`supabase-project-${currentChatId}`, supabaseConn.selectedProjectId);
     } else if (currentChatId && !supabaseConn.selectedProjectId) {
       localStorage.removeItem(`supabase-project-${currentChatId}`);
     }
@@ -93,20 +70,10 @@ export function SupabaseConnection() {
   }, [isConnected, supabaseConn.token]);
 
   useEffect(() => {
-    if (
-      isConnected &&
-      supabaseConn.selectedProjectId &&
-      supabaseConn.token &&
-      !supabaseConn.credentials
-    ) {
+    if (isConnected && supabaseConn.selectedProjectId && supabaseConn.token && !supabaseConn.credentials) {
       fetchProjectApiKeys(supabaseConn.selectedProjectId).catch(console.error);
     }
-  }, [
-    isConnected,
-    supabaseConn.selectedProjectId,
-    supabaseConn.token,
-    supabaseConn.credentials,
-  ]);
+  }, [isConnected, supabaseConn.selectedProjectId, supabaseConn.token, supabaseConn.credentials]);
 
   return (
     <div className="relative">
@@ -125,9 +92,7 @@ export function SupabaseConnection() {
             src="https://cdn.simpleicons.org/supabase"
           />
           {isConnected && supabaseConn.project && (
-            <span className="ml-1 text-xs max-w-[100px] truncate">
-              {supabaseConn.project.name}
-            </span>
+            <span className="ml-1 text-xs max-w-[100px] truncate">{supabaseConn.project.name}</span>
           )}
         </Button>
       </div>
@@ -149,9 +114,7 @@ export function SupabaseConnection() {
                 </DialogTitle>
 
                 <div>
-                  <label className="block text-sm text-codinit-elements-textSecondary mb-2">
-                    Access Token
-                  </label>
+                  <label className="block text-sm text-codinit-elements-textSecondary mb-2">Access Token</label>
                   <input
                     type="password"
                     value={supabaseConn.token}
@@ -159,12 +122,12 @@ export function SupabaseConnection() {
                     disabled={connecting}
                     placeholder="Enter your Supabase access token"
                     className={classNames(
-                      "w-full px-3 py-2 rounded-lg text-sm",
-                      "bg-[#F8F8F8] dark:bg-[#1A1A1A]",
-                      "border border-[#E5E5E5] dark:border-[#333333]",
-                      "text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary",
-                      "focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]",
-                      "disabled:opacity-50",
+                      'w-full px-3 py-2 rounded-lg text-sm',
+                      'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                      'border border-[#E5E5E5] dark:border-[#333333]',
+                      'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                      'focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]',
+                      'disabled:opacity-50',
                     )}
                   />
                   <div className="mt-2 text-sm text-codinit-elements-textSecondary">
@@ -188,10 +151,10 @@ export function SupabaseConnection() {
                     onClick={handleConnect}
                     disabled={connecting || !supabaseConn.token}
                     className={classNames(
-                      "px-4 py-2 rounded-lg text-sm flex items-center gap-2",
-                      "bg-[#3ECF8E] text-white",
-                      "hover:bg-[#3BBF84]",
-                      "disabled:opacity-50 disabled:cursor-not-allowed",
+                      'px-4 py-2 rounded-lg text-sm flex items-center gap-2',
+                      'bg-[#3ECF8E] text-white',
+                      'hover:bg-[#3BBF84]',
+                      'disabled:opacity-50 disabled:cursor-not-allowed',
                     )}
                   >
                     {connecting ? (
@@ -228,9 +191,7 @@ export function SupabaseConnection() {
                     <h4 className="text-sm font-medium text-codinit-elements-textPrimary">
                       {supabaseConn.user?.email}
                     </h4>
-                    <p className="text-xs text-codinit-elements-textSecondary">
-                      Role: {supabaseConn.user?.role}
-                    </p>
+                    <p className="text-xs text-codinit-elements-textSecondary">Role: {supabaseConn.user?.role}</p>
                   </div>
                 </div>
 
@@ -243,17 +204,15 @@ export function SupabaseConnection() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <button
-                        onClick={() =>
-                          setIsProjectsExpanded(!isProjectsExpanded)
-                        }
+                        onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
                         className="bg-transparent text-left text-sm font-medium text-codinit-elements-textPrimary flex items-center gap-2"
                       >
                         <div className="i-ph:database w-4 h-4" />
                         Your Projects ({supabaseConn.stats?.totalProjects || 0})
                         <div
                           className={classNames(
-                            "i-ph:caret-down w-4 h-4 transition-transform",
-                            isProjectsExpanded ? "rotate-180" : "",
+                            'i-ph:caret-down w-4 h-4 transition-transform',
+                            isProjectsExpanded ? 'rotate-180' : '',
                           )}
                         />
                       </button>
@@ -304,21 +263,19 @@ export function SupabaseConnection() {
                                   <button
                                     onClick={() => selectProject(project.id)}
                                     className={classNames(
-                                      "px-3 py-1 rounded-md text-xs",
-                                      supabaseConn.selectedProjectId ===
-                                        project.id
-                                        ? "bg-[#3ECF8E] text-white"
-                                        : "bg-[#F0F0F0] dark:bg-[#252525] text-codinit-elements-textSecondary hover:bg-[#3ECF8E] hover:text-white",
+                                      'px-3 py-1 rounded-md text-xs',
+                                      supabaseConn.selectedProjectId === project.id
+                                        ? 'bg-[#3ECF8E] text-white'
+                                        : 'bg-[#F0F0F0] dark:bg-[#252525] text-codinit-elements-textSecondary hover:bg-[#3ECF8E] hover:text-white',
                                     )}
                                   >
-                                    {supabaseConn.selectedProjectId ===
-                                    project.id ? (
+                                    {supabaseConn.selectedProjectId === project.id ? (
                                       <span className="flex items-center gap-1">
                                         <div className="i-ph:check w-3 h-3" />
                                         Selected
                                       </span>
                                     ) : (
-                                      "Select"
+                                      'Select'
                                     )}
                                   </button>
                                 </div>
@@ -362,23 +319,16 @@ interface ButtonProps {
   className?: string;
 }
 
-function Button({
-  active = false,
-  disabled = false,
-  children,
-  onClick,
-  className,
-}: ButtonProps) {
+function Button({ active = false, disabled = false, children, onClick, className }: ButtonProps) {
   return (
     <button
       className={classNames(
-        "flex items-center p-1.5",
+        'flex items-center p-1.5',
         {
-          "bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary":
+          'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
             !active,
-          "bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentAccent":
-            active && !disabled,
-          "bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed":
+          'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentAccent': active && !disabled,
+          'bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
             disabled,
         },
         className,

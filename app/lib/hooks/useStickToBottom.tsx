@@ -13,7 +13,7 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react";
+} from 'react';
 
 export interface StickToBottomState {
   scrollTop: number;
@@ -25,7 +25,7 @@ export interface StickToBottomState {
   resizeDifference: number;
 
   animation?: {
-    behavior: "instant" | Required<SpringAnimation>;
+    behavior: 'instant' | Required<SpringAnimation>;
     ignoreEscapes: boolean;
     promise: Promise<boolean>;
   };
@@ -65,8 +65,7 @@ const DEFAULT_SPRING_ANIMATION = {
   mass: 1.25,
 };
 
-export interface SpringAnimation
-  extends Partial<typeof DEFAULT_SPRING_ANIMATION> {}
+export interface SpringAnimation extends Partial<typeof DEFAULT_SPRING_ANIMATION> {}
 
 export type Animation = ScrollBehavior | SpringAnimation;
 
@@ -75,10 +74,7 @@ export interface ScrollElements {
   contentElement: HTMLElement;
 }
 
-export type GetTargetScrollTop = (
-  targetScrollTop: number,
-  context: ScrollElements,
-) => number;
+export type GetTargetScrollTop = (targetScrollTop: number, context: ScrollElements) => number;
 
 export interface StickToBottomOptions extends SpringAnimation {
   resize?: Animation;
@@ -125,9 +121,7 @@ export type ScrollToBottomOptions =
       duration?: number | Promise<void>;
     };
 
-export type ScrollToBottom = (
-  scrollOptions?: ScrollToBottomOptions,
-) => Promise<boolean> | boolean;
+export type ScrollToBottom = (scrollOptions?: ScrollToBottomOptions) => Promise<boolean> | boolean;
 export type StopScroll = () => void;
 
 const STICK_TO_BOTTOM_OFFSET_PX = 70;
@@ -136,15 +130,15 @@ const RETAIN_ANIMATION_DURATION_MS = 350;
 
 let mouseDown = false;
 
-globalThis.document?.addEventListener("mousedown", () => {
+globalThis.document?.addEventListener('mousedown', () => {
   mouseDown = true;
 });
 
-globalThis.document?.addEventListener("mouseup", () => {
+globalThis.document?.addEventListener('mouseup', () => {
   mouseDown = false;
 });
 
-globalThis.document?.addEventListener("click", () => {
+globalThis.document?.addEventListener('click', () => {
   mouseDown = false;
 });
 
@@ -187,9 +181,7 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: not needed
   const state = useMemo<StickToBottomState>(() => {
-    let lastCalculation:
-      | { targetScrollTop: number; calculatedScrollTop: number }
-      | undefined;
+    let lastCalculation: { targetScrollTop: number; calculatedScrollTop: number } | undefined;
 
     return {
       escapedFromLock,
@@ -214,9 +206,7 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
           return 0;
         }
 
-        return (
-          scrollRef.current.scrollHeight - 1 - scrollRef.current.clientHeight
-        );
+        return scrollRef.current.scrollHeight - 1 - scrollRef.current.clientHeight;
       },
       get calculatedTargetScrollTop() {
         if (!scrollRef.current || !contentRef.current) {
@@ -265,7 +255,7 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
 
   const scrollToBottom = useCallback<ScrollToBottom>(
     (scrollOptions = {}) => {
-      if (typeof scrollOptions === "string") {
+      if (typeof scrollOptions === 'string') {
         scrollOptions = { animation: scrollOptions };
       }
 
@@ -274,10 +264,7 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
       }
 
       const waitElapsed = Date.now() + (Number(scrollOptions.wait) || 0);
-      const behavior = mergeAnimations(
-        optionsRef.current,
-        scrollOptions.animation,
-      );
+      const behavior = mergeAnimations(optionsRef.current, scrollOptions.animation);
       const { ignoreEscapes = false } = scrollOptions;
 
       let durationElapsed: number;
@@ -301,8 +288,7 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
 
           const { scrollTop } = state;
           const tick = performance.now();
-          const tickDelta =
-            (tick - (state.lastTick ?? tick)) / SIXTY_FPS_INTERVAL_MS;
+          const tickDelta = (tick - (state.lastTick ?? tick)) / SIXTY_FPS_INTERVAL_MS;
           state.animation ||= { behavior, promise, ignoreEscapes };
 
           if (state.animation.behavior === behavior) {
@@ -317,19 +303,15 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
             return next();
           }
 
-          if (
-            scrollTop < Math.min(startTarget, state.calculatedTargetScrollTop)
-          ) {
+          if (scrollTop < Math.min(startTarget, state.calculatedTargetScrollTop)) {
             if (state.animation?.behavior === behavior) {
-              if (behavior === "instant") {
+              if (behavior === 'instant') {
                 state.scrollTop = state.calculatedTargetScrollTop;
                 return next();
               }
 
               state.velocity =
-                (behavior.damping * state.velocity +
-                  behavior.stiffness * state.scrollDifference) /
-                behavior.mass;
+                (behavior.damping * state.velocity + behavior.stiffness * state.scrollDifference) / behavior.mass;
               state.accumulated += state.velocity * tickDelta;
               state.scrollTop += state.accumulated;
 
@@ -356,10 +338,7 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
            */
           if (state.scrollTop < state.calculatedTargetScrollTop) {
             return scrollToBottom({
-              animation: mergeAnimations(
-                optionsRef.current,
-                optionsRef.current.resize,
-              ),
+              animation: mergeAnimations(optionsRef.current, optionsRef.current.resize),
               ignoreEscapes,
               duration: Math.max(0, durationElapsed - Date.now()) || undefined,
             });
@@ -472,7 +451,7 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
     ({ target, deltaY }: WheelEvent) => {
       let element = target as HTMLElement;
 
-      while (!["scroll", "auto"].includes(getComputedStyle(element).overflow)) {
+      while (!['scroll', 'auto'].includes(getComputedStyle(element).overflow)) {
         if (!element.parentElement) {
           return;
         }
@@ -499,10 +478,10 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
   );
 
   const scrollRef = useRefCallback((scroll) => {
-    scrollRef.current?.removeEventListener("scroll", handleScroll);
-    scrollRef.current?.removeEventListener("wheel", handleWheel);
-    scroll?.addEventListener("scroll", handleScroll, { passive: true });
-    scroll?.addEventListener("wheel", handleWheel, { passive: true });
+    scrollRef.current?.removeEventListener('scroll', handleScroll);
+    scrollRef.current?.removeEventListener('wheel', handleWheel);
+    scroll?.addEventListener('scroll', handleScroll, { passive: true });
+    scroll?.addEventListener('wheel', handleWheel, { passive: true });
   }, []);
 
   const contentRef = useRefCallback((content) => {
@@ -537,17 +516,14 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
          */
         const animation = mergeAnimations(
           optionsRef.current,
-          previousHeight
-            ? optionsRef.current.resize
-            : optionsRef.current.initial,
+          previousHeight ? optionsRef.current.resize : optionsRef.current.initial,
         );
 
         scrollToBottom({
           animation,
           wait: true,
           preserveScrollPosition: true,
-          duration:
-            animation === "instant" ? undefined : RETAIN_ANIMATION_DURATION_MS,
+          duration: animation === 'instant' ? undefined : RETAIN_ANIMATION_DURATION_MS,
         });
       } else {
         /**
@@ -594,16 +570,12 @@ export const useStickToBottom = (options: StickToBottomOptions = {}) => {
   };
 };
 
-function useRefCallback<T extends (ref: HTMLElement | null) => any>(
-  callback: T,
-  deps: DependencyList,
-) {
+function useRefCallback<T extends (ref: HTMLElement | null) => any>(callback: T, deps: DependencyList) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: not needed
   const result = useCallback((ref: HTMLElement | null) => {
     result.current = ref;
     return callback(ref);
-  }, deps) as any as MutableRefObject<HTMLElement | null> &
-    RefCallback<HTMLElement>;
+  }, deps) as any as MutableRefObject<HTMLElement | null> & RefCallback<HTMLElement>;
 
   return result;
 }
@@ -615,12 +587,12 @@ function mergeAnimations(...animations: (Animation | boolean | undefined)[]) {
   let instant = false;
 
   for (const animation of animations) {
-    if (animation === "instant") {
+    if (animation === 'instant') {
       instant = true;
       continue;
     }
 
-    if (typeof animation !== "object") {
+    if (typeof animation !== 'object') {
       continue;
     }
 
@@ -637,5 +609,5 @@ function mergeAnimations(...animations: (Animation | boolean | undefined)[]) {
     animationCache.set(key, Object.freeze(result));
   }
 
-  return instant ? "instant" : animationCache.get(key)!;
+  return instant ? 'instant' : animationCache.get(key)!;
 }

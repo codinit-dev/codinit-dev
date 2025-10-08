@@ -1,18 +1,18 @@
-import React from "react";
-import { motion } from "framer-motion";
-import type { GitHubRepoInfo } from "~/types/GitHub";
+import React from 'react';
+import { motion } from 'framer-motion';
+import type { GitHubRepoInfo } from '~/types/GitHub';
 
 interface RepositoryCardProps {
   repo: GitHubRepoInfo;
   onSelect: () => void;
 }
 
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
 export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
   // Use a consistent styling for all repository cards
   const getCardStyle = () => {
-    return "from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-1 dark:from-codinit-elements-background-depth-2-dark dark:to-codinit-elements-background-depth-2-dark";
+    return 'from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-1 dark:from-codinit-elements-background-depth-2-dark dark:to-codinit-elements-background-depth-2-dark';
   };
 
   // Format the date in a more readable format
@@ -23,11 +23,11 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays <= 1) {
-      return "Today";
+      return 'Today';
     }
 
     if (diffDays <= 2) {
-      return "Yesterday";
+      return 'Yesterday';
     }
 
     if (diffDays <= 7) {
@@ -39,9 +39,9 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
     }
 
     return date.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
@@ -55,7 +55,7 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
       whileHover={{
         scale: 1.02,
         y: -2,
-        transition: { type: "spring", stiffness: 400, damping: 17 },
+        transition: { type: 'spring', stiffness: 400, damping: 17 },
       }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, y: 10 }}
@@ -73,7 +73,7 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
             </h3>
             <p className="text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark flex items-center gap-1">
               <span className="i-ph:user w-3 h-3" />
-              {repo.full_name.split("/")[0]}
+              {repo.full_name.split('/')[0]}
             </p>
           </div>
         </div>
@@ -137,9 +137,7 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
                 {topic}
               </span>
             ))}
-            {repo.topics.length > 1 && (
-              <span className="ml-1">+{repo.topics.length - 1}</span>
-            )}
+            {repo.topics.length > 1 && <span className="ml-1">+{repo.topics.length - 1}</span>}
           </span>
         )}
       </div>

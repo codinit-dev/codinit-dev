@@ -1,6 +1,5 @@
 // Client-side storage utilities
-const isClient =
-  typeof window !== "undefined" && typeof localStorage !== "undefined";
+const isClient = typeof window !== 'undefined' && typeof localStorage !== 'undefined';
 
 export function getLocalStorage(key: string): any | null {
   if (!isClient) {

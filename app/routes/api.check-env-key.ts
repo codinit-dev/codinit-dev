@@ -1,10 +1,10 @@
-import type { LoaderFunction } from "@remix-run/cloudflare";
-import { LLMManager } from "~/lib/modules/llm/manager";
-import { getApiKeysFromCookie } from "~/lib/api/cookies";
+import type { LoaderFunction } from '@remix-run/cloudflare';
+import { LLMManager } from '~/lib/modules/llm/manager';
+import { getApiKeysFromCookie } from '~/lib/api/cookies';
 
 export const loader: LoaderFunction = async ({ context, request }) => {
   const url = new URL(request.url);
-  const provider = url.searchParams.get("provider");
+  const provider = url.searchParams.get('provider');
 
   if (!provider) {
     return Response.json({ isSet: false });
@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   const envVarName = providerInstance.config.apiTokenKey;
 
   // Get API keys from cookie
-  const cookieHeader = request.headers.get("Cookie");
+  const cookieHeader = request.headers.get('Cookie');
   const apiKeys = getApiKeysFromCookie(cookieHeader);
 
   /*

@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { toast } from "react-toastify";
-import { logStore } from "~/lib/stores/logs";
-import { classNames } from "~/utils/classNames";
-import Cookies from "js-cookie";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "~/components/ui/Collapsible";
-import { Button } from "~/components/ui/Button";
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
+import { logStore } from '~/lib/stores/logs';
+import { classNames } from '~/utils/classNames';
+import Cookies from 'js-cookie';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '~/components/ui/Collapsible';
+import { Button } from '~/components/ui/Button';
 
 interface GitHubUserResponse {
   login: string;
@@ -78,7 +74,7 @@ interface GitHubStats {
 interface GitHubConnection {
   user: GitHubUserResponse | null;
   token: string;
-  tokenType: "classic" | "fine-grained";
+  tokenType: 'classic' | 'fine-grained';
   stats?: GitHubStats;
   rateLimit?: {
     limit: number;
@@ -100,54 +96,49 @@ const GithubLogo = () => (
 export default function GitHubConnection() {
   const [connection, setConnection] = useState<GitHubConnection>({
     user: null,
-    token: "",
-    tokenType: "classic",
+    token: '',
+    tokenType: 'classic',
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isFetchingStats, setIsFetchingStats] = useState(false);
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
-  const tokenTypeRef = React.useRef<"classic" | "fine-grained">("classic");
+  const tokenTypeRef = React.useRef<'classic' | 'fine-grained'>('classic');
 
   const fetchGithubUser = async (token: string) => {
     try {
-      console.log(
-        "Fetching GitHub user with token:",
-        token.substring(0, 5) + "...",
-      );
+      console.log('Fetching GitHub user with token:', token.substring(0, 5) + '...');
 
       // Use server-side API endpoint instead of direct GitHub API call
       const response = await fetch(`/api/system/git-info?action=getUser`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`, // Include token in headers for validation
         },
       });
 
       if (!response.ok) {
-        console.error("Error fetching GitHub user. Status:", response.status);
+        console.error('Error fetching GitHub user. Status:', response.status);
         throw new Error(`Error: ${response.status}`);
       }
 
       // Get rate limit information from headers
       const rateLimit = {
-        limit: parseInt(response.headers.get("x-ratelimit-limit") || "0"),
-        remaining: parseInt(
-          response.headers.get("x-ratelimit-remaining") || "0",
-        ),
-        reset: parseInt(response.headers.get("x-ratelimit-reset") || "0"),
+        limit: parseInt(response.headers.get('x-ratelimit-limit') || '0'),
+        remaining: parseInt(response.headers.get('x-ratelimit-remaining') || '0'),
+        reset: parseInt(response.headers.get('x-ratelimit-reset') || '0'),
       };
 
       const data = await response.json();
-      console.log("GitHub user API response:", data);
+      console.log('GitHub user API response:', data);
 
       const { user } = data as { user: GitHubUserResponse };
 
       // Validate that we received a user object
       if (!user || !user.login) {
-        console.error("Invalid user data received:", user);
-        throw new Error("Invalid user data received");
+        console.error('Invalid user data received:', user);
+        throw new Error('Invalid user data received');
       }
 
       // Use the response data
@@ -160,16 +151,13 @@ export default function GitHubConnection() {
       }));
 
       // Set cookies for client-side access
-      Cookies.set("githubUsername", user.login);
-      Cookies.set("githubToken", token);
-      Cookies.set(
-        "git:github.com",
-        JSON.stringify({ username: token, password: "x-oauth-basic" }),
-      );
+      Cookies.set('githubUsername', user.login);
+      Cookies.set('githubToken', token);
+      Cookies.set('git:github.com', JSON.stringify({ username: token, password: 'x-oauth-basic' }));
 
       // Store connection details in localStorage
       localStorage.setItem(
-        "github_connection",
+        'github_connection',
         JSON.stringify({
           user,
           token,
@@ -177,26 +165,21 @@ export default function GitHubConnection() {
         }),
       );
 
-      logStore.logInfo("Connected to GitHub", {
-        type: "system",
+      logStore.logInfo('Connected to GitHub', {
+        type: 'system',
         message: `Connected to GitHub as ${user.login}`,
       });
 
       // Fetch additional GitHub stats
       fetchGitHubStats(token);
     } catch (error) {
-      console.error("Failed to fetch GitHub user:", error);
-      logStore.logError(
-        `GitHub authentication failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          type: "system",
-          message: "GitHub authentication failed",
-        },
-      );
+      console.error('Failed to fetch GitHub user:', error);
+      logStore.logError(`GitHub authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+        type: 'system',
+        message: 'GitHub authentication failed',
+      });
 
-      toast.error(
-        `Authentication failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      toast.error(`Authentication failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       throw error; // Rethrow to allow handling in the calling function
     }
   };
@@ -206,25 +189,21 @@ export default function GitHubConnection() {
 
     try {
       // Get the current user first to ensure we have the latest value
-      const userResponse = await fetch("https://api.github.com/user", {
+      const userResponse = await fetch('https://api.github.com/user', {
         headers: {
-          Authorization: `${connection.tokenType === "classic" ? "token" : "Bearer"} ${token}`,
+          Authorization: `${connection.tokenType === 'classic' ? 'token' : 'Bearer'} ${token}`,
         },
       });
 
       if (!userResponse.ok) {
         if (userResponse.status === 401) {
-          toast.error(
-            "Your GitHub token has expired. Please reconnect your account.",
-          );
+          toast.error('Your GitHub token has expired. Please reconnect your account.');
           handleDisconnect();
 
           return;
         }
 
-        throw new Error(
-          `Failed to fetch user data: ${userResponse.statusText}`,
-        );
+        throw new Error(`Failed to fetch user data: ${userResponse.statusText}`);
       }
 
       const userData = (await userResponse.json()) as any;
@@ -235,26 +214,21 @@ export default function GitHubConnection() {
       let hasMore = true;
 
       while (hasMore) {
-        const reposResponse = await fetch(
-          `https://api.github.com/user/repos?per_page=100&page=${page}`,
-          {
-            headers: {
-              Authorization: `${connection.tokenType === "classic" ? "token" : "Bearer"} ${token}`,
-            },
+        const reposResponse = await fetch(`https://api.github.com/user/repos?per_page=100&page=${page}`, {
+          headers: {
+            Authorization: `${connection.tokenType === 'classic' ? 'token' : 'Bearer'} ${token}`,
           },
-        );
+        });
 
         if (!reposResponse.ok) {
-          throw new Error(
-            `Failed to fetch repositories: ${reposResponse.statusText}`,
-          );
+          throw new Error(`Failed to fetch repositories: ${reposResponse.statusText}`);
         }
 
         const repos = (await reposResponse.json()) as any[];
         allRepos = [...allRepos, ...repos];
 
         // Check if there are more pages
-        const linkHeader = reposResponse.headers.get("Link");
+        const linkHeader = reposResponse.headers.get('Link');
         hasMore = linkHeader?.includes('rel="next"') ?? false;
         page++;
       }
@@ -263,14 +237,11 @@ export default function GitHubConnection() {
       const repoStats = calculateRepoStats(allRepos);
 
       // Fetch recent activity
-      const eventsResponse = await fetch(
-        `https://api.github.com/users/${userData.login}/events?per_page=10`,
-        {
-          headers: {
-            Authorization: `${connection.tokenType === "classic" ? "token" : "Bearer"} ${token}`,
-          },
+      const eventsResponse = await fetch(`https://api.github.com/users/${userData.login}/events?per_page=10`, {
+        headers: {
+          Authorization: `${connection.tokenType === 'classic' ? 'token' : 'Bearer'} ${token}`,
         },
-      );
+      });
 
       if (!eventsResponse.ok) {
         throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
@@ -285,14 +256,8 @@ export default function GitHubConnection() {
       }));
 
       // Calculate total stars and forks
-      const totalStars = allRepos.reduce(
-        (sum: number, repo: any) => sum + repo.stargazers_count,
-        0,
-      );
-      const totalForks = allRepos.reduce(
-        (sum: number, repo: any) => sum + repo.forks_count,
-        0,
-      );
+      const totalStars = allRepos.reduce((sum: number, repo: any) => sum + repo.stargazers_count, 0);
+      const totalForks = allRepos.reduce((sum: number, repo: any) => sum + repo.forks_count, 0);
       const privateRepos = allRepos.filter((repo: any) => repo.private).length;
 
       // Update the stats in the store
@@ -317,9 +282,7 @@ export default function GitHubConnection() {
       };
 
       // Get the current user first to ensure we have the latest value
-      const currentConnection = JSON.parse(
-        localStorage.getItem("github_connection") || "{}",
-      );
+      const currentConnection = JSON.parse(localStorage.getItem('github_connection') || '{}');
       const currentUser = currentConnection.user || connection.user;
 
       // Update connection with stats
@@ -332,20 +295,15 @@ export default function GitHubConnection() {
       };
 
       // Update localStorage
-      localStorage.setItem(
-        "github_connection",
-        JSON.stringify(updatedConnection),
-      );
+      localStorage.setItem('github_connection', JSON.stringify(updatedConnection));
 
       // Update state
       setConnection(updatedConnection);
 
-      toast.success("GitHub stats refreshed");
+      toast.success('GitHub stats refreshed');
     } catch (error) {
-      console.error("Error fetching GitHub stats:", error);
-      toast.error(
-        `Failed to fetch GitHub stats: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      console.error('Error fetching GitHub stats:', error);
+      toast.error(`Failed to fetch GitHub stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsFetchingStats(false);
     }
@@ -391,14 +349,14 @@ export default function GitHubConnection() {
     const loadSavedConnection = async () => {
       setIsLoading(true);
 
-      const savedConnection = localStorage.getItem("github_connection");
+      const savedConnection = localStorage.getItem('github_connection');
 
       if (savedConnection) {
         try {
           const parsed = JSON.parse(savedConnection);
 
           if (!parsed.tokenType) {
-            parsed.tokenType = "classic";
+            parsed.tokenType = 'classic';
           }
 
           // Update the ref with the parsed token type
@@ -411,16 +369,14 @@ export default function GitHubConnection() {
           if (
             parsed.user &&
             parsed.token &&
-            (!parsed.stats ||
-              !parsed.stats.repos ||
-              parsed.stats.repos.length === 0)
+            (!parsed.stats || !parsed.stats.repos || parsed.stats.repos.length === 0)
           ) {
-            console.log("Fetching missing GitHub stats for saved connection");
+            console.log('Fetching missing GitHub stats for saved connection');
             await fetchGitHubStats(parsed.token);
           }
         } catch (error) {
-          console.error("Error parsing saved GitHub connection:", error);
-          localStorage.removeItem("github_connection");
+          console.error('Error parsing saved GitHub connection:', error);
+          localStorage.removeItem('github_connection');
         }
       } else {
         // Check for environment variable token
@@ -429,14 +385,14 @@ export default function GitHubConnection() {
         if (envToken) {
           // Check if token type is specified in environment variables
           const envTokenType = import.meta.env.VITE_GITHUB_TOKEN_TYPE;
-          console.log("Environment token type:", envTokenType);
+          console.log('Environment token type:', envTokenType);
 
           const tokenType =
-            envTokenType === "classic" || envTokenType === "fine-grained"
-              ? (envTokenType as "classic" | "fine-grained")
-              : "classic";
+            envTokenType === 'classic' || envTokenType === 'fine-grained'
+              ? (envTokenType as 'classic' | 'fine-grained')
+              : 'classic';
 
-          console.log("Using token type:", tokenType);
+          console.log('Using token type:', tokenType);
 
           // Update both the state and the ref
           tokenTypeRef.current = tokenType;
@@ -449,7 +405,7 @@ export default function GitHubConnection() {
             // Fetch user data with the environment token
             await fetchGithubUser(envToken);
           } catch (error) {
-            console.error("Failed to connect with environment token:", error);
+            console.error('Failed to connect with environment token:', error);
           }
         }
       }
@@ -470,35 +426,30 @@ export default function GitHubConnection() {
     const data = connection.user;
 
     if (token) {
-      Cookies.set("githubToken", token);
-      Cookies.set(
-        "git:github.com",
-        JSON.stringify({ username: token, password: "x-oauth-basic" }),
-      );
+      Cookies.set('githubToken', token);
+      Cookies.set('git:github.com', JSON.stringify({ username: token, password: 'x-oauth-basic' }));
     }
 
     if (data) {
-      Cookies.set("githubUsername", data.login);
+      Cookies.set('githubUsername', data.login);
     }
   }, [connection]);
 
   // Add function to update rate limits
   const updateRateLimits = async (token: string) => {
     try {
-      const response = await fetch("https://api.github.com/rate_limit", {
+      const response = await fetch('https://api.github.com/rate_limit', {
         headers: {
           Authorization: `Bearer ${token}`,
-          Accept: "application/vnd.github.v3+json",
+          Accept: 'application/vnd.github.v3+json',
         },
       });
 
       if (response.ok) {
         const rateLimit = {
-          limit: parseInt(response.headers.get("x-ratelimit-limit") || "0"),
-          remaining: parseInt(
-            response.headers.get("x-ratelimit-remaining") || "0",
-          ),
-          reset: parseInt(response.headers.get("x-ratelimit-reset") || "0"),
+          limit: parseInt(response.headers.get('x-ratelimit-limit') || '0'),
+          remaining: parseInt(response.headers.get('x-ratelimit-remaining') || '0'),
+          reset: parseInt(response.headers.get('x-ratelimit-reset') || '0'),
         };
 
         setConnection((prev) => ({
@@ -507,7 +458,7 @@ export default function GitHubConnection() {
         }));
       }
     } catch (error) {
-      console.error("Failed to fetch rate limits:", error);
+      console.error('Failed to fetch rate limits:', error);
     }
   };
 
@@ -544,7 +495,7 @@ export default function GitHubConnection() {
        * This ensures the token type is persisted even if connection fails
        */
       localStorage.setItem(
-        "github_connection",
+        'github_connection',
         JSON.stringify({
           user: null,
           token: connection.token,
@@ -555,9 +506,9 @@ export default function GitHubConnection() {
       // Attempt to fetch the user info which validates the token
       await fetchGithubUser(connection.token);
 
-      toast.success("Connected to GitHub successfully");
+      toast.success('Connected to GitHub successfully');
     } catch (error) {
-      console.error("Failed to connect to GitHub:", error);
+      console.error('Failed to connect to GitHub:', error);
 
       // Reset connection state on failure
       setConnection({
@@ -566,26 +517,24 @@ export default function GitHubConnection() {
         tokenType: connection.tokenType,
       });
 
-      toast.error(
-        `Failed to connect to GitHub: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      toast.error(`Failed to connect to GitHub: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsConnecting(false);
     }
   };
 
   const handleDisconnect = () => {
-    localStorage.removeItem("github_connection");
+    localStorage.removeItem('github_connection');
 
     // Remove all GitHub-related cookies
-    Cookies.remove("githubToken");
-    Cookies.remove("githubUsername");
-    Cookies.remove("git:github.com");
+    Cookies.remove('githubToken');
+    Cookies.remove('githubUsername');
+    Cookies.remove('git:github.com');
 
     // Reset the token type ref
-    tokenTypeRef.current = "classic";
-    setConnection({ user: null, token: "", tokenType: "classic" });
-    toast.success("Disconnected from GitHub");
+    tokenTypeRef.current = 'classic';
+    setConnection({ user: null, token: '', tokenType: 'classic' });
+    toast.success('Disconnected from GitHub');
   };
 
   return (
@@ -609,14 +558,14 @@ export default function GitHubConnection() {
           <div className="text-xs text-codinit-elements-textSecondary bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 p-3 rounded-lg mb-4">
             <p className="flex items-center gap-1 mb-1">
               <span className="i-ph:lightbulb w-3.5 h-3.5 text-codinit-elements-icon-success dark:text-codinit-elements-icon-success" />
-              <span className="font-medium">Tip:</span> You can also set the{" "}
+              <span className="font-medium">Tip:</span> You can also set the{' '}
               <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
                 VITE_GITHUB_ACCESS_TOKEN
-              </code>{" "}
+              </code>{' '}
               environment variable to connect automatically.
             </p>
             <p>
-              For fine-grained tokens, also set{" "}
+              For fine-grained tokens, also set{' '}
               <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
                 VITE_GITHUB_TOKEN_TYPE=fine-grained
               </code>
@@ -631,20 +580,18 @@ export default function GitHubConnection() {
             <select
               value={connection.tokenType}
               onChange={(e) => {
-                const newTokenType = e.target.value as
-                  | "classic"
-                  | "fine-grained";
+                const newTokenType = e.target.value as 'classic' | 'fine-grained';
                 tokenTypeRef.current = newTokenType;
                 setConnection((prev) => ({ ...prev, tokenType: newTokenType }));
               }}
               disabled={isConnecting || !!connection.user}
               className={classNames(
-                "w-full px-3 py-2 rounded-lg text-sm",
-                "bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1",
-                "border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor",
-                "text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary",
-                "focus:outline-none focus:ring-1 focus:ring-codinit-elements-item-contentAccent dark:focus:ring-codinit-elements-item-contentAccent",
-                "disabled:opacity-50",
+                'w-full px-3 py-2 rounded-lg text-sm',
+                'bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1',
+                'border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor',
+                'text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary',
+                'focus:outline-none focus:ring-1 focus:ring-codinit-elements-item-contentAccent dark:focus:ring-codinit-elements-item-contentAccent',
+                'disabled:opacity-50',
               )}
             >
               <option value="classic">Personal Access Token (Classic)</option>
@@ -654,34 +601,28 @@ export default function GitHubConnection() {
 
           <div>
             <label className="block text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mb-2">
-              {connection.tokenType === "classic"
-                ? "Personal Access Token"
-                : "Fine-grained Token"}
+              {connection.tokenType === 'classic' ? 'Personal Access Token' : 'Fine-grained Token'}
             </label>
             <input
               type="password"
               value={connection.token}
-              onChange={(e) =>
-                setConnection((prev) => ({ ...prev, token: e.target.value }))
-              }
+              onChange={(e) => setConnection((prev) => ({ ...prev, token: e.target.value }))}
               disabled={isConnecting || !!connection.user}
               placeholder={`Enter your GitHub ${
-                connection.tokenType === "classic"
-                  ? "personal access token"
-                  : "fine-grained token"
+                connection.tokenType === 'classic' ? 'personal access token' : 'fine-grained token'
               }`}
               className={classNames(
-                "w-full px-3 py-2 rounded-lg text-sm",
-                "bg-[#F8F8F8] dark:bg-[#1A1A1A]",
-                "border border-[#E5E5E5] dark:border-[#333333]",
-                "text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary",
-                "focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive",
-                "disabled:opacity-50",
+                'w-full px-3 py-2 rounded-lg text-sm',
+                'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                'border border-[#E5E5E5] dark:border-[#333333]',
+                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
+                'disabled:opacity-50',
               )}
             />
             <div className="mt-2 text-sm text-codinit-elements-textSecondary">
               <a
-                href={`https://github.com/settings/tokens${connection.tokenType === "fine-grained" ? "/beta" : "/new"}`}
+                href={`https://github.com/settings/tokens${connection.tokenType === 'fine-grained' ? '/beta' : '/new'}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-codinit-elements-borderColorActive hover:underline inline-flex items-center gap-1"
@@ -691,10 +632,10 @@ export default function GitHubConnection() {
               </a>
               <span className="mx-2">•</span>
               <span>
-                Required scopes:{" "}
-                {connection.tokenType === "classic"
-                  ? "repo, read:org, read:user"
-                  : "Repository access, Organization access"}
+                Required scopes:{' '}
+                {connection.tokenType === 'classic'
+                  ? 'repo, read:org, read:user'
+                  : 'Repository access, Organization access'}
               </span>
             </div>
           </div>
@@ -706,11 +647,11 @@ export default function GitHubConnection() {
               onClick={handleConnect}
               disabled={isConnecting || !connection.token}
               className={classNames(
-                "px-4 py-2 rounded-lg text-sm flex items-center gap-2",
-                "bg-[#303030] text-white",
-                "hover:bg-[#5E41D0] hover:text-white",
-                "disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200",
-                "transform active:scale-95",
+                'px-4 py-2 rounded-lg text-sm flex items-center gap-2',
+                'bg-[#303030] text-white',
+                'hover:bg-[#5E41D0] hover:text-white',
+                'disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200',
+                'transform active:scale-95',
               )}
             >
               {isConnecting ? (
@@ -732,9 +673,9 @@ export default function GitHubConnection() {
                   <button
                     onClick={handleDisconnect}
                     className={classNames(
-                      "px-4 py-2 rounded-lg text-sm flex items-center gap-2",
-                      "bg-red-500 text-white",
-                      "hover:bg-red-600",
+                      'px-4 py-2 rounded-lg text-sm flex items-center gap-2',
+                      'bg-red-500 text-white',
+                      'hover:bg-red-600',
                     )}
                   >
                     <div className="i-ph:plug w-4 h-4" />
@@ -748,13 +689,7 @@ export default function GitHubConnection() {
                 <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
-                    onClick={() =>
-                      window.open(
-                        "https://github.com/dashboard",
-                        "_blank",
-                        "noopener,noreferrer",
-                      )
-                    }
+                    onClick={() => window.open('https://github.com/dashboard', '_blank', 'noopener,noreferrer')}
                     className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary transition-colors"
                   >
                     <div className="i-ph:layout w-4 h-4" />
@@ -805,22 +740,17 @@ export default function GitHubConnection() {
               </div>
             </div>
 
-            <Collapsible
-              open={isStatsExpanded}
-              onOpenChange={setIsStatsExpanded}
-            >
+            <Collapsible open={isStatsExpanded} onOpenChange={setIsStatsExpanded}>
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
                   <div className="flex items-center gap-2">
                     <div className="i-ph:chart-bar w-4 h-4 text-codinit-elements-item-contentAccent" />
-                    <span className="text-sm font-medium text-codinit-elements-textPrimary">
-                      GitHub Stats
-                    </span>
+                    <span className="text-sm font-medium text-codinit-elements-textPrimary">GitHub Stats</span>
                   </div>
                   <div
                     className={classNames(
-                      "i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-codinit-elements-textSecondary",
-                      isStatsExpanded ? "rotate-180" : "",
+                      'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-codinit-elements-textSecondary',
+                      isStatsExpanded ? 'rotate-180' : '',
                     )}
                   />
                 </div>
@@ -829,9 +759,7 @@ export default function GitHubConnection() {
                 <div className="space-y-4 mt-4">
                   {/* Languages Section */}
                   <div className="mb-6">
-                    <h4 className="text-sm font-medium text-codinit-elements-textPrimary mb-3">
-                      Top Languages
-                    </h4>
+                    <h4 className="text-sm font-medium text-codinit-elements-textPrimary mb-3">Top Languages</h4>
                     <div className="flex flex-wrap gap-2">
                       {Object.entries(connection.stats.languages)
                         .sort(([, a], [, b]) => b - a)
@@ -851,23 +779,19 @@ export default function GitHubConnection() {
                   <div className="grid grid-cols-4 gap-4 mb-6">
                     {[
                       {
-                        label: "Member Since",
-                        value: new Date(
-                          connection.user.created_at,
-                        ).toLocaleDateString(),
+                        label: 'Member Since',
+                        value: new Date(connection.user.created_at).toLocaleDateString(),
                       },
                       {
-                        label: "Public Gists",
+                        label: 'Public Gists',
                         value: connection.stats.publicGists,
                       },
                       {
-                        label: "Organizations",
-                        value: connection.stats.organizations
-                          ? connection.stats.organizations.length
-                          : 0,
+                        label: 'Organizations',
+                        value: connection.stats.organizations ? connection.stats.organizations.length : 0,
                       },
                       {
-                        label: "Languages",
+                        label: 'Languages',
                         value: Object.keys(connection.stats.languages).length,
                       },
                     ].map((stat, index) => (
@@ -875,12 +799,8 @@ export default function GitHubConnection() {
                         key={index}
                         className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                       >
-                        <span className="text-xs text-codinit-elements-textSecondary">
-                          {stat.label}
-                        </span>
-                        <span className="text-lg font-medium text-codinit-elements-textPrimary">
-                          {stat.value}
-                        </span>
+                        <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
+                        <span className="text-lg font-medium text-codinit-elements-textPrimary">{stat.value}</span>
                       </div>
                     ))}
                   </div>
@@ -889,17 +809,15 @@ export default function GitHubConnection() {
                   <div className="mt-4">
                     <div className="space-y-4">
                       <div>
-                        <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">
-                          Repository Stats
-                        </h5>
+                        <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Repository Stats</h5>
                         <div className="grid grid-cols-2 gap-4">
                           {[
                             {
-                              label: "Public Repos",
+                              label: 'Public Repos',
                               value: connection.stats.publicRepos,
                             },
                             {
-                              label: "Private Repos",
+                              label: 'Private Repos',
                               value: connection.stats.privateRepos,
                             },
                           ].map((stat, index) => (
@@ -907,9 +825,7 @@ export default function GitHubConnection() {
                               key={index}
                               className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                             >
-                              <span className="text-xs text-codinit-elements-textSecondary">
-                                {stat.label}
-                              </span>
+                              <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
                               <span className="text-lg font-medium text-codinit-elements-textPrimary">
                                 {stat.value}
                               </span>
@@ -925,35 +841,31 @@ export default function GitHubConnection() {
                         <div className="grid grid-cols-3 gap-4">
                           {[
                             {
-                              label: "Stars",
+                              label: 'Stars',
                               value: connection.stats.stars || 0,
-                              icon: "i-ph:star",
-                              iconColor: "text-codinit-elements-icon-warning",
+                              icon: 'i-ph:star',
+                              iconColor: 'text-codinit-elements-icon-warning',
                             },
                             {
-                              label: "Forks",
+                              label: 'Forks',
                               value: connection.stats.forks || 0,
-                              icon: "i-ph:git-fork",
-                              iconColor: "text-codinit-elements-icon-info",
+                              icon: 'i-ph:git-fork',
+                              iconColor: 'text-codinit-elements-icon-info',
                             },
                             {
-                              label: "Followers",
+                              label: 'Followers',
                               value: connection.stats.followers || 0,
-                              icon: "i-ph:users",
-                              iconColor: "text-codinit-elements-icon-success",
+                              icon: 'i-ph:users',
+                              iconColor: 'text-codinit-elements-icon-success',
                             },
                           ].map((stat, index) => (
                             <div
                               key={index}
                               className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                             >
-                              <span className="text-xs text-codinit-elements-textSecondary">
-                                {stat.label}
-                              </span>
+                              <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
                               <span className="text-lg font-medium text-codinit-elements-textPrimary flex items-center gap-1">
-                                <div
-                                  className={`${stat.icon} w-4 h-4 ${stat.iconColor}`}
-                                />
+                                <div className={`${stat.icon} w-4 h-4 ${stat.iconColor}`} />
                                 {stat.value}
                               </span>
                             </div>
@@ -962,17 +874,15 @@ export default function GitHubConnection() {
                       </div>
 
                       <div>
-                        <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">
-                          Gists
-                        </h5>
+                        <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Gists</h5>
                         <div className="grid grid-cols-2 gap-4">
                           {[
                             {
-                              label: "Public",
+                              label: 'Public',
                               value: connection.stats.publicGists,
                             },
                             {
-                              label: "Private",
+                              label: 'Private',
                               value: connection.stats.privateGists || 0,
                             },
                           ].map((stat, index) => (
@@ -980,9 +890,7 @@ export default function GitHubConnection() {
                               key={index}
                               className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                             >
-                              <span className="text-xs text-codinit-elements-textSecondary">
-                                {stat.label}
-                              </span>
+                              <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
                               <span className="text-lg font-medium text-codinit-elements-textPrimary">
                                 {stat.value}
                               </span>
@@ -993,10 +901,7 @@ export default function GitHubConnection() {
 
                       <div className="pt-2 border-t border-codinit-elements-borderColor">
                         <span className="text-xs text-codinit-elements-textSecondary">
-                          Last updated:{" "}
-                          {new Date(
-                            connection.stats.lastUpdated,
-                          ).toLocaleString()}
+                          Last updated: {new Date(connection.stats.lastUpdated).toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -1004,9 +909,7 @@ export default function GitHubConnection() {
 
                   {/* Repositories Section */}
                   <div className="space-y-4">
-                    <h4 className="text-sm font-medium text-codinit-elements-textPrimary">
-                      Recent Repositories
-                    </h4>
+                    <h4 className="text-sm font-medium text-codinit-elements-textPrimary">Recent Repositories</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {connection.stats.repos.map((repo) => (
                         <a
@@ -1025,17 +928,11 @@ export default function GitHubConnection() {
                                 </h5>
                               </div>
                               <div className="flex items-center gap-3 text-xs text-codinit-elements-textSecondary">
-                                <span
-                                  className="flex items-center gap-1"
-                                  title="Stars"
-                                >
+                                <span className="flex items-center gap-1" title="Stars">
                                   <div className="i-ph:star w-3.5 h-3.5 text-codinit-elements-icon-warning" />
                                   {repo.stargazers_count.toLocaleString()}
                                 </span>
-                                <span
-                                  className="flex items-center gap-1"
-                                  title="Forks"
-                                >
+                                <span className="flex items-center gap-1" title="Forks">
                                   <div className="i-ph:git-fork w-3.5 h-3.5 text-codinit-elements-icon-info" />
                                   {repo.forks_count.toLocaleString()}
                                 </span>
@@ -1049,26 +946,17 @@ export default function GitHubConnection() {
                             )}
 
                             <div className="flex items-center gap-3 text-xs text-codinit-elements-textSecondary">
-                              <span
-                                className="flex items-center gap-1"
-                                title="Default Branch"
-                              >
+                              <span className="flex items-center gap-1" title="Default Branch">
                                 <div className="i-ph:git-branch w-3.5 h-3.5" />
                                 {repo.default_branch}
                               </span>
-                              <span
-                                className="flex items-center gap-1"
-                                title="Last Updated"
-                              >
+                              <span className="flex items-center gap-1" title="Last Updated">
                                 <div className="i-ph:clock w-3.5 h-3.5" />
-                                {new Date(repo.updated_at).toLocaleDateString(
-                                  undefined,
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  },
-                                )}
+                                {new Date(repo.updated_at).toLocaleDateString(undefined, {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                })}
                               </span>
                               <span className="flex items-center gap-1 ml-auto group-hover:text-codinit-elements-item-contentAccent transition-colors">
                                 <div className="i-ph:arrow-square-out w-3.5 h-3.5" />

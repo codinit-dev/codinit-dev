@@ -1,21 +1,14 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import { Button } from "~/components/ui/Button";
-import { ConfirmationDialog, SelectionDialog } from "~/components/ui/Dialog";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "~/components/ui/Card";
-import { motion } from "framer-motion";
-import { useDataOperations } from "~/lib/hooks/useDataOperations";
-import { openDatabase } from "~/lib/persistence/db";
-import { getAllChats, type Chat } from "~/lib/persistence/chats";
-import { DataVisualization } from "./DataVisualization";
-import { classNames } from "~/utils/classNames";
-import { toast } from "react-toastify";
+import { useState, useRef, useCallback, useEffect } from 'react';
+import { Button } from '~/components/ui/Button';
+import { ConfirmationDialog, SelectionDialog } from '~/components/ui/Dialog';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '~/components/ui/Card';
+import { motion } from 'framer-motion';
+import { useDataOperations } from '~/lib/hooks/useDataOperations';
+import { openDatabase } from '~/lib/persistence/db';
+import { getAllChats, type Chat } from '~/lib/persistence/chats';
+import { DataVisualization } from './DataVisualization';
+import { classNames } from '~/utils/classNames';
+import { toast } from 'react-toastify';
 
 // Create a custom hook to connect to the codinitHistory database
 function usecodinitHistoryDB() {
@@ -32,11 +25,7 @@ function usecodinitHistoryDB() {
         setDb(database || null);
         setIsLoading(false);
       } catch (err) {
-        setError(
-          err instanceof Error
-            ? err
-            : new Error("Unknown error initializing database"),
-        );
+        setError(err instanceof Error ? err : new Error('Unknown error initializing database'));
         setIsLoading(false);
       }
     };
@@ -65,10 +54,7 @@ function createChatItem(chat: Chat): ChatItem {
     id: chat.id,
 
     // Use description as title if available, or format a short ID
-    label:
-      (chat as ExtendedChat).title ||
-      chat.description ||
-      `Chat ${chat.id.slice(0, 8)}`,
+    label: (chat as ExtendedChat).title || chat.description || `Chat ${chat.id.slice(0, 8)}`,
 
     // Format the description with message count and timestamp
     description: `${chat.messages.length} messages - Last updated: ${new Date((chat as ExtendedChat).updatedAt || Date.parse(chat.timestamp)).toLocaleString()}`,
@@ -103,31 +89,31 @@ export function DataTab() {
   // State for settings categories and available chats
   const [settingsCategories] = useState<SettingsCategory[]>([
     {
-      id: "core",
-      label: "Core Settings",
-      description: "User profile and main settings",
+      id: 'core',
+      label: 'Core Settings',
+      description: 'User profile and main settings',
     },
     {
-      id: "providers",
-      label: "Providers",
-      description: "API keys and provider configurations",
+      id: 'providers',
+      label: 'Providers',
+      description: 'API keys and provider configurations',
     },
     {
-      id: "features",
-      label: "Features",
-      description: "Feature flags and settings",
+      id: 'features',
+      label: 'Features',
+      description: 'Feature flags and settings',
     },
-    { id: "ui", label: "UI", description: "UI configuration and preferences" },
+    { id: 'ui', label: 'UI', description: 'UI configuration and preferences' },
     {
-      id: "connections",
-      label: "Connections",
-      description: "External service connections",
+      id: 'connections',
+      label: 'Connections',
+      description: 'External service connections',
     },
-    { id: "debug", label: "Debug", description: "Debug settings and logs" },
+    { id: 'debug', label: 'Debug', description: 'Debug settings and logs' },
     {
-      id: "updates",
-      label: "Updates",
-      description: "Update settings and notifications",
+      id: 'updates',
+      label: 'Updates',
+      description: 'Update settings and notifications',
     },
   ]);
 
@@ -175,7 +161,7 @@ export function DataTab() {
   // Load available chats
   useEffect(() => {
     if (db) {
-      console.log("Loading chats from codinitHistory database", {
+      console.log('Loading chats from codinitHistory database', {
         name: db.name,
         version: db.version,
         objectStoreNames: Array.from(db.objectStoreNames),
@@ -183,7 +169,7 @@ export function DataTab() {
 
       getAllChats(db)
         .then((chats) => {
-          console.log("Found chats:", chats.length);
+          console.log('Found chats:', chats.length);
 
           // Cast to ExtendedChat to handle additional properties
           const extendedChats = chats as ExtendedChat[];
@@ -193,11 +179,8 @@ export function DataTab() {
           setChatItems(extendedChats.map((chat) => createChatItem(chat)));
         })
         .catch((error) => {
-          console.error("Error loading chats:", error);
-          toast.error(
-            "Failed to load chats: " +
-              (error instanceof Error ? error.message : "Unknown error"),
-          );
+          console.error('Error loading chats:', error);
+          toast.error('Failed to load chats: ' + (error instanceof Error ? error.message : 'Unknown error'));
         });
     }
   }, [db]);
@@ -246,13 +229,7 @@ export function DataTab() {
   return (
     <div className="space-y-12">
       {/* Hidden file inputs */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".json"
-        onChange={handleFileInputChange}
-        className="hidden"
-      />
+      <input ref={fileInputRef} type="file" accept=".json" onChange={handleFileInputChange} className="hidden" />
       <input
         ref={apiKeyFileInputRef}
         type="file"
@@ -322,9 +299,7 @@ export function DataTab() {
 
       {/* Chats Section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">
-          Chats
-        </h2>
+        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">Chats</h2>
         {dbLoading ? (
           <div className="flex items-center justify-center p-4">
             <div className="i-ph-spinner-gap-bold animate-spin w-6 h-6 mr-2" />
@@ -335,51 +310,41 @@ export function DataTab() {
             <Card>
               <CardHeader>
                 <div className="flex items-center mb-2">
-                  <motion.div
-                    className="text-accent-500 mr-2"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
+                  <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                     <div className="i-ph-download-duotone w-5 h-5" />
                   </motion.div>
                   <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                     Export All Chats
                   </CardTitle>
                 </div>
-                <CardDescription>
-                  Export all your chats to a JSON file.
-                </CardDescription>
+                <CardDescription>Export all your chats to a JSON file.</CardDescription>
               </CardHeader>
               <CardFooter>
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full"
-                >
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                   <Button
                     onClick={async () => {
                       try {
                         if (!db) {
-                          toast.error("Database not available");
+                          toast.error('Database not available');
                           return;
                         }
 
-                        console.log("Database information:", {
+                        console.log('Database information:', {
                           name: db.name,
                           version: db.version,
                           objectStoreNames: Array.from(db.objectStoreNames),
                         });
 
                         if (availableChats.length === 0) {
-                          toast.warning("No chats available to export");
+                          toast.warning('No chats available to export');
                           return;
                         }
 
                         await handleExportAllChats();
                       } catch (error) {
-                        console.error("Error exporting chats:", error);
+                        console.error('Error exporting chats:', error);
                         toast.error(
-                          `Failed to export chats: ${error instanceof Error ? error.message : "Unknown error"}`,
+                          `Failed to export chats: ${error instanceof Error ? error.message : 'Unknown error'}`,
                         );
                       }
                     }}
@@ -387,10 +352,8 @@ export function DataTab() {
                     variant="outline"
                     size="sm"
                     className={classNames(
-                      "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                      isExporting || availableChats.length === 0
-                        ? "cursor-not-allowed"
-                        : "",
+                      'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                      isExporting || availableChats.length === 0 ? 'cursor-not-allowed' : '',
                     )}
                   >
                     {isExporting ? (
@@ -399,9 +362,9 @@ export function DataTab() {
                         Exporting...
                       </>
                     ) : availableChats.length === 0 ? (
-                      "No Chats to Export"
+                      'No Chats to Export'
                     ) : (
-                      "Export All"
+                      'Export All'
                     )}
                   </Button>
                 </motion.div>
@@ -411,37 +374,25 @@ export function DataTab() {
             <Card>
               <CardHeader>
                 <div className="flex items-center mb-2">
-                  <motion.div
-                    className="text-accent-500 mr-2"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
+                  <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                     <div className="i-ph:list-checks w-5 h-5" />
                   </motion.div>
                   <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                     Export Selected Chats
                   </CardTitle>
                 </div>
-                <CardDescription>
-                  Choose specific chats to export.
-                </CardDescription>
+                <CardDescription>Choose specific chats to export.</CardDescription>
               </CardHeader>
               <CardFooter>
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full"
-                >
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                   <Button
                     onClick={() => setShowChatsSelection(true)}
                     disabled={isExporting || chatItems.length === 0}
                     variant="outline"
                     size="sm"
                     className={classNames(
-                      "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                      isExporting || chatItems.length === 0
-                        ? "cursor-not-allowed"
-                        : "",
+                      'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                      isExporting || chatItems.length === 0 ? 'cursor-not-allowed' : '',
                     )}
                   >
                     {isExporting ? (
@@ -450,7 +401,7 @@ export function DataTab() {
                         Exporting...
                       </>
                     ) : (
-                      "Select Chats"
+                      'Select Chats'
                     )}
                   </Button>
                 </motion.div>
@@ -460,35 +411,25 @@ export function DataTab() {
             <Card>
               <CardHeader>
                 <div className="flex items-center mb-2">
-                  <motion.div
-                    className="text-accent-500 mr-2"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
+                  <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                     <div className="i-ph-upload-duotone w-5 h-5" />
                   </motion.div>
                   <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                     Import Chats
                   </CardTitle>
                 </div>
-                <CardDescription>
-                  Import chats from a JSON file.
-                </CardDescription>
+                <CardDescription>Import chats from a JSON file.</CardDescription>
               </CardHeader>
               <CardFooter>
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full"
-                >
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                   <Button
                     onClick={() => chatFileInputRef.current?.click()}
                     disabled={isImporting}
                     variant="outline"
                     size="sm"
                     className={classNames(
-                      "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                      isImporting ? "cursor-not-allowed" : "",
+                      'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                      isImporting ? 'cursor-not-allowed' : '',
                     )}
                   >
                     {isImporting ? (
@@ -497,7 +438,7 @@ export function DataTab() {
                         Importing...
                       </>
                     ) : (
-                      "Import Chats"
+                      'Import Chats'
                     )}
                   </Button>
                 </motion.div>
@@ -521,21 +462,15 @@ export function DataTab() {
                 <CardDescription>Delete all your chat history.</CardDescription>
               </CardHeader>
               <CardFooter>
-                <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full"
-                >
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                   <Button
                     onClick={() => setShowDeleteInlineConfirm(true)}
                     disabled={isDeleting || chatItems.length === 0}
                     variant="outline"
                     size="sm"
                     className={classNames(
-                      "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                      isDeleting || chatItems.length === 0
-                        ? "cursor-not-allowed"
-                        : "",
+                      'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                      isDeleting || chatItems.length === 0 ? 'cursor-not-allowed' : '',
                     )}
                   >
                     {isDeleting ? (
@@ -544,7 +479,7 @@ export function DataTab() {
                         Deleting...
                       </>
                     ) : (
-                      "Delete All"
+                      'Delete All'
                     )}
                   </Button>
                 </motion.div>
@@ -556,42 +491,30 @@ export function DataTab() {
 
       {/* Settings Section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">
-          Settings
-        </h2>
+        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">Settings</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card>
             <CardHeader>
               <div className="flex items-center mb-2">
-                <motion.div
-                  className="text-accent-500 mr-2"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
+                <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <div className="i-ph-download-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                   Export All Settings
                 </CardTitle>
               </div>
-              <CardDescription>
-                Export all your settings to a JSON file.
-              </CardDescription>
+              <CardDescription>Export all your settings to a JSON file.</CardDescription>
             </CardHeader>
             <CardFooter>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="w-full"
-              >
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                 <Button
                   onClick={handleExportSettings}
                   disabled={isExporting}
                   variant="outline"
                   size="sm"
                   className={classNames(
-                    "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                    isExporting ? "cursor-not-allowed" : "",
+                    'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                    isExporting ? 'cursor-not-allowed' : '',
                   )}
                 >
                   {isExporting ? (
@@ -600,7 +523,7 @@ export function DataTab() {
                       Exporting...
                     </>
                   ) : (
-                    "Export All"
+                    'Export All'
                   )}
                 </Button>
               </motion.div>
@@ -610,37 +533,25 @@ export function DataTab() {
           <Card>
             <CardHeader>
               <div className="flex items-center mb-2">
-                <motion.div
-                  className="text-accent-500 mr-2"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
+                <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <div className="i-ph-filter-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                   Export Selected Settings
                 </CardTitle>
               </div>
-              <CardDescription>
-                Choose specific settings to export.
-              </CardDescription>
+              <CardDescription>Choose specific settings to export.</CardDescription>
             </CardHeader>
             <CardFooter>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="w-full"
-              >
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                 <Button
                   onClick={() => setShowSettingsSelection(true)}
                   disabled={isExporting || settingsCategories.length === 0}
                   variant="outline"
                   size="sm"
                   className={classNames(
-                    "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                    isExporting || settingsCategories.length === 0
-                      ? "cursor-not-allowed"
-                      : "",
+                    'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                    isExporting || settingsCategories.length === 0 ? 'cursor-not-allowed' : '',
                   )}
                 >
                   {isExporting ? (
@@ -649,7 +560,7 @@ export function DataTab() {
                       Exporting...
                     </>
                   ) : (
-                    "Select Settings"
+                    'Select Settings'
                   )}
                 </Button>
               </motion.div>
@@ -659,35 +570,25 @@ export function DataTab() {
           <Card>
             <CardHeader>
               <div className="flex items-center mb-2">
-                <motion.div
-                  className="text-accent-500 mr-2"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
+                <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <div className="i-ph-upload-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                   Import Settings
                 </CardTitle>
               </div>
-              <CardDescription>
-                Import settings from a JSON file.
-              </CardDescription>
+              <CardDescription>Import settings from a JSON file.</CardDescription>
             </CardHeader>
             <CardFooter>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="w-full"
-              >
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                 <Button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isImporting}
                   variant="outline"
                   size="sm"
                   className={classNames(
-                    "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                    isImporting ? "cursor-not-allowed" : "",
+                    'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                    isImporting ? 'cursor-not-allowed' : '',
                   )}
                 >
                   {isImporting ? (
@@ -696,7 +597,7 @@ export function DataTab() {
                       Importing...
                     </>
                   ) : (
-                    "Import Settings"
+                    'Import Settings'
                   )}
                 </Button>
               </motion.div>
@@ -717,24 +618,18 @@ export function DataTab() {
                   Reset All Settings
                 </CardTitle>
               </div>
-              <CardDescription>
-                Reset all settings to their default values.
-              </CardDescription>
+              <CardDescription>Reset all settings to their default values.</CardDescription>
             </CardHeader>
             <CardFooter>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="w-full"
-              >
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                 <Button
                   onClick={() => setShowResetInlineConfirm(true)}
                   disabled={isResetting}
                   variant="outline"
                   size="sm"
                   className={classNames(
-                    "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                    isResetting ? "cursor-not-allowed" : "",
+                    'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                    isResetting ? 'cursor-not-allowed' : '',
                   )}
                 >
                   {isResetting ? (
@@ -743,7 +638,7 @@ export function DataTab() {
                       Resetting...
                     </>
                   ) : (
-                    "Reset All"
+                    'Reset All'
                   )}
                 </Button>
               </motion.div>
@@ -754,42 +649,30 @@ export function DataTab() {
 
       {/* API Keys Section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">
-          API Keys
-        </h2>
+        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">API Keys</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card>
             <CardHeader>
               <div className="flex items-center mb-2">
-                <motion.div
-                  className="text-accent-500 mr-2"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
+                <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <div className="i-ph-file-text-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                   Download Template
                 </CardTitle>
               </div>
-              <CardDescription>
-                Download a template file for your API keys.
-              </CardDescription>
+              <CardDescription>Download a template file for your API keys.</CardDescription>
             </CardHeader>
             <CardFooter>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="w-full"
-              >
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                 <Button
                   onClick={handleDownloadTemplate}
                   disabled={isDownloadingTemplate}
                   variant="outline"
                   size="sm"
                   className={classNames(
-                    "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                    isDownloadingTemplate ? "cursor-not-allowed" : "",
+                    'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                    isDownloadingTemplate ? 'cursor-not-allowed' : '',
                   )}
                 >
                   {isDownloadingTemplate ? (
@@ -798,7 +681,7 @@ export function DataTab() {
                       Downloading...
                     </>
                   ) : (
-                    "Download"
+                    'Download'
                   )}
                 </Button>
               </motion.div>
@@ -808,35 +691,25 @@ export function DataTab() {
           <Card>
             <CardHeader>
               <div className="flex items-center mb-2">
-                <motion.div
-                  className="text-accent-500 mr-2"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
+                <motion.div className="text-accent-500 mr-2" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <div className="i-ph-upload-duotone w-5 h-5" />
                 </motion.div>
                 <CardTitle className="text-lg group-hover:text-codinit-elements-item-contentAccent transition-colors">
                   Import API Keys
                 </CardTitle>
               </div>
-              <CardDescription>
-                Import API keys from a JSON file.
-              </CardDescription>
+              <CardDescription>Import API keys from a JSON file.</CardDescription>
             </CardHeader>
             <CardFooter>
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="w-full"
-              >
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full">
                 <Button
                   onClick={() => apiKeyFileInputRef.current?.click()}
                   disabled={isImportingKeys}
                   variant="outline"
                   size="sm"
                   className={classNames(
-                    "hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center",
-                    isImportingKeys ? "cursor-not-allowed" : "",
+                    'hover:text-codinit-elements-item-contentAccent hover:border-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundAccent transition-colors w-full justify-center',
+                    isImportingKeys ? 'cursor-not-allowed' : '',
                   )}
                 >
                   {isImportingKeys ? (
@@ -845,7 +718,7 @@ export function DataTab() {
                       Importing...
                     </>
                   ) : (
-                    "Import Keys"
+                    'Import Keys'
                   )}
                 </Button>
               </motion.div>
@@ -856,9 +729,7 @@ export function DataTab() {
 
       {/* Data Visualization */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">
-          Data Usage
-        </h2>
+        <h2 className="text-xl font-semibold mb-4 text-codinit-elements-textPrimary">Data Usage</h2>
         <Card>
           <CardContent className="p-5">
             <DataVisualization chats={availableChats} />
