@@ -1,18 +1,16 @@
-![CodinIT.dev](https://codinit.dev/hero-image.png)
+![CodinIT.dev: AI-Powered Full-Stack Web Development in the Browser](https://codinit.dev/prompt-enhancer.gif)
 
 
-Welcome to CodinIT.dev, an AI-powered development platform that allows you to choose the LLM that you use for each prompt! Currently, you can use OpenAI, Anthropic, Ollama, OpenRouter, Gemini, LMStudio, Mistral, xAI, HuggingFace, DeepSeek, Groq, Cohere, Together, Perplexity, Moonshot (Kimi), Hyperbolic, GitHub Models, Amazon Bedrock, and OpenAI-like providers - and it is easily extended to use any other model supported by the Vercel AI SDK! See the instructions below for running this locally and extending it to include more models.
+Welcome to CodinIT.dev — an AI-powered dev platform where you can choose the LLM for each prompt!
+It supports OpenAI, Anthropic, Ollama, Gemini, Mistral, xAI, HuggingFace, Groq, Cohere, Perplexity, and many more, all via the Vercel AI SDK.
 
------
-Check the [CodinIT.dev Docs](https://gerome-elassaad.github.io/codinit-app) for more official installation instructions and additional information.
+See below for setup and how to add more models.
 
------
+Check the [CodinIT.dev Desktop App Docs](https://gerome-elassaad.github.io/codinit-app) for more official installation instructions and additional information.
 
-CodinIT.dev is an open-source AI-powered development platform built to provide the BEST coding assistant experience!
-
+---
 ## Table of Contents
 
-- [Join the Community](#join-the-community)
 - [Recent Major Additions](#recent-major-additions)
 - [Features](#features)
 - [Setup](#setup)
@@ -22,17 +20,10 @@ CodinIT.dev is an open-source AI-powered development platform built to provide t
 - [Setup Using Git (For Developers only)](#setup-using-git-for-developers-only)
 - [Available Scripts](#available-scripts)
 
-## Join the community
-
-Join the CodinIT.dev community and contribute to the project!
-
 ## Project management
 
 CodinIT.dev is a community effort! The core team of contributors aims at organizing the project in way that allows
 you to understand where the current areas of focus are.
-
-If you want to know what we are working on, what we are planning to work on, or if you want to contribute to the
-project, please check the [project management guide](./PROJECT.md) to get started easily.
 
 ## Recent Major Additions
 
@@ -52,16 +43,10 @@ project, please check the [project management guide](./PROJECT.md) to get starte
 - **Bulk Chat Operations** - Delete multiple chats at once
 - **Project Snapshot Restoration** - Restore projects from snapshots on reload
 
-### 🔄 In Progress / Planned
-- **File Locking & Diff Improvements** - Enhanced conflict prevention
-- **Backend Agent Architecture** - Move from single model calls to agent-based system
-- **LLM Prompt Optimization** - Better performance for smaller models
-- **Project Planning Documentation** - LLM-generated project plans in markdown
-- **VSCode Integration** - Git-like confirmations and workflows
-- **Document Upload for Knowledge** - Reference materials and coding style guides
-- **Additional Provider Integrations** - Azure OpenAI, Vertex AI, Granite
 
 ## Features
+
+![Feature](https://codinit.dev/control-panel.png)
 
 - **AI-powered full-stack web development** for **NodeJS based applications** directly in your browser.
 - **Support for 19+ LLMs** with an extensible architecture to integrate additional models.
@@ -94,7 +79,7 @@ Let's get you up and running with the stable version of CodinIT.dev!
 - Download the binary for your platform (available for Windows, macOS, and Linux)
 - **Note**: For macOS, if you get the error "This app is damaged", run:
   ```bash
-  xattr -cr /path/to/codinit.app
+  xattr -cr /path/to/codingit.app
   ```
 
 ## Manual installation
@@ -218,12 +203,16 @@ The Cloud Providers tab displays all cloud-based AI services in an organized car
    - Click on the "API Key" field to enter edit mode
    - Paste your API key and press Enter to save
    - The interface shows real-time validation with green checkmarks for valid keys
+  
+![Models](https://codinit.dev/models.png)
 
 #### Advanced Features
 - **Bulk Toggle**: Use "Enable All Cloud" to toggle all cloud providers at once
 - **Visual Status**: Green checkmarks indicate properly configured providers
 - **Provider Icons**: Each provider has a distinctive icon for easy identification
 - **Descriptions**: Helpful descriptions explain each provider's capabilities
+
+![chat](https://codinit.dev/chat.png)
 
 ### Local Providers Configuration
 
