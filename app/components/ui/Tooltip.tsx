@@ -1,6 +1,6 @@
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { forwardRef, type ForwardedRef, type ReactElement } from 'react';
-import { classNames } from '~/utils/classNames';
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { forwardRef, type ForwardedRef, type ReactElement } from "react";
+import { classNames } from "~/utils/classNames";
 
 // Original WithTooltip component
 interface WithTooltipProps {
@@ -10,7 +10,7 @@ interface WithTooltipProps {
   className?: string;
   arrowClassName?: string;
   tooltipStyle?: React.CSSProperties;
-  position?: 'top' | 'bottom' | 'left' | 'right';
+  position?: "top" | "bottom" | "left" | "right";
   maxWidth?: number;
   delay?: number;
 }
@@ -21,10 +21,10 @@ const WithTooltip = forwardRef(
       tooltip,
       children,
       sideOffset = 5,
-      className = '',
-      arrowClassName = '',
+      className = "",
+      arrowClassName = "",
       tooltipStyle = {},
-      position = 'top',
+      position = "top",
       maxWidth = 250,
       delay = 0,
     }: WithTooltipProps,
@@ -33,7 +33,9 @@ const WithTooltip = forwardRef(
     return (
       <TooltipPrimitive.Provider>
         <TooltipPrimitive.Root delayDuration={delay}>
-          <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
+          <TooltipPrimitive.Trigger asChild>
+            {children}
+          </TooltipPrimitive.Trigger>
           <TooltipPrimitive.Portal>
             <TooltipPrimitive.Content
               side={position}
@@ -84,8 +86,8 @@ const WithTooltip = forwardRef(
 interface TooltipProps {
   content: React.ReactNode;
   children: React.ReactNode;
-  side?: 'top' | 'right' | 'bottom' | 'left';
-  align?: 'start' | 'center' | 'end';
+  side?: "top" | "right" | "bottom" | "left";
+  align?: "start" | "center" | "end";
   delayDuration?: number;
   className?: string;
 }
@@ -93,8 +95,8 @@ interface TooltipProps {
 export function Tooltip({
   content,
   children,
-  side = 'top',
-  align = 'center',
+  side = "top",
+  align = "center",
   delayDuration = 300,
   className,
 }: TooltipProps) {
@@ -106,7 +108,7 @@ export function Tooltip({
           side={side}
           align={align}
           className={classNames(
-            'z-50 overflow-hidden rounded-md bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-4 px-3 py-1.5 text-xs text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+            "z-50 overflow-hidden rounded-md bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-4 px-3 py-1.5 text-xs text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
             className,
           )}
           sideOffset={5}

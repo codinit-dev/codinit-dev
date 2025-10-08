@@ -1,8 +1,13 @@
-import React from 'react';
-import { Dialog, DialogTitle, DialogDescription, DialogRoot } from '~/components/ui/Dialog';
-import { useStore } from '@nanostores/react';
-import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
-import { QRCode } from 'react-qrcode-logo';
+import React from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogDescription,
+  DialogRoot,
+} from "~/components/ui/Dialog";
+import { useStore } from "@nanostores/react";
+import { expoUrlAtom } from "~/lib/stores/qrCodeStore";
+import { QRCode } from "react-qrcode-logo";
 
 interface ExpoQrModalProps {
   open: boolean;
@@ -25,12 +30,13 @@ export const ExpoQrModal: React.FC<ExpoQrModalProps> = ({ open, onClose }) => {
             Preview on your own mobile device
           </DialogTitle>
           <DialogDescription className="bg-codinit-elements-background-depth-3 max-w-sm rounded-md p-1 border border-codinit-elements-borderColor">
-            Scan this QR code with the Expo Go app on your mobile device to open your project.
+            Scan this QR code with the Expo Go app on your mobile device to open
+            your project.
           </DialogDescription>
           <div className="my-6 flex flex-col items-center">
             {expoUrl ? (
               <QRCode
-                logoImage="/icon.png"
+                logoImage="/favicon.svg"
                 removeQrCodeBehindLogo={true}
                 logoPadding={3}
                 logoHeight={50}
@@ -39,13 +45,15 @@ export const ExpoQrModal: React.FC<ExpoQrModalProps> = ({ open, onClose }) => {
                 style={{
                   borderRadius: 16,
                   padding: 2,
-                  backgroundColor: '#8a5fff',
+                  backgroundColor: "#8a5fff",
                 }}
                 value={expoUrl}
                 size={200}
               />
             ) : (
-              <div className="text-gray-500 text-center">No Expo URL detected.</div>
+              <div className="text-gray-500 text-center">
+                No Expo URL detected.
+              </div>
             )}
           </div>
         </div>

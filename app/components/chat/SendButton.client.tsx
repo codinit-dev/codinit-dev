@@ -1,4 +1,4 @@
-import { AnimatePresence, cubicBezier, motion } from 'framer-motion';
+import { AnimatePresence, cubicBezier, motion } from "framer-motion";
 
 interface SendButtonProps {
   show: boolean;
@@ -10,7 +10,12 @@ interface SendButtonProps {
 
 const customEasingFn = cubicBezier(0.4, 0, 0.2, 1);
 
-export const SendButton = ({ show, isStreaming, disabled, onClick }: SendButtonProps) => {
+export const SendButton = ({
+  show,
+  isStreaming,
+  disabled,
+  onClick,
+}: SendButtonProps) => {
   return (
     <AnimatePresence>
       {show ? (
@@ -30,7 +35,11 @@ export const SendButton = ({ show, isStreaming, disabled, onClick }: SendButtonP
           }}
         >
           <div className="text-lg">
-            {!isStreaming ? <div className="i-ph:arrow-right"></div> : <div className="i-ph:stop-circle-bold"></div>}
+            {!isStreaming ? (
+              <div className="i-ph:arrow-right"></div>
+            ) : (
+              <div className="i-ph:stop-circle-bold"></div>
+            )}
           </div>
         </motion.button>
       ) : null}

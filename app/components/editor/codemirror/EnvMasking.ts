@@ -1,4 +1,10 @@
-import { EditorView, Decoration, type DecorationSet, ViewPlugin, WidgetType } from '@codemirror/view';
+import {
+  EditorView,
+  Decoration,
+  type DecorationSet,
+  ViewPlugin,
+  WidgetType,
+} from "@codemirror/view";
 
 // Create a proper WidgetType class for the masked text
 class MaskedTextWidget extends WidgetType {
@@ -11,9 +17,9 @@ class MaskedTextWidget extends WidgetType {
   }
 
   toDOM() {
-    const span = document.createElement('span');
-    span.textContent = '*'.repeat(this._value.length);
-    span.className = 'cm-masked-text';
+    const span = document.createElement("span");
+    span.textContent = "*".repeat(this._value.length);
+    span.className = "cm-masked-text";
 
     return span;
   }
@@ -23,7 +29,9 @@ class MaskedTextWidget extends WidgetType {
   }
 }
 
-export function createEnvMaskingExtension(getFilePath: () => string | undefined) {
+export function createEnvMaskingExtension(
+  getFilePath: () => string | undefined,
+) {
   return ViewPlugin.fromClass(
     class {
       decorations: DecorationSet;
@@ -32,7 +40,11 @@ export function createEnvMaskingExtension(getFilePath: () => string | undefined)
         this.decorations = this.buildDecorations(view);
       }
 
-      update(update: { docChanged: boolean; view: EditorView; viewportChanged: boolean }) {
+      update(update: {
+        docChanged: boolean;
+        view: EditorView;
+        viewportChanged: boolean;
+      }) {
         if (update.docChanged || update.viewportChanged) {
           this.decorations = this.buildDecorations(update.view);
         }
@@ -40,7 +52,10 @@ export function createEnvMaskingExtension(getFilePath: () => string | undefined)
 
       buildDecorations(view: EditorView) {
         const filePath = getFilePath();
-        const isEnvFile = filePath?.endsWith('.env') || filePath?.includes('.env.') || filePath?.includes('/.env');
+        const isEnvFile =
+          filePath?.endsWith(".env") ||
+          filePath?.includes(".env.") ||
+          filePath?.includes("/.env");
 
         if (!isEnvFile) {
           return Decoration.none;
@@ -56,7 +71,7 @@ export function createEnvMaskingExtension(getFilePath: () => string | undefined)
           // Match lines with KEY=VALUE format
           const match = text.match(/^([^=]+)=(.+)$/);
 
-          if (match && !text.trim().startsWith('#')) {
+          if (match && !text.trim().startsWith("#")) {
             const [, key, value] = match;
             const valueStart = line.from + key.length + 1;
 

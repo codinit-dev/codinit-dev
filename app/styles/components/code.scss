@@ -3,7 +3,9 @@
 }
 
 .shiki {
-  &:not(:has(.actions), .actions *, .mcp-tool-invocation-code *) {
-    background-color: var(--codinit-elements-messages-code-background) !important;
+  &:not(:has(.actions), .actions *) {
+    background-color: var(
+      --codinit-elements-messages-code-background
+    ) !important;
   }
 }

@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import { IconButton } from '~/components/ui/IconButton';
+import { memo } from "react";
+import { IconButton } from "~/components/ui/IconButton";
 interface SettingsButtonProps {
   onClick: () => void;
 }
@@ -12,23 +12,6 @@ export const SettingsButton = memo(({ onClick }: SettingsButtonProps) => {
       size="xl"
       title="Settings"
       data-testid="settings-button"
-      className="text-[#666] hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive/10 transition-colors"
-    />
-  );
-});
-
-interface HelpButtonProps {
-  onClick: () => void;
-}
-
-export const HelpButton = memo(({ onClick }: HelpButtonProps) => {
-  return (
-    <IconButton
-      onClick={onClick}
-      icon="i-ph:question"
-      size="xl"
-      title="Help & Documentation"
-      data-testid="help-button"
       className="text-[#666] hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive/10 transition-colors"
     />
   );

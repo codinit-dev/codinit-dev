@@ -1,5 +1,5 @@
 export function withResolvers<T>(): PromiseWithResolvers<T> {
-  if (typeof Promise.withResolvers === 'function') {
+  if (typeof Promise.withResolvers === "function") {
     return Promise.withResolvers();
   }
 

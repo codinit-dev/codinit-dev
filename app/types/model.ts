@@ -1,4 +1,4 @@
-import type { ModelInfo } from '~/lib/modules/llm/types';
+import type { ModelInfo } from "~/lib/modules/llm/types";
 
 export type ProviderInfo = {
   staticModels: ModelInfo[];
@@ -17,7 +17,6 @@ export type ProviderInfo = {
 export interface IProviderSetting {
   enabled?: boolean;
   baseUrl?: string;
-  OPENAI_LIKE_API_MODELS?: string;
 }
 
 export type IProviderConfig = ProviderInfo & {

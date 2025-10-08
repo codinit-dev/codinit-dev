@@ -5,7 +5,7 @@
  *--------------------------------------------------------------------------------------------
  */
 
-import * as React from 'react';
+import * as React from "react";
 import {
   type ReactNode,
   createContext,
@@ -15,7 +15,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-} from 'react';
+} from "react";
 import {
   type GetTargetScrollTop,
   type ScrollToBottom,
@@ -23,11 +23,13 @@ import {
   type StickToBottomState,
   type StopScroll,
   useStickToBottom,
-} from './useStickToBottom';
+} from "./useStickToBottom";
 
 export interface StickToBottomContext {
-  contentRef: React.MutableRefObject<HTMLElement | null> & React.RefCallback<HTMLElement>;
-  scrollRef: React.MutableRefObject<HTMLElement | null> & React.RefCallback<HTMLElement>;
+  contentRef: React.MutableRefObject<HTMLElement | null> &
+    React.RefCallback<HTMLElement>;
+  scrollRef: React.MutableRefObject<HTMLElement | null> &
+    React.RefCallback<HTMLElement>;
   scrollToBottom: ScrollToBottom;
   stopScroll: StopScroll;
   isAtBottom: boolean;
@@ -40,14 +42,15 @@ export interface StickToBottomContext {
 const StickToBottomContext = createContext<StickToBottomContext | null>(null);
 
 export interface StickToBottomProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children">,
     StickToBottomOptions {
   contextRef?: React.Ref<StickToBottomContext>;
   instance?: ReturnType<typeof useStickToBottom>;
   children: ((context: StickToBottomContext) => ReactNode) | ReactNode;
 }
 
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export function StickToBottom({
   instance,
@@ -80,8 +83,15 @@ export function StickToBottom({
     targetScrollTop,
   });
 
-  const { scrollRef, contentRef, scrollToBottom, stopScroll, isAtBottom, escapedFromLock, state } =
-    instance ?? defaultInstance;
+  const {
+    scrollRef,
+    contentRef,
+    scrollToBottom,
+    stopScroll,
+    isAtBottom,
+    escapedFromLock,
+    state,
+  } = instance ?? defaultInstance;
 
   const context = useMemo<StickToBottomContext>(
     () => ({
@@ -99,7 +109,15 @@ export function StickToBottom({
         customTargetScrollTop.current = targetScrollTop;
       },
     }),
-    [scrollToBottom, isAtBottom, contentRef, scrollRef, stopScroll, escapedFromLock, state],
+    [
+      scrollToBottom,
+      isAtBottom,
+      contentRef,
+      scrollRef,
+      stopScroll,
+      escapedFromLock,
+      state,
+    ],
   );
 
   useImperativeHandle(contextRef, () => context, [context]);
@@ -109,19 +127,22 @@ export function StickToBottom({
       return;
     }
 
-    if (getComputedStyle(scrollRef.current).overflow === 'visible') {
-      scrollRef.current.style.overflow = 'auto';
+    if (getComputedStyle(scrollRef.current).overflow === "visible") {
+      scrollRef.current.style.overflow = "auto";
     }
   }, []);
 
   return (
     <StickToBottomContext.Provider value={context}>
-      <div {...props}>{typeof children === 'function' ? children(context) : children}</div>
+      <div {...props}>
+        {typeof children === "function" ? children(context) : children}
+      </div>
     </StickToBottomContext.Provider>
   );
 }
 
-export interface StickToBottomContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface StickToBottomContentProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: ((context: StickToBottomContext) => ReactNode) | ReactNode;
 }
 
@@ -131,9 +152,8 @@ function Content({ children, ...props }: StickToBottomContentProps) {
   return (
     <div ref={context.scrollRef} className="w-full h-auto">
       <div {...props} ref={context.contentRef}>
-        {typeof children === 'function' ? children(context) : children}
+        {typeof children === "function" ? children(context) : children}
       </div>
-      {/* Blur effect overlay */}
     </div>
   );
 }
@@ -147,7 +167,9 @@ export function useStickToBottomContext() {
   const context = useContext(StickToBottomContext);
 
   if (!context) {
-    throw new Error('use-stick-to-bottom component context must be used within a StickToBottom component');
+    throw new Error(
+      "use-stick-to-bottom component context must be used within a StickToBottom component",
+    );
   }
 
   return context;

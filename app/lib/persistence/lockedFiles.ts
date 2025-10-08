@@ -1,9 +1,9 @@
-import { createScopedLogger } from '~/utils/logger';
+import { createScopedLogger } from "~/utils/logger";
 
-const logger = createScopedLogger('LockedFiles');
+const logger = createScopedLogger("LockedFiles");
 
 // Key for storing locked files in localStorage
-export const LOCKED_FILES_KEY = 'codinit.lockedFiles';
+export const LOCKED_FILES_KEY = "codinit.lockedFiles";
 
 export interface LockedItem {
   chatId: string; // Chat ID to scope locks to a specific project
@@ -24,7 +24,10 @@ const SAVE_DEBOUNCE_MS = 300;
 /**
  * Get a chat-specific map from the lookup maps
  */
-function getChatMap(chatId: string, createIfMissing = false): Map<string, LockedItem> | undefined {
+function getChatMap(
+  chatId: string,
+  createIfMissing = false,
+): Map<string, LockedItem> | undefined {
   if (createIfMissing && !lockedItemsMap.has(chatId)) {
     lockedItemsMap.set(chatId, new Map());
   }
@@ -41,7 +44,7 @@ function initializeCache(): LockedItem[] {
   }
 
   try {
-    if (typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== "undefined") {
       const lockedItemsJson = localStorage.getItem(LOCKED_FILES_KEY);
 
       if (lockedItemsJson) {
@@ -68,7 +71,7 @@ function initializeCache(): LockedItem[] {
 
     return [];
   } catch (error) {
-    logger.error('Failed to initialize locked items cache', error);
+    logger.error("Failed to initialize locked items cache", error);
     lockedItemsCache = [];
 
     return [];
@@ -110,12 +113,12 @@ export function saveLockedItems(items: LockedItem[]): void {
 
   saveDebounceTimer = setTimeout(() => {
     try {
-      if (typeof localStorage !== 'undefined') {
+      if (typeof localStorage !== "undefined") {
         localStorage.setItem(LOCKED_FILES_KEY, JSON.stringify(items));
         logger.info(`Saved ${items.length} locked items to localStorage`);
       }
     } catch (error) {
-      logger.error('Failed to save locked items to localStorage', error);
+      logger.error("Failed to save locked items to localStorage", error);
     }
   }, SAVE_DEBOUNCE_MS);
 }
@@ -139,7 +142,11 @@ export function getLockedItems(): LockedItem[] {
  * @param path The path of the file or folder to lock
  * @param isFolder Whether this is a folder lock
  */
-export function addLockedItem(chatId: string, path: string, isFolder: boolean = false): void {
+export function addLockedItem(
+  chatId: string,
+  path: string,
+  isFolder: boolean = false,
+): void {
   // Ensure cache is initialized
   const lockedItems = getLockedItems();
 
@@ -151,13 +158,17 @@ export function addLockedItem(chatId: string, path: string, isFolder: boolean = 
   chatMap.set(path, newItem);
 
   // Remove any existing entry for this path in this chat and add the new one
-  const filteredItems = lockedItems.filter((item) => !(item.chatId === chatId && item.path === path));
+  const filteredItems = lockedItems.filter(
+    (item) => !(item.chatId === chatId && item.path === path),
+  );
   filteredItems.push(newItem);
 
   // Save the updated list (this will update the cache and maps)
   saveLockedItems(filteredItems);
 
-  logger.info(`Added locked ${isFolder ? 'folder' : 'file'}: ${path} for chat: ${chatId}`);
+  logger.info(
+    `Added locked ${isFolder ? "folder" : "file"}: ${path} for chat: ${chatId}`,
+  );
 }
 
 /**
@@ -191,7 +202,9 @@ export function removeLockedItem(chatId: string, path: string): void {
   }
 
   // Filter out the item to remove for this specific chat
-  const filteredItems = lockedItems.filter((item) => !(item.chatId === chatId && item.path === path));
+  const filteredItems = lockedItems.filter(
+    (item) => !(item.chatId === chatId && item.path === path),
+  );
 
   // Save the updated list (this will update the cache and maps)
   saveLockedItems(filteredItems);
@@ -219,7 +232,10 @@ export function removeLockedFolder(chatId: string, folderPath: string): void {
  * @param path The path to check
  * @returns Object with locked status, lock mode, and whether it's a folder lock
  */
-export function isPathDirectlyLocked(chatId: string, path: string): { locked: boolean; isFolder?: boolean } {
+export function isPathDirectlyLocked(
+  chatId: string,
+  path: string,
+): { locked: boolean; isFolder?: boolean } {
   // Ensure cache is initialized
   getLockedItems();
 
@@ -243,7 +259,10 @@ export function isPathDirectlyLocked(chatId: string, path: string): { locked: bo
  * @param filePath The path of the file to check
  * @returns Object with locked status, lock mode, and the path that caused the lock
  */
-export function isFileLocked(chatId: string, filePath: string): { locked: boolean; lockedBy?: string } {
+export function isFileLocked(
+  chatId: string,
+  filePath: string,
+): { locked: boolean; lockedBy?: string } {
   // Ensure cache is initialized
   getLockedItems();
 
@@ -269,7 +288,10 @@ export function isFileLocked(chatId: string, filePath: string): { locked: boolea
  * @param folderPath The path of the folder to check
  * @returns Object with locked status and lock mode
  */
-export function isFolderLocked(chatId: string, folderPath: string): { locked: boolean; lockedBy?: string } {
+export function isFolderLocked(
+  chatId: string,
+  folderPath: string,
+): { locked: boolean; lockedBy?: string } {
   // Ensure cache is initialized
   getLockedItems();
 
@@ -295,7 +317,10 @@ export function isFolderLocked(chatId: string, folderPath: string): { locked: bo
  * @param path The path to check
  * @returns Object with locked status, lock mode, and the folder that caused the lock
  */
-function checkParentFolderLocks(chatId: string, path: string): { locked: boolean; lockedBy?: string } {
+function checkParentFolderLocks(
+  chatId: string,
+  path: string,
+): { locked: boolean; lockedBy?: string } {
   const chatMap = getChatMap(chatId);
 
   if (!chatMap) {
@@ -303,8 +328,8 @@ function checkParentFolderLocks(chatId: string, path: string): { locked: boolean
   }
 
   // Check each parent folder
-  const pathParts = path.split('/');
-  let currentPath = '';
+  const pathParts = path.split("/");
+  let currentPath = "";
 
   for (let i = 0; i < pathParts.length - 1; i++) {
     currentPath = currentPath ? `${currentPath}/${pathParts[i]}` : pathParts[i];
@@ -368,7 +393,10 @@ export function getLockedFoldersForChat(chatId: string): LockedItem[] {
  * @param path The path to check
  * @returns Object with locked status, lock mode, and the folder that caused the lock
  */
-export function isPathInLockedFolder(chatId: string, path: string): { locked: boolean; lockedBy?: string } {
+export function isPathInLockedFolder(
+  chatId: string,
+  path: string,
+): { locked: boolean; lockedBy?: string } {
   // This is already optimized by using checkParentFolderLocks
   return checkParentFolderLocks(chatId, path);
 }
@@ -383,7 +411,7 @@ export function migrateLegacyLocks(currentChatId: string): void {
     clearCache();
 
     // Get the items directly from localStorage
-    if (typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== "undefined") {
       const lockedItemsJson = localStorage.getItem(LOCKED_FILES_KEY);
 
       if (lockedItemsJson) {
@@ -411,13 +439,15 @@ export function migrateLegacyLocks(currentChatId: string): void {
           // Only save if we found and updated legacy items
           if (hasLegacyItems) {
             saveLockedItems(updatedItems);
-            logger.info(`Migrated ${updatedItems.length} legacy locks to chat ID: ${currentChatId}`);
+            logger.info(
+              `Migrated ${updatedItems.length} legacy locks to chat ID: ${currentChatId}`,
+            );
           }
         }
       }
     }
   } catch (error) {
-    logger.error('Failed to migrate legacy locks', error);
+    logger.error("Failed to migrate legacy locks", error);
   }
 }
 
@@ -429,7 +459,7 @@ export function migrateLegacyLocks(currentChatId: string): void {
 export function clearCache(): void {
   lockedItemsCache = null;
   lockedItemsMap.clear();
-  logger.info('Cleared locked items cache');
+  logger.info("Cleared locked items cache");
 }
 
 /**
@@ -437,7 +467,10 @@ export function clearCache(): void {
  * @param chatId The chat ID to scope the locks to
  * @param items Array of items to lock with their paths, modes, and folder flags
  */
-export function batchLockItems(chatId: string, items: Array<{ path: string; isFolder: boolean }>): void {
+export function batchLockItems(
+  chatId: string,
+  items: Array<{ path: string; isFolder: boolean }>,
+): void {
   if (items.length === 0) {
     return;
   }
@@ -449,7 +482,9 @@ export function batchLockItems(chatId: string, items: Array<{ path: string; isFo
   const pathsToLock = new Set(items.map((item) => item.path));
 
   // Filter out existing items for these paths
-  const filteredItems = lockedItems.filter((item) => !(item.chatId === chatId && pathsToLock.has(item.path)));
+  const filteredItems = lockedItems.filter(
+    (item) => !(item.chatId === chatId && pathsToLock.has(item.path)),
+  );
 
   // Add all the new items
   const newItems = items.map((item) => ({
@@ -489,7 +524,9 @@ export function batchUnlockItems(chatId: string, paths: string[]): void {
   }
 
   // Filter out the items to remove
-  const filteredItems = lockedItems.filter((item) => !(item.chatId === chatId && pathsToUnlock.has(item.path)));
+  const filteredItems = lockedItems.filter(
+    (item) => !(item.chatId === chatId && pathsToUnlock.has(item.path)),
+  );
 
   // Save the updated list
   saveLockedItems(filteredItems);
@@ -501,10 +538,12 @@ export function batchUnlockItems(chatId: string, paths: string[]): void {
  * Add event listener for storage events to sync cache across tabs
  * This ensures that if locks are modified in another tab, the changes are reflected here
  */
-if (typeof window !== 'undefined') {
-  window.addEventListener('storage', (event) => {
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
     if (event.key === LOCKED_FILES_KEY) {
-      logger.info('Detected localStorage change for locked items, refreshing cache');
+      logger.info(
+        "Detected localStorage change for locked items, refreshing cache",
+      );
       clearCache();
     }
   });

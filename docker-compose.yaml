@@ -1,15 +1,13 @@
 services:
   app-prod:
-    image: codinit:production
+    image: codinit-ai:production
     build:
       context: .
       dockerfile: Dockerfile
-      target: codinit-production
+      target: codinit-ai-production
     ports:
       - '5173:5173'
-    env_file: 
-      - '.env'
-      - '.env.local'
+    env_file: '.env.local'
     environment:
       - NODE_ENV=production
       - COMPOSE_PROFILES=production
@@ -36,12 +34,10 @@ services:
       - production
 
   app-dev:
-    image: codinit:development
+    image: codinit-ai:development
     build:
-      target: codinit-development
-    env_file: 
-      - '.env'
-      - '.env.local'
+      target: codinit-ai-development
+    env_file: '.env.local'
     environment:
       - NODE_ENV=development
       - VITE_HMR_PROTOCOL=ws
@@ -78,7 +74,7 @@ services:
     profiles: ['development', 'default']
 
   app-prebuild:
-    image: ghcr.io/gerome-elassaad/codingit:latest
+    image: ghcr.io/Gerome-Elassaad/CodingIT:latest
     ports:
       - '5173:5173'
     environment:

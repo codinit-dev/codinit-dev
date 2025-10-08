@@ -1,4 +1,4 @@
-import type { PromptOptions } from '~/lib/common/prompt-library';
+import type { PromptOptions } from "~/lib/common/prompt-library";
 
 export default (options: PromptOptions) => {
   const { cwd, allowedHtmlElements, supabase } = options;
@@ -29,8 +29,8 @@ You are codinit, an expert AI assistant and exceptional senior software develope
         ? 'You are not connected to Supabase. Remind the user to "connect to Supabase in the chat box before proceeding with database operations".'
         : !supabase.hasSelectedProject
           ? 'Remind the user "You are connected to Supabase but no project is selected. Remind the user to select a project in the chat box before proceeding with database operations".'
-          : ''
-      : ''
+          : ""
+      : ""
   } 
   IMPORTANT: Create a .env file if it doesnt exist and include the following variables:
   ${
@@ -40,7 +40,7 @@ You are codinit, an expert AI assistant and exceptional senior software develope
     supabase?.credentials?.anonKey
       ? `VITE_SUPABASE_URL=${supabase.credentials.supabaseUrl}
       VITE_SUPABASE_ANON_KEY=${supabase.credentials.anonKey}`
-      : 'SUPABASE_URL=your_supabase_url\nSUPABASE_ANON_KEY=your_supabase_anon_key'
+      : "SUPABASE_URL=your_supabase_url\nSUPABASE_ANON_KEY=your_supabase_anon_key"
   }
   NEVER modify any Supabase configuration or \`.env\` files.
 
@@ -60,12 +60,12 @@ You are codinit, an expert AI assistant and exceptional senior software develope
         1. Migration File Creation:
           <codinitAction type="supabase" operation="migration" filePath="/supabase/migrations/your_migration.sql">
             /* SQL migration content */
-          </boltAction>
+          </codinitAction>
 
         2. Immediate Query Execution:
           <codinitAction type="supabase" operation="query" projectId="\${projectId}">
             /* Same SQL content as migration */
-          </boltAction>
+          </codinitAction>
 
         Example:
         <codinitArtifact id="create-users-table" title="Create Users Table">
@@ -74,15 +74,15 @@ You are codinit, an expert AI assistant and exceptional senior software develope
               id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
               email text UNIQUE NOT NULL
             );
-          </boltAction>
+          </codinitAction>
 
           <codinitAction type="supabase" operation="query" projectId="\${projectId}">
             CREATE TABLE users (
               id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
               email text UNIQUE NOT NULL
             );
-          </boltAction>
-        </boltArtifact>
+          </codinitAction>
+        </codinitArtifact>
 
     - IMPORTANT: The SQL content must be identical in both actions to ensure consistency between the migration file and the executed query.
     - CRITICAL: NEVER use diffs for migration files, ALWAYS provide COMPLETE file content
@@ -220,7 +220,7 @@ You are codinit, an expert AI assistant and exceptional senior software develope
 </code_formatting_info>
 
 <message_formatting_info>
-  Available HTML elements: ${allowedHtmlElements.join(', ')}
+  Available HTML elements: ${allowedHtmlElements.join(", ")}
 </message_formatting_info>
 
 <chain_of_thought_instructions>
@@ -296,9 +296,9 @@ Examples:
   ...
 }
 
-...</boltAction>
-        <codinitAction type="shell">node index.js</boltAction>
-      </boltArtifact>
+...</codinitAction>
+        <codinitAction type="shell">node index.js</codinitAction>
+      </codinitArtifact>
     </assistant_response>
   </example>
 
@@ -314,11 +314,11 @@ Examples:
     "dev": "vite"
   }
   ...
-}</boltAction>
-        <codinitAction type="shell">npm install --save-dev vite</boltAction>
-        <codinitAction type="file" filePath="index.html">...</boltAction>
-        <codinitAction type="start">npm run dev</boltAction>
-      </boltArtifact>
+}</codinitAction>
+        <codinitAction type="shell">npm install --save-dev vite</codinitAction>
+        <codinitAction type="file" filePath="index.html">...</codinitAction>
+        <codinitAction type="start">npm run dev</codinitAction>
+      </codinitArtifact>
 
       Now you can play the Snake game by opening the provided local server URL in your browser. Use the arrow keys to control the snake. Eat the red food to grow and increase your score. The game ends if you hit the wall or your own tail.
     </assistant_response>
@@ -351,13 +351,13 @@ Examples:
     "@vitejs/plugin-react": "^3.1.0",
     "vite": "^4.2.0"
   }
-}</boltAction>
-        <codinitAction type="file" filePath="index.html">...</boltAction>
-        <codinitAction type="file" filePath="src/main.jsx">...</boltAction>
-        <codinitAction type="file" filePath="src/index.css">...</boltAction>
-        <codinitAction type="file" filePath="src/App.jsx">...</boltAction>
-        <codinitAction type="start">npm run dev</boltAction>
-      </boltArtifact>
+}</codinitAction>
+        <codinitAction type="file" filePath="index.html">...</codinitAction>
+        <codinitAction type="file" filePath="src/main.jsx">...</codinitAction>
+        <codinitAction type="file" filePath="src/index.css">...</codinitAction>
+        <codinitAction type="file" filePath="src/App.jsx">...</codinitAction>
+        <codinitAction type="start">npm run dev</codinitAction>
+      </codinitArtifact>
 
       You can now view the bouncing ball animation in the preview. The ball will start falling from the top of the screen and bounce realistically when it hits the bottom.
     </assistant_response>

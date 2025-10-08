@@ -1,6 +1,6 @@
-import React from 'react';
-import { classNames } from '~/utils/classNames';
-import { motion } from 'framer-motion';
+import React from "react";
+import { classNames } from "~/utils/classNames";
+import { motion } from "framer-motion";
 
 interface BreadcrumbItem {
   label: string;
@@ -14,13 +14,17 @@ interface BreadcrumbsProps {
   className?: string;
   separator?: string;
   maxItems?: number;
-  renderItem?: (item: BreadcrumbItem, index: number, isLast: boolean) => React.ReactNode;
+  renderItem?: (
+    item: BreadcrumbItem,
+    index: number,
+    isLast: boolean,
+  ) => React.ReactNode;
 }
 
 export function Breadcrumbs({
   items,
   className,
-  separator = 'i-ph:caret-right',
+  separator = "i-ph:caret-right",
   maxItems = 0,
   renderItem,
 }: BreadcrumbsProps) {
@@ -28,21 +32,25 @@ export function Breadcrumbs({
     maxItems > 0 && items.length > maxItems
       ? [
           ...items.slice(0, 1),
-          { label: '...', onClick: undefined, href: undefined },
+          { label: "...", onClick: undefined, href: undefined },
           ...items.slice(-Math.max(1, maxItems - 2)),
         ]
       : items;
 
-  const defaultRenderItem = (item: BreadcrumbItem, index: number, isLast: boolean) => {
+  const defaultRenderItem = (
+    item: BreadcrumbItem,
+    index: number,
+    isLast: boolean,
+  ) => {
     const content = (
       <div className="flex items-center gap-1.5">
-        {item.icon && <span className={classNames(item.icon, 'w-3.5 h-3.5')} />}
+        {item.icon && <span className={classNames(item.icon, "w-3.5 h-3.5")} />}
         <span
           className={classNames(
             isLast
-              ? 'font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark'
-              : 'text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark',
-            item.onClick || item.href ? 'cursor-pointer' : '',
+              ? "font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark"
+              : "text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark",
+            item.onClick || item.href ? "cursor-pointer" : "",
           )}
         >
           {item.label}
@@ -52,7 +60,12 @@ export function Breadcrumbs({
 
     if (item.href && !isLast) {
       return (
-        <motion.a href={item.href} className="hover:underline" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <motion.a
+          href={item.href}
+          className="hover:underline"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           {content}
         </motion.a>
       );
@@ -76,19 +89,24 @@ export function Breadcrumbs({
   };
 
   return (
-    <nav className={classNames('flex items-center', className)} aria-label="Breadcrumbs">
+    <nav
+      className={classNames("flex items-center", className)}
+      aria-label="Breadcrumbs"
+    >
       <ol className="flex items-center gap-1.5">
         {displayItems.map((item, index) => {
           const isLast = index === displayItems.length - 1;
 
           return (
             <li key={index} className="flex items-center">
-              {renderItem ? renderItem(item, index, isLast) : defaultRenderItem(item, index, isLast)}
+              {renderItem
+                ? renderItem(item, index, isLast)
+                : defaultRenderItem(item, index, isLast)}
               {!isLast && (
                 <span
                   className={classNames(
                     separator,
-                    'w-3 h-3 mx-1 text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark',
+                    "w-3 h-3 mx-1 text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark",
                   )}
                 />
               )}

@@ -1,59 +1,56 @@
-import { useStore } from '@nanostores/react';
-import { motion, type HTMLMotionProps, type Variants } from 'framer-motion';
-import { computed } from 'nanostores';
-import { memo, useCallback, useEffect, useState, useMemo } from 'react';
-import { toast } from 'react-toastify';
-import { Popover, Transition } from '@headlessui/react';
-import { diffLines, type Change } from 'diff';
-import { getLanguageFromExtension } from '~/utils/getLanguageFromExtension';
-import type { FileHistory } from '~/types/actions';
-import { DiffView } from './DiffView';
+import { useStore } from "@nanostores/react";
+import { motion, type HTMLMotionProps, type Variants } from "framer-motion";
+import { computed } from "nanostores";
+import { memo, useCallback, useEffect, useState, useMemo } from "react";
+import { toast } from "react-toastify";
+import { Popover, Transition } from "@headlessui/react";
+import { diffLines, type Change } from "diff";
+import { ActionRunner } from "~/lib/runtime/action-runner";
+import { getLanguageFromExtension } from "~/utils/getLanguageFromExtension";
+import type { FileHistory } from "~/types/actions";
+import { DiffView } from "./DiffView";
 import {
   type OnChangeCallback as OnEditorChange,
   type OnScrollCallback as OnEditorScroll,
-} from '~/components/editor/codemirror/CodeMirrorEditor';
-import { IconButton } from '~/components/ui/IconButton';
-import { Slider, type SliderOptions } from '~/components/ui/Slider';
-import { workbenchStore, type WorkbenchViewType } from '~/lib/stores/workbench';
-import { classNames } from '~/utils/classNames';
-import { cubicEasingFn } from '~/utils/easings';
-import { renderLogger } from '~/utils/logger';
-import { EditorPanel } from './EditorPanel';
-import { Preview } from './Preview';
-import useViewport from '~/lib/hooks';
-
-import { usePreviewStore } from '~/lib/stores/previews';
-import { chatStore } from '~/lib/stores/chat';
-import type { ElementInfo } from './Inspector';
-import { ExportChatButton } from '~/components/chat/chatExportAndImport/ExportChatButton';
-import { useChatHistory } from '~/lib/persistence';
-import { streamingState } from '~/lib/stores/streaming';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+} from "~/components/editor/codemirror/CodeMirrorEditor";
+import { IconButton } from "~/components/ui/IconButton";
+import { PanelHeaderButton } from "~/components/ui/PanelHeaderButton";
+import { Slider, type SliderOptions } from "~/components/ui/Slider";
+import { workbenchStore, type WorkbenchViewType } from "~/lib/stores/workbench";
+import { classNames } from "~/utils/classNames";
+import { cubicEasingFn } from "~/utils/easings";
+import { renderLogger } from "~/utils/logger";
+import { EditorPanel } from "./EditorPanel";
+import { Preview } from "./Preview";
+import useViewport from "~/lib/hooks";
+import { PushToGitHubDialog } from "~/components/@settings/tabs/connections/components/PushToGitHubDialog";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { usePreviewStore } from "~/lib/stores/previews";
 
 interface WorkspaceProps {
   chatStarted?: boolean;
   isStreaming?: boolean;
+  actionRunner: ActionRunner;
   metadata?: {
     gitUrl?: string;
   };
   updateChatMestaData?: (metadata: any) => void;
-  setSelectedElement?: (element: ElementInfo | null) => void;
 }
 
 const viewTransition = { ease: cubicEasingFn };
 
 const sliderOptions: SliderOptions<WorkbenchViewType> = {
   left: {
-    value: 'code',
-    text: 'Code',
+    value: "code",
+    text: "Code",
   },
   middle: {
-    value: 'diff',
-    text: 'Diff',
+    value: "diff",
+    text: "Diff",
   },
   right: {
-    value: 'preview',
-    text: 'Preview',
+    value: "preview",
+    text: "Preview",
   },
 };
 
@@ -66,7 +63,7 @@ const workbenchVariants = {
     },
   },
   open: {
-    width: 'var(--workbench-width)',
+    width: "var(--workbench-width)",
     transition: {
       duration: 0.2,
       ease: cubicEasingFn,
@@ -84,10 +81,12 @@ const FileModifiedDropdown = memo(
   }) => {
     const modifiedFiles = Object.entries(fileHistory);
     const hasChanges = modifiedFiles.length > 0;
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
 
     const filteredFiles = useMemo(() => {
-      return modifiedFiles.filter(([filePath]) => filePath.toLowerCase().includes(searchQuery.toLowerCase()));
+      return modifiedFiles.filter(([filePath]) =>
+        filePath.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     }, [modifiedFiles, searchQuery]);
 
     return (
@@ -130,7 +129,7 @@ const FileModifiedDropdown = memo(
                     <div className="max-h-60 overflow-y-auto">
                       {filteredFiles.length > 0 ? (
                         filteredFiles.map(([filePath, history]) => {
-                          const extension = filePath.split('.').pop() || '';
+                          const extension = filePath.split(".").pop() || "";
                           const language = getLanguageFromExtension(extension);
 
                           return (
@@ -141,42 +140,67 @@ const FileModifiedDropdown = memo(
                             >
                               <div className="flex items-center gap-2">
                                 <div className="shrink-0 w-5 h-5 text-codinit-elements-textTertiary">
-                                  {['typescript', 'javascript', 'jsx', 'tsx'].includes(language) && (
+                                  {[
+                                    "typescript",
+                                    "javascript",
+                                    "jsx",
+                                    "tsx",
+                                  ].includes(language) && (
                                     <div className="i-ph:file-js" />
                                   )}
-                                  {['css', 'scss', 'less'].includes(language) && <div className="i-ph:paint-brush" />}
-                                  {language === 'html' && <div className="i-ph:code" />}
-                                  {language === 'json' && <div className="i-ph:brackets-curly" />}
-                                  {language === 'python' && <div className="i-ph:file-text" />}
-                                  {language === 'markdown' && <div className="i-ph:article" />}
-                                  {['yaml', 'yml'].includes(language) && <div className="i-ph:file-text" />}
-                                  {language === 'sql' && <div className="i-ph:database" />}
-                                  {language === 'dockerfile' && <div className="i-ph:cube" />}
-                                  {language === 'shell' && <div className="i-ph:terminal" />}
+                                  {["css", "scss", "less"].includes(
+                                    language,
+                                  ) && <div className="i-ph:paint-brush" />}
+                                  {language === "html" && (
+                                    <div className="i-ph:code" />
+                                  )}
+                                  {language === "json" && (
+                                    <div className="i-ph:brackets-curly" />
+                                  )}
+                                  {language === "python" && (
+                                    <div className="i-ph:file-text" />
+                                  )}
+                                  {language === "markdown" && (
+                                    <div className="i-ph:article" />
+                                  )}
+                                  {["yaml", "yml"].includes(language) && (
+                                    <div className="i-ph:file-text" />
+                                  )}
+                                  {language === "sql" && (
+                                    <div className="i-ph:database" />
+                                  )}
+                                  {language === "dockerfile" && (
+                                    <div className="i-ph:cube" />
+                                  )}
+                                  {language === "shell" && (
+                                    <div className="i-ph:terminal" />
+                                  )}
                                   {![
-                                    'typescript',
-                                    'javascript',
-                                    'css',
-                                    'html',
-                                    'json',
-                                    'python',
-                                    'markdown',
-                                    'yaml',
-                                    'yml',
-                                    'sql',
-                                    'dockerfile',
-                                    'shell',
-                                    'jsx',
-                                    'tsx',
-                                    'scss',
-                                    'less',
-                                  ].includes(language) && <div className="i-ph:file-text" />}
+                                    "typescript",
+                                    "javascript",
+                                    "css",
+                                    "html",
+                                    "json",
+                                    "python",
+                                    "markdown",
+                                    "yaml",
+                                    "yml",
+                                    "sql",
+                                    "dockerfile",
+                                    "shell",
+                                    "jsx",
+                                    "tsx",
+                                    "scss",
+                                    "less",
+                                  ].includes(language) && (
+                                    <div className="i-ph:file-text" />
+                                  )}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center justify-between gap-2">
                                     <div className="flex flex-col min-w-0">
                                       <span className="truncate text-sm font-medium text-codinit-elements-textPrimary">
-                                        {filePath.split('/').pop()}
+                                        {filePath.split("/").pop()}
                                       </span>
                                       <span className="truncate text-xs text-codinit-elements-textTertiary">
                                         {filePath}
@@ -189,31 +213,50 @@ const FileModifiedDropdown = memo(
                                           return { additions: 0, deletions: 0 };
                                         }
 
-                                        const normalizedOriginal = history.originalContent.replace(/\r\n/g, '\n');
-                                        const normalizedCurrent =
-                                          history.versions[history.versions.length - 1]?.content.replace(
+                                        const normalizedOriginal =
+                                          history.originalContent.replace(
                                             /\r\n/g,
-                                            '\n',
-                                          ) || '';
+                                            "\n",
+                                          );
+                                        const normalizedCurrent =
+                                          history.versions[
+                                            history.versions.length - 1
+                                          ]?.content.replace(/\r\n/g, "\n") ||
+                                          "";
 
-                                        if (normalizedOriginal === normalizedCurrent) {
+                                        if (
+                                          normalizedOriginal ===
+                                          normalizedCurrent
+                                        ) {
                                           return { additions: 0, deletions: 0 };
                                         }
 
-                                        const changes = diffLines(normalizedOriginal, normalizedCurrent, {
-                                          newlineIsToken: false,
-                                          ignoreWhitespace: true,
-                                          ignoreCase: false,
-                                        });
+                                        const changes = diffLines(
+                                          normalizedOriginal,
+                                          normalizedCurrent,
+                                          {
+                                            newlineIsToken: false,
+                                            ignoreWhitespace: true,
+                                            ignoreCase: false,
+                                          },
+                                        );
 
                                         return changes.reduce(
-                                          (acc: { additions: number; deletions: number }, change: Change) => {
+                                          (
+                                            acc: {
+                                              additions: number;
+                                              deletions: number;
+                                            },
+                                            change: Change,
+                                          ) => {
                                             if (change.added) {
-                                              acc.additions += change.value.split('\n').length;
+                                              acc.additions +=
+                                                change.value.split("\n").length;
                                             }
 
                                             if (change.removed) {
-                                              acc.deletions += change.value.split('\n').length;
+                                              acc.deletions +=
+                                                change.value.split("\n").length;
                                             }
 
                                             return acc;
@@ -222,13 +265,22 @@ const FileModifiedDropdown = memo(
                                         );
                                       })();
 
-                                      const showStats = additions > 0 || deletions > 0;
+                                      const showStats =
+                                        additions > 0 || deletions > 0;
 
                                       return (
                                         showStats && (
                                           <div className="flex items-center gap-1 text-xs shrink-0">
-                                            {additions > 0 && <span className="text-green-500">+{additions}</span>}
-                                            {deletions > 0 && <span className="text-red-500">-{deletions}</span>}
+                                            {additions > 0 && (
+                                              <span className="text-green-500">
+                                                +{additions}
+                                              </span>
+                                            )}
+                                            {deletions > 0 && (
+                                              <span className="text-red-500">
+                                                -{deletions}
+                                              </span>
+                                            )}
                                           </div>
                                         )
                                       );
@@ -245,10 +297,14 @@ const FileModifiedDropdown = memo(
                             <div className="i-ph:file-dashed" />
                           </div>
                           <p className="text-sm font-medium text-codinit-elements-textPrimary">
-                            {searchQuery ? 'No matching files' : 'No modified files'}
+                            {searchQuery
+                              ? "No matching files"
+                              : "No modified files"}
                           </p>
                           <p className="text-xs text-codinit-elements-textTertiary mt-1">
-                            {searchQuery ? 'Try another search' : 'Changes will appear here as you edit'}
+                            {searchQuery
+                              ? "Try another search"
+                              : "Changes will appear here as you edit"}
                           </p>
                         </div>
                       )}
@@ -259,9 +315,15 @@ const FileModifiedDropdown = memo(
                     <div className="border-t border-codinit-elements-borderColor p-2">
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(filteredFiles.map(([filePath]) => filePath).join('\n'));
-                          toast('File list copied to clipboard', {
-                            icon: <div className="i-ph:check-circle text-accent-500" />,
+                          navigator.clipboard.writeText(
+                            filteredFiles
+                              .map(([filePath]) => filePath)
+                              .join("\n"),
+                          );
+                          toast("File list copied to clipboard", {
+                            icon: (
+                              <div className="i-ph:check-circle text-accent-500" />
+                            ),
                           });
                         }}
                         className="w-full flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-lg bg-codinit-elements-background-depth-1 hover:bg-codinit-elements-background-depth-3 transition-colors text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
@@ -284,30 +346,31 @@ export const Workbench = memo(
   ({
     chatStarted,
     isStreaming,
-    metadata: _metadata,
-    updateChatMestaData: _updateChatMestaData,
-    setSelectedElement,
+    actionRunner,
+    metadata,
+    updateChatMestaData,
   }: WorkspaceProps) => {
-    renderLogger.trace('Workbench');
+    renderLogger.trace("Workbench");
 
-    const [fileHistory, setFileHistory] = useState<Record<string, FileHistory>>({});
+    const [isSyncing, setIsSyncing] = useState(false);
+    const [isPushDialogOpen, setIsPushDialogOpen] = useState(false);
+    const [fileHistory, setFileHistory] = useState<Record<string, FileHistory>>(
+      {},
+    );
 
     // const modifiedFiles = Array.from(useStore(workbenchStore.unsavedFiles).keys());
 
-    const hasPreview = useStore(computed(workbenchStore.previews, (previews) => previews.length > 0));
+    const hasPreview = useStore(
+      computed(workbenchStore.previews, (previews) => previews.length > 0),
+    );
     const showWorkbench = useStore(workbenchStore.showWorkbench);
     const selectedFile = useStore(workbenchStore.selectedFile);
     const currentDocument = useStore(workbenchStore.currentDocument);
     const unsavedFiles = useStore(workbenchStore.unsavedFiles);
     const files = useStore(workbenchStore.files);
     const selectedView = useStore(workbenchStore.currentView);
-    const { showChat } = useStore(chatStore);
-    const canHideChat = showWorkbench || !showChat;
 
     const isSmallViewport = useViewport(1024);
-    const streaming = useStore(streamingState);
-    const { exportChat } = useChatHistory();
-    const [isSyncing, setIsSyncing] = useState(false);
 
     const setSelectedView = (view: WorkbenchViewType) => {
       workbenchStore.currentView.set(view);
@@ -315,7 +378,7 @@ export const Workbench = memo(
 
     useEffect(() => {
       if (hasPreview) {
-        setSelectedView('preview');
+        setSelectedView("preview");
       }
     }, [hasPreview]);
 
@@ -344,17 +407,12 @@ export const Workbench = memo(
           previewStore.refreshAllPreviews();
         })
         .catch(() => {
-          toast.error('Failed to update file content');
+          toast.error("Failed to update file content");
         });
     }, []);
 
     const onFileReset = useCallback(() => {
       workbenchStore.resetCurrentDocument();
-    }, []);
-
-    const handleSelectFile = useCallback((filePath: string) => {
-      workbenchStore.setSelectedFile(filePath);
-      workbenchStore.currentView.set('diff');
     }, []);
 
     const handleSyncFiles = useCallback(async () => {
@@ -363,112 +421,130 @@ export const Workbench = memo(
       try {
         const directoryHandle = await window.showDirectoryPicker();
         await workbenchStore.syncFiles(directoryHandle);
-        toast.success('Files synced successfully');
+        toast.success("Files synced successfully");
       } catch (error) {
-        console.error('Error syncing files:', error);
-        toast.error('Failed to sync files');
+        console.error("Error syncing files:", error);
+        toast.error("Failed to sync files");
       } finally {
         setIsSyncing(false);
       }
+    }, []);
+
+    const handleSelectFile = useCallback((filePath: string) => {
+      workbenchStore.setSelectedFile(filePath);
+      workbenchStore.currentView.set("diff");
     }, []);
 
     return (
       chatStarted && (
         <motion.div
           initial="closed"
-          animate={showWorkbench ? 'open' : 'closed'}
+          animate={showWorkbench ? "open" : "closed"}
           variants={workbenchVariants}
           className="z-workbench"
         >
           <div
             className={classNames(
-              'fixed top-[calc(var(--header-height)+1.2rem)] bottom-6 w-[var(--workbench-inner-width)] z-0 transition-[left,width] duration-200 codinit-ease-cubic-bezier',
+              "fixed top-[calc(var(--header-height)+1.5rem)] bottom-6 w-[var(--workbench-inner-width)] mr-4 z-0 transition-[left,width] duration-200 codinit-ease-cubic-bezier",
               {
-                'w-full': isSmallViewport,
-                'left-0': showWorkbench && isSmallViewport,
-                'left-[var(--workbench-left)]': showWorkbench,
-                'left-[100%]': !showWorkbench,
+                "w-full": isSmallViewport,
+                "left-0": showWorkbench && isSmallViewport,
+                "left-[var(--workbench-left)]": showWorkbench,
+                "left-[100%]": !showWorkbench,
               },
             )}
           >
-            <div className="absolute inset-0 px-2 lg:px-4">
+            <div className="absolute inset-0 px-2 lg:px-6">
               <div className="h-full flex flex-col bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor shadow-sm rounded-lg overflow-hidden">
-                <div className="flex items-center px-3 py-2 border-b border-codinit-elements-borderColor gap-1.5">
-                  <button
-                    className={`${showChat ? 'i-ph:sidebar-simple-fill' : 'i-ph:sidebar-simple'} text-lg text-codinit-elements-textSecondary mr-1`}
-                    disabled={!canHideChat || isSmallViewport}
-                    onClick={() => {
-                      if (canHideChat) {
-                        chatStore.setKey('showChat', !showChat);
-                      }
-                    }}
+                <div className="flex items-center px-3 py-2 border-b border-codinit-elements-borderColor gap-1">
+                  <Slider
+                    selected={selectedView}
+                    options={sliderOptions}
+                    setSelected={setSelectedView}
                   />
-                  <Slider selected={selectedView} options={sliderOptions} setSelected={setSelectedView} />
                   <div className="ml-auto" />
-                  {selectedView === 'code' && (
+                  {selectedView === "code" && (
                     <div className="flex overflow-y-auto">
-                      {/* Export Chat Button */}
-                      <ExportChatButton exportChat={exportChat} />
-
-                      {/* Sync Button */}
-                      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden ml-1">
-                        <DropdownMenu.Root>
-                          <DropdownMenu.Trigger
-                            disabled={isSyncing || streaming}
-                            className="rounded-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-codinit-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-codinit-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.7"
-                          >
-                            {isSyncing ? 'Syncing...' : 'Sync'}
-                            <span className={classNames('i-ph:caret-down transition-transform')} />
-                          </DropdownMenu.Trigger>
-                          <DropdownMenu.Content
-                            className={classNames(
-                              'min-w-[240px] z-[250]',
-                              'bg-white dark:bg-[#141414]',
-                              'rounded-lg shadow-lg',
-                              'border border-gray-200/50 dark:border-gray-800/50',
-                              'animate-in fade-in-0 zoom-in-95',
-                              'py-1',
-                            )}
-                            sideOffset={5}
-                            align="end"
-                          >
-                            <DropdownMenu.Item
-                              className={classNames(
-                                'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
-                              )}
-                              onClick={handleSyncFiles}
-                              disabled={isSyncing}
-                            >
-                              <div className="flex items-center gap-2">
-                                {isSyncing ? (
-                                  <div className="i-ph:spinner" />
-                                ) : (
-                                  <div className="i-ph:cloud-arrow-down" />
-                                )}
-                                <span>{isSyncing ? 'Syncing...' : 'Sync Files'}</span>
-                              </div>
-                            </DropdownMenu.Item>
-                          </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-                      </div>
-
-                      {/* Toggle Terminal Button */}
-                      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden ml-1">
-                        <button
-                          onClick={() => {
-                            workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
-                          }}
-                          className="rounded-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-codinit-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-codinit-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.7"
+                      <PanelHeaderButton
+                        className="mr-1 text-sm"
+                        onClick={() => {
+                          workbenchStore.toggleTerminal(
+                            !workbenchStore.showTerminal.get(),
+                          );
+                        }}
+                      >
+                        <div className="i-ph:terminal" />
+                        Toggle Terminal
+                      </PanelHeaderButton>
+                      <DropdownMenu.Root>
+                        <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md p-1 enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed">
+                          <div className="i-ph:box-arrow-up" />
+                          Sync & Export
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content
+                          className={classNames(
+                            "min-w-[240px] z-[250]",
+                            "bg-white dark:bg-[#141414]",
+                            "rounded-lg shadow-lg",
+                            "border border-gray-200/50 dark:border-gray-800/50",
+                            "animate-in fade-in-0 zoom-in-95",
+                            "py-1",
+                          )}
+                          sideOffset={5}
+                          align="end"
                         >
-                          <div className="i-ph:terminal" />
-                          Toggle Terminal
-                        </button>
-                      </div>
+                          <DropdownMenu.Item
+                            className={classNames(
+                              "cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative",
+                            )}
+                            onClick={() => {
+                              workbenchStore.downloadZip();
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="i-ph:download-simple"></div>
+                              <span>Download Code</span>
+                            </div>
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item
+                            className={classNames(
+                              "cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative",
+                            )}
+                            onClick={handleSyncFiles}
+                            disabled={isSyncing}
+                          >
+                            <div className="flex items-center gap-2">
+                              {isSyncing ? (
+                                <div className="i-ph:spinner" />
+                              ) : (
+                                <div className="i-ph:cloud-arrow-down" />
+                              )}
+                              <span>
+                                {isSyncing ? "Syncing..." : "Sync Files"}
+                              </span>
+                            </div>
+                          </DropdownMenu.Item>
+                          <DropdownMenu.Item
+                            className={classNames(
+                              "cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative",
+                            )}
+                            onClick={() => setIsPushDialogOpen(true)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="i-ph:git-branch" />
+                              Push to GitHub
+                            </div>
+                          </DropdownMenu.Item>
+                        </DropdownMenu.Content>
+                      </DropdownMenu.Root>
                     </div>
                   )}
 
-                  {selectedView === 'diff' && (
-                    <FileModifiedDropdown fileHistory={fileHistory} onSelectFile={handleSelectFile} />
+                  {selectedView === "diff" && (
+                    <FileModifiedDropdown
+                      fileHistory={fileHistory}
+                      onSelectFile={handleSelectFile}
+                    />
                   )}
                   <IconButton
                     icon="i-ph:x-circle"
@@ -480,7 +556,10 @@ export const Workbench = memo(
                   />
                 </div>
                 <div className="relative flex-1 overflow-hidden">
-                  <View initial={{ x: '0%' }} animate={{ x: selectedView === 'code' ? '0%' : '-100%' }}>
+                  <View
+                    initial={{ x: "0%" }}
+                    animate={{ x: selectedView === "code" ? "0%" : "-100%" }}
+                  >
                     <EditorPanel
                       editorDocument={currentDocument}
                       isStreaming={isStreaming}
@@ -496,18 +575,65 @@ export const Workbench = memo(
                     />
                   </View>
                   <View
-                    initial={{ x: '100%' }}
-                    animate={{ x: selectedView === 'diff' ? '0%' : selectedView === 'code' ? '100%' : '-100%' }}
+                    initial={{ x: "100%" }}
+                    animate={{
+                      x:
+                        selectedView === "diff"
+                          ? "0%"
+                          : selectedView === "code"
+                            ? "100%"
+                            : "-100%",
+                    }}
                   >
-                    <DiffView fileHistory={fileHistory} setFileHistory={setFileHistory} />
+                    <DiffView
+                      fileHistory={fileHistory}
+                      setFileHistory={setFileHistory}
+                      actionRunner={actionRunner}
+                    />
                   </View>
-                  <View initial={{ x: '100%' }} animate={{ x: selectedView === 'preview' ? '0%' : '100%' }}>
-                    <Preview setSelectedElement={setSelectedElement} />
+                  <View
+                    initial={{ x: "100%" }}
+                    animate={{ x: selectedView === "preview" ? "0%" : "100%" }}
+                  >
+                    <Preview />
                   </View>
                 </div>
               </div>
             </div>
           </div>
+          <PushToGitHubDialog
+            isOpen={isPushDialogOpen}
+            onClose={() => setIsPushDialogOpen(false)}
+            onPush={async (repoName, username, token, isPrivate) => {
+              try {
+                console.log("Dialog onPush called with isPrivate =", isPrivate);
+
+                const commitMessage =
+                  prompt("Please enter a commit message:", "Initial commit") ||
+                  "Initial commit";
+                const repoUrl = await workbenchStore.pushToGitHub(
+                  repoName,
+                  commitMessage,
+                  username,
+                  token,
+                  isPrivate,
+                );
+
+                if (updateChatMestaData && !metadata?.gitUrl) {
+                  updateChatMestaData({
+                    ...(metadata || {}),
+                    gitUrl: repoUrl,
+                  });
+                }
+
+                return repoUrl;
+              } catch (error) {
+                console.error("Error pushing to GitHub:", error);
+                toast.error("Failed to push to GitHub");
+                throw error;
+              }
+            }}
+          />
         </motion.div>
       )
     );
@@ -515,13 +641,17 @@ export const Workbench = memo(
 );
 
 // View component for rendering content with motion transitions
-interface ViewProps extends HTMLMotionProps<'div'> {
+interface ViewProps extends HTMLMotionProps<"div"> {
   children: JSX.Element;
 }
 
 const View = memo(({ children, ...props }: ViewProps) => {
   return (
-    <motion.div className="absolute inset-0" transition={viewTransition} {...props}>
+    <motion.div
+      className="absolute inset-0"
+      transition={viewTransition}
+      {...props}
+    >
       {children}
     </motion.div>
   );

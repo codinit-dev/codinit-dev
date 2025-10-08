@@ -1,7 +1,7 @@
-import { memo, forwardRef, type ForwardedRef } from 'react';
-import { classNames } from '~/utils/classNames';
+import { memo, forwardRef, type ForwardedRef } from "react";
+import { classNames } from "~/utils/classNames";
 
-type IconSize = 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+type IconSize = "sm" | "md" | "lg" | "xl" | "xxl";
 
 interface BaseIconButtonProps {
   size?: IconSize;
@@ -23,7 +23,9 @@ type IconButtonWithChildrenProps = {
   children: string | JSX.Element | JSX.Element[];
 } & BaseIconButtonProps;
 
-type IconButtonProps = IconButtonWithoutChildrenProps | IconButtonWithChildrenProps;
+type IconButtonProps =
+  | IconButtonWithoutChildrenProps
+  | IconButtonWithChildrenProps;
 
 // Componente IconButton com suporte a refs
 export const IconButton = memo(
@@ -31,7 +33,7 @@ export const IconButton = memo(
     (
       {
         icon,
-        size = 'xl',
+        size = "xl",
         className,
         iconClassName,
         disabledClassName,
@@ -46,9 +48,9 @@ export const IconButton = memo(
         <button
           ref={ref}
           className={classNames(
-            'flex items-center text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md p-1 enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none',
+            "flex items-center text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md p-1 enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none",
             {
-              [classNames('opacity-30', disabledClassName)]: disabled,
+              [classNames("opacity-30", disabledClassName)]: disabled,
             },
             className,
           )}
@@ -62,7 +64,13 @@ export const IconButton = memo(
             onClick?.(event);
           }}
         >
-          {children ? children : <div className={classNames(icon, getIconSize(size), iconClassName)}></div>}
+          {children ? (
+            children
+          ) : (
+            <div
+              className={classNames(icon, getIconSize(size), iconClassName)}
+            ></div>
+          )}
         </button>
       );
     },
@@ -70,15 +78,15 @@ export const IconButton = memo(
 );
 
 function getIconSize(size: IconSize) {
-  if (size === 'sm') {
-    return 'text-sm';
-  } else if (size === 'md') {
-    return 'text-md';
-  } else if (size === 'lg') {
-    return 'text-lg';
-  } else if (size === 'xl') {
-    return 'text-xl';
+  if (size === "sm") {
+    return "text-sm";
+  } else if (size === "md") {
+    return "text-md";
+  } else if (size === "lg") {
+    return "text-lg";
+  } else if (size === "xl") {
+    return "text-xl";
   } else {
-    return 'text-2xl';
+    return "text-2xl";
   }
 }

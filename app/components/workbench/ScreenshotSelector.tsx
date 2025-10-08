@@ -1,5 +1,5 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 interface ScreenshotSelectorProps {
   isSelectionMode: boolean;
@@ -8,10 +8,20 @@ interface ScreenshotSelectorProps {
 }
 
 export const ScreenshotSelector = memo(
-  ({ isSelectionMode, setIsSelectionMode, containerRef }: ScreenshotSelectorProps) => {
+  ({
+    isSelectionMode,
+    setIsSelectionMode,
+    containerRef,
+  }: ScreenshotSelectorProps) => {
     const [isCapturing, setIsCapturing] = useState(false);
-    const [selectionStart, setSelectionStart] = useState<{ x: number; y: number } | null>(null);
-    const [selectionEnd, setSelectionEnd] = useState<{ x: number; y: number } | null>(null);
+    const [selectionStart, setSelectionStart] = useState<{
+      x: number;
+      y: number;
+    } | null>(null);
+    const [selectionEnd, setSelectionEnd] = useState<{
+      x: number;
+      y: number;
+    } | null>(null);
     const mediaStreamRef = useRef<MediaStream | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -38,15 +48,15 @@ export const ScreenshotSelector = memo(
           const stream = await navigator.mediaDevices.getDisplayMedia({
             audio: false,
             video: {
-              displaySurface: 'window',
+              displaySurface: "window",
               preferCurrentTab: true,
-              surfaceSwitching: 'include',
-              systemAudio: 'exclude',
+              surfaceSwitching: "include",
+              systemAudio: "exclude",
             },
           } as MediaStreamConstraints);
 
           // Add handler for when sharing stops
-          stream.addEventListener('inactive', () => {
+          stream.addEventListener("inactive", () => {
             if (videoRef.current) {
               videoRef.current.pause();
               videoRef.current.srcObject = null;
@@ -55,7 +65,9 @@ export const ScreenshotSelector = memo(
             }
 
             if (mediaStreamRef.current) {
-              mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+              mediaStreamRef.current
+                .getTracks()
+                .forEach((track) => track.stop());
               mediaStreamRef.current = null;
             }
 
@@ -69,11 +81,11 @@ export const ScreenshotSelector = memo(
 
           // Initialize video element if needed
           if (!videoRef.current) {
-            const video = document.createElement('video');
-            video.style.opacity = '0';
-            video.style.position = 'fixed';
-            video.style.pointerEvents = 'none';
-            video.style.zIndex = '-1';
+            const video = document.createElement("video");
+            video.style.opacity = "0";
+            video.style.position = "fixed";
+            video.style.pointerEvents = "none";
+            video.style.zIndex = "-1";
             document.body.appendChild(video);
             videoRef.current = video;
           }
@@ -82,9 +94,9 @@ export const ScreenshotSelector = memo(
           videoRef.current.srcObject = stream;
           await videoRef.current.play();
         } catch (error) {
-          console.error('Failed to initialize stream:', error);
+          console.error("Failed to initialize stream:", error);
           setIsSelectionMode(false);
-          toast.error('Failed to initialize screen capture');
+          toast.error("Failed to initialize screen capture");
         }
       }
 
@@ -92,7 +104,12 @@ export const ScreenshotSelector = memo(
     };
 
     const handleCopySelection = useCallback(async () => {
-      if (!isSelectionMode || !selectionStart || !selectionEnd || !containerRef.current) {
+      if (
+        !isSelectionMode ||
+        !selectionStart ||
+        !selectionEnd ||
+        !containerRef.current
+      ) {
         return;
       }
 
@@ -109,14 +126,14 @@ export const ScreenshotSelector = memo(
         await new Promise((resolve) => setTimeout(resolve, 300));
 
         // Create temporary canvas for full screenshot
-        const tempCanvas = document.createElement('canvas');
+        const tempCanvas = document.createElement("canvas");
         tempCanvas.width = videoRef.current.videoWidth;
         tempCanvas.height = videoRef.current.videoHeight;
 
-        const tempCtx = tempCanvas.getContext('2d');
+        const tempCtx = tempCanvas.getContext("2d");
 
         if (!tempCtx) {
-          throw new Error('Failed to get temporary canvas context');
+          throw new Error("Failed to get temporary canvas context");
         }
 
         // Draw the full video frame
@@ -139,27 +156,49 @@ export const ScreenshotSelector = memo(
 
         // Calculate the scaled coordinates with scroll offset and adjustments
         const scaledX = Math.round(
-          (containerRect.left + Math.min(selectionStart.x, selectionEnd.x) + scrollX + leftOffset) * scaleX,
+          (containerRect.left +
+            Math.min(selectionStart.x, selectionEnd.x) +
+            scrollX +
+            leftOffset) *
+            scaleX,
         );
         const scaledY = Math.round(
-          (containerRect.top + Math.min(selectionStart.y, selectionEnd.y) + scrollY + bottomOffset) * scaleY,
+          (containerRect.top +
+            Math.min(selectionStart.y, selectionEnd.y) +
+            scrollY +
+            bottomOffset) *
+            scaleY,
         );
-        const scaledWidth = Math.round(Math.abs(selectionEnd.x - selectionStart.x) * scaleX);
-        const scaledHeight = Math.round(Math.abs(selectionEnd.y - selectionStart.y) * scaleY);
+        const scaledWidth = Math.round(
+          Math.abs(selectionEnd.x - selectionStart.x) * scaleX,
+        );
+        const scaledHeight = Math.round(
+          Math.abs(selectionEnd.y - selectionStart.y) * scaleY,
+        );
 
         // Create final canvas for the cropped area
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = Math.round(Math.abs(selectionEnd.x - selectionStart.x));
         canvas.height = Math.round(Math.abs(selectionEnd.y - selectionStart.y));
 
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
 
         if (!ctx) {
-          throw new Error('Failed to get canvas context');
+          throw new Error("Failed to get canvas context");
         }
 
         // Draw the cropped area
-        ctx.drawImage(tempCanvas, scaledX, scaledY, scaledWidth, scaledHeight, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+          tempCanvas,
+          scaledX,
+          scaledY,
+          scaledWidth,
+          scaledHeight,
+          0,
+          0,
+          canvas.width,
+          canvas.height,
+        );
 
         // Convert to blob
         const blob = await new Promise<Blob>((resolve, reject) => {
@@ -167,9 +206,9 @@ export const ScreenshotSelector = memo(
             if (blob) {
               resolve(blob);
             } else {
-              reject(new Error('Failed to create blob'));
+              reject(new Error("Failed to create blob"));
             }
-          }, 'image/png');
+          }, "image/png");
         });
 
         // Create a FileReader to convert blob to base64
@@ -179,30 +218,36 @@ export const ScreenshotSelector = memo(
           const base64Image = e.target?.result as string;
 
           // Find the textarea element
-          const textarea = document.querySelector('textarea');
+          const textarea = document.querySelector("textarea");
 
           if (textarea) {
             // Get the setters from the BaseChat component
-            const setUploadedFiles = (window as any).__BOLT_SET_UPLOADED_FILES__;
-            const setImageDataList = (window as any).__BOLT_SET_IMAGE_DATA_LIST__;
-            const uploadedFiles = (window as any).__BOLT_UPLOADED_FILES__ || [];
-            const imageDataList = (window as any).__BOLT_IMAGE_DATA_LIST__ || [];
+            const setUploadedFiles = (window as any)
+              .__codinit_SET_UPLOADED_FILES__;
+            const setImageDataList = (window as any)
+              .__codinit_SET_IMAGE_DATA_LIST__;
+            const uploadedFiles =
+              (window as any).__codinit_UPLOADED_FILES__ || [];
+            const imageDataList =
+              (window as any).__codinit_IMAGE_DATA_LIST__ || [];
 
             if (setUploadedFiles && setImageDataList) {
               // Update the files and image data
-              const file = new File([blob], 'screenshot.png', { type: 'image/png' });
+              const file = new File([blob], "screenshot.png", {
+                type: "image/png",
+              });
               setUploadedFiles([...uploadedFiles, file]);
               setImageDataList([...imageDataList, base64Image]);
-              toast.success('Screenshot captured and added to chat');
+              toast.success("Screenshot captured and added to chat");
             } else {
-              toast.error('Could not add screenshot to chat');
+              toast.error("Could not add screenshot to chat");
             }
           }
         };
         reader.readAsDataURL(blob);
       } catch (error) {
-        console.error('Failed to capture screenshot:', error);
-        toast.error('Failed to capture screenshot');
+        console.error("Failed to capture screenshot:", error);
+        toast.error("Failed to capture screenshot");
 
         if (mediaStreamRef.current) {
           mediaStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -214,7 +259,13 @@ export const ScreenshotSelector = memo(
         setSelectionEnd(null);
         setIsSelectionMode(false); // Turn off selection mode after capture
       }
-    }, [isSelectionMode, selectionStart, selectionEnd, containerRef, setIsSelectionMode]);
+    }, [
+      isSelectionMode,
+      selectionStart,
+      selectionEnd,
+      containerRef,
+      setIsSelectionMode,
+    ]);
 
     const handleSelectionStart = useCallback(
       (e: React.MouseEvent) => {
@@ -267,13 +318,13 @@ export const ScreenshotSelector = memo(
           }
         }}
         style={{
-          backgroundColor: isCapturing ? 'transparent' : 'rgba(0, 0, 0, 0.1)',
-          userSelect: 'none',
-          WebkitUserSelect: 'none',
-          pointerEvents: 'all',
+          backgroundColor: isCapturing ? "transparent" : "rgba(0, 0, 0, 0.1)",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          pointerEvents: "all",
           opacity: isCapturing ? 0 : 1,
           zIndex: 50,
-          transition: 'opacity 0.1s ease-in-out',
+          transition: "opacity 0.1s ease-in-out",
         }}
       >
         {selectionStart && selectionEnd && !isCapturing && (

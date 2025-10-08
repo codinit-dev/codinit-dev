@@ -1,34 +1,34 @@
-import { BaseProvider } from '~/lib/modules/llm/base-provider';
-import type { ModelInfo } from '~/lib/modules/llm/types';
-import type { IProviderSetting } from '~/types/model';
-import type { LanguageModelV1 } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
+import { BaseProvider } from "~/lib/modules/llm/base-provider";
+import type { ModelInfo } from "~/lib/modules/llm/types";
+import type { IProviderSetting } from "~/types/model";
+import type { LanguageModelV1 } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 export default class PerplexityProvider extends BaseProvider {
-  name = 'Perplexity';
-  getApiKeyLink = 'https://www.perplexity.ai/settings/api';
+  name = "Perplexity";
+  getApiKeyLink = "https://www.perplexity.ai/settings/api";
 
   config = {
-    apiTokenKey: 'PERPLEXITY_API_KEY',
+    apiTokenKey: "PERPLEXITY_API_KEY",
   };
 
   staticModels: ModelInfo[] = [
     {
-      name: 'sonar',
-      label: 'Sonar',
-      provider: 'Perplexity',
+      name: "llama-3.1-sonar-small-128k-online",
+      label: "Sonar Small Online",
+      provider: "Perplexity",
       maxTokenAllowed: 8192,
     },
     {
-      name: 'sonar-pro',
-      label: 'Sonar Pro',
-      provider: 'Perplexity',
+      name: "llama-3.1-sonar-large-128k-online",
+      label: "Sonar Large Online",
+      provider: "Perplexity",
       maxTokenAllowed: 8192,
     },
     {
-      name: 'sonar-reasoning-pro',
-      label: 'Sonar Reasoning Pro',
-      provider: 'Perplexity',
+      name: "llama-3.1-sonar-huge-128k-online",
+      label: "Sonar Huge Online",
+      provider: "Perplexity",
       maxTokenAllowed: 8192,
     },
   ];
@@ -45,8 +45,8 @@ export default class PerplexityProvider extends BaseProvider {
       apiKeys,
       providerSettings: providerSettings?.[this.name],
       serverEnv: serverEnv as any,
-      defaultBaseUrlKey: '',
-      defaultApiTokenKey: 'PERPLEXITY_API_KEY',
+      defaultBaseUrlKey: "",
+      defaultApiTokenKey: "PERPLEXITY_API_KEY",
     });
 
     if (!apiKey) {
@@ -54,7 +54,7 @@ export default class PerplexityProvider extends BaseProvider {
     }
 
     const perplexity = createOpenAI({
-      baseURL: 'https://api.perplexity.ai/',
+      baseURL: "https://api.perplexity.ai/",
       apiKey,
     });
 

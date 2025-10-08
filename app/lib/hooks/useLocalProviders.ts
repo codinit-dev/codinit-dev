@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import type { IProviderConfig } from '~/types/model';
+import { useCallback, useState } from "react";
+import type { IProviderConfig } from "~/types/model";
 
 export interface UseLocalProvidersReturn {
   localProviders: IProviderConfig[];

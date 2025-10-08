@@ -1,23 +1,36 @@
-import { BaseProvider } from '~/lib/modules/llm/base-provider';
-import type { ModelInfo } from '~/lib/modules/llm/types';
-import type { IProviderSetting } from '~/types/model';
-import type { LanguageModelV1 } from 'ai';
-import { createOpenAI } from '@ai-sdk/openai';
+import { BaseProvider } from "~/lib/modules/llm/base-provider";
+import type { ModelInfo } from "~/lib/modules/llm/types";
+import type { IProviderSetting } from "~/types/model";
+import type { LanguageModelV1 } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 export default class XAIProvider extends BaseProvider {
-  name = 'xAI';
-  getApiKeyLink = 'https://docs.x.ai/docs/quickstart#creating-an-api-key';
+  name = "xAI";
+  getApiKeyLink = "https://docs.x.ai/docs/quickstart#creating-an-api-key";
 
   config = {
-    apiTokenKey: 'XAI_API_KEY',
+    apiTokenKey: "XAI_API_KEY",
   };
 
   staticModels: ModelInfo[] = [
-    { name: 'grok-4', label: 'xAI Grok 4', provider: 'xAI', maxTokenAllowed: 256000 },
-    { name: 'grok-4-07-09', label: 'xAI Grok 4 (07-09)', provider: 'xAI', maxTokenAllowed: 256000 },
-    { name: 'grok-3-mini', label: 'xAI Grok 3 Mini', provider: 'xAI', maxTokenAllowed: 131000 },
-    { name: 'grok-3-mini-fast', label: 'xAI Grok 3 Mini Fast', provider: 'xAI', maxTokenAllowed: 131000 },
-    { name: 'grok-code-fast-1', label: 'xAI Grok Code Fast 1', provider: 'xAI', maxTokenAllowed: 131000 },
+    {
+      name: "grok-3-beta",
+      label: "xAI Grok 3 Beta",
+      provider: "xAI",
+      maxTokenAllowed: 8000,
+    },
+    {
+      name: "grok-beta",
+      label: "xAI Grok Beta",
+      provider: "xAI",
+      maxTokenAllowed: 8000,
+    },
+    {
+      name: "grok-2-1212",
+      label: "xAI Grok2 1212",
+      provider: "xAI",
+      maxTokenAllowed: 8000,
+    },
   ];
 
   getModelInstance(options: {
@@ -32,8 +45,8 @@ export default class XAIProvider extends BaseProvider {
       apiKeys,
       providerSettings: providerSettings?.[this.name],
       serverEnv: serverEnv as any,
-      defaultBaseUrlKey: '',
-      defaultApiTokenKey: 'XAI_API_KEY',
+      defaultBaseUrlKey: "",
+      defaultApiTokenKey: "XAI_API_KEY",
     });
 
     if (!apiKey) {
@@ -41,7 +54,7 @@ export default class XAIProvider extends BaseProvider {
     }
 
     const openai = createOpenAI({
-      baseURL: 'https://api.x.ai/v1',
+      baseURL: "https://api.x.ai/v1",
       apiKey,
     });
 

@@ -1,17 +1,16 @@
-@use 'variables.scss';
-@use 'z-index.scss';
-@use 'animations.scss';
-@use 'components/terminal.scss';
-@use 'components/resize-handle.scss';
-@use 'components/code.scss';
-@use 'components/editor.scss';
-@use 'components/toast.scss';
+@use "variables.scss";
+@use "z-index.scss";
+@use "animations.scss";
+@use "components/terminal.scss";
+@use "components/resize-handle.scss";
+@use "components/code.scss";
+@use "components/editor.scss";
+@use "components/toast.scss";
 
 html,
 body {
   height: 100%;
   width: 100%;
-  background-color: var(--codinit-elements-bg-depth-1);
 }
 
 :root {
@@ -60,14 +59,27 @@ body {
 .modern-scrollbar-invert {
   &::-webkit-scrollbar-thumb {
     // Override with a contrasting color, e.g., primary text color with transparency
-    background-color: color-mix(in srgb, var(--codinit-elements-textPrimary), transparent 70%);
+    background-color: color-mix(
+      in srgb,
+      var(--codinit-elements-textPrimary),
+      transparent 70%
+    );
   }
 
   &::-webkit-scrollbar-thumb:hover {
     // Darker/more opaque version on hover
-    background-color: color-mix(in srgb, var(--codinit-elements-textPrimary), transparent 50%);
+    background-color: color-mix(
+      in srgb,
+      var(--codinit-elements-textPrimary),
+      transparent 50%
+    );
   }
 
   // Firefox support for inverted colors
-  scrollbar-color: color-mix(in srgb, var(--codinit-elements-textPrimary), transparent 50%) transparent;
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--codinit-elements-textPrimary),
+      transparent 50%
+    )
+    transparent;
 }

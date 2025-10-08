@@ -1,11 +1,17 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import React, { useState } from 'react';
-import type { ProgressAnnotation } from '~/types/context';
-import { classNames } from '~/utils/classNames';
-import { cubicEasingFn } from '~/utils/easings';
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useState } from "react";
+import type { ProgressAnnotation } from "~/types/context";
+import { classNames } from "~/utils/classNames";
+import { cubicEasingFn } from "~/utils/easings";
 
-export default function ProgressCompilation({ data }: { data?: ProgressAnnotation[] }) {
-  const [progressList, setProgressList] = React.useState<ProgressAnnotation[]>([]);
+export default function ProgressCompilation({
+  data,
+}: {
+  data?: ProgressAnnotation[];
+}) {
+  const [progressList, setProgressList] = React.useState<ProgressAnnotation[]>(
+    [],
+  );
   const [expanded, setExpanded] = useState(false);
   React.useEffect(() => {
     if (!data || data.length == 0) {
@@ -17,7 +23,7 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
     data.forEach((x) => {
       const existingProgress = progressMap.get(x.label);
 
-      if (existingProgress && existingProgress.status === 'complete') {
+      if (existingProgress && existingProgress.status === "complete") {
         return;
       }
 
@@ -37,17 +43,17 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
     <AnimatePresence>
       <div
         className={classNames(
-          'bg-codinit-elements-background-depth-2',
-          'border border-codinit-elements-borderColor',
-          'shadow-lg rounded-lg  relative w-full max-w-chat mx-auto z-prompt',
-          'p-1',
+          "bg-codinit-elements-background-depth-2",
+          "border border-codinit-elements-borderColor",
+          "shadow-lg rounded-lg  relative w-full max-w-chat mx-auto z-prompt",
+          "p-1",
         )}
       >
         <div
           className={classNames(
-            'bg-codinit-elements-item-backgroundAccent',
-            'p-1 rounded-lg text-codinit-elements-item-contentAccent',
-            'flex ',
+            "bg-codinit-elements-item-backgroundAccent",
+            "p-1 rounded-lg text-codinit-elements-item-contentAccent",
+            "flex ",
           )}
         >
           <div className="flex-1">
@@ -56,8 +62,8 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
                 <motion.div
                   className="actions"
                   initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: '0px' }}
+                  animate={{ height: "auto" }}
+                  exit={{ height: "0px" }}
                   transition={{ duration: 0.15 }}
                 >
                   {progressList.map((x, i) => {
@@ -71,13 +77,17 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
           </div>
           <motion.button
             initial={{ width: 0 }}
-            animate={{ width: 'auto' }}
+            animate={{ width: "auto" }}
             exit={{ width: 0 }}
             transition={{ duration: 0.15, ease: cubicEasingFn }}
             className=" p-1 rounded-lg bg-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-artifacts-backgroundHover"
             onClick={() => setExpanded((v) => !v)}
           >
-            <div className={expanded ? 'i-ph:caret-up-bold' : 'i-ph:caret-down-bold'}></div>
+            <div
+              className={
+                expanded ? "i-ph:caret-up-bold" : "i-ph:caret-down-bold"
+              }
+            ></div>
           </motion.button>
         </div>
       </div>
@@ -88,7 +98,7 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
 const ProgressItem = ({ progress }: { progress: ProgressAnnotation }) => {
   return (
     <motion.div
-      className={classNames('flex text-sm gap-3')}
+      className={classNames("flex text-sm gap-3")}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -96,9 +106,9 @@ const ProgressItem = ({ progress }: { progress: ProgressAnnotation }) => {
     >
       <div className="flex items-center gap-1.5 ">
         <div>
-          {progress.status === 'in-progress' ? (
+          {progress.status === "in-progress" ? (
             <div className="i-svg-spinners:90-ring-with-bg"></div>
-          ) : progress.status === 'complete' ? (
+          ) : progress.status === "complete" ? (
             <div className="i-ph:check"></div>
           ) : null}
         </div>

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { classNames } from '~/utils/classNames';
+import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { classNames } from "~/utils/classNames";
 
 interface Tab {
   /** Unique identifier for the tab */
@@ -51,7 +51,10 @@ export function TabsWithSlider({
   sliderClassName,
 }: TabsWithSliderProps) {
   // State for slider dimensions
-  const [sliderDimensions, setSliderDimensions] = useState({ width: 0, left: 0 });
+  const [sliderDimensions, setSliderDimensions] = useState({
+    width: 0,
+    left: 0,
+  });
 
   // Refs for tab elements
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
@@ -73,7 +76,7 @@ export function TabsWithSlider({
   }, [activeTab, tabs]);
 
   return (
-    <div className={classNames('relative flex gap-2', className)}>
+    <div className={classNames("relative flex gap-2", className)}>
       {/* Tab buttons */}
       {tabs.map((tab, index) => (
         <button
@@ -81,16 +84,24 @@ export function TabsWithSlider({
           ref={(el) => (tabsRef.current[index] = el)}
           onClick={() => onChange(tab.id)}
           className={classNames(
-            'px-4 py-2 h-10 rounded-lg transition-all duration-200 flex items-center gap-2 min-w-[120px] justify-center relative overflow-hidden',
+            "px-4 py-2 h-10 rounded-lg transition-all duration-200 flex items-center gap-2 min-w-[120px] justify-center relative overflow-hidden",
             tab.id === activeTab
-              ? classNames('text-white shadow-sm shadow-purple-500/20', activeTabClassName)
+              ? classNames(
+                  "text-white shadow-sm shadow-purple-500/20",
+                  activeTabClassName,
+                )
               : classNames(
-                  'bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark hover:bg-codinit-elements-background-depth-3 dark:hover:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark',
+                  "bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark hover:bg-codinit-elements-background-depth-3 dark:hover:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark",
                   tabClassName,
                 ),
           )}
         >
-          <span className={classNames('flex items-center gap-2', tab.id === activeTab ? 'font-medium' : '')}>
+          <span
+            className={classNames(
+              "flex items-center gap-2",
+              tab.id === activeTab ? "font-medium" : "",
+            )}
+          >
             {tab.icon && <span className={tab.icon} />}
             {tab.label}
           </span>
@@ -99,13 +110,16 @@ export function TabsWithSlider({
 
       {/* Animated slider */}
       <motion.div
-        className={classNames('absolute bottom-0 left-0 h-10 rounded-lg bg-purple-500 -z-10', sliderClassName)}
+        className={classNames(
+          "absolute bottom-0 left-0 h-10 rounded-lg bg-purple-500 -z-10",
+          sliderClassName,
+        )}
         initial={false}
         animate={{
           width: sliderDimensions.width,
           x: sliderDimensions.left,
         }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
       />
     </div>
   );

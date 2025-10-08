@@ -6,7 +6,7 @@ body:
       value: |
         Thank you for reporting an issue :pray:.
 
-        This issue tracker is for bugs and issues found with [CodinIT.dev](https://codinit.dev).
+        This issue tracker is for bugs and issues found with [codinit.dev](https://codinit.dev).
         If you experience issues related to WebContainer, please file an issue in the official [StackBlitz WebContainer repo](https://github.com/stackblitz/webcontainer-core).
 
         The more information you fill in, the better we can help you.
@@ -20,7 +20,7 @@ body:
   - type: input
     id: link
     attributes:
-      label: Link to the CodinIT URL that caused the error
+      label: Link to the codinit URL that caused the error
       description: Please do not delete it after reporting!
     validations:
       required: true

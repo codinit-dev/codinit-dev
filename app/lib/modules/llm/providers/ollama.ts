@@ -1,9 +1,9 @@
-import { BaseProvider } from '~/lib/modules/llm/base-provider';
-import type { ModelInfo } from '~/lib/modules/llm/types';
-import type { IProviderSetting } from '~/types/model';
-import type { LanguageModelV1 } from 'ai';
-import { ollama } from 'ollama-ai-provider';
-import { logger } from '~/utils/logger';
+import { BaseProvider } from "~/lib/modules/llm/base-provider";
+import type { ModelInfo } from "~/lib/modules/llm/types";
+import type { IProviderSetting } from "~/types/model";
+import type { LanguageModelV1 } from "ai";
+import { ollama } from "ollama-ai-provider";
+import { logger } from "~/utils/logger";
 
 interface OllamaModelDetails {
   parent_model: string;
@@ -28,13 +28,13 @@ export interface OllamaApiResponse {
 }
 
 export default class OllamaProvider extends BaseProvider {
-  name = 'Ollama';
-  getApiKeyLink = 'https://ollama.com/download';
-  labelForGetApiKey = 'Download Ollama';
-  icon = 'i-ph:cloud-arrow-down';
+  name = "Ollama";
+  getApiKeyLink = "https://ollama.com/download";
+  labelForGetApiKey = "Download Ollama";
+  icon = "i-ph:cloud-arrow-down";
 
   config = {
-    baseUrlKey: 'OLLAMA_API_BASE_URL',
+    baseUrlKey: "OLLAMA_API_BASE_URL",
   };
 
   staticModels: ModelInfo[] = [];
@@ -56,7 +56,9 @@ export default class OllamaProvider extends BaseProvider {
 
   getDefaultNumCtx(serverEnv?: Env): number {
     const envRecord = this._convertEnvToRecord(serverEnv);
-    return envRecord.DEFAULT_NUM_CTX ? parseInt(envRecord.DEFAULT_NUM_CTX, 10) : 32768;
+    return envRecord.DEFAULT_NUM_CTX
+      ? parseInt(envRecord.DEFAULT_NUM_CTX, 10)
+      : 32768;
   }
 
   async getDynamicModels(
@@ -68,23 +70,29 @@ export default class OllamaProvider extends BaseProvider {
       apiKeys,
       providerSettings: settings,
       serverEnv,
-      defaultBaseUrlKey: 'OLLAMA_API_BASE_URL',
-      defaultApiTokenKey: '',
+      defaultBaseUrlKey: "OLLAMA_API_BASE_URL",
+      defaultApiTokenKey: "",
     });
 
     if (!baseUrl) {
-      throw new Error('No baseUrl found for OLLAMA provider');
+      throw new Error("No baseUrl found for OLLAMA provider");
     }
 
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       /*
        * Running in Server
        * Backend: Check if we're running in Docker
        */
-      const isDocker = process?.env?.RUNNING_IN_DOCKER === 'true' || serverEnv?.RUNNING_IN_DOCKER === 'true';
+      const isDocker =
+        process?.env?.RUNNING_IN_DOCKER === "true" ||
+        serverEnv?.RUNNING_IN_DOCKER === "true";
 
-      baseUrl = isDocker ? baseUrl.replace('localhost', 'host.docker.internal') : baseUrl;
-      baseUrl = isDocker ? baseUrl.replace('127.0.0.1', 'host.docker.internal') : baseUrl;
+      baseUrl = isDocker
+        ? baseUrl.replace("localhost", "host.docker.internal")
+        : baseUrl;
+      baseUrl = isDocker
+        ? baseUrl.replace("127.0.0.1", "host.docker.internal")
+        : baseUrl;
     }
 
     const response = await fetch(`${baseUrl}/api/tags`);
@@ -113,20 +121,26 @@ export default class OllamaProvider extends BaseProvider {
       apiKeys,
       providerSettings: providerSettings?.[this.name],
       serverEnv: envRecord,
-      defaultBaseUrlKey: 'OLLAMA_API_BASE_URL',
-      defaultApiTokenKey: '',
+      defaultBaseUrlKey: "OLLAMA_API_BASE_URL",
+      defaultApiTokenKey: "",
     });
 
     // Backend: Check if we're running in Docker
     if (!baseUrl) {
-      throw new Error('No baseUrl found for OLLAMA provider');
+      throw new Error("No baseUrl found for OLLAMA provider");
     }
 
-    const isDocker = process?.env?.RUNNING_IN_DOCKER === 'true' || envRecord.RUNNING_IN_DOCKER === 'true';
-    baseUrl = isDocker ? baseUrl.replace('localhost', 'host.docker.internal') : baseUrl;
-    baseUrl = isDocker ? baseUrl.replace('127.0.0.1', 'host.docker.internal') : baseUrl;
+    const isDocker =
+      process?.env?.RUNNING_IN_DOCKER === "true" ||
+      envRecord.RUNNING_IN_DOCKER === "true";
+    baseUrl = isDocker
+      ? baseUrl.replace("localhost", "host.docker.internal")
+      : baseUrl;
+    baseUrl = isDocker
+      ? baseUrl.replace("127.0.0.1", "host.docker.internal")
+      : baseUrl;
 
-    logger.debug('Ollama Base Url used: ', baseUrl);
+    logger.debug("Ollama Base Url used: ", baseUrl);
 
     const ollamaInstance = ollama(model, {
       numCtx: this.getDefaultNumCtx(serverEnv),

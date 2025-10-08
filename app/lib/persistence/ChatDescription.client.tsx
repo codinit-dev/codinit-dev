@@ -1,17 +1,24 @@
-import { useStore } from '@nanostores/react';
-import { TooltipProvider } from '@radix-ui/react-tooltip';
-import WithTooltip from '~/components/ui/Tooltip';
-import { useEditChatDescription } from '~/lib/hooks';
-import { description as descriptionStore } from '~/lib/persistence';
+import { useStore } from "@nanostores/react";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+import WithTooltip from "~/components/ui/Tooltip";
+import { useEditChatDescription } from "~/lib/hooks";
+import { description as descriptionStore } from "~/lib/persistence";
 
 export function ChatDescription() {
   const initialDescription = useStore(descriptionStore)!;
 
-  const { editing, handleChange, handleBlur, handleSubmit, handleKeyDown, currentDescription, toggleEditMode } =
-    useEditChatDescription({
-      initialDescription,
-      syncWithGlobalStore: true,
-    });
+  const {
+    editing,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    handleKeyDown,
+    currentDescription,
+    toggleEditMode,
+  } = useEditChatDescription({
+    initialDescription,
+    syncWithGlobalStore: true,
+  });
 
   if (!initialDescription) {
     // doing this to prevent showing edit button until chat description is set
@@ -21,7 +28,10 @@ export function ChatDescription() {
   return (
     <div className="flex items-center justify-center">
       {editing ? (
-        <form onSubmit={handleSubmit} className="flex items-center justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="flex items-center justify-center"
+        >
           <input
             type="text"
             className="bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary rounded px-2 mr-2 w-fit"
@@ -30,7 +40,9 @@ export function ChatDescription() {
             onChange={handleChange}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            style={{ width: `${Math.max(currentDescription.length * 8, 100)}px` }}
+            style={{
+              width: `${Math.max(currentDescription.length * 8, 100)}px`,
+            }}
           />
           <TooltipProvider>
             <WithTooltip tooltip="Save title">
@@ -49,14 +61,16 @@ export function ChatDescription() {
           {currentDescription}
           <TooltipProvider>
             <WithTooltip tooltip="Rename chat">
-              <button
-                type="button"
-                className="ml-2 i-ph:pencil-fill scale-110 hover:text-codinit-elements-item-contentAccent"
-                onClick={(event) => {
-                  event.preventDefault();
-                  toggleEditMode();
-                }}
-              />
+              <div className="flex justify-between items-center p-2 rounded-md bg-codinit-elements-item-backgroundAccent ml-2">
+                <button
+                  type="button"
+                  className="i-ph:pencil-fill scale-110 hover:text-codinit-elements-item-contentAccent"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    toggleEditMode();
+                  }}
+                />
+              </div>
             </WithTooltip>
           </TooltipProvider>
         </>

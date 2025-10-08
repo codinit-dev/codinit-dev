@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { classNames } from '~/utils/classNames';
+import React from "react";
+import { motion } from "framer-motion";
+import { classNames } from "~/utils/classNames";
 
 interface FilterChipProps {
   /** The label text to display */
@@ -27,7 +27,14 @@ interface FilterChipProps {
  *
  * A chip component for displaying filters with optional remove button.
  */
-export function FilterChip({ label, value, onRemove, active = false, icon, className }: FilterChipProps) {
+export function FilterChip({
+  label,
+  value,
+  onRemove,
+  active = false,
+  icon,
+  className,
+}: FilterChipProps) {
   // Animation variants
   const variants = {
     initial: { opacity: 0, scale: 0.9 },
@@ -43,27 +50,27 @@ export function FilterChip({ label, value, onRemove, active = false, icon, class
       variants={variants}
       transition={{ duration: 0.2 }}
       className={classNames(
-        'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all',
+        "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all",
         active
-          ? 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30'
-          : 'bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark',
-        onRemove && 'pr-1',
+          ? "bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30"
+          : "bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark",
+        onRemove && "pr-1",
         className,
       )}
     >
       {/* Icon */}
-      {icon && <span className={classNames(icon, 'text-inherit')} />}
+      {icon && <span className={classNames(icon, "text-inherit")} />}
 
       {/* Label and value */}
       <span>
         {label}
-        {value !== undefined && ': '}
+        {value !== undefined && ": "}
         {value !== undefined && (
           <span
             className={
               active
-                ? 'text-purple-700 dark:text-purple-300 font-semibold'
-                : 'text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark'
+                ? "text-purple-700 dark:text-purple-300 font-semibold"
+                : "text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark"
             }
           >
             {value}
@@ -77,10 +84,10 @@ export function FilterChip({ label, value, onRemove, active = false, icon, class
           type="button"
           onClick={onRemove}
           className={classNames(
-            'ml-1 p-0.5 rounded-full hover:bg-codinit-elements-background-depth-3 dark:hover:bg-codinit-elements-background-depth-4 transition-colors',
+            "ml-1 p-0.5 rounded-full hover:bg-codinit-elements-background-depth-3 dark:hover:bg-codinit-elements-background-depth-4 transition-colors",
             active
-              ? 'text-purple-600 dark:text-purple-400'
-              : 'text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark',
+              ? "text-purple-600 dark:text-purple-400"
+              : "text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark",
           )}
           aria-label={`Remove ${label} filter`}
         >

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface FilePreviewProps {
   files: File[];
@@ -6,7 +6,11 @@ interface FilePreviewProps {
   onRemove: (index: number) => void;
 }
 
-const FilePreview: React.FC<FilePreviewProps> = ({ files, imageDataList, onRemove }) => {
+const FilePreview: React.FC<FilePreviewProps> = ({
+  files,
+  imageDataList,
+  onRemove,
+}) => {
   if (!files || files.length === 0) {
     return null;
   }
@@ -17,7 +21,11 @@ const FilePreview: React.FC<FilePreviewProps> = ({ files, imageDataList, onRemov
         <div key={file.name + file.size} className="mr-2 relative">
           {imageDataList[index] && (
             <div className="relative">
-              <img src={imageDataList[index]} alt={file.name} className="max-h-20 rounded-lg" />
+              <img
+                src={imageDataList[index]}
+                alt={file.name}
+                className="max-h-20 rounded-lg"
+              />
               <button
                 onClick={() => onRemove(index)}
                 className="absolute -top-1 -right-1 z-10 bg-black rounded-full w-5 h-5 shadow-md hover:bg-gray-900 transition-colors flex items-center justify-center"

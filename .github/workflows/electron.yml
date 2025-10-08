@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest] # Use unsigned macOS builds for now
-        node-version: [20.18.0]
+        node-version: [18.18.0]
       fail-fast: false
 
     steps:
@@ -37,19 +37,19 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 10.18.0
+          version: 9.14.4
           run_install: false
 
       - name: Get pnpm store directory
-        id: pnpm-store
+        id: get-pnpm-store-path
         shell: bash
         run: |
-          echo "path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+          echo "store_path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm cache
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
-          path: ${{ steps.pnpm-store.outputs.path }}
+          path: ${{ steps.get-pnpm-store-path.outputs.store_path }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-

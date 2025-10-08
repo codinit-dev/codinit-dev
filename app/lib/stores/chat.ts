@@ -1,4 +1,4 @@
-import { map } from 'nanostores';
+import { map } from "nanostores";
 
 export const chatStore = map({
   started: false,

@@ -1,16 +1,15 @@
-import { useStore } from '@nanostores/react';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Panel, type ImperativePanelHandle } from 'react-resizable-panels';
-import { IconButton } from '~/components/ui/IconButton';
-import { shortcutEventEmitter } from '~/lib/hooks';
-import { themeStore } from '~/lib/stores/theme';
-import { workbenchStore } from '~/lib/stores/workbench';
-import { classNames } from '~/utils/classNames';
-import { Terminal, type TerminalRef } from './Terminal';
-import { TerminalManager } from './TerminalManager';
-import { createScopedLogger } from '~/utils/logger';
+import { useStore } from "@nanostores/react";
+import React, { memo, useEffect, useRef, useState } from "react";
+import { Panel, type ImperativePanelHandle } from "react-resizable-panels";
+import { IconButton } from "~/components/ui/IconButton";
+import { shortcutEventEmitter } from "~/lib/hooks";
+import { themeStore } from "~/lib/stores/theme";
+import { workbenchStore } from "~/lib/stores/workbench";
+import { classNames } from "~/utils/classNames";
+import { Terminal, type TerminalRef } from "./Terminal";
+import { createScopedLogger } from "~/utils/logger";
 
-const logger = createScopedLogger('Terminal');
+const logger = createScopedLogger("Terminal");
 
 const MAX_TERMINALS = 3;
 export const DEFAULT_TERMINAL_SIZE = 25;
@@ -19,12 +18,12 @@ export const TerminalTabs = memo(() => {
   const showTerminal = useStore(workbenchStore.showTerminal);
   const theme = useStore(themeStore);
 
-  const terminalRefs = useRef<Map<number, TerminalRef>>(new Map());
+  const terminalRefs = useRef<Array<TerminalRef | null>>([]);
   const terminalPanelRef = useRef<ImperativePanelHandle>(null);
   const terminalToggledByShortcut = useRef(false);
 
   const [activeTerminal, setActiveTerminal] = useState(0);
-  const [terminalCount, setTerminalCount] = useState(0);
+  const [terminalCount, setTerminalCount] = useState(1);
 
   const addTerminal = () => {
     if (terminalCount < MAX_TERMINALS) {
@@ -32,51 +31,6 @@ export const TerminalTabs = memo(() => {
       setActiveTerminal(terminalCount);
     }
   };
-
-  const closeTerminal = useCallback(
-    (index: number) => {
-      if (index === 0) {
-        return;
-      } // Can't close terminal
-
-      const terminalRef = terminalRefs.current.get(index);
-
-      if (terminalRef?.getTerminal) {
-        const terminal = terminalRef.getTerminal();
-
-        if (terminal) {
-          workbenchStore.detachTerminal(terminal);
-        }
-      }
-
-      // Remove the terminal from refs
-      terminalRefs.current.delete(index);
-
-      // Adjust terminal count and active terminal
-      setTerminalCount(terminalCount - 1);
-
-      if (activeTerminal === index) {
-        setActiveTerminal(Math.max(0, index - 1));
-      } else if (activeTerminal > index) {
-        setActiveTerminal(activeTerminal - 1);
-      }
-    },
-    [activeTerminal, terminalCount],
-  );
-
-  useEffect(() => {
-    return () => {
-      terminalRefs.current.forEach((ref, index) => {
-        if (index > 0 && ref?.getTerminal) {
-          const terminal = ref.getTerminal();
-
-          if (terminal) {
-            workbenchStore.detachTerminal(terminal);
-          }
-        }
-      });
-    };
-  }, []);
 
   useEffect(() => {
     const { current: terminal } = terminalPanelRef;
@@ -97,14 +51,17 @@ export const TerminalTabs = memo(() => {
   }, [showTerminal]);
 
   useEffect(() => {
-    const unsubscribeFromEventEmitter = shortcutEventEmitter.on('toggleTerminal', () => {
-      terminalToggledByShortcut.current = true;
-    });
+    const unsubscribeFromEventEmitter = shortcutEventEmitter.on(
+      "toggleTerminal",
+      () => {
+        terminalToggledByShortcut.current = true;
+      },
+    );
 
     const unsubscribeFromThemeStore = themeStore.subscribe(() => {
-      terminalRefs.current.forEach((ref) => {
+      for (const ref of Object.values(terminalRefs.current)) {
         ref?.reloadStyles();
-      });
+      }
     });
 
     return () => {
@@ -142,29 +99,29 @@ export const TerminalTabs = memo(() => {
                     <button
                       key={index}
                       className={classNames(
-                        'flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full',
+                        "flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full",
                         {
-                          'bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary':
+                          "bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary":
                             isActive,
-                          'bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground':
+                          "bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground":
                             !isActive,
                         },
                       )}
                       onClick={() => setActiveTerminal(index)}
                     >
                       <div className="i-ph:terminal-window-duotone text-lg" />
-                      CodinIT Terminal
+                      codinit Terminal
                     </button>
                   ) : (
                     <React.Fragment>
                       <button
                         key={index}
                         className={classNames(
-                          'flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full',
+                          "flex items-center text-sm cursor-pointer gap-1.5 px-3 py-2 h-full whitespace-nowrap rounded-full",
                           {
-                            'bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textPrimary':
+                            "bg-codinit-elements-terminals-buttonBackground text-codinit-elements-textPrimary":
                               isActive,
-                            'bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground':
+                            "bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:bg-codinit-elements-terminals-buttonBackground":
                               !isActive,
                           },
                         )}
@@ -172,42 +129,15 @@ export const TerminalTabs = memo(() => {
                       >
                         <div className="i-ph:terminal-window-duotone text-lg" />
                         Terminal {terminalCount > 1 && index}
-                        <button
-                          className="bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary hover:bg-transparent rounded"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            closeTerminal(index);
-                          }}
-                        >
-                          <div className="i-ph:x text-xs" />
-                        </button>
                       </button>
                     </React.Fragment>
                   )}
                 </React.Fragment>
               );
             })}
-            {terminalCount < MAX_TERMINALS && <IconButton icon="i-ph:plus" size="md" onClick={addTerminal} />}
-            <IconButton
-              icon="i-ph:arrow-clockwise"
-              title="Reset Terminal"
-              size="md"
-              onClick={() => {
-                const ref = terminalRefs.current.get(activeTerminal);
-
-                if (ref?.getTerminal()) {
-                  const terminal = ref.getTerminal()!;
-                  terminal.clear();
-                  terminal.focus();
-
-                  if (activeTerminal === 0) {
-                    workbenchStore.attachBoltTerminal(terminal);
-                  } else {
-                    workbenchStore.attachTerminal(terminal);
-                  }
-                }
-              }}
-            />
+            {terminalCount < MAX_TERMINALS && (
+              <IconButton icon="i-ph:plus" size="md" onClick={addTerminal} />
+            )}
             <IconButton
               className="ml-auto"
               icon="i-ph:caret-down"
@@ -219,55 +149,53 @@ export const TerminalTabs = memo(() => {
           {Array.from({ length: terminalCount + 1 }, (_, index) => {
             const isActive = activeTerminal === index;
 
-            logger.debug(`Starting CodinIT terminal [${index}]`);
+            logger.debug(`Starting codinit terminal [${index}]`);
 
             if (index == 0) {
               return (
-                <React.Fragment key={`terminal-container-${index}`}>
-                  <Terminal
-                    key={`terminal-${index}`}
-                    id={`terminal_${index}`}
-                    className={classNames('h-full overflow-hidden modern-scrollbar-invert', {
+                <Terminal
+                  key={index}
+                  id={`terminal_${index}`}
+                  className={classNames(
+                    "h-full overflow-hidden modern-scrollbar-invert",
+                    {
                       hidden: !isActive,
-                    })}
-                    ref={(ref) => {
-                      if (ref) {
-                        terminalRefs.current.set(index, ref);
-                      }
-                    }}
-                    onTerminalReady={(terminal) => workbenchStore.attachBoltTerminal(terminal)}
-                    onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
-                    theme={theme}
-                  />
-                  <TerminalManager
-                    terminal={terminalRefs.current.get(index)?.getTerminal() || null}
-                    isActive={isActive}
-                  />
-                </React.Fragment>
+                    },
+                  )}
+                  ref={(ref) => {
+                    terminalRefs.current.push(ref);
+                  }}
+                  onTerminalReady={(terminal) =>
+                    workbenchStore.attachcodinitTerminal(terminal)
+                  }
+                  onTerminalResize={(cols, rows) =>
+                    workbenchStore.onTerminalResize(cols, rows)
+                  }
+                  theme={theme}
+                />
               );
             } else {
               return (
-                <React.Fragment key={`terminal-container-${index}`}>
-                  <Terminal
-                    key={`terminal-${index}`}
-                    id={`terminal_${index}`}
-                    className={classNames('modern-scrollbar h-full overflow-hidden', {
+                <Terminal
+                  key={index}
+                  id={`terminal_${index}`}
+                  className={classNames(
+                    "modern-scrollbar h-full overflow-hidden",
+                    {
                       hidden: !isActive,
-                    })}
-                    ref={(ref) => {
-                      if (ref) {
-                        terminalRefs.current.set(index, ref);
-                      }
-                    }}
-                    onTerminalReady={(terminal) => workbenchStore.attachTerminal(terminal)}
-                    onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
-                    theme={theme}
-                  />
-                  <TerminalManager
-                    terminal={terminalRefs.current.get(index)?.getTerminal() || null}
-                    isActive={isActive}
-                  />
-                </React.Fragment>
+                    },
+                  )}
+                  ref={(ref) => {
+                    terminalRefs.current.push(ref);
+                  }}
+                  onTerminalReady={(terminal) =>
+                    workbenchStore.attachTerminal(terminal)
+                  }
+                  onTerminalResize={(cols, rows) =>
+                    workbenchStore.onTerminalResize(cols, rows)
+                  }
+                  theme={theme}
+                />
               );
             }
           })}

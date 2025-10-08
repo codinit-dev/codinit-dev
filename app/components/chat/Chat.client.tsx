@@ -1,45 +1,58 @@
-import { useStore } from '@nanostores/react';
-import type { Message } from 'ai';
-import { useChat } from '@ai-sdk/react';
-import { useAnimate } from 'framer-motion';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { cssTransition, toast, ToastContainer } from 'react-toastify';
-import { useMessageParser, usePromptEnhancer, useShortcuts } from '~/lib/hooks';
-import { description, useChatHistory } from '~/lib/persistence';
-import { chatStore } from '~/lib/stores/chat';
-import { workbenchStore } from '~/lib/stores/workbench';
-import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROMPT_COOKIE_KEY, PROVIDER_LIST } from '~/utils/constants';
-import { cubicEasingFn } from '~/utils/easings';
-import { createScopedLogger, renderLogger } from '~/utils/logger';
-import { BaseChat } from './BaseChat';
-import Cookies from 'js-cookie';
-import { debounce } from '~/utils/debounce';
-import { useSettings } from '~/lib/hooks/useSettings';
-import type { ProviderInfo } from '~/types/model';
-import { useSearchParams } from '@remix-run/react';
-import { createSampler } from '~/utils/sampler';
-import { getTemplates, selectStarterTemplate } from '~/utils/selectStarterTemplate';
-import { logStore } from '~/lib/stores/logs';
-import { streamingState } from '~/lib/stores/streaming';
-import { filesToArtifacts } from '~/utils/fileUtils';
-import { supabaseConnection } from '~/lib/stores/supabase';
-import { defaultDesignScheme, type DesignScheme } from '~/types/design-scheme';
-import type { ElementInfo } from '~/components/workbench/Inspector';
-import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
-import { useMCPStore } from '~/lib/stores/mcp';
-import type { LlmErrorAlertType } from '~/types/actions';
+/*
+ * @ts-nocheck
+ * Preventing TS checks with files presented in the video for a better presentation.
+ */
+import { useStore } from "@nanostores/react";
+import type { Message } from "ai";
+import { useChat } from "ai/react";
+import { useAnimate } from "framer-motion";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { cssTransition, toast, ToastContainer } from "react-toastify";
+import { useMessageParser, usePromptEnhancer, useShortcuts } from "~/lib/hooks";
+import { description, useChatHistory } from "~/lib/persistence";
+import { chatStore } from "~/lib/stores/chat";
+import { workbenchStore } from "~/lib/stores/workbench";
+import {
+  DEFAULT_MODEL,
+  DEFAULT_PROVIDER,
+  PROMPT_COOKIE_KEY,
+  PROVIDER_LIST,
+} from "~/utils/constants";
+import { cubicEasingFn } from "~/utils/easings";
+import { createScopedLogger, renderLogger } from "~/utils/logger";
+import { BaseChat } from "./BaseChat";
+import Cookies from "js-cookie";
+import { debounce } from "~/utils/debounce";
+import { useSettings } from "~/lib/hooks/useSettings";
+import type { ProviderInfo } from "~/types/model";
+import { useSearchParams } from "@remix-run/react";
+import { createSampler } from "~/utils/sampler";
+import {
+  getTemplates,
+  selectStarterTemplate,
+} from "~/utils/selectStarterTemplate";
+import { logStore } from "~/lib/stores/logs";
+import { streamingState } from "~/lib/stores/streaming";
+import { filesToArtifacts } from "~/utils/fileUtils";
+import { supabaseConnection } from "~/lib/stores/supabase";
 
 const toastAnimation = cssTransition({
-  enter: 'animated fadeInRight',
-  exit: 'animated fadeOutRight',
+  enter: "animated fadeInRight",
+  exit: "animated fadeOutRight",
 });
 
-const logger = createScopedLogger('Chat');
+const logger = createScopedLogger("Chat");
 
 export function Chat() {
-  renderLogger.trace('Chat');
+  renderLogger.trace("Chat");
 
-  const { ready, initialMessages, storeMessageHistory, importChat, exportChat } = useChatHistory();
+  const {
+    ready,
+    initialMessages,
+    storeMessageHistory,
+    importChat,
+    exportChat,
+  } = useChatHistory();
   const title = useStore(description);
   useEffect(() => {
     workbenchStore.setReloadedMessages(initialMessages.map((m) => m.id));
@@ -69,11 +82,15 @@ export function Chat() {
            * @todo Handle more types if we need them. This may require extra color palettes.
            */
           switch (type) {
-            case 'success': {
-              return <div className="i-ph:check-bold text-codinit-elements-icon-success text-2xl" />;
+            case "success": {
+              return (
+                <div className="i-ph:check-bold text-codinit-elements-icon-success text-2xl" />
+              );
             }
-            case 'error': {
-              return <div className="i-ph:warning-circle-bold text-codinit-elements-icon-error text-2xl" />;
+            case "error": {
+              return (
+                <div className="i-ph:warning-circle-bold text-codinit-elements-icon-error text-2xl" />
+              );
             }
           }
 
@@ -96,11 +113,19 @@ const processSampledMessages = createSampler(
     parseMessages: (messages: Message[], isLoading: boolean) => void;
     storeMessageHistory: (messages: Message[]) => Promise<void>;
   }) => {
-    const { messages, initialMessages, isLoading, parseMessages, storeMessageHistory } = options;
+    const {
+      messages,
+      initialMessages,
+      isLoading,
+      parseMessages,
+      storeMessageHistory,
+    } = options;
     parseMessages(messages, isLoading);
 
     if (messages.length > initialMessages.length) {
-      storeMessageHistory(messages).catch((error) => toast.error(error.message));
+      storeMessageHistory(messages).catch((error) =>
+        toast.error(error.message),
+      );
     }
   },
   50,
@@ -115,7 +140,13 @@ interface ChatProps {
 }
 
 export const ChatImpl = memo(
-  ({ description, initialMessages, storeMessageHistory, importChat, exportChat }: ChatProps) => {
+  ({
+    description,
+    initialMessages,
+    storeMessageHistory,
+    importChat,
+    exportChat,
+  }: ChatProps) => {
     useShortcuts();
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -125,30 +156,35 @@ export const ChatImpl = memo(
     const [searchParams, setSearchParams] = useSearchParams();
     const [fakeLoading, setFakeLoading] = useState(false);
     const files = useStore(workbenchStore.files);
-    const [designScheme, setDesignScheme] = useState<DesignScheme>(defaultDesignScheme);
     const actionAlert = useStore(workbenchStore.alert);
     const deployAlert = useStore(workbenchStore.deployAlert);
-    const supabaseConn = useStore(supabaseConnection);
+    const supabaseConn = useStore(supabaseConnection); // Add this line to get Supabase connection
     const selectedProject = supabaseConn.stats?.projects?.find(
       (project) => project.id === supabaseConn.selectedProjectId,
     );
     const supabaseAlert = useStore(workbenchStore.supabaseAlert);
-    const { activeProviders, promptId, autoSelectTemplate, contextOptimizationEnabled } = useSettings();
-    const [llmErrorAlert, setLlmErrorAlert] = useState<LlmErrorAlertType | undefined>(undefined);
+    const {
+      activeProviders,
+      promptId,
+      autoSelectTemplate,
+      contextOptimizationEnabled,
+    } = useSettings();
+
     const [model, setModel] = useState(() => {
-      const savedModel = Cookies.get('selectedModel');
+      const savedModel = Cookies.get("selectedModel");
       return savedModel || DEFAULT_MODEL;
     });
     const [provider, setProvider] = useState(() => {
-      const savedProvider = Cookies.get('selectedProvider');
-      return (PROVIDER_LIST.find((p) => p.name === savedProvider) || DEFAULT_PROVIDER) as ProviderInfo;
+      const savedProvider = Cookies.get("selectedProvider");
+      return (PROVIDER_LIST.find((p) => p.name === savedProvider) ||
+        DEFAULT_PROVIDER) as ProviderInfo;
     });
+
     const { showChat } = useStore(chatStore);
+
     const [animationScope, animate] = useAnimate();
+
     const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
-    const [chatMode, setChatMode] = useState<'discuss' | 'build'>('build');
-    const [selectedElement, setSelectedElement] = useState<ElementInfo | null>(null);
-    const mcpSettings = useMCPStore((state) => state.settings);
 
     const {
       messages,
@@ -163,16 +199,13 @@ export const ChatImpl = memo(
       error,
       data: chatData,
       setData,
-      addToolResult,
     } = useChat({
-      api: '/api/chat',
+      api: "/api/chat",
       body: {
         apiKeys,
         files,
         promptId,
         contextOptimization: contextOptimizationEnabled,
-        chatMode,
-        designScheme,
         supabase: {
           isConnected: supabaseConn.isConnected,
           hasSelectedProject: !!selectedProject,
@@ -181,22 +214,29 @@ export const ChatImpl = memo(
             anonKey: supabaseConn?.credentials?.anonKey,
           },
         },
-        maxLLMSteps: mcpSettings.maxLLMSteps,
       },
       sendExtraMessageFields: true,
       onError: (e) => {
-        setFakeLoading(false);
-        handleError(e, 'chat');
+        logger.error("Request failed\n\n", e, error);
+        logStore.logError("Chat request failed", e, {
+          component: "Chat",
+          action: "request",
+          error: e.message,
+        });
+        toast.error(
+          "There was an error processing your request: " +
+            (e.message ? e.message : "No details were returned"),
+        );
       },
       onFinish: (message, response) => {
         const usage = response.usage;
         setData(undefined);
 
         if (usage) {
-          console.log('Token usage:', usage);
-          logStore.logProvider('Chat response completed', {
-            component: 'Chat',
-            action: 'response',
+          console.log("Token usage:", usage);
+          logStore.logProvider("Chat response completed", {
+            component: "Chat",
+            action: "response",
             model,
             provider: provider.name,
             usage,
@@ -204,13 +244,13 @@ export const ChatImpl = memo(
           });
         }
 
-        logger.debug('Finished streaming');
+        logger.debug("Finished streaming");
       },
       initialMessages,
-      initialInput: Cookies.get(PROMPT_COOKIE_KEY) || '',
+      initialInput: Cookies.get(PROMPT_COOKIE_KEY) || "",
     });
     useEffect(() => {
-      const prompt = searchParams.get('prompt');
+      const prompt = searchParams.get("prompt");
 
       // console.log(prompt, searchParams, model, provider);
 
@@ -218,19 +258,25 @@ export const ChatImpl = memo(
         setSearchParams({});
         runAnimation();
         append({
-          role: 'user',
-          content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
+            },
+          ] as any, // Type assertion to bypass compiler check
         });
       }
     }, [model, provider, searchParams]);
 
-    const { enhancingPrompt, promptEnhanced, enhancePrompt, resetEnhancer } = usePromptEnhancer();
+    const { enhancingPrompt, promptEnhanced, enhancePrompt, resetEnhancer } =
+      usePromptEnhancer();
     const { parsedMessages, parseMessages } = useMessageParser();
 
     const TEXTAREA_MAX_HEIGHT = chatStarted ? 400 : 200;
 
     useEffect(() => {
-      chatStore.setKey('started', initialMessages.length > 0);
+      chatStore.setKey("started", initialMessages.length > 0);
     }, []);
 
     useEffect(() => {
@@ -253,101 +299,28 @@ export const ChatImpl = memo(
 
     const abort = () => {
       stop();
-      chatStore.setKey('aborted', true);
+      chatStore.setKey("aborted", true);
       workbenchStore.abortAllActions();
 
-      logStore.logProvider('Chat response aborted', {
-        component: 'Chat',
-        action: 'abort',
+      logStore.logProvider("Chat response aborted", {
+        component: "Chat",
+        action: "abort",
         model,
         provider: provider.name,
       });
     };
 
-    const handleError = useCallback(
-      (error: any, context: 'chat' | 'template' | 'llmcall' = 'chat') => {
-        logger.error(`${context} request failed`, error);
-
-        stop();
-        setFakeLoading(false);
-
-        let errorInfo = {
-          message: 'An unexpected error occurred',
-          isRetryable: true,
-          statusCode: 500,
-          provider: provider.name,
-          type: 'unknown' as const,
-          retryDelay: 0,
-        };
-
-        if (error.message) {
-          try {
-            const parsed = JSON.parse(error.message);
-
-            if (parsed.error || parsed.message) {
-              errorInfo = { ...errorInfo, ...parsed };
-            } else {
-              errorInfo.message = error.message;
-            }
-          } catch {
-            errorInfo.message = error.message;
-          }
-        }
-
-        let errorType: LlmErrorAlertType['errorType'] = 'unknown';
-        let title = 'Request Failed';
-
-        if (errorInfo.statusCode === 401 || errorInfo.message.toLowerCase().includes('api key')) {
-          errorType = 'authentication';
-          title = 'Authentication Error';
-        } else if (errorInfo.statusCode === 429 || errorInfo.message.toLowerCase().includes('rate limit')) {
-          errorType = 'rate_limit';
-          title = 'Rate Limit Exceeded';
-        } else if (errorInfo.message.toLowerCase().includes('quota')) {
-          errorType = 'quota';
-          title = 'Quota Exceeded';
-        } else if (errorInfo.statusCode >= 500) {
-          errorType = 'network';
-          title = 'Server Error';
-        }
-
-        logStore.logError(`${context} request failed`, error, {
-          component: 'Chat',
-          action: 'request',
-          error: errorInfo.message,
-          context,
-          retryable: errorInfo.isRetryable,
-          errorType,
-          provider: provider.name,
-        });
-
-        // Create API error alert
-        setLlmErrorAlert({
-          type: 'error',
-          title,
-          description: errorInfo.message,
-          provider: provider.name,
-          errorType,
-        });
-        setData([]);
-      },
-      [provider.name, stop],
-    );
-
-    const clearApiErrorAlert = useCallback(() => {
-      setLlmErrorAlert(undefined);
-    }, []);
-
     useEffect(() => {
       const textarea = textareaRef.current;
 
       if (textarea) {
-        textarea.style.height = 'auto';
+        textarea.style.height = "auto";
 
         const scrollHeight = textarea.scrollHeight;
 
         textarea.style.height = `${Math.min(scrollHeight, TEXTAREA_MAX_HEIGHT)}px`;
-        textarea.style.overflowY = scrollHeight > TEXTAREA_MAX_HEIGHT ? 'auto' : 'hidden';
+        textarea.style.overflowY =
+          scrollHeight > TEXTAREA_MAX_HEIGHT ? "auto" : "hidden";
       }
     }, [input, textareaRef]);
 
@@ -357,69 +330,27 @@ export const ChatImpl = memo(
       }
 
       await Promise.all([
-        animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }),
-        animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }),
+        animate(
+          "#examples",
+          { opacity: 0, display: "none" },
+          { duration: 0.1 },
+        ),
+        animate(
+          "#intro",
+          { opacity: 0, flex: 1 },
+          { duration: 0.2, ease: cubicEasingFn },
+        ),
       ]);
 
-      chatStore.setKey('started', true);
+      chatStore.setKey("started", true);
 
       setChatStarted(true);
     };
 
-    // Helper function to create message parts array from text and images
-    const createMessageParts = (text: string, images: string[] = []): Array<TextUIPart | FileUIPart> => {
-      // Create an array of properly typed message parts
-      const parts: Array<TextUIPart | FileUIPart> = [
-        {
-          type: 'text',
-          text,
-        },
-      ];
-
-      // Add image parts if any
-      images.forEach((imageData) => {
-        // Extract correct MIME type from the data URL
-        const mimeType = imageData.split(';')[0].split(':')[1] || 'image/jpeg';
-
-        // Create file part according to AI SDK format
-        parts.push({
-          type: 'file',
-          mimeType,
-          data: imageData.replace(/^data:image\/[^;]+;base64,/, ''),
-        });
-      });
-
-      return parts;
-    };
-
-    // Helper function to convert File[] to Attachment[] for AI SDK
-    const filesToAttachments = async (files: File[]): Promise<Attachment[] | undefined> => {
-      if (files.length === 0) {
-        return undefined;
-      }
-
-      const attachments = await Promise.all(
-        files.map(
-          (file) =>
-            new Promise<Attachment>((resolve) => {
-              const reader = new FileReader();
-
-              reader.onloadend = () => {
-                resolve({
-                  name: file.name,
-                  contentType: file.type,
-                  url: reader.result as string,
-                });
-              };
-              reader.readAsDataURL(file);
-            }),
-        ),
-      );
-
-      return attachments;
-    };
-
-    const sendMessage = async (_event: React.UIEvent, messageInput?: string) => {
+    const sendMessage = async (
+      _event: React.UIEvent,
+      messageInput?: string,
+    ) => {
       const messageContent = messageInput || input;
 
       if (!messageContent?.trim()) {
@@ -431,14 +362,8 @@ export const ChatImpl = memo(
         return;
       }
 
-      let finalMessageContent = messageContent;
-
-      if (selectedElement) {
-        console.log('Selected Element:', selectedElement);
-
-        const elementInfo = `<div class=\"__boltSelectedElement__\" data-element='${JSON.stringify(selectedElement)}'>${JSON.stringify(`${selectedElement.displayText}`)}</div>`;
-        finalMessageContent = messageContent + elementInfo;
-      }
+      // If no locked items, proceed normally with the original message
+      const finalMessageContent = messageContent;
 
       runAnimation();
 
@@ -452,12 +377,16 @@ export const ChatImpl = memo(
             provider,
           });
 
-          if (template !== 'blank') {
+          if (template !== "blank") {
             const temResp = await getTemplates(template, title).catch((e) => {
-              if (e.message.includes('rate limit')) {
-                toast.warning('Rate limit exceeded. Skipping starter template\n Continuing with blank template');
+              if (e.message.includes("rate limit")) {
+                toast.warning(
+                  "Rate limit exceeded. Skipping starter template\n Continuing with blank template",
+                );
               } else {
-                toast.warning('Failed to import starter template\n Continuing with blank template');
+                toast.warning(
+                  "Failed to import starter template\n Continuing with blank template",
+                );
               }
 
               return null;
@@ -465,35 +394,35 @@ export const ChatImpl = memo(
 
             if (temResp) {
               const { assistantMessage, userMessage } = temResp;
-              const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
-
               setMessages([
                 {
                   id: `1-${new Date().getTime()}`,
-                  role: 'user',
-                  content: userMessageText,
-                  parts: createMessageParts(userMessageText, imageDataList),
+                  role: "user",
+                  content: [
+                    {
+                      type: "text",
+                      text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`,
+                    },
+                    ...imageDataList.map((imageData) => ({
+                      type: "image",
+                      image: imageData,
+                    })),
+                  ] as any,
                 },
                 {
                   id: `2-${new Date().getTime()}`,
-                  role: 'assistant',
+                  role: "assistant",
                   content: assistantMessage,
                 },
                 {
                   id: `3-${new Date().getTime()}`,
-                  role: 'user',
+                  role: "user",
                   content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userMessage}`,
-                  annotations: ['hidden'],
+                  annotations: ["hidden"],
                 },
               ]);
-
-              const reloadOptions =
-                uploadedFiles.length > 0
-                  ? { experimental_attachments: await filesToAttachments(uploadedFiles) }
-                  : undefined;
-
-              reload(reloadOptions);
-              setInput('');
+              reload();
+              setInput("");
               Cookies.remove(PROMPT_COOKIE_KEY);
 
               setUploadedFiles([]);
@@ -510,21 +439,25 @@ export const ChatImpl = memo(
         }
 
         // If autoSelectTemplate is disabled or template selection failed, proceed with normal message
-        const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
-        const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
-
         setMessages([
           {
             id: `${new Date().getTime()}`,
-            role: 'user',
-            content: userMessageText,
-            parts: createMessageParts(userMessageText, imageDataList),
-            experimental_attachments: attachments,
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`,
+              },
+              ...imageDataList.map((imageData) => ({
+                type: "image",
+                image: imageData,
+              })),
+            ] as any,
           },
         ]);
-        reload(attachments ? { experimental_attachments: attachments } : undefined);
+        reload();
         setFakeLoading(false);
-        setInput('');
+        setInput("");
         Cookies.remove(PROMPT_COOKIE_KEY);
 
         setUploadedFiles([]);
@@ -543,42 +476,45 @@ export const ChatImpl = memo(
 
       const modifiedFiles = workbenchStore.getModifiedFiles();
 
-      chatStore.setKey('aborted', false);
+      chatStore.setKey("aborted", false);
 
       if (modifiedFiles !== undefined) {
-        const userUpdateArtifact = filesToArtifacts(modifiedFiles, `${Date.now()}`);
-        const messageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userUpdateArtifact}${finalMessageContent}`;
-
-        const attachmentOptions =
-          uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;
-
-        append(
-          {
-            role: 'user',
-            content: messageText,
-            parts: createMessageParts(messageText, imageDataList),
-          },
-          attachmentOptions,
+        const userUpdateArtifact = filesToArtifacts(
+          modifiedFiles,
+          `${Date.now()}`,
         );
+        append({
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userUpdateArtifact}${finalMessageContent}`,
+            },
+            ...imageDataList.map((imageData) => ({
+              type: "image",
+              image: imageData,
+            })),
+          ] as any,
+        });
 
         workbenchStore.resetAllFileModifications();
       } else {
-        const messageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
-
-        const attachmentOptions =
-          uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;
-
-        append(
-          {
-            role: 'user',
-            content: messageText,
-            parts: createMessageParts(messageText, imageDataList),
-          },
-          attachmentOptions,
-        );
+        append({
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`,
+            },
+            ...imageDataList.map((imageData) => ({
+              type: "image",
+              image: imageData,
+            })),
+          ] as any,
+        });
       }
 
-      setInput('');
+      setInput("");
       Cookies.remove(PROMPT_COOKIE_KEY);
 
       setUploadedFiles([]);
@@ -593,7 +529,9 @@ export const ChatImpl = memo(
      * Handles the change event for the textarea and updates the input state.
      * @param event - The change event from the textarea.
      */
-    const onTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const onTextareaChange = (
+      event: React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
       handleInputChange(event);
     };
 
@@ -610,7 +548,7 @@ export const ChatImpl = memo(
     );
 
     useEffect(() => {
-      const storedApiKeys = Cookies.get('apiKeys');
+      const storedApiKeys = Cookies.get("apiKeys");
 
       if (storedApiKeys) {
         setApiKeys(JSON.parse(storedApiKeys));
@@ -619,12 +557,12 @@ export const ChatImpl = memo(
 
     const handleModelChange = (newModel: string) => {
       setModel(newModel);
-      Cookies.set('selectedModel', newModel, { expires: 30 });
+      Cookies.set("selectedModel", newModel, { expires: 30 });
     };
 
     const handleProviderChange = (newProvider: ProviderInfo) => {
       setProvider(newProvider);
-      Cookies.set('selectedProvider', newProvider.name, { expires: 30 });
+      Cookies.set("selectedProvider", newProvider.name, { expires: 30 });
     };
 
     return (
@@ -655,13 +593,13 @@ export const ChatImpl = memo(
         importChat={importChat}
         exportChat={exportChat}
         messages={messages.map((message, i) => {
-          if (message.role === 'user') {
+          if (message.role === "user") {
             return message;
           }
 
           return {
             ...message,
-            content: parsedMessages[i] || '',
+            content: parsedMessages[i] || "",
           };
         })}
         enhancePrompt={() => {
@@ -686,17 +624,7 @@ export const ChatImpl = memo(
         clearSupabaseAlert={() => workbenchStore.clearSupabaseAlert()}
         deployAlert={deployAlert}
         clearDeployAlert={() => workbenchStore.clearDeployAlert()}
-        llmErrorAlert={llmErrorAlert}
-        clearLlmErrorAlert={clearApiErrorAlert}
         data={chatData}
-        chatMode={chatMode}
-        setChatMode={setChatMode}
-        append={append}
-        designScheme={designScheme}
-        setDesignScheme={setDesignScheme}
-        selectedElement={selectedElement}
-        setSelectedElement={setSelectedElement}
-        addToolResult={addToolResult}
       />
     );
   },

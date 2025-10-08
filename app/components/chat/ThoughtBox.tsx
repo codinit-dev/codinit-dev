@@ -1,6 +1,9 @@
-import { useState, type PropsWithChildren } from 'react';
+import { useState, type PropsWithChildren } from "react";
 
-const ThoughtBox = ({ title, children }: PropsWithChildren<{ title: string }>) => {
+const ThoughtBox = ({
+  title,
+  children,
+}: PropsWithChildren<{ title: string }>) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -13,7 +16,7 @@ const ThoughtBox = ({ title, children }: PropsWithChildren<{ title: string }>) =
         cursor-pointer 
         transition-all 
         duration-300
-        ${isExpanded ? 'max-h-96' : 'max-h-13'}
+        ${isExpanded ? "max-h-96" : "max-h-13"}
         overflow-auto
         border border-codinit-elements-borderColor
       `}
@@ -21,8 +24,13 @@ const ThoughtBox = ({ title, children }: PropsWithChildren<{ title: string }>) =
       <div className="p-4 flex items-center gap-4 rounded-lg  text-codinit-elements-textSecondary font-medium leading-5 text-sm  border border-codinit-elements-borderColor">
         <div className="i-ph:brain-thin text-2xl" />
         <div className="div">
-          <span> {title}</span>{' '}
-          {!isExpanded && <span className="text-codinit-elements-textTertiary"> - Click to expand</span>}
+          <span> {title}</span>{" "}
+          {!isExpanded && (
+            <span className="text-codinit-elements-textTertiary">
+              {" "}
+              - Click to expand
+            </span>
+          )}
         </div>
       </div>
       <div
@@ -31,7 +39,7 @@ const ThoughtBox = ({ title, children }: PropsWithChildren<{ title: string }>) =
         duration-300
         p-4 
         rounded-lg 
-        ${isExpanded ? 'opacity-100' : 'opacity-0'}
+        ${isExpanded ? "opacity-100" : "opacity-0"}
       `}
       >
         {children}

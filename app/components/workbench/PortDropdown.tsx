@@ -1,5 +1,5 @@
-import { memo, useEffect, useRef } from 'react';
-import type { PreviewInfo } from '~/lib/stores/previews';
+import { memo, useEffect, useRef } from "react";
+import type { PreviewInfo } from "~/lib/stores/previews";
 
 interface PortDropdownProps {
   activePreviewIndex: number;
@@ -29,19 +29,22 @@ export const PortDropdown = memo(
     // close dropdown if user clicks outside
     useEffect(() => {
       const handleClickOutside = (event: MouseEvent) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target as Node)
+        ) {
           setIsDropdownOpen(false);
         }
       };
 
       if (isDropdownOpen) {
-        window.addEventListener('mousedown', handleClickOutside);
+        window.addEventListener("mousedown", handleClickOutside);
       } else {
-        window.removeEventListener('mousedown', handleClickOutside);
+        window.removeEventListener("mousedown", handleClickOutside);
       }
 
       return () => {
-        window.removeEventListener('mousedown', handleClickOutside);
+        window.removeEventListener("mousedown", handleClickOutside);
       };
     }, [isDropdownOpen]);
 
@@ -53,8 +56,12 @@ export const PortDropdown = memo(
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           <span className="i-ph:plug text-base"></span>
-          {previews.length > 0 && activePreviewIndex >= 0 && activePreviewIndex < previews.length ? (
-            <span className="text-xs font-medium">{previews[activePreviewIndex].port}</span>
+          {previews.length > 0 &&
+          activePreviewIndex >= 0 &&
+          activePreviewIndex < previews.length ? (
+            <span className="text-xs font-medium">
+              {previews[activePreviewIndex].port}
+            </span>
           ) : null}
         </button>
         {isDropdownOpen && (
@@ -75,8 +82,8 @@ export const PortDropdown = memo(
                 <span
                   className={
                     activePreviewIndex === preview.index
-                      ? 'text-codinit-elements-item-contentAccent'
-                      : 'text-codinit-elements-item-contentDefault group-hover:text-codinit-elements-item-contentActive'
+                      ? "text-codinit-elements-item-contentAccent"
+                      : "text-codinit-elements-item-contentDefault group-hover:text-codinit-elements-item-contentActive"
                   }
                 >
                   {preview.port}

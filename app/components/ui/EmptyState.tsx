@@ -1,31 +1,31 @@
-import React from 'react';
-import { classNames } from '~/utils/classNames';
-import { Button } from './Button';
-import { motion } from 'framer-motion';
+import React from "react";
+import { classNames } from "~/utils/classNames";
+import { Button } from "./Button";
+import { motion } from "framer-motion";
 
 // Variant-specific styles
 const VARIANT_STYLES = {
   default: {
-    container: 'py-8 p-6',
+    container: "py-8 p-6",
     icon: {
-      container: 'w-12 h-12 mb-3',
-      size: 'w-6 h-6',
+      container: "w-12 h-12 mb-3",
+      size: "w-6 h-6",
     },
-    title: 'text-base',
-    description: 'text-sm mt-1',
-    actions: 'mt-4',
-    buttonSize: 'default' as const,
+    title: "text-base",
+    description: "text-sm mt-1",
+    actions: "mt-4",
+    buttonSize: "default" as const,
   },
   compact: {
-    container: 'py-4 p-4',
+    container: "py-4 p-4",
     icon: {
-      container: 'w-10 h-10 mb-2',
-      size: 'w-5 h-5',
+      container: "w-10 h-10 mb-2",
+      size: "w-5 h-5",
     },
-    title: 'text-sm',
-    description: 'text-xs mt-0.5',
-    actions: 'mt-3',
-    buttonSize: 'sm' as const,
+    title: "text-sm",
+    description: "text-xs mt-0.5",
+    actions: "mt-3",
+    buttonSize: "sm" as const,
   },
 };
 
@@ -55,7 +55,7 @@ interface EmptyStateProps {
   className?: string;
 
   /** Component size variant */
-  variant?: 'default' | 'compact';
+  variant?: "default" | "compact";
 }
 
 /**
@@ -64,7 +64,7 @@ interface EmptyStateProps {
  * A component for displaying empty states with optional actions.
  */
 export function EmptyState({
-  icon = 'i-ph:folder-simple-dashed',
+  icon = "i-ph:folder-simple-dashed",
   title,
   description,
   actionLabel,
@@ -72,7 +72,7 @@ export function EmptyState({
   secondaryActionLabel,
   onSecondaryAction,
   className,
-  variant = 'default',
+  variant = "default",
 }: EmptyStateProps) {
   // Get styles based on variant
   const styles = VARIANT_STYLES[variant];
@@ -86,9 +86,9 @@ export function EmptyState({
   return (
     <div
       className={classNames(
-        'flex flex-col items-center justify-center',
-        'text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark',
-        'bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 rounded-lg',
+        "flex flex-col items-center justify-center",
+        "text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark",
+        "bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 rounded-lg",
         styles.container,
         className,
       )}
@@ -96,7 +96,7 @@ export function EmptyState({
       {/* Icon */}
       <div
         className={classNames(
-          'rounded-full bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-4 flex items-center justify-center',
+          "rounded-full bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-4 flex items-center justify-center",
           styles.icon.container,
         )}
       >
@@ -104,19 +104,19 @@ export function EmptyState({
           className={classNames(
             icon,
             styles.icon.size,
-            'text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark',
+            "text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark",
           )}
         />
       </div>
 
       {/* Title */}
-      <p className={classNames('font-medium', styles.title)}>{title}</p>
+      <p className={classNames("font-medium", styles.title)}>{title}</p>
 
       {/* Description */}
       {description && (
         <p
           className={classNames(
-            'text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark text-center max-w-xs',
+            "text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark text-center max-w-xs",
             styles.description,
           )}
         >
@@ -126,7 +126,7 @@ export function EmptyState({
 
       {/* Action buttons */}
       {(actionLabel || secondaryActionLabel) && (
-        <div className={classNames('flex items-center gap-2', styles.actions)}>
+        <div className={classNames("flex items-center gap-2", styles.actions)}>
           {actionLabel && onAction && (
             <motion.div {...buttonAnimation}>
               <Button
@@ -142,7 +142,11 @@ export function EmptyState({
 
           {secondaryActionLabel && onSecondaryAction && (
             <motion.div {...buttonAnimation}>
-              <Button onClick={onSecondaryAction} variant="outline" size={styles.buttonSize}>
+              <Button
+                onClick={onSecondaryAction}
+                variant="outline"
+                size={styles.buttonSize}
+              >
                 {secondaryActionLabel}
               </Button>
             </motion.div>

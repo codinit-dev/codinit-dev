@@ -19,9 +19,9 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
 
     // Try multiple endpoints in case one fails
     const endpoints = [
-      '/api/health',
-      '/', // Fallback to root route
-      '/favicon.ico', // Another common fallback
+      "/api/health",
+      "/", // Fallback to root route
+      "/favicon.ico", // Another common fallback
     ];
 
     let latency = 0;
@@ -31,8 +31,8 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
       try {
         const start = performance.now();
         const response = await fetch(endpoint, {
-          method: 'HEAD',
-          cache: 'no-cache',
+          method: "HEAD",
+          cache: "no-cache",
         });
         const end = performance.now();
 
@@ -53,7 +53,7 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
       lastChecked: new Date().toISOString(),
     };
   } catch (error) {
-    console.error('Connection check failed:', error);
+    console.error("Connection check failed:", error);
     return {
       connected: false,
       latency: 0,

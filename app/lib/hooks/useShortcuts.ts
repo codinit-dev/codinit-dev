@@ -1,10 +1,10 @@
-import { useStore } from '@nanostores/react';
-import { useEffect } from 'react';
-import { shortcutsStore, type Shortcuts } from '~/lib/stores/settings';
-import { isMac } from '~/utils/os';
+import { useStore } from "@nanostores/react";
+import { useEffect } from "react";
+import { shortcutsStore, type Shortcuts } from "~/lib/stores/settings";
+import { isMac } from "~/utils/os";
 
 // List of keys that should not trigger shortcuts when typing in input/textarea
-const INPUT_ELEMENTS = ['input', 'textarea'];
+const INPUT_ELEMENTS = ["input", "textarea"];
 
 class ShortcutEventEmitter {
   #emitter = new EventTarget();
@@ -43,7 +43,8 @@ export function useShortcuts(): void {
       // Handle shortcuts
       for (const [name, shortcut] of Object.entries(shortcuts)) {
         const keyMatches =
-          shortcut.key.toLowerCase() === event.key.toLowerCase() || `Key${shortcut.key.toUpperCase()}` === event.code;
+          shortcut.key.toLowerCase() === event.key.toLowerCase() ||
+          `Key${shortcut.key.toUpperCase()}` === event.code;
 
         // Handle ctrlOrMetaKey based on OS
         const ctrlOrMetaKeyMatches = shortcut.ctrlOrMetaKey
@@ -52,9 +53,12 @@ export function useShortcuts(): void {
 
         const modifiersMatch =
           ctrlOrMetaKeyMatches &&
-          (shortcut.ctrlKey === undefined || shortcut.ctrlKey === event.ctrlKey) &&
-          (shortcut.metaKey === undefined || shortcut.metaKey === event.metaKey) &&
-          (shortcut.shiftKey === undefined || shortcut.shiftKey === event.shiftKey) &&
+          (shortcut.ctrlKey === undefined ||
+            shortcut.ctrlKey === event.ctrlKey) &&
+          (shortcut.metaKey === undefined ||
+            shortcut.metaKey === event.metaKey) &&
+          (shortcut.shiftKey === undefined ||
+            shortcut.shiftKey === event.shiftKey) &&
           (shortcut.altKey === undefined || shortcut.altKey === event.altKey);
 
         if (keyMatches && modifiersMatch) {
@@ -71,10 +75,10 @@ export function useShortcuts(): void {
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [shortcuts]);
 }

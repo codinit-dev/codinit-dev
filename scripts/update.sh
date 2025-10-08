@@ -3,7 +3,7 @@
 # Exit on any error
 set -e
 
-echo "Starting CodinIT update process..."
+echo "Starting codinit.dev update process..."
 
 # Get the current directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -20,7 +20,7 @@ TMP_DIR=$(mktemp -d)
 cd "$TMP_DIR"
 
 # Download latest release
-LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/Gerome-Elassaad/codinit-app/releases/latest | grep "browser_download_url.*zip" | cut -d : -f 2,3 | tr -d \")
+LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/gerome-elassaad/codinit-appreleases/latest | grep "browser_download_url.*zip" | cut -d : -f 2,3 | tr -d \")
 if [ -z "$LATEST_RELEASE_URL" ]; then
     echo "Error: Could not find latest release download URL"
     exit 1

@@ -1,17 +1,21 @@
-import type { Message } from 'ai';
-import { toast } from 'react-toastify';
-import { ImportFolderButton } from '~/components/chat/ImportFolderButton';
-import { Button } from '~/components/ui/Button';
-import { classNames } from '~/utils/classNames';
+import type { Message } from "ai";
+import { toast } from "react-toastify";
+import { ImportFolderButton } from "~/components/chat/ImportFolderButton";
+import { Button } from "~/components/ui/Button";
+import { classNames } from "~/utils/classNames";
 
 type ChatData = {
   messages?: Message[]; // Standard codinit format
   description?: string; // Optional description
 };
 
-export function ImportButtons(importChat: ((description: string, messages: Message[]) => Promise<void>) | undefined) {
+export function ImportButtons(
+  importChat:
+    | ((description: string, messages: Message[]) => Promise<void>)
+    | undefined,
+) {
   return (
-    <>
+    <div className="flex flex-col items-center justify-center w-auto">
       <input
         type="file"
         id="chat-import"
@@ -31,66 +35,73 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
 
                   // Standard format
                   if (Array.isArray(data.messages)) {
-                    await importChat(data.description || 'Imported Chat', data.messages);
-                    toast.success('Chat imported successfully');
+                    await importChat(
+                      data.description || "Imported Chat",
+                      data.messages,
+                    );
+                    toast.success("Chat imported successfully");
 
                     return;
                   }
 
-                  toast.error('Invalid chat file format');
+                  toast.error("Invalid chat file format");
                 } catch (error: unknown) {
                   if (error instanceof Error) {
-                    toast.error('Failed to parse chat file: ' + error.message);
+                    toast.error("Failed to parse chat file: " + error.message);
                   } else {
-                    toast.error('Failed to parse chat file');
+                    toast.error("Failed to parse chat file");
                   }
                 }
               };
-              reader.onerror = () => toast.error('Failed to read chat file');
+              reader.onerror = () => toast.error("Failed to read chat file");
               reader.readAsText(file);
             } catch (error) {
-              toast.error(error instanceof Error ? error.message : 'Failed to import chat');
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : "Failed to import chat",
+              );
             }
-            e.target.value = ''; // Reset file input
+            e.target.value = ""; // Reset file input
           } else {
-            toast.error('Something went wrong');
+            toast.error("Something went wrong");
           }
         }}
       />
-      <Button
-        onClick={() => {
-          const input = document.getElementById('chat-import');
-          input?.click();
-        }}
-        variant="default"
-        size="lg"
-        className={classNames(
-          'group relative gap-2.5 bg-gradient-to-br from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-2',
-          'text-codinit-elements-textPrimary font-medium',
-          'hover:from-codinit-elements-background-depth-2 hover:to-codinit-elements-background-depth-3',
-          'border border-codinit-elements-borderColor/60 hover:border-accent-500/40',
-          'shadow-md hover:shadow-lg hover:shadow-accent-500/10',
-          'h-11 px-5 py-2.5 min-w-[140px] justify-center',
-          'rounded-xl transition-all duration-300 ease-out',
-          'hover:scale-105 active:scale-95',
-        )}
-      >
-        <span className="i-ph:file-arrow-up-duotone w-5 h-5 text-accent-500 group-hover:scale-110 transition-transform" />
-        Import Chat
-      </Button>
-      <ImportFolderButton
-        importChat={importChat}
-        className={classNames(
-          'group relative gap-2.5 bg-gradient-to-br from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-2',
-          'text-codinit-elements-textPrimary font-medium',
-          'hover:from-codinit-elements-background-depth-2 hover:to-codinit-elements-background-depth-3',
-          'border border-codinit-elements-borderColor/60 hover:border-green-500/40',
-          'shadow-md hover:shadow-lg hover:shadow-green-500/10',
-          'h-11 px-5 py-2.5 min-w-[140px] justify-center',
-          'rounded-xl transition-all duration-300 ease-out',
-          'hover:scale-105 active:scale-95',
-        )}
-      />
-    </>
+      <div className="flex flex-col items-center gap-4 max-w-2xl text-center">
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              const input = document.getElementById("chat-import");
+              input?.click();
+            }}
+            variant="default"
+            size="lg"
+            className={classNames(
+              "gap-2 bg-codinit-elements-background-depth-1",
+              "text-codinit-elements-textPrimary",
+              "hover:bg-codinit-elements-background-depth-2",
+              "border border-codinit-elements-borderColor",
+              "h-10 px-4 py-2 min-w-[120px] justify-center",
+              "transition-all duration-200 ease-in-out",
+            )}
+          >
+            <span className="i-ph:upload-simple w-4 h-4" />
+            Import Chat
+          </Button>
+          <ImportFolderButton
+            importChat={importChat}
+            className={classNames(
+              "gap-2 bg-codinit-elements-background-depth-1",
+              "text-codinit-elements-textPrimary",
+              "hover:bg-codinit-elements-background-depth-2",
+              "border border-[rgba(0,0,0,0.08)] dark:border-[rgba(255,255,255,0.08)]",
+              "h-10 px-4 py-2 min-w-[120px] justify-center",
+              "transition-all duration-200 ease-in-out rounded-lg",
+            )}
+          />
+        </div>
+      </div>
+    </div>
   );
 }

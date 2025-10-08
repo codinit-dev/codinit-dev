@@ -2,12 +2,12 @@
  * Functions for managing chat data in IndexedDB
  */
 
-import type { Message } from 'ai';
-import type { IChatMetadata } from './db'; // Import IChatMetadata
+import type { Message } from "ai";
+import type { IChatMetadata } from "./db"; // Import IChatMetadata
 
 export interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: number;
 }
@@ -27,26 +27,36 @@ export interface Chat {
  * @returns A promise that resolves to an array of chats
  */
 export async function getAllChats(db: IDBDatabase): Promise<Chat[]> {
-  console.log(`getAllChats: Using database '${db.name}', version ${db.version}`);
+  console.log(
+    `getAllChats: Using database '${db.name}', version ${db.version}`,
+  );
 
   return new Promise((resolve, reject) => {
     try {
-      const transaction = db.transaction(['chats'], 'readonly');
-      const store = transaction.objectStore('chats');
+      const transaction = db.transaction(["chats"], "readonly");
+      const store = transaction.objectStore("chats");
       const request = store.getAll();
 
       request.onsuccess = () => {
         const result = request.result || [];
-        console.log(`getAllChats: Found ${result.length} chats in database '${db.name}'`);
+        console.log(
+          `getAllChats: Found ${result.length} chats in database '${db.name}'`,
+        );
         resolve(result);
       };
 
       request.onerror = () => {
-        console.error(`getAllChats: Error querying database '${db.name}':`, request.error);
+        console.error(
+          `getAllChats: Error querying database '${db.name}':`,
+          request.error,
+        );
         reject(request.error);
       };
     } catch (err) {
-      console.error(`getAllChats: Error creating transaction on database '${db.name}':`, err);
+      console.error(
+        `getAllChats: Error creating transaction on database '${db.name}':`,
+        err,
+      );
       reject(err);
     }
   });
@@ -58,10 +68,13 @@ export async function getAllChats(db: IDBDatabase): Promise<Chat[]> {
  * @param id The ID of the chat to get
  * @returns A promise that resolves to the chat or null if not found
  */
-export async function getChatById(db: IDBDatabase, id: string): Promise<Chat | null> {
+export async function getChatById(
+  db: IDBDatabase,
+  id: string,
+): Promise<Chat | null> {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(['chats'], 'readonly');
-    const store = transaction.objectStore('chats');
+    const transaction = db.transaction(["chats"], "readonly");
+    const store = transaction.objectStore("chats");
     const request = store.get(id);
 
     request.onsuccess = () => {
@@ -82,8 +95,8 @@ export async function getChatById(db: IDBDatabase, id: string): Promise<Chat | n
  */
 export async function saveChat(db: IDBDatabase, chat: Chat): Promise<void> {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(['chats'], 'readwrite');
-    const store = transaction.objectStore('chats');
+    const transaction = db.transaction(["chats"], "readwrite");
+    const store = transaction.objectStore("chats");
     const request = store.put(chat);
 
     request.onsuccess = () => {
@@ -104,8 +117,8 @@ export async function saveChat(db: IDBDatabase, chat: Chat): Promise<void> {
  */
 export async function deleteChat(db: IDBDatabase, id: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(['chats'], 'readwrite');
-    const store = transaction.objectStore('chats');
+    const transaction = db.transaction(["chats"], "readwrite");
+    const store = transaction.objectStore("chats");
     const request = store.delete(id);
 
     request.onsuccess = () => {
@@ -125,8 +138,8 @@ export async function deleteChat(db: IDBDatabase, id: string): Promise<void> {
  */
 export async function deleteAllChats(db: IDBDatabase): Promise<void> {
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(['chats'], 'readwrite');
-    const store = transaction.objectStore('chats');
+    const transaction = db.transaction(["chats"], "readwrite");
+    const store = transaction.objectStore("chats");
     const request = store.clear();
 
     request.onsuccess = () => {

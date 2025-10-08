@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { classNames } from '~/utils/classNames';
-import { Badge } from './Badge';
+import React from "react";
+import { motion } from "framer-motion";
+import { classNames } from "~/utils/classNames";
+import { Badge } from "./Badge";
 
 interface SearchResultItemProps {
   title: string;
@@ -27,8 +27,8 @@ export function SearchResultItem({
   subtitle,
   description,
   icon,
-  iconBackground = 'bg-codinit-elements-background-depth-1/80 dark:bg-codinit-elements-background-depth-4/80',
-  iconColor = 'text-purple-500',
+  iconBackground = "bg-codinit-elements-background-depth-1/80 dark:bg-codinit-elements-background-depth-4/80",
+  iconColor = "text-purple-500",
   tags,
   metadata,
   actionLabel,
@@ -39,14 +39,14 @@ export function SearchResultItem({
   return (
     <motion.div
       className={classNames(
-        'p-5 rounded-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-purple-500/40 transition-all duration-300 shadow-sm hover:shadow-md bg-codinit-elements-background-depth-1/50 dark:bg-codinit-elements-background-depth-3/50',
-        onClick ? 'cursor-pointer' : '',
+        "p-5 rounded-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-purple-500/40 transition-all duration-300 shadow-sm hover:shadow-md bg-codinit-elements-background-depth-1/50 dark:bg-codinit-elements-background-depth-3/50",
+        onClick ? "cursor-pointer" : "",
         className,
       )}
       whileHover={{
         scale: 1.01,
         y: -1,
-        transition: { type: 'spring', stiffness: 400, damping: 17 },
+        transition: { type: "spring", stiffness: 400, damping: 17 },
       }}
       whileTap={{ scale: 0.99 }}
       initial={{ opacity: 0, y: 10 }}
@@ -59,11 +59,11 @@ export function SearchResultItem({
           {icon && (
             <div
               className={classNames(
-                'w-10 h-10 rounded-xl backdrop-blur-sm flex items-center justify-center shadow-sm',
+                "w-10 h-10 rounded-xl backdrop-blur-sm flex items-center justify-center shadow-sm",
                 iconBackground,
               )}
             >
-              <span className={classNames(icon, 'w-5 h-5', iconColor)} />
+              <span className={classNames(icon, "w-5 h-5", iconColor)} />
             </div>
           )}
           <div>
@@ -115,10 +115,12 @@ export function SearchResultItem({
         <div className="flex flex-wrap items-center gap-3 text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
           {metadata.map((item, index) => (
             <div key={index} className="flex items-center gap-1">
-              {item.icon && <span className={classNames(item.icon, 'w-3.5 h-3.5')} />}
+              {item.icon && (
+                <span className={classNames(item.icon, "w-3.5 h-3.5")} />
+              )}
               <span>
                 {item.label}
-                {item.value !== undefined && ': '}
+                {item.value !== undefined && ": "}
                 {item.value !== undefined && (
                   <span className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
                     {item.value}

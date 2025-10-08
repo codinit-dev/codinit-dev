@@ -1,5 +1,5 @@
-import * as Popover from '@radix-ui/react-popover';
-import type { PropsWithChildren, ReactNode } from 'react';
+import * as Popover from "@radix-ui/react-popover";
+import type { PropsWithChildren, ReactNode } from "react";
 
 export default ({
   children,
@@ -8,8 +8,8 @@ export default ({
   align,
 }: PropsWithChildren<{
   trigger: ReactNode;
-  side: 'top' | 'right' | 'bottom' | 'left' | undefined;
-  align: 'center' | 'start' | 'end' | undefined;
+  side: "top" | "right" | "bottom" | "left" | undefined;
+  align: "center" | "start" | "end" | undefined;
 }>) => (
   <Popover.Root>
     <Popover.Trigger asChild>{trigger}</Popover.Trigger>

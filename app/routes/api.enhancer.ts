@@ -1,15 +1,18 @@
-import { type ActionFunctionArgs } from '@remix-run/cloudflare';
-import { streamText } from '~/lib/.server/llm/stream-text';
-import { stripIndents } from '~/utils/stripIndent';
-import type { ProviderInfo } from '~/types/model';
-import { getApiKeysFromCookie, getProviderSettingsFromCookie } from '~/lib/api/cookies';
-import { createScopedLogger } from '~/utils/logger';
+import { type ActionFunctionArgs } from "@remix-run/cloudflare";
+import { streamText } from "~/lib/.server/llm/stream-text";
+import { stripIndents } from "~/utils/stripIndent";
+import type { ProviderInfo } from "~/types/model";
+import {
+  getApiKeysFromCookie,
+  getProviderSettingsFromCookie,
+} from "~/lib/api/cookies";
+import { createScopedLogger } from "~/utils/logger";
 
 export async function action(args: ActionFunctionArgs) {
   return enhancerAction(args);
 }
 
-const logger = createScopedLogger('api.enhancher');
+const logger = createScopedLogger("api.enhancher");
 
 async function enhancerAction({ context, request }: ActionFunctionArgs) {
   const { message, model, provider } = await request.json<{
@@ -22,21 +25,21 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
   const { name: providerName } = provider;
 
   // validate 'model' and 'provider' fields
-  if (!model || typeof model !== 'string') {
-    throw new Response('Invalid or missing model', {
+  if (!model || typeof model !== "string") {
+    throw new Response("Invalid or missing model", {
       status: 400,
-      statusText: 'Bad Request',
+      statusText: "Bad Request",
     });
   }
 
-  if (!providerName || typeof providerName !== 'string') {
-    throw new Response('Invalid or missing provider', {
+  if (!providerName || typeof providerName !== "string") {
+    throw new Response("Invalid or missing provider", {
       status: 400,
-      statusText: 'Bad Request',
+      statusText: "Bad Request",
     });
   }
 
-  const cookieHeader = request.headers.get('Cookie');
+  const cookieHeader = request.headers.get("Cookie");
   const apiKeys = getApiKeysFromCookie(cookieHeader);
   const providerSettings = getProviderSettingsFromCookie(cookieHeader);
 
@@ -44,7 +47,7 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
     const result = await streamText({
       messages: [
         {
-          role: 'user',
+          role: "user",
           content:
             `[Model: ${model}]\n\n[Provider: ${providerName}]\n\n` +
             stripIndents`
@@ -82,7 +85,7 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
       providerSettings,
       options: {
         system:
-          'You are a senior software principal architect, you should help the user analyse the user query and enrich it with the necessary context and constraints to make it more specific, actionable, and effective. You should also ensure that the prompt is self-contained and uses professional language. Your response should ONLY contain the enhanced prompt text. Do not include any explanations, metadata, or wrapper tags.',
+          "You are a senior software principal architect, you should help the user analyse the user query and enrich it with the necessary context and constraints to make it more specific, actionable, and effective. You should also ensure that the prompt is self-contained and uses professional language. Your response should ONLY contain the enhanced prompt text. Do not include any explanations, metadata, or wrapper tags.",
 
         /*
          * onError: (event) => {
@@ -99,14 +102,14 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
     (async () => {
       try {
         for await (const part of result.fullStream) {
-          if (part.type === 'error') {
+          if (part.type === "error") {
             const error: any = part.error;
-            logger.error('Streaming error:', error);
+            logger.error("Streaming error:", error);
             break;
           }
         }
       } catch (error) {
-        logger.error('Error processing stream:', error);
+        logger.error("Error processing stream:", error);
       }
     })();
 
@@ -114,24 +117,24 @@ async function enhancerAction({ context, request }: ActionFunctionArgs) {
     return new Response(result.textStream, {
       status: 200,
       headers: {
-        'Content-Type': 'text/event-stream',
-        Connection: 'keep-alive',
-        'Cache-Control': 'no-cache',
+        "Content-Type": "text/event-stream",
+        Connection: "keep-alive",
+        "Cache-Control": "no-cache",
       },
     });
   } catch (error: unknown) {
     console.log(error);
 
-    if (error instanceof Error && error.message?.includes('API key')) {
-      throw new Response('Invalid or missing API key', {
+    if (error instanceof Error && error.message?.includes("API key")) {
+      throw new Response("Invalid or missing API key", {
         status: 401,
-        statusText: 'Unauthorized',
+        statusText: "Unauthorized",
       });
     }
 
     throw new Response(null, {
       status: 500,
-      statusText: 'Internal Server Error',
+      statusText: "Internal Server Error",
     });
   }
 }

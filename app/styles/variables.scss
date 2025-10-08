@@ -1,86 +1,106 @@
 /* Color Tokens Light Theme */
 :root,
-:root[data-theme='light'] {
-  --codinit-elements-borderColor: theme('colors.alpha.gray.10');
-  --codinit-elements-borderColorActive: theme('colors.accent.600');
+:root[data-theme="light"] {
+  --codinit-elements-borderColor: theme("colors.alpha.gray.10");
+  --codinit-elements-borderColorActive: theme("colors.accent.600");
 
-  --codinit-elements-bg-depth-1: theme('colors.white');
-  --codinit-elements-bg-depth-2: theme('colors.gray.50');
-  --codinit-elements-bg-depth-3: theme('colors.gray.200');
-  --codinit-elements-bg-depth-4: theme('colors.alpha.gray.5');
+  --codinit-elements-bg-depth-1: theme("colors.white");
+  --codinit-elements-bg-depth-2: theme("colors.gray.50");
+  --codinit-elements-bg-depth-3: theme("colors.gray.200");
+  --codinit-elements-bg-depth-4: theme("colors.alpha.gray.5");
 
-  --codinit-elements-textPrimary: theme('colors.gray.950');
-  --codinit-elements-textSecondary: theme('colors.gray.600');
-  --codinit-elements-textTertiary: theme('colors.gray.500');
+  --codinit-elements-textPrimary: theme("colors.gray.950");
+  --codinit-elements-textSecondary: theme("colors.gray.600");
+  --codinit-elements-textTertiary: theme("colors.gray.500");
 
-  --codinit-elements-code-background: theme('colors.gray.100');
-  --codinit-elements-code-text: theme('colors.gray.950');
+  --codinit-elements-code-background: theme("colors.gray.100");
+  --codinit-elements-code-text: theme("colors.gray.950");
 
-  --codinit-elements-button-primary-background: theme('colors.alpha.accent.10');
-  --codinit-elements-button-primary-backgroundHover: theme('colors.alpha.accent.20');
-  --codinit-elements-button-primary-text: theme('colors.accent.500');
+  --codinit-elements-button-primary-background: theme("colors.alpha.accent.10");
+  --codinit-elements-button-primary-backgroundHover: theme(
+    "colors.alpha.accent.20"
+  );
+  --codinit-elements-button-primary-text: theme("colors.accent.500");
 
-  --codinit-elements-button-secondary-background: theme('colors.alpha.gray.5');
-  --codinit-elements-button-secondary-backgroundHover: theme('colors.alpha.gray.10');
-  --codinit-elements-button-secondary-text: theme('colors.gray.950');
+  --codinit-elements-button-secondary-background: theme("colors.alpha.gray.5");
+  --codinit-elements-button-secondary-backgroundHover: theme(
+    "colors.alpha.gray.10"
+  );
+  --codinit-elements-button-secondary-text: theme("colors.gray.950");
 
-  --codinit-elements-button-danger-background: theme('colors.alpha.red.10');
-  --codinit-elements-button-danger-backgroundHover: theme('colors.alpha.red.20');
-  --codinit-elements-button-danger-text: theme('colors.red.500');
+  --codinit-elements-button-danger-background: theme("colors.alpha.red.10");
+  --codinit-elements-button-danger-backgroundHover: theme(
+    "colors.alpha.red.20"
+  );
+  --codinit-elements-button-danger-text: theme("colors.red.500");
 
-  --codinit-elements-item-contentDefault: theme('colors.alpha.gray.50');
-  --codinit-elements-item-contentActive: theme('colors.gray.950');
-  --codinit-elements-item-contentAccent: theme('colors.accent.700');
-  --codinit-elements-item-contentDanger: theme('colors.red.500');
+  --codinit-elements-item-contentDefault: theme("colors.alpha.gray.50");
+  --codinit-elements-item-contentActive: theme("colors.gray.950");
+  --codinit-elements-item-contentAccent: theme("colors.accent.700");
+  --codinit-elements-item-contentDanger: theme("colors.red.500");
   --codinit-elements-item-backgroundDefault: rgba(0, 0, 0, 0);
-  --codinit-elements-item-backgroundActive: theme('colors.alpha.gray.5');
-  --codinit-elements-item-backgroundAccent: theme('colors.alpha.accent.10');
-  --codinit-elements-item-backgroundDanger: theme('colors.alpha.red.10');
+  --codinit-elements-item-backgroundActive: theme("colors.alpha.gray.5");
+  --codinit-elements-item-backgroundAccent: theme("colors.alpha.accent.10");
+  --codinit-elements-item-backgroundDanger: theme("colors.alpha.red.10");
 
-  --codinit-elements-loader-background: theme('colors.alpha.gray.10');
-  --codinit-elements-loader-progress: theme('colors.accent.500');
+  --codinit-elements-loader-background: theme("colors.alpha.gray.10");
+  --codinit-elements-loader-progress: theme("colors.accent.500");
 
-  --codinit-elements-artifacts-background: theme('colors.white');
-  --codinit-elements-artifacts-backgroundHover: theme('colors.alpha.gray.2');
+  --codinit-elements-artifacts-background: theme("colors.white");
+  --codinit-elements-artifacts-backgroundHover: theme("colors.alpha.gray.2");
   --codinit-elements-artifacts-borderColor: var(--codinit-elements-borderColor);
-  --codinit-elements-artifacts-inlineCode-background: theme('colors.gray.100');
-  --codinit-elements-artifacts-inlineCode-text: var(--codinit-elements-textPrimary);
+  --codinit-elements-artifacts-inlineCode-background: theme("colors.gray.100");
+  --codinit-elements-artifacts-inlineCode-text: var(
+    --codinit-elements-textPrimary
+  );
 
-  --codinit-elements-actions-background: theme('colors.white');
-  --codinit-elements-actions-code-background: theme('colors.gray.800');
+  --codinit-elements-actions-background: theme("colors.white");
+  --codinit-elements-actions-code-background: theme("colors.gray.800");
 
-  --codinit-elements-messages-background: theme('colors.gray.100');
-  --codinit-elements-messages-linkColor: theme('colors.accent.500');
-  --codinit-elements-messages-code-background: theme('colors.gray.800');
-  --codinit-elements-messages-inlineCode-background: theme('colors.gray.200');
-  --codinit-elements-messages-inlineCode-text: theme('colors.gray.800');
+  --codinit-elements-messages-background: theme("colors.gray.100");
+  --codinit-elements-messages-linkColor: theme("colors.accent.500");
+  --codinit-elements-messages-code-background: theme("colors.gray.800");
+  --codinit-elements-messages-inlineCode-background: theme("colors.gray.200");
+  --codinit-elements-messages-inlineCode-text: theme("colors.gray.800");
 
-  --codinit-elements-icon-success: theme('colors.green.500');
-  --codinit-elements-icon-error: theme('colors.red.500');
-  --codinit-elements-icon-primary: theme('colors.gray.950');
-  --codinit-elements-icon-secondary: theme('colors.gray.600');
-  --codinit-elements-icon-tertiary: theme('colors.gray.500');
+  --codinit-elements-icon-success: theme("colors.green.500");
+  --codinit-elements-icon-error: theme("colors.red.500");
+  --codinit-elements-icon-primary: theme("colors.gray.950");
+  --codinit-elements-icon-secondary: theme("colors.gray.600");
+  --codinit-elements-icon-tertiary: theme("colors.gray.500");
 
-  --codinit-elements-dividerColor: theme('colors.gray.100');
+  --codinit-elements-dividerColor: theme("colors.gray.100");
 
-  --codinit-elements-prompt-background: theme('colors.alpha.white.80');
+  --codinit-elements-prompt-background: theme("colors.alpha.white.80");
 
-  --codinit-elements-sidebar-dropdownShadow: theme('colors.alpha.gray.10');
-  --codinit-elements-sidebar-buttonBackgroundDefault: theme('colors.alpha.accent.10');
-  --codinit-elements-sidebar-buttonBackgroundHover: theme('colors.alpha.accent.20');
-  --codinit-elements-sidebar-buttonText: theme('colors.accent.700');
+  --codinit-elements-sidebar-dropdownShadow: theme("colors.alpha.gray.10");
+  --codinit-elements-sidebar-buttonBackgroundDefault: theme(
+    "colors.alpha.accent.10"
+  );
+  --codinit-elements-sidebar-buttonBackgroundHover: theme(
+    "colors.alpha.accent.20"
+  );
+  --codinit-elements-sidebar-buttonText: theme("colors.accent.700");
 
-  --codinit-elements-preview-addressBar-background: theme('colors.gray.100');
-  --codinit-elements-preview-addressBar-backgroundHover: theme('colors.alpha.gray.5');
-  --codinit-elements-preview-addressBar-backgroundActive: theme('colors.white');
-  --codinit-elements-preview-addressBar-text: var(--codinit-elements-textSecondary);
-  --codinit-elements-preview-addressBar-textActive: var(--codinit-elements-textPrimary);
+  --codinit-elements-preview-addressBar-background: theme("colors.gray.100");
+  --codinit-elements-preview-addressBar-backgroundHover: theme(
+    "colors.alpha.gray.5"
+  );
+  --codinit-elements-preview-addressBar-backgroundActive: theme("colors.white");
+  --codinit-elements-preview-addressBar-text: var(
+    --codinit-elements-textSecondary
+  );
+  --codinit-elements-preview-addressBar-textActive: var(
+    --codinit-elements-textPrimary
+  );
 
-  --codinit-elements-terminals-background: theme('colors.white');
-  --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-4);
+  --codinit-elements-terminals-background: theme("colors.white");
+  --codinit-elements-terminals-buttonBackground: var(
+    --codinit-elements-bg-depth-4
+  );
 
-  --codinit-elements-cta-background: theme('colors.gray.100');
-  --codinit-elements-cta-text: theme('colors.gray.950');
+  --codinit-elements-cta-background: theme("colors.gray.100");
+  --codinit-elements-cta-text: theme("colors.gray.950");
 
   /* Terminal Colors */
   --codinit-terminal-background: var(--codinit-elements-terminals-background);
@@ -102,93 +122,122 @@
   --codinit-terminal-brightMagenta: #bc05bc;
   --codinit-terminal-brightCyan: #0598bc;
   --codinit-terminal-brightWhite: #a5a5a5;
-  --modern-scrollbar-thumb-background: rgba(100, 100, 100, 0.3); // Example light theme color
+  --modern-scrollbar-thumb-background: rgba(
+    100,
+    100,
+    100,
+    0.3
+  ); // Example light theme color
   --modern-scrollbar-thumb-backgroundHover: rgba(74, 74, 74, 0.8);
 }
 
 /* Color Tokens Dark Theme */
 :root,
-:root[data-theme='dark'] {
-  --codinit-elements-borderColor: theme('colors.alpha.white.10');
-  --codinit-elements-borderColorActive: theme('colors.accent.500');
+:root[data-theme="dark"] {
+  --codinit-elements-borderColor: theme("colors.alpha.white.10");
+  --codinit-elements-borderColorActive: theme("colors.accent.500");
 
-  --codinit-elements-bg-depth-1: theme('colors.gray.950');
-  --codinit-elements-bg-depth-2: theme('colors.gray.900');
-  --codinit-elements-bg-depth-3: theme('colors.gray.800');
-  --codinit-elements-bg-depth-4: theme('colors.alpha.white.5');
+  --codinit-elements-bg-depth-1: theme("colors.gray.950");
+  --codinit-elements-bg-depth-2: theme("colors.gray.900");
+  --codinit-elements-bg-depth-3: theme("colors.gray.800");
+  --codinit-elements-bg-depth-4: theme("colors.alpha.white.5");
 
-  --codinit-elements-textPrimary: theme('colors.white');
-  --codinit-elements-textSecondary: theme('colors.gray.400');
-  --codinit-elements-textTertiary: theme('colors.gray.500');
+  --codinit-elements-textPrimary: theme("colors.white");
+  --codinit-elements-textSecondary: theme("colors.gray.400");
+  --codinit-elements-textTertiary: theme("colors.gray.500");
 
-  --codinit-elements-code-background: theme('colors.gray.800');
-  --codinit-elements-code-text: theme('colors.white');
+  --codinit-elements-code-background: theme("colors.gray.800");
+  --codinit-elements-code-text: theme("colors.white");
 
-  --codinit-elements-button-primary-background: theme('colors.alpha.accent.10');
-  --codinit-elements-button-primary-backgroundHover: theme('colors.alpha.accent.20');
-  --codinit-elements-button-primary-text: theme('colors.accent.500');
+  --codinit-elements-button-primary-background: theme("colors.alpha.accent.10");
+  --codinit-elements-button-primary-backgroundHover: theme(
+    "colors.alpha.accent.20"
+  );
+  --codinit-elements-button-primary-text: theme("colors.accent.500");
 
-  --codinit-elements-button-secondary-background: theme('colors.alpha.white.5');
-  --codinit-elements-button-secondary-backgroundHover: theme('colors.alpha.white.10');
-  --codinit-elements-button-secondary-text: theme('colors.white');
+  --codinit-elements-button-secondary-background: theme("colors.alpha.white.5");
+  --codinit-elements-button-secondary-backgroundHover: theme(
+    "colors.alpha.white.10"
+  );
+  --codinit-elements-button-secondary-text: theme("colors.white");
 
-  --codinit-elements-button-danger-background: theme('colors.alpha.red.10');
-  --codinit-elements-button-danger-backgroundHover: theme('colors.alpha.red.20');
-  --codinit-elements-button-danger-text: theme('colors.red.500');
+  --codinit-elements-button-danger-background: theme("colors.alpha.red.10");
+  --codinit-elements-button-danger-backgroundHover: theme(
+    "colors.alpha.red.20"
+  );
+  --codinit-elements-button-danger-text: theme("colors.red.500");
 
-  --codinit-elements-item-contentDefault: theme('colors.alpha.white.50');
-  --codinit-elements-item-contentActive: theme('colors.white');
-  --codinit-elements-item-contentAccent: theme('colors.accent.500');
-  --codinit-elements-item-contentDanger: theme('colors.red.500');
+  --codinit-elements-item-contentDefault: theme("colors.alpha.white.50");
+  --codinit-elements-item-contentActive: theme("colors.white");
+  --codinit-elements-item-contentAccent: theme("colors.accent.500");
+  --codinit-elements-item-contentDanger: theme("colors.red.500");
   --codinit-elements-item-backgroundDefault: rgba(255, 255, 255, 0);
-  --codinit-elements-item-backgroundActive: theme('colors.alpha.white.10');
-  --codinit-elements-item-backgroundAccent: theme('colors.alpha.accent.10');
-  --codinit-elements-item-backgroundDanger: theme('colors.alpha.red.10');
+  --codinit-elements-item-backgroundActive: theme("colors.alpha.white.10");
+  --codinit-elements-item-backgroundAccent: theme("colors.alpha.accent.10");
+  --codinit-elements-item-backgroundDanger: theme("colors.alpha.red.10");
 
-  --codinit-elements-loader-background: theme('colors.alpha.gray.10');
-  --codinit-elements-loader-progress: theme('colors.accent.500');
+  --codinit-elements-loader-background: theme("colors.alpha.gray.10");
+  --codinit-elements-loader-progress: theme("colors.accent.500");
 
-  --codinit-elements-artifacts-background: theme('colors.gray.900');
-  --codinit-elements-artifacts-backgroundHover: theme('colors.alpha.white.5');
+  --codinit-elements-artifacts-background: theme("colors.gray.900");
+  --codinit-elements-artifacts-backgroundHover: theme("colors.alpha.white.5");
   --codinit-elements-artifacts-borderColor: var(--codinit-elements-borderColor);
-  --codinit-elements-artifacts-inlineCode-background: theme('colors.gray.800');
-  --codinit-elements-artifacts-inlineCode-text: theme('colors.white');
+  --codinit-elements-artifacts-inlineCode-background: theme("colors.gray.800");
+  --codinit-elements-artifacts-inlineCode-text: theme("colors.white");
 
-  --codinit-elements-actions-background: theme('colors.gray.900');
-  --codinit-elements-actions-code-background: theme('colors.gray.800');
+  --codinit-elements-actions-background: theme("colors.gray.900");
+  --codinit-elements-actions-code-background: theme("colors.gray.800");
 
-  --codinit-elements-messages-background: theme('colors.gray.800');
-  --codinit-elements-messages-linkColor: theme('colors.accent.500');
-  --codinit-elements-messages-code-background: theme('colors.gray.900');
-  --codinit-elements-messages-inlineCode-background: theme('colors.gray.700');
-  --codinit-elements-messages-inlineCode-text: var(--codinit-elements-textPrimary);
+  --codinit-elements-messages-background: theme("colors.gray.800");
+  --codinit-elements-messages-linkColor: theme("colors.accent.500");
+  --codinit-elements-messages-code-background: theme("colors.gray.900");
+  --codinit-elements-messages-inlineCode-background: theme("colors.gray.700");
+  --codinit-elements-messages-inlineCode-text: var(
+    --codinit-elements-textPrimary
+  );
 
-  --codinit-elements-icon-success: theme('colors.green.400');
-  --codinit-elements-icon-error: theme('colors.red.400');
-  --codinit-elements-icon-primary: theme('colors.gray.950');
-  --codinit-elements-icon-secondary: theme('colors.gray.600');
-  --codinit-elements-icon-tertiary: theme('colors.gray.500');
+  --codinit-elements-icon-success: theme("colors.green.400");
+  --codinit-elements-icon-error: theme("colors.red.400");
+  --codinit-elements-icon-primary: theme("colors.gray.950");
+  --codinit-elements-icon-secondary: theme("colors.gray.600");
+  --codinit-elements-icon-tertiary: theme("colors.gray.500");
 
-  --codinit-elements-dividerColor: theme('colors.gray.100');
+  --codinit-elements-dividerColor: theme("colors.gray.100");
 
-  --codinit-elements-prompt-background: theme('colors.alpha.gray.80');
+  --codinit-elements-prompt-background: theme("colors.alpha.gray.80");
 
-  --codinit-elements-sidebar-dropdownShadow: theme('colors.alpha.gray.30');
-  --codinit-elements-sidebar-buttonBackgroundDefault: theme('colors.alpha.accent.10');
-  --codinit-elements-sidebar-buttonBackgroundHover: theme('colors.alpha.accent.20');
-  --codinit-elements-sidebar-buttonText: theme('colors.accent.500');
+  --codinit-elements-sidebar-dropdownShadow: theme("colors.alpha.gray.30");
+  --codinit-elements-sidebar-buttonBackgroundDefault: theme(
+    "colors.alpha.accent.10"
+  );
+  --codinit-elements-sidebar-buttonBackgroundHover: theme(
+    "colors.alpha.accent.20"
+  );
+  --codinit-elements-sidebar-buttonText: theme("colors.accent.500");
 
-  --codinit-elements-preview-addressBar-background: var(--codinit-elements-bg-depth-1);
-  --codinit-elements-preview-addressBar-backgroundHover: theme('colors.alpha.white.5');
-  --codinit-elements-preview-addressBar-backgroundActive: var(--codinit-elements-bg-depth-1);
-  --codinit-elements-preview-addressBar-text: var(--codinit-elements-textSecondary);
-  --codinit-elements-preview-addressBar-textActive: var(--codinit-elements-textPrimary);
+  --codinit-elements-preview-addressBar-background: var(
+    --codinit-elements-bg-depth-1
+  );
+  --codinit-elements-preview-addressBar-backgroundHover: theme(
+    "colors.alpha.white.5"
+  );
+  --codinit-elements-preview-addressBar-backgroundActive: var(
+    --codinit-elements-bg-depth-1
+  );
+  --codinit-elements-preview-addressBar-text: var(
+    --codinit-elements-textSecondary
+  );
+  --codinit-elements-preview-addressBar-textActive: var(
+    --codinit-elements-textPrimary
+  );
 
   --codinit-elements-terminals-background: var(--codinit-elements-bg-depth-1);
-  --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-3);
+  --codinit-elements-terminals-buttonBackground: var(
+    --codinit-elements-bg-depth-3
+  );
 
-  --codinit-elements-cta-background: theme('colors.alpha.white.10');
-  --codinit-elements-cta-text: theme('colors.white');
+  --codinit-elements-cta-background: theme("colors.alpha.white.10");
+  --codinit-elements-cta-text: theme("colors.white");
 
   /* Terminal Colors */
   --codinit-terminal-background: var(--codinit-elements-terminals-background);
@@ -210,7 +259,12 @@
   --codinit-terminal-brightMagenta: #ff6ac1;
   --codinit-terminal-brightCyan: #9aedfe;
   --codinit-terminal-brightWhite: #f1f1f0;
-  --modern-scrollbar-thumb-background: rgba(100, 100, 100, 0.3); // Example dark theme color (adjust as needed)
+  --modern-scrollbar-thumb-background: rgba(
+    100,
+    100,
+    100,
+    0.3
+  ); // Example dark theme color (adjust as needed)
   --modern-scrollbar-thumb-backgroundHover: rgba(10, 10, 10, 0.8);
 }
 
@@ -221,8 +275,8 @@
  */
 :root {
   --header-height: 54px;
-  --chat-max-width: 33rem;
-  --chat-min-width: 533px;
+  --chat-max-width: 35rem;
+  --chat-min-width: 575px;
   --workbench-width: min(calc(100% - var(--chat-min-width)), 2536px);
   --workbench-inner-width: var(--workbench-width);
   --workbench-left: calc(100% - var(--workbench-width));
@@ -232,10 +286,14 @@
   --toastify-color-progress-error: var(--codinit-elements-icon-error);
 
   /* Terminal */
-  --codinit-elements-terminal-backgroundColor: var(--codinit-terminal-background);
+  --codinit-elements-terminal-backgroundColor: var(
+    --codinit-terminal-background
+  );
   --codinit-elements-terminal-textColor: var(--codinit-terminal-foreground);
   --codinit-elements-terminal-cursorColor: var(--codinit-terminal-foreground);
-  --codinit-elements-terminal-selection-backgroundColor: var(--codinit-terminal-selection-background);
+  --codinit-elements-terminal-selection-backgroundColor: var(
+    --codinit-terminal-selection-background
+  );
   --codinit-elements-terminal-color-black: var(--codinit-terminal-black);
   --codinit-elements-terminal-color-red: var(--codinit-terminal-red);
   --codinit-elements-terminal-color-green: var(--codinit-terminal-green);
@@ -244,12 +302,28 @@
   --codinit-elements-terminal-color-magenta: var(--codinit-terminal-magenta);
   --codinit-elements-terminal-color-cyan: var(--codinit-terminal-cyan);
   --codinit-elements-terminal-color-white: var(--codinit-terminal-white);
-  --codinit-elements-terminal-color-brightBlack: var(--codinit-terminal-brightBlack);
-  --codinit-elements-terminal-color-brightRed: var(--codinit-terminal-brightRed);
-  --codinit-elements-terminal-color-brightGreen: var(--codinit-terminal-brightGreen);
-  --codinit-elements-terminal-color-brightYellow: var(--codinit-terminal-brightYellow);
-  --codinit-elements-terminal-color-brightBlue: var(--codinit-terminal-brightBlue);
-  --codinit-elements-terminal-color-brightMagenta: var(--codinit-terminal-brightMagenta);
-  --codinit-elements-terminal-color-brightCyan: var(--codinit-terminal-brightCyan);
-  --codinit-elements-terminal-color-brightWhite: var(--codinit-terminal-brightWhite);
+  --codinit-elements-terminal-color-brightBlack: var(
+    --codinit-terminal-brightBlack
+  );
+  --codinit-elements-terminal-color-brightRed: var(
+    --codinit-terminal-brightRed
+  );
+  --codinit-elements-terminal-color-brightGreen: var(
+    --codinit-terminal-brightGreen
+  );
+  --codinit-elements-terminal-color-brightYellow: var(
+    --codinit-terminal-brightYellow
+  );
+  --codinit-elements-terminal-color-brightBlue: var(
+    --codinit-terminal-brightBlue
+  );
+  --codinit-elements-terminal-color-brightMagenta: var(
+    --codinit-terminal-brightMagenta
+  );
+  --codinit-elements-terminal-color-brightCyan: var(
+    --codinit-terminal-brightCyan
+  );
+  --codinit-elements-terminal-color-brightWhite: var(
+    --codinit-terminal-brightWhite
+  );
 }

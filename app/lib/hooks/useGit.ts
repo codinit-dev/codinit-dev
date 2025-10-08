@@ -1,13 +1,19 @@
-import type { WebContainer } from '@webcontainer/api';
-import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 'react';
-import { webcontainer as webcontainerPromise } from '~/lib/webcontainer';
-import git, { type GitAuth, type PromiseFsClient } from 'isomorphic-git';
-import http from 'isomorphic-git/http/web';
-import Cookies from 'js-cookie';
-import { toast } from 'react-toastify';
+import type { WebContainer } from "@webcontainer/api";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type MutableRefObject,
+} from "react";
+import { webcontainer as webcontainerPromise } from "~/lib/webcontainer";
+import git, { type GitAuth, type PromiseFsClient } from "isomorphic-git";
+import http from "isomorphic-git/http/web";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const lookupSavedPassword = (url: string) => {
-  const domain = url.split('/')[2];
+  const domain = url.split("/")[2];
   const gitCreds = Cookies.get(`git:${domain}`);
 
   if (!gitCreds) {
@@ -15,7 +21,7 @@ const lookupSavedPassword = (url: string) => {
   }
 
   try {
-    const { username, password } = JSON.parse(gitCreds || '{}');
+    const { username, password } = JSON.parse(gitCreds || "{}");
     return { username, password };
   } catch (error) {
     console.log(`Failed to parse Git Cookie ${error}`);
@@ -24,7 +30,7 @@ const lookupSavedPassword = (url: string) => {
 };
 
 const saveGitAuth = (url: string, auth: GitAuth) => {
-  const domain = url.split('/')[2];
+  const domain = url.split("/")[2];
   Cookies.set(`git:${domain}`, JSON.stringify(auth));
 };
 
@@ -45,17 +51,12 @@ export function useGit() {
   const gitClone = useCallback(
     async (url: string, retryCount = 0) => {
       if (!webcontainer || !fs || !ready) {
-        throw new Error('Webcontainer not initialized. Please try again later.');
+        throw new Error(
+          "Webcontainer not initialized. Please try again later.",
+        );
       }
 
       fileData.current = {};
-
-      let branch: string | undefined;
-      let baseUrl = url;
-
-      if (url.includes('#')) {
-        [baseUrl, branch] = url.split('#');
-      }
 
       /*
        * Skip Git initialization for now - let isomorphic-git handle it
@@ -65,19 +66,21 @@ export function useGit() {
       const headers: {
         [x: string]: string;
       } = {
-        'User-Agent': 'codinit.dev',
+        "User-Agent": "codinit.dev",
       };
 
       const auth = lookupSavedPassword(url);
 
       if (auth) {
-        headers.Authorization = `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`;
+        headers.Authorization = `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString("base64")}`;
       }
 
       try {
         // Add a small delay before retrying to allow for network recovery
         if (retryCount > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
+          await new Promise((resolve) =>
+            setTimeout(resolve, 1000 * retryCount),
+          );
           console.log(`Retrying git clone (attempt ${retryCount + 1})...`);
         }
 
@@ -85,47 +88,51 @@ export function useGit() {
           fs,
           http,
           dir: webcontainer.workdir,
-          url: baseUrl,
+          url,
           depth: 1,
           singleBranch: true,
-          ref: branch,
-          corsProxy: '/api/git-proxy',
+          corsProxy: "/api/git-proxy",
           headers,
           onProgress: (event) => {
-            console.log('Git clone progress:', event);
+            console.log("Git clone progress:", event);
           },
-          onAuth: (baseUrl) => {
-            let auth = lookupSavedPassword(baseUrl);
+          onAuth: (url) => {
+            let auth = lookupSavedPassword(url);
 
             if (auth) {
-              console.log('Using saved authentication for', baseUrl);
+              console.log("Using saved authentication for", url);
               return auth;
             }
 
-            console.log('Repository requires authentication:', baseUrl);
+            console.log("Repository requires authentication:", url);
 
-            if (confirm('This repository requires authentication. Would you like to enter your GitHub credentials?')) {
+            if (
+              confirm(
+                "This repository requires authentication. Would you like to enter your GitHub credentials?",
+              )
+            ) {
               auth = {
-                username: prompt('Enter username') || '',
-                password: prompt('Enter password or personal access token') || '',
+                username: prompt("Enter username") || "",
+                password:
+                  prompt("Enter password or personal access token") || "",
               };
               return auth;
             } else {
               return { cancel: true };
             }
           },
-          onAuthFailure: (baseUrl, _auth) => {
-            console.error(`Authentication failed for ${baseUrl}`);
+          onAuthFailure: (url, _auth) => {
+            console.error(`Authentication failed for ${url}`);
             toast.error(
-              `Authentication failed for ${baseUrl.split('/')[2]}. Please check your credentials and try again.`,
+              `Authentication failed for ${url.split("/")[2]}. Please check your credentials and try again.`,
             );
             throw new Error(
-              `Authentication failed for ${baseUrl.split('/')[2]}. Please check your credentials and try again.`,
+              `Authentication failed for ${url.split("/")[2]}. Please check your credentials and try again.`,
             );
           },
-          onAuthSuccess: (baseUrl, auth) => {
-            console.log(`Authentication successful for ${baseUrl}`);
-            saveGitAuth(baseUrl, auth);
+          onAuthSuccess: (url, auth) => {
+            console.log(`Authentication successful for ${url}`);
+            saveGitAuth(url, auth);
           },
         });
 
@@ -137,21 +144,26 @@ export function useGit() {
 
         return { workdir: webcontainer.workdir, data };
       } catch (error) {
-        console.error('Git clone error:', error);
+        console.error("Git clone error:", error);
 
         // Handle specific error types
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
 
         // Check for common error patterns
-        if (errorMessage.includes('Authentication failed')) {
-          toast.error(`Authentication failed. Please check your GitHub credentials and try again.`);
+        if (errorMessage.includes("Authentication failed")) {
+          toast.error(
+            `Authentication failed. Please check your GitHub credentials and try again.`,
+          );
           throw error;
         } else if (
-          errorMessage.includes('ENOTFOUND') ||
-          errorMessage.includes('ETIMEDOUT') ||
-          errorMessage.includes('ECONNREFUSED')
+          errorMessage.includes("ENOTFOUND") ||
+          errorMessage.includes("ETIMEDOUT") ||
+          errorMessage.includes("ECONNREFUSED")
         ) {
-          toast.error(`Network error while connecting to repository. Please check your internet connection.`);
+          toast.error(
+            `Network error while connecting to repository. Please check your internet connection.`,
+          );
 
           // Retry for network errors, up to 3 times
           if (retryCount < 3) {
@@ -161,11 +173,17 @@ export function useGit() {
           throw new Error(
             `Failed to connect to repository after multiple attempts. Please check your internet connection.`,
           );
-        } else if (errorMessage.includes('404')) {
-          toast.error(`Repository not found. Please check the URL and make sure the repository exists.`);
-          throw new Error(`Repository not found. Please check the URL and make sure the repository exists.`);
-        } else if (errorMessage.includes('401')) {
-          toast.error(`Unauthorized access to repository. Please connect your GitHub account with proper permissions.`);
+        } else if (errorMessage.includes("404")) {
+          toast.error(
+            `Repository not found. Please check the URL and make sure the repository exists.`,
+          );
+          throw new Error(
+            `Repository not found. Please check the URL and make sure the repository exists.`,
+          );
+        } else if (errorMessage.includes("401")) {
+          toast.error(
+            `Unauthorized access to repository. Please connect your GitHub account with proper permissions.`,
+          );
           throw new Error(
             `Unauthorized access to repository. Please connect your GitHub account with proper permissions.`,
           );
@@ -213,8 +231,12 @@ const getFs = (
           return result;
         } else {
           // For text data, use the encoding if provided
-          const encoding = options?.encoding || 'utf8';
-          const result = await webcontainer.fs.writeFile(relativePath, data, encoding);
+          const encoding = options?.encoding || "utf8";
+          const result = await webcontainer.fs.writeFile(
+            relativePath,
+            data,
+            encoding,
+          );
 
           return result;
         }
@@ -226,7 +248,10 @@ const getFs = (
       const relativePath = pathUtils.relative(webcontainer.workdir, path);
 
       try {
-        const result = await webcontainer.fs.mkdir(relativePath, { ...options, recursive: true });
+        const result = await webcontainer.fs.mkdir(relativePath, {
+          ...options,
+          recursive: true,
+        });
 
         return result;
       } catch (error) {
@@ -248,7 +273,9 @@ const getFs = (
       const relativePath = pathUtils.relative(webcontainer.workdir, path);
 
       try {
-        const result = await webcontainer.fs.rm(relativePath, { ...(options || {}) });
+        const result = await webcontainer.fs.rm(relativePath, {
+          ...(options || {}),
+        });
 
         return result;
       } catch (error) {
@@ -259,7 +286,10 @@ const getFs = (
       const relativePath = pathUtils.relative(webcontainer.workdir, path);
 
       try {
-        const result = await webcontainer.fs.rm(relativePath, { recursive: true, ...options });
+        const result = await webcontainer.fs.rm(relativePath, {
+          recursive: true,
+          ...options,
+        });
 
         return result;
       } catch (error) {
@@ -282,7 +312,7 @@ const getFs = (
         const fileName = pathUtils.basename(relativePath);
 
         // Special handling for .git/index file
-        if (relativePath === '.git/index') {
+        if (relativePath === ".git/index") {
           return {
             isFile: () => true,
             isDirectory: () => false,
@@ -308,14 +338,18 @@ const getFs = (
           };
         }
 
-        const resp = await webcontainer.fs.readdir(dirPath, { withFileTypes: true });
+        const resp = await webcontainer.fs.readdir(dirPath, {
+          withFileTypes: true,
+        });
         const fileInfo = resp.find((x) => x.name === fileName);
 
         if (!fileInfo) {
-          const err = new Error(`ENOENT: no such file or directory, stat '${path}'`) as NodeJS.ErrnoException;
-          err.code = 'ENOENT';
+          const err = new Error(
+            `ENOENT: no such file or directory, stat '${path}'`,
+          ) as NodeJS.ErrnoException;
+          err.code = "ENOENT";
           err.errno = -2;
-          err.syscall = 'stat';
+          err.syscall = "stat";
           err.path = path;
           throw err;
         }
@@ -345,9 +379,9 @@ const getFs = (
         };
       } catch (error: any) {
         if (!error.code) {
-          error.code = 'ENOENT';
+          error.code = "ENOENT";
           error.errno = -2;
-          error.syscall = 'stat';
+          error.syscall = "stat";
           error.path = path;
         }
 
@@ -365,7 +399,9 @@ const getFs = (
        * Since WebContainer doesn't support symlinks,
        * we'll throw a "operation not supported" error
        */
-      throw new Error(`EPERM: operation not permitted, symlink '${target}' -> '${path}'`);
+      throw new Error(
+        `EPERM: operation not permitted, symlink '${target}' -> '${path}'`,
+      );
     },
 
     chmod: async (_path: string, _mode: number) => {
@@ -381,23 +417,23 @@ const getFs = (
 const pathUtils = {
   dirname: (path: string) => {
     // Handle empty or just filename cases
-    if (!path || !path.includes('/')) {
-      return '.';
+    if (!path || !path.includes("/")) {
+      return ".";
     }
 
     // Remove trailing slashes
-    path = path.replace(/\/+$/, '');
+    path = path.replace(/\/+$/, "");
 
     // Get directory part
-    return path.split('/').slice(0, -1).join('/') || '/';
+    return path.split("/").slice(0, -1).join("/") || "/";
   },
 
   basename: (path: string, ext?: string) => {
     // Remove trailing slashes
-    path = path.replace(/\/+$/, '');
+    path = path.replace(/\/+$/, "");
 
     // Get the last part of the path
-    const base = path.split('/').pop() || '';
+    const base = path.split("/").pop() || "";
 
     // If extension is provided, remove it from the result
     if (ext && base.endsWith(ext)) {
@@ -409,11 +445,12 @@ const pathUtils = {
   relative: (from: string, to: string): string => {
     // Handle empty inputs
     if (!from || !to) {
-      return '.';
+      return ".";
     }
 
     // Normalize paths by removing trailing slashes and splitting
-    const normalizePathParts = (p: string) => p.replace(/\/+$/, '').split('/').filter(Boolean);
+    const normalizePathParts = (p: string) =>
+      p.replace(/\/+$/, "").split("/").filter(Boolean);
 
     const fromParts = normalizePathParts(from);
     const toParts = normalizePathParts(to);
@@ -437,9 +474,9 @@ const pathUtils = {
     const remainingPath = toParts.slice(commonLength);
 
     // Construct the relative path
-    const relativeParts = [...Array(upCount).fill('..'), ...remainingPath];
+    const relativeParts = [...Array(upCount).fill(".."), ...remainingPath];
 
     // Handle empty result case
-    return relativeParts.length === 0 ? '.' : relativeParts.join('/');
+    return relativeParts.length === 0 ? "." : relativeParts.join("/");
   },
 };

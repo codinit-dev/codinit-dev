@@ -1,4 +1,4 @@
-import { useStore } from '@nanostores/react';
+import { useStore } from "@nanostores/react";
 import {
   isDebugMode,
   isEventLogsEnabled,
@@ -8,6 +8,7 @@ import {
   autoSelectStarterTemplate,
   enableContextOptimizationStore,
   tabConfigurationStore,
+  updateTabConfiguration as updateTabConfig,
   resetTabConfiguration as resetTabConfig,
   updateProviderSettings as updateProviderSettingsStore,
   updateLatestBranch,
@@ -15,16 +16,23 @@ import {
   updateContextOptimization,
   updateEventLogs,
   updatePromptId,
-} from '~/lib/stores/settings';
-import { useCallback, useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import type { IProviderSetting, ProviderInfo, IProviderConfig } from '~/types/model';
-import type { TabWindowConfig } from '~/components/@settings/core/types';
-import { logStore } from '~/lib/stores/logs';
-import { getLocalStorage, setLocalStorage } from '~/lib/persistence';
+} from "~/lib/stores/settings";
+import { useCallback, useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import type {
+  IProviderSetting,
+  ProviderInfo,
+  IProviderConfig,
+} from "~/types/model";
+import type {
+  TabWindowConfig,
+  TabVisibilityConfig,
+} from "~/components/@settings/core/types";
+import { logStore } from "~/lib/stores/logs";
+import { getLocalStorage, setLocalStorage } from "~/lib/persistence";
 
 export interface Settings {
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   language: string;
   notifications: boolean;
   eventLogs: boolean;
@@ -34,7 +42,7 @@ export interface Settings {
 
 export interface UseSettingsReturn {
   // Theme and UI settings
-  setTheme: (theme: Settings['theme']) => void;
+  setTheme: (theme: Settings["theme"]) => void;
   setLanguage: (language: string) => void;
   setNotifications: (enabled: boolean) => void;
   setEventLogs: (enabled: boolean) => void;
@@ -61,6 +69,7 @@ export interface UseSettingsReturn {
 
   // Tab configuration
   tabConfiguration: TabWindowConfig;
+  updateTabConfiguration: (config: TabVisibilityConfig) => void;
   resetTabConfiguration: () => void;
 }
 
@@ -80,13 +89,15 @@ export function useSettings(): UseSettingsReturn {
   const contextOptimizationEnabled = useStore(enableContextOptimizationStore);
   const tabConfiguration = useStore(tabConfigurationStore);
   const [settings, setSettings] = useState<Settings>(() => {
-    const storedSettings = getLocalStorage('settings');
+    const storedSettings = getLocalStorage("settings");
     return {
-      theme: storedSettings?.theme || 'system',
-      language: storedSettings?.language || 'en',
+      theme: storedSettings?.theme || "system",
+      language: storedSettings?.language || "en",
       notifications: storedSettings?.notifications ?? true,
       eventLogs: storedSettings?.eventLogs ?? true,
-      timezone: storedSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone:
+        storedSettings?.timezone ||
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
       tabConfiguration,
     };
   });
@@ -102,25 +113,28 @@ export function useSettings(): UseSettingsReturn {
   const saveSettings = useCallback((newSettings: Partial<Settings>) => {
     setSettings((prev) => {
       const updated = { ...prev, ...newSettings };
-      setLocalStorage('settings', updated);
+      setLocalStorage("settings", updated);
 
       return updated;
     });
   }, []);
 
-  const updateProviderSettings = useCallback((provider: string, config: ProviderSettingWithIndex) => {
-    updateProviderSettingsStore(provider, config);
-  }, []);
+  const updateProviderSettings = useCallback(
+    (provider: string, config: ProviderSettingWithIndex) => {
+      updateProviderSettingsStore(provider, config);
+    },
+    [],
+  );
 
   const enableDebugMode = useCallback((enabled: boolean) => {
     isDebugMode.set(enabled);
-    logStore.logSystem(`Debug mode ${enabled ? 'enabled' : 'disabled'}`);
-    Cookies.set('isDebugEnabled', String(enabled));
+    logStore.logSystem(`Debug mode ${enabled ? "enabled" : "disabled"}`);
+    Cookies.set("isDebugEnabled", String(enabled));
   }, []);
 
   const setEventLogs = useCallback((enabled: boolean) => {
     updateEventLogs(enabled);
-    logStore.logSystem(`Event logs ${enabled ? 'enabled' : 'disabled'}`);
+    logStore.logSystem(`Event logs ${enabled ? "enabled" : "disabled"}`);
   }, []);
 
   const setPromptId = useCallback((id: string) => {
@@ -130,21 +144,27 @@ export function useSettings(): UseSettingsReturn {
 
   const enableLatestBranch = useCallback((enabled: boolean) => {
     updateLatestBranch(enabled);
-    logStore.logSystem(`Main branch updates ${enabled ? 'enabled' : 'disabled'}`);
+    logStore.logSystem(
+      `Main branch updates ${enabled ? "enabled" : "disabled"}`,
+    );
   }, []);
 
   const setAutoSelectTemplate = useCallback((enabled: boolean) => {
     updateAutoSelectTemplate(enabled);
-    logStore.logSystem(`Auto select template ${enabled ? 'enabled' : 'disabled'}`);
+    logStore.logSystem(
+      `Auto select template ${enabled ? "enabled" : "disabled"}`,
+    );
   }, []);
 
   const enableContextOptimization = useCallback((enabled: boolean) => {
     updateContextOptimization(enabled);
-    logStore.logSystem(`Context optimization ${enabled ? 'enabled' : 'disabled'}`);
+    logStore.logSystem(
+      `Context optimization ${enabled ? "enabled" : "disabled"}`,
+    );
   }, []);
 
   const setTheme = useCallback(
-    (theme: Settings['theme']) => {
+    (theme: Settings["theme"]) => {
       saveSettings({ theme });
     },
     [saveSettings],
@@ -177,7 +197,7 @@ export function useSettings(): UseSettingsReturn {
     Object.keys(providers).forEach((provider) => {
       providerSetting[provider] = providers[provider].settings;
     });
-    Cookies.set('providers', JSON.stringify(providerSetting));
+    Cookies.set("providers", JSON.stringify(providerSetting));
   }, [providers]);
 
   return {
@@ -203,6 +223,7 @@ export function useSettings(): UseSettingsReturn {
     setTimezone,
     settings,
     tabConfiguration,
+    updateTabConfiguration: updateTabConfig,
     resetTabConfiguration: resetTabConfig,
   };
 }

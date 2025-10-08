@@ -1,69 +1,65 @@
 appId: com.codinit.dev
-productName: CodinIT.dev
-
+productName: codinit Local
 directories:
   buildResources: build
   output: dist
-
-# Include built files and let electron-builder handle dependencies
 files:
-  - build/electron/**/*
-  - build/client/**/*
-  - build/server/**/*
+  - build/**/*
   - package.json
-  - "!**/.git"
-  - "!dist"
-  - "!src"
-  - "!app"
-  - "!electron"
-  - "!public"
-  - "!tests"
-
-# electron-builder will install production dependencies automatically
-
+  - node_modules/**/*
+  - icons/**
+  - electron-update.yml
 extraMetadata:
   main: build/electron/main/index.mjs
-
-# Disable asar - it can cause hanging issues
-asar: false
+asarUnpack:
+  - resources/**
+  - build/client/**/*
+  - build/server/**/*
+  - electron-update.yml
 
 mac:
-  icon: public/icon.icns
-  target: dmg
+  icon: assets/icons/icon.icns
+  target:
+    - dmg
   identity: null
-  hardenedRuntime: false
+  category: "public.app-category.developer-tools"
+  type: "distribution"
+  hardenedRuntime: true
+  entitlements: "assets/entitlements.mac.plist"
+  entitlementsInherit: "assets/entitlements.mac.plist"
   gatekeeperAssess: false
-  # macOS specific performance options
-  type: development
-
-dmg:
-  title: ${productName} ${version}
-  icon: public/icon.icns
-  background: null
-  window:
-    width: 540
-    height: 380
-  contents:
-    - x: 144
-      y: 180
-      type: file
-    - x: 396
-      y: 180
-      type: link
-      path: /Applications
 
 win:
-  icon: public/icon.png
-  target: nsis
+  icon: assets/icons/icon.ico
+  target:
+    - nsis
+  signDlls: false
+  artifactName: ${name}-${version}-${os}-${arch}.${ext}
 
 linux:
-  icon: public/icon.png
-  target: AppImage
+  icon: assets/icons/icon.png
+  target:
+    - AppImage
+    - deb
+  artifactName: ${name}-${version}-${os}-${arch}.${ext}
+  category: Development
 
-# Performance and security optimizations
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ${productName}
+  artifactName: ${name}-${version}-${os}-${arch}-setup.${ext}
+
 npmRebuild: false
-nodeGypRebuild: false
-buildDependenciesFromSource: false
 
-# Exclude all dev dependencies
-removePackageScripts: true
+publish:
+  provider: github
+  owner: Derek-X-Wang
+  repo: codinit.local
+  private: true
+  releaseType: release
+
+electronDownload:
+  mirror: https://npmmirror.com/mirrors/electron/

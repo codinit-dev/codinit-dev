@@ -1,27 +1,41 @@
-import { atom, computed, map, type MapStore, type WritableAtom } from 'nanostores';
-import type { EditorDocument, ScrollPosition } from '~/components/editor/codemirror/CodeMirrorEditor';
-import type { FileMap, FilesStore } from './files';
-import { createScopedLogger } from '~/utils/logger';
+import {
+  atom,
+  computed,
+  map,
+  type MapStore,
+  type WritableAtom,
+} from "nanostores";
+import type {
+  EditorDocument,
+  ScrollPosition,
+} from "~/components/editor/codemirror/CodeMirrorEditor";
+import type { FileMap, FilesStore } from "./files";
+import { createScopedLogger } from "~/utils/logger";
 
 export type EditorDocuments = Record<string, EditorDocument>;
 
 type SelectedFile = WritableAtom<string | undefined>;
 
-const logger = createScopedLogger('EditorStore');
+const logger = createScopedLogger("EditorStore");
 
 export class EditorStore {
   #filesStore: FilesStore;
 
-  selectedFile: SelectedFile = import.meta.hot?.data.selectedFile ?? atom<string | undefined>();
-  documents: MapStore<EditorDocuments> = import.meta.hot?.data.documents ?? map({});
+  selectedFile: SelectedFile =
+    import.meta.hot?.data.selectedFile ?? atom<string | undefined>();
+  documents: MapStore<EditorDocuments> =
+    import.meta.hot?.data.documents ?? map({});
 
-  currentDocument = computed([this.documents, this.selectedFile], (documents, selectedFile) => {
-    if (!selectedFile) {
-      return undefined;
-    }
+  currentDocument = computed(
+    [this.documents, this.selectedFile],
+    (documents, selectedFile) => {
+      if (!selectedFile) {
+        return undefined;
+      }
 
-    return documents[selectedFile];
-  });
+      return documents[selectedFile];
+    },
+  );
 
   constructor(filesStore: FilesStore) {
     this.#filesStore = filesStore;
@@ -39,7 +53,7 @@ export class EditorStore {
       Object.fromEntries<EditorDocument>(
         Object.entries(files)
           .map(([filePath, dirent]) => {
-            if (dirent === undefined || dirent.type !== 'file') {
+            if (dirent === undefined || dirent.type !== "file") {
               return undefined;
             }
 
@@ -50,7 +64,6 @@ export class EditorStore {
               {
                 value: dirent.content,
                 filePath,
-                isBinary: dirent.isBinary, // Add this line
                 scroll: previousDocument?.scroll,
               },
             ] as [string, EditorDocument];

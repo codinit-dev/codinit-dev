@@ -1,21 +1,27 @@
-import { useStore } from '@nanostores/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { computed } from 'nanostores';
-import { memo, useEffect, useRef, useState } from 'react';
-import { createHighlighter, type BundledLanguage, type BundledTheme, type HighlighterGeneric } from 'shiki';
-import type { ActionState } from '~/lib/runtime/action-runner';
-import { workbenchStore } from '~/lib/stores/workbench';
-import { classNames } from '~/utils/classNames';
-import { cubicEasingFn } from '~/utils/easings';
-import { WORK_DIR } from '~/utils/constants';
+import { useStore } from "@nanostores/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { computed } from "nanostores";
+import { memo, useEffect, useRef, useState } from "react";
+import {
+  createHighlighter,
+  type BundledLanguage,
+  type BundledTheme,
+  type HighlighterGeneric,
+} from "shiki";
+import type { ActionState } from "~/lib/runtime/action-runner";
+import { workbenchStore } from "~/lib/stores/workbench";
+import { classNames } from "~/utils/classNames";
+import { cubicEasingFn } from "~/utils/easings";
+import { WORK_DIR } from "~/utils/constants";
 
 const highlighterOptions = {
-  langs: ['shell'],
-  themes: ['light-plus', 'dark-plus'],
+  langs: ["shell"],
+  themes: ["light-plus", "dark-plus"],
 };
 
 const shellHighlighter: HighlighterGeneric<BundledLanguage, BundledTheme> =
-  import.meta.hot?.data.shellHighlighter ?? (await createHighlighter(highlighterOptions));
+  import.meta.hot?.data.shellHighlighter ??
+  (await createHighlighter(highlighterOptions));
 
 if (import.meta.hot) {
   import.meta.hot.data.shellHighlighter = shellHighlighter;
@@ -23,23 +29,25 @@ if (import.meta.hot) {
 
 interface ArtifactProps {
   messageId: string;
-  artifactId: string;
 }
 
-export const Artifact = memo(({ artifactId }: ArtifactProps) => {
+export const Artifact = memo(({ messageId }: ArtifactProps) => {
   const userToggledActions = useRef(false);
   const [showActions, setShowActions] = useState(false);
   const [allActionFinished, setAllActionFinished] = useState(false);
 
   const artifacts = useStore(workbenchStore.artifacts);
-  const artifact = artifacts[artifactId];
+  const artifact = artifacts[messageId];
 
   const actions = useStore(
     computed(artifact.runner.actions, (actions) => {
       // Filter out Supabase actions except for migrations
       return Object.values(actions).filter((action) => {
         // Exclude actions with type 'supabase' or actions that contain 'supabase' in their content
-        return action.type !== 'supabase' && !(action.type === 'shell' && action.content?.includes('supabase'));
+        return (
+          action.type !== "supabase" &&
+          !(action.type === "shell" && action.content?.includes("supabase"))
+        );
       });
     }),
   );
@@ -54,9 +62,11 @@ export const Artifact = memo(({ artifactId }: ArtifactProps) => {
       setShowActions(true);
     }
 
-    if (actions.length !== 0 && artifact.type === 'bundled') {
+    if (actions.length !== 0 && artifact.type === "bundled") {
       const finished = !actions.find(
-        (action) => action.status !== 'complete' && !(action.type === 'start' && action.status === 'running'),
+        (action) =>
+          action.status !== "complete" &&
+          !(action.type === "start" && action.status === "running"),
       );
 
       if (allActionFinished !== finished) {
@@ -67,14 +77,14 @@ export const Artifact = memo(({ artifactId }: ArtifactProps) => {
 
   // Determine the dynamic title based on state for bundled artifacts
   const dynamicTitle =
-    artifact?.type === 'bundled'
+    artifact?.type === "bundled"
       ? allActionFinished
-        ? artifact.id === 'restored-project-setup'
-          ? 'Project Restored' // Title when restore is complete
-          : 'Project Created' // Title when initial creation is complete
-        : artifact.id === 'restored-project-setup'
-          ? 'Restoring Project...' // Title during restore
-          : 'Creating Project...' // Title during initial creation
+        ? artifact.id === "restored-project-setup"
+          ? "Project Restored" // Title when restore is complete
+          : "Project Created" // Title when initial creation is complete
+        : artifact.id === "restored-project-setup"
+          ? "Restoring Project..." // Title during restore
+          : "Creating Project..." // Title during initial creation
       : artifact?.title; // Fallback to original title for non-bundled or if artifact is missing
 
   return (
@@ -98,27 +108,40 @@ export const Artifact = memo(({ artifactId }: ArtifactProps) => {
               </div>
             </div>
           </button>
-          {artifact.type !== 'bundled' && <div className="bg-codinit-elements-artifacts-borderColor w-[1px]" />}
+          {artifact.type !== "bundled" && (
+            <div className="bg-codinit-elements-artifacts-borderColor w-[1px]" />
+          )}
           <AnimatePresence>
-            {actions.length && artifact.type !== 'bundled' && (
+            {actions.length && artifact.type !== "bundled" && (
               <motion.button
                 initial={{ width: 0 }}
-                animate={{ width: 'auto' }}
+                animate={{ width: "auto" }}
                 exit={{ width: 0 }}
                 transition={{ duration: 0.15, ease: cubicEasingFn }}
                 className="bg-codinit-elements-artifacts-background hover:bg-codinit-elements-artifacts-backgroundHover"
                 onClick={toggleActions}
               >
                 <div className="p-4">
-                  <div className={showActions ? 'i-ph:caret-up-bold' : 'i-ph:caret-down-bold'}></div>
+                  <div
+                    className={
+                      showActions
+                        ? "i-ph:caret-up-bold"
+                        : "i-ph:caret-down-bold"
+                    }
+                  ></div>
                 </div>
               </motion.button>
             )}
           </AnimatePresence>
         </div>
-        {artifact.type === 'bundled' && (
+        {artifact.type === "bundled" && (
           <div className="flex items-center gap-1.5 p-5 bg-codinit-elements-actions-background border-t border-codinit-elements-artifacts-borderColor">
-            <div className={classNames('text-lg', getIconColor(allActionFinished ? 'complete' : 'running'))}>
+            <div
+              className={classNames(
+                "text-lg",
+                getIconColor(allActionFinished ? "complete" : "running"),
+              )}
+            >
               {allActionFinished ? (
                 <div className="i-ph:check"></div>
               ) : (
@@ -128,20 +151,20 @@ export const Artifact = memo(({ artifactId }: ArtifactProps) => {
             <div className="text-codinit-elements-textPrimary font-medium leading-5 text-sm">
               {/* This status text remains the same */}
               {allActionFinished
-                ? artifact.id === 'restored-project-setup'
-                  ? 'Restore files from snapshot'
-                  : 'Initial files created'
-                : 'Creating initial files'}
+                ? artifact.id === "restored-project-setup"
+                  ? "Restore files from snapshot"
+                  : "Initial files created"
+                : "Creating initial files"}
             </div>
           </div>
         )}
         <AnimatePresence>
-          {artifact.type !== 'bundled' && showActions && actions.length > 0 && (
+          {artifact.type !== "bundled" && showActions && actions.length > 0 && (
             <motion.div
               className="actions"
               initial={{ height: 0 }}
-              animate={{ height: 'auto' }}
-              exit={{ height: '0px' }}
+              animate={{ height: "auto" }}
+              exit={{ height: "0px" }}
               transition={{ duration: 0.15 }}
             >
               <div className="bg-codinit-elements-artifacts-borderColor h-[1px]" />
@@ -165,11 +188,11 @@ interface ShellCodeBlockProps {
 function ShellCodeBlock({ classsName, code }: ShellCodeBlockProps) {
   return (
     <div
-      className={classNames('text-xs', classsName)}
+      className={classNames("text-xs", classsName)}
       dangerouslySetInnerHTML={{
         __html: shellHighlighter.codeToHtml(code, {
-          lang: 'shell',
-          theme: 'dark-plus',
+          lang: "shell",
+          theme: "dark-plus",
         }),
       }}
     ></div>
@@ -185,9 +208,9 @@ const actionVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export function openArtifactInWorkbench(filePath: any) {
-  if (workbenchStore.currentView.get() !== 'code') {
-    workbenchStore.currentView.set('code');
+function openArtifactInWorkbench(filePath: any) {
+  if (workbenchStore.currentView.get() !== "code") {
+    workbenchStore.currentView.set("code");
   }
 
   workbenchStore.setSelectedFile(`${WORK_DIR}/${filePath}`);
@@ -195,7 +218,12 @@ export function openArtifactInWorkbench(filePath: any) {
 
 const ActionList = memo(({ actions }: ActionListProps) => {
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
+    >
       <ul className="list-none space-y-2.5">
         {actions.map((action, index) => {
           const { status, type, content } = action;
@@ -213,26 +241,28 @@ const ActionList = memo(({ actions }: ActionListProps) => {
               }}
             >
               <div className="flex items-center gap-1.5 text-sm">
-                <div className={classNames('text-lg', getIconColor(action.status))}>
-                  {status === 'running' ? (
+                <div
+                  className={classNames("text-lg", getIconColor(action.status))}
+                >
+                  {status === "running" ? (
                     <>
-                      {type !== 'start' ? (
+                      {type !== "start" ? (
                         <div className="i-svg-spinners:90-ring-with-bg"></div>
                       ) : (
                         <div className="i-ph:terminal-window-duotone"></div>
                       )}
                     </>
-                  ) : status === 'pending' ? (
+                  ) : status === "pending" ? (
                     <div className="i-ph:circle-duotone"></div>
-                  ) : status === 'complete' ? (
+                  ) : status === "complete" ? (
                     <div className="i-ph:check"></div>
-                  ) : status === 'failed' || status === 'aborted' ? (
+                  ) : status === "failed" || status === "aborted" ? (
                     <div className="i-ph:x"></div>
                   ) : null}
                 </div>
-                {type === 'file' ? (
+                {type === "file" ? (
                   <div>
-                    Create{' '}
+                    Create{" "}
                     <code
                       className="bg-codinit-elements-artifacts-inlineCode-background text-codinit-elements-artifacts-inlineCode-text px-1.5 py-1 rounded-md text-codinit-elements-item-contentAccent hover:underline cursor-pointer"
                       onClick={() => openArtifactInWorkbench(action.filePath)}
@@ -240,15 +270,15 @@ const ActionList = memo(({ actions }: ActionListProps) => {
                       {action.filePath}
                     </code>
                   </div>
-                ) : type === 'shell' ? (
+                ) : type === "shell" ? (
                   <div className="flex items-center w-full min-h-[28px]">
                     <span className="flex-1">Run command</span>
                   </div>
-                ) : type === 'start' ? (
+                ) : type === "start" ? (
                   <a
                     onClick={(e) => {
                       e.preventDefault();
-                      workbenchStore.currentView.set('preview');
+                      workbenchStore.currentView.set("preview");
                     }}
                     className="flex items-center w-full min-h-[28px]"
                   >
@@ -256,10 +286,10 @@ const ActionList = memo(({ actions }: ActionListProps) => {
                   </a>
                 ) : null}
               </div>
-              {(type === 'shell' || type === 'start') && (
+              {(type === "shell" || type === "start") && (
                 <ShellCodeBlock
-                  classsName={classNames('mt-1', {
-                    'mb-3.5': !isLast,
+                  classsName={classNames("mt-1", {
+                    "mb-3.5": !isLast,
                   })}
                   code={content}
                 />
@@ -272,22 +302,22 @@ const ActionList = memo(({ actions }: ActionListProps) => {
   );
 });
 
-function getIconColor(status: ActionState['status']) {
+function getIconColor(status: ActionState["status"]) {
   switch (status) {
-    case 'pending': {
-      return 'text-codinit-elements-textTertiary';
+    case "pending": {
+      return "text-codinit-elements-textTertiary";
     }
-    case 'running': {
-      return 'text-codinit-elements-loader-progress';
+    case "running": {
+      return "text-codinit-elements-loader-progress";
     }
-    case 'complete': {
-      return 'text-codinit-elements-icon-success';
+    case "complete": {
+      return "text-codinit-elements-icon-success";
     }
-    case 'aborted': {
-      return 'text-codinit-elements-textSecondary';
+    case "aborted": {
+      return "text-codinit-elements-textSecondary";
     }
-    case 'failed': {
-      return 'text-codinit-elements-icon-error';
+    case "failed": {
+      return "text-codinit-elements-icon-error";
     }
     default: {
       return undefined;
