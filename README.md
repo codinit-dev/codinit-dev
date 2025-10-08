@@ -1,450 +1,416 @@
-![CodinIT.dev: AI-Powered Full-Stack Web Development in the Browser](https://codinit.dev/prompt-enhancer.gif)
+<div align="center">
+
+![CodinIT.dev Banner](https://codinit.dev/prompt-enhancer.gif)
 
 
-Welcome to CodinIT.dev — an AI-powered dev platform where you can choose the LLM for each prompt!
-It supports OpenAI, Anthropic, Ollama, Gemini, Mistral, xAI, HuggingFace, Groq, Cohere, Perplexity, and many more, all via the Vercel AI SDK.
+**Build & Deploy Full-Stack Applications Locally with 100+ AI Providers**
 
-See below for setup and how to add more models.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/Gerome-Elassaad/codinit-app?style=social)](https://github.com/Gerome-Elassaad/codinit-app/stargazers)
+[![GitHub Release](https://img.shields.io/github/v/release/Gerome-Elassaad/codinit-app)](https://github.com/Gerome-Elassaad/codinit-app/releases/latest)
 
-Check the [CodinIT.dev Desktop App Docs](https://gerome-elassaad.github.io/codinit-app) for more official installation instructions and additional information.
+[📖 Documentation](https://gerome-elassaad.github.io/codinit-app) • [🤝 Contributing](CONTRIBUTING.md) • [🌐 Web Version](https://github.com/Gerome-Elassaad/CodingIT)
+
+</div>
 
 ---
-## Table of Contents
 
-- [Recent Major Additions](#recent-major-additions)
-- [Features](#features)
-- [Setup](#setup)
-- [Quick Installation](#quick-installation)
-- [Manual Installation](#manual-installation)
-- [Configuring API Keys and Providers](#configuring-api-keys-and-providers)
-- [Setup Using Git (For Developers only)](#setup-using-git-for-developers-only)
-- [Available Scripts](#available-scripts)
+CodinIT.dev is the **#1 open-source alternative to Bolt.new and Lovable.dev**, offering unparalleled flexibility and control over your AI-powered development workflow.
 
-## Project management
+### 🌟 What Makes Us Different
 
-CodinIT.dev is a community effort! The core team of contributors aims at organizing the project in way that allows
-you to understand where the current areas of focus are.
+| Feature | CodinIT.dev | Bolt.new | Lovable.dev |
+|---------|-------------|----------|-------------|
+| **AI Provider Choice** | 19+ providers (switch per prompt) | Locked to specific models | Locked to specific models |
+| **Local Development** | ✅ Full local support + Desktop app | ❌ Cloud only | ❌ Cloud only |
+| **Open Source** | ✅ MIT License | ❌ Proprietary | ❌ Proprietary |
+| **Self-Hosting** | ✅ Docker & Local | ❌ No | ❌ No |
+| **Cost Control** | ✅ Use your own API keys | Subscription-based | Subscription-based |
+| **Offline Capable** | ✅ With local models | ❌ No | ❌ No |
+| **Code Ownership** | ✅ 100% yours, no lock-in | Limited export | Limited export |
+| **Desktop App** | ✅ Native Electron app | ❌ No | ❌ No |
 
-## Recent Major Additions
+---
 
-### ✅ Completed Features
-- **19+ AI Provider Integrations** - OpenAI, Anthropic, Google, Groq, xAI, DeepSeek, Mistral, Cohere, Together, Perplexity, HuggingFace, Ollama, LM Studio, OpenRouter, Moonshot, Hyperbolic, GitHub Models, Amazon Bedrock, OpenAI-like
-- **Electron Desktop App** - Native desktop experience with full functionality
-- **Advanced Deployment Options** - Netlify, Vercel, and GitHub Pages deployment
-- **Supabase Integration** - Database management and query capabilities
-- **Data Visualization & Analysis** - Charts, graphs, and data analysis tools
-- **MCP (Model Context Protocol)** - Enhanced AI tool integration
-- **Search Functionality** - Codebase search and navigation
-- **File Locking System** - Prevents conflicts during AI code generation
-- **Diff View** - Visual representation of AI-made changes
-- **Git Integration** - Clone, import, and deployment capabilities
-- **Expo App Creation** - React Native development support
-- **Voice Prompting** - Audio input for prompts
-- **Bulk Chat Operations** - Delete multiple chats at once
-- **Project Snapshot Restoration** - Restore projects from snapshots on reload
+## ✨ Key Features
 
+### 🤖 Multi-Provider AI Flexibility
+Choose the best AI model for each specific task. Switch between providers on-the-fly:
+- **Cloud Providers**: OpenAI, Anthropic, Google Gemini, Groq, xAI (Grok), DeepSeek, Mistral, Cohere, Together AI, Perplexity, HuggingFace, OpenRouter, and more
+- **Local Models**: Ollama, LM Studio, and any OpenAI-compatible endpoint
+- **Cost Optimization**: Use cheaper models for simple tasks, powerful models for complex features
 
-## Features
+![Model Selection](https://codinit.dev/models.png)
 
-![Feature](https://codinit.dev/control-panel.png)
+### 💻 Three Ways to Run
+1. **🖥️ Desktop App** - Native Electron application for Windows, macOS, and Linux
+2. **🌐 Web Interface** - Run locally in your browser with full WebContainer support
+3. **🐳 Docker** - Self-hosted containerized deployment
 
-- **AI-powered full-stack web development** for **NodeJS based applications** directly in your browser.
-- **Support for 19+ LLMs** with an extensible architecture to integrate additional models.
-- **Attach images to prompts** for better contextual understanding.
-- **Integrated terminal** to view output of LLM-run commands.
-- **Revert code to earlier versions** for easier debugging and quicker changes.
-- **Download projects as ZIP** for easy portability and sync to a folder on the host.
-- **Integration-ready Docker support** for a hassle-free setup.
-- **Deploy directly** to **Netlify**, **Vercel**, or **GitHub Pages**.
-- **Electron desktop app** for native desktop experience.
-- **Data visualization and analysis** with integrated charts and graphs.
-- **Git integration** with clone, import, and deployment capabilities.
-- **MCP (Model Context Protocol)** support for enhanced AI tool integration.
-- **Search functionality** to search through your codebase.
-- **File locking system** to prevent conflicts during AI code generation.
-- **Diff view** to see changes made by the AI.
-- **Supabase integration** for database management and queries.
-- **Expo app creation** for React Native development.
+### 🛠️ Advanced Developer Tools
 
-## Setup
+<div align="center">
 
-If you're new to installing software from GitHub, don't worry! If you encounter any issues, feel free to submit an "issue" using the provided links or improve this documentation by forking the repository, editing the instructions, and submitting a pull request. The following instruction will help you get the stable branch up and running on your local machine in no time.
+![Control Panel](https://codinit.dev/control-panel.png)
 
-Let's get you up and running with the stable version of CodinIT.dev!
+</div>
 
-## Quick Installation
+- **🔒 File Locking System** - Prevents conflicts during AI code generation
+- **📊 Diff View** - Visual representation of all AI-made changes
+- **🔄 Git Integration** - Clone, commit, and deploy with full version control
+- **🎯 Project Snapshots** - Restore projects from any previous state
+- **🔍 Codebase Search** - Fast search across your entire project
+- **📦 MCP Support** - Model Context Protocol for enhanced AI tool integration
+- **🎤 Voice Input** - Speak your prompts naturally
+- **🖼️ Image Attachments** - Add screenshots and designs to your prompts
 
-[![Download Latest Release](https://img.shields.io/github/v/release/Gerome-Elassaad/codingit?label=Download%20CodinIT&sort=semver)](https://github.com/Gerome-Elassaad/codingit/releases/latest) ← Click here to go to the latest release version!
+### 🚀 Full-Stack Development
 
-- Download the binary for your platform (available for Windows, macOS, and Linux)
-- **Note**: For macOS, if you get the error "This app is damaged", run:
-  ```bash
-  xattr -cr /path/to/codingit.app
-  ```
+- **Complete Stack Generation** - Frontend, backend, and database from natural language
+- **Real-Time Preview** - See changes instantly as AI builds
+- **Integrated Terminal** - Run commands and scripts directly
+- **Database Management** - Supabase integration for data handling
+- **React Native Support** - Build mobile apps with Expo
 
-## Manual installation
+### 📤 Flexible Deployment
 
+Deploy your applications to:
+- **Netlify** - One-click deployment
+- **Vercel** - Seamless integration
+- **GitHub Pages** - Static site hosting
+- **Self-Hosted** - Deploy anywhere with Docker
+- **Local Export** - Download as ZIP and run locally
 
-### Option 1: Node.js
+---
 
-Node.js is required to run the application.
+## 🚀 Quick Start
 
-1. Visit the [Node.js Download Page](https://nodejs.org/en/download/)
-2. Download the "LTS" (Long Term Support) version for your operating system
-3. Run the installer, accepting the default settings
-4. Verify Node.js is properly installed:
-   - **For Windows Users**:
-     1. Press `Windows + R`
-     2. Type "sysdm.cpl" and press Enter
-     3. Go to "Advanced" tab → "Environment Variables"
-     4. Check if `Node.js` appears in the "Path" variable
-   - **For Mac/Linux Users**:
-     1. Open Terminal
-     2. Type this command:
-        ```bash
-        echo $PATH
-        ```
-     3. Look for `/usr/local/bin` in the output
+### Option 1: Desktop App (Recommended)
 
-## Running the Application
+**Download the latest release for your platform:**
 
-You have two options for running CodinIT.dev: directly on your machine or using Docker.
+[![Download for Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Gerome-Elassaad/codinit-app/releases/latest)
+[![Download for macOS](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/Gerome-Elassaad/codinit-app/releases/latest)
+[![Download for Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/Gerome-Elassaad/codinit-app/releases/latest)
 
-### Option 1: Direct Installation (Recommended for Beginners)
-
-1. **Install Package Manager (pnpm)**:
-
-   ```bash
-   npm install -g pnpm
-   ```
-
-2. **Install Project Dependencies**:
-
-   ```bash
-   pnpm install
-   ```
-
-3. **Start the Application**:
-
-   ```bash
-   pnpm run dev
-   ```
-   
-### Option 2: Using Docker
-
-This option requires some familiarity with Docker but provides a more isolated environment.
-
-#### Additional Prerequisite
-
-- Install Docker: [Download Docker](https://www.docker.com/)
-
-#### Steps:
-
-1. **Build the Docker Image**:
-
-   ```bash
-   # Using npm script:
-   npm run dockerbuild
-
-   # OR using direct Docker command:
-   docker build . --target codinit-ai-development
-   ```
-
-2. **Run the Container**:
-   ```bash
-   docker compose --profile development up
-   ```
-
-### Option 3: Desktop Application (Electron)
-
-For users who prefer a native desktop experience, CodinIT.dev is also available as an Electron desktop application:
-
-1. **Download the Desktop App**:
-   - Visit the [latest release](https://github.com/Gerome-Elassaad/codingit/releases/latest)
-   - Download the appropriate binary for your operating system
-   - For macOS: Extract and run the `.dmg` file
-   - For Windows: Run the `.exe` installer
-   - For Linux: Extract and run the AppImage or install the `.deb` package
-
-2. **Alternative**: Build from Source:
-   ```bash
-   # Install dependencies
-   pnpm install
-
-   # Build the Electron app
-   pnpm electron:build:dist  # For all platforms
-   # OR platform-specific:
-   pnpm electron:build:mac   # macOS
-   pnpm electron:build:win   # Windows
-   pnpm electron:build:linux # Linux
-   ```
-
-The desktop app provides the same full functionality as the web version with additional native features.
-
-## Configuring API Keys and Providers
-
-CodinIT.dev features a modern, intuitive settings interface for managing AI providers and API keys. The settings are organized into dedicated panels for easy navigation and configuration.
-
-### Accessing Provider Settings
-
-1. **Open Settings**: Click the settings icon (⚙️) in the sidebar to access the settings panel
-2. **Navigate to Providers**: Select the "Providers" tab from the settings menu
-3. **Choose Provider Type**: Switch between "Cloud Providers" and "Local Providers" tabs
-
-### Cloud Providers Configuration
-
-The Cloud Providers tab displays all cloud-based AI services in an organized card layout:
-
-#### Adding API Keys
-1. **Select Provider**: Browse the grid of available cloud providers (OpenAI, Anthropic, Google, etc.)
-2. **Toggle Provider**: Use the switch to enable/disable each provider
-3. **Set API Key**:
-   - Click the provider card to expand its configuration
-   - Click on the "API Key" field to enter edit mode
-   - Paste your API key and press Enter to save
-   - The interface shows real-time validation with green checkmarks for valid keys
-  
-![Models](https://codinit.dev/models.png)
-
-#### Advanced Features
-- **Bulk Toggle**: Use "Enable All Cloud" to toggle all cloud providers at once
-- **Visual Status**: Green checkmarks indicate properly configured providers
-- **Provider Icons**: Each provider has a distinctive icon for easy identification
-- **Descriptions**: Helpful descriptions explain each provider's capabilities
-
-![chat](https://codinit.dev/chat.png)
-
-### Local Providers Configuration
-
-The Local Providers tab manages local AI installations and custom endpoints:
-
-#### Ollama Configuration
-1. **Enable Ollama**: Toggle the Ollama provider switch
-2. **Configure Endpoint**: Set the API endpoint (defaults to `http://127.0.0.1:11434`)
-3. **Model Management**:
-   - View all installed models with size and parameter information
-   - Update models to latest versions with one click
-   - Delete unused models
-   - Install new models by entering model names
-
-#### Other Local Providers
-- **LM Studio**: Configure custom base URLs for LM Studio endpoints
-- **OpenAI-like**: Connect to any OpenAI-compatible API endpoint
-- **Auto-detection**: The system automatically detects environment variables for base URLs
-
-### Environment Variables vs UI Configuration
-
-CodinIT.dev supports both methods for maximum flexibility:
-
-#### Environment Variables (Recommended for Production)
-Set API keys and base URLs in your `.env.local` file:
+**macOS Users:** If you see "This app is damaged", run:
 ```bash
-# API Keys
-OPENAI_API_KEY=your_openai_key_here
-ANTHROPIC_API_KEY=your_anthropic_key_here
+xattr -cr /Applications/CodinIT.dev.app
 
-# Custom Base URLs
-OLLAMA_BASE_URL=http://127.0.0.1:11434
-LMSTUDIO_BASE_URL=http://127.0.0.1:1234
+
+### Option 2: Run Locally (Web)
+
+```bash
+# Install pnpm (if not already installed)
+npm install -g pnpm
+
+# Clone the repository
+git clone https://github.com/Gerome-Elassaad/codinit-app.git
+cd codinit-app
+
+# Install dependencies
+pnpm install
+
+# Start the development server
+pnpm run dev
 ```
 
-#### UI-Based Configuration
-- **Real-time Updates**: Changes take effect immediately
-- **Secure Storage**: API keys are stored securely in browser cookies
-- **Visual Feedback**: Clear indicators show configuration status
-- **Easy Management**: Edit, view, and manage keys through the interface
+Visit `http://localhost:5173` in your browser
 
-### Provider-Specific Features
+### Option 3: Docker
 
-#### OpenRouter
-- **Free Models Filter**: Toggle to show only free models when browsing
-- **Pricing Information**: View input/output costs for each model
-- **Model Search**: Fuzzy search through all available models
+```bash
+# Build the image
+docker build -t codinit-app .
 
-#### Ollama
-- **Model Installer**: Built-in interface to install new models
-- **Progress Tracking**: Real-time download progress for model updates
-- **Model Details**: View model size, parameters, and quantization levels
-- **Auto-refresh**: Automatically detects newly installed models
+# Run the container
+docker run -p 5173:5173 codinit-app
+```
 
-#### Search & Navigation
-- **Fuzzy Search**: Type-ahead search across all providers and models
-- **Keyboard Navigation**: Use arrow keys and Enter to navigate quickly
-- **Clear Search**: Press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux) to clear search
-
-### Troubleshooting
-
-#### Common Issues
-- **API Key Not Recognized**: Ensure you're using the correct API key format for each provider
-- **Base URL Issues**: Verify the endpoint URL is correct and accessible
-- **Model Not Loading**: Check that the provider is enabled and properly configured
-- **Environment Variables Not Working**: Restart the application after adding new environment variables
-
-#### Status Indicators
-- 🟢 **Green Checkmark**: Provider properly configured and ready to use
-- 🔴 **Red X**: Configuration missing or invalid
-- 🟡 **Yellow Indicator**: Provider enabled but may need additional setup
-- 🔵 **Blue Pencil**: Click to edit configuration
-
-### Supported Providers Overview
-
-#### Cloud Providers
-- **OpenAI** - GPT-4, GPT-3.5, and other OpenAI models
-- **Anthropic** - Claude 3.5 Sonnet, Claude 3 Opus, and other Claude models
-- **Google (Gemini)** - Gemini 1.5 Pro, Gemini 1.5 Flash, and other Gemini models
-- **Groq** - Fast inference with Llama, Mixtral, and other models
-- **xAI** - Grok models including Grok-2 and Grok-2 Vision
-- **DeepSeek** - DeepSeek Coder and other DeepSeek models
-- **Mistral** - Mixtral, Mistral 7B, and other Mistral models
-- **Cohere** - Command R, Command R+, and other Cohere models
-- **Together AI** - Various open-source models
-- **Perplexity** - Sonar models for search and reasoning
-- **HuggingFace** - Access to HuggingFace model hub
-- **OpenRouter** - Unified API for multiple model providers
-- **Moonshot (Kimi)** - Kimi AI models
-- **Hyperbolic** - High-performance model inference
-- **GitHub Models** - Models available through GitHub
-- **Amazon Bedrock** - AWS managed AI models
-
-#### Local Providers
-- **Ollama** - Run open-source models locally with advanced model management
-- **LM Studio** - Local model inference with LM Studio
-- **OpenAI-like** - Connect to any OpenAI-compatible API endpoint
-
-> **💡 Pro Tip**: Start with OpenAI or Anthropic for the best results, then explore other providers based on your specific needs and budget considerations.
-
-## Setup Using Git (For Developers only)
-
-This method is recommended for developers who want to:
-
-- Contribute to the project
-- Stay updated with the latest changes
-- Switch between different versions
-- Create custom modifications
-
-#### Prerequisites
-
-1. Install Git: [Download Git](https://git-scm.com/downloads)
-
-#### Initial Setup
-
-1. **Clone the Repository**:
-
-   ```bash
-   git clone https://github.com/Gerome-Elassaad/codingit.git
-   ```
-
-2. **Navigate to Project Directory**:
-
-   ```bash
-   cd codingit
-   ```
-
-3. **Install Dependencies**:
-
-   ```bash
-   pnpm install
-   ```
-
-4. **Start the Development Server**:
-   ```bash
-   pnpm run dev
-   ```
-
-5. **(OPTIONAL)** Switch to the Main Branch if you want to use pre-release/testbranch:
-   ```bash
-   git checkout main
-   pnpm install
-   pnpm run dev
-   ```
-  Hint: Be aware that this can have beta-features and more likely got bugs than the stable release
-
->**Open the WebUI to test (Default: http://localhost:5173)**
->   - Beginners:
->     - Try to use a sophisticated Provider/Model like Anthropic with Claude Sonnet 3.x Models to get best results
->     - Explanation: The System Prompt currently implemented in CodinIT.dev is optimized for modern LLMs. Some providers and models may perform better than others.
->     - Future: Planned is a Plugin/Extensions-Library so there can be different System Prompts for different Models, which will help to get better results
-
-#### Staying Updated
-
-To get the latest changes from the repository:
-
-1. **Save Your Local Changes** (if any):
-
-   ```bash
-   git stash
-   ```
-
-2. **Pull Latest Updates**:
-
-   ```bash
-   git pull 
-   ```
-
-3. **Update Dependencies**:
-
-   ```bash
-   pnpm install
-   ```
-
-4. **Restore Your Local Changes** (if any):
-   ```bash
-   git stash pop
-   ```
-
-#### Troubleshooting Git Setup
-
-If you encounter issues:
-
-1. **Clean Installation**:
-
-   ```bash
-   # Remove node modules and lock files
-   rm -rf node_modules pnpm-lock.yaml
-
-   # Clear pnpm cache
-   pnpm store prune
-
-   # Reinstall dependencies
-   pnpm install
-   ```
-
-2. **Reset Local Changes**:
-   ```bash
-   # Discard all local changes
-   git reset --hard origin/main
-   ```
-
-Remember to always commit your local changes or stash them before pulling updates to avoid conflicts.
+Or use Docker Compose:
+```bash
+docker-compose up
+```
 
 ---
 
-## Available Scripts
+## ⚙️ Configuration
 
-- **`pnpm run dev`**: Starts the development server.
-- **`pnpm run build`**: Builds the project.
-- **`pnpm run start`**: Runs the built application locally using Wrangler Pages.
-- **`pnpm run preview`**: Builds and runs the production build locally.
-- **`pnpm test`**: Runs the test suite using Vitest.
-- **`pnpm run typecheck`**: Runs TypeScript type checking.
-- **`pnpm run typegen`**: Generates TypeScript types using Wrangler.
-- **`pnpm run deploy`**: Deploys the project to Cloudflare Pages.
-- **`pnpm run lint`**: Runs ESLint to check for code issues.
-- **`pnpm run lint:fix`**: Automatically fixes linting issues.
-- **`pnpm run clean`**: Cleans build artifacts and cache.
-- **`pnpm run prepare`**: Sets up husky for git hooks.
-- **Docker Scripts**:
-  - **`pnpm run dockerbuild`**: Builds the Docker image for development.
-  - **`pnpm run dockerbuild:prod`**: Builds the Docker image for production.
-  - **`pnpm run dockerrun`**: Runs the Docker container.
-  - **`pnpm run dockerstart`**: Starts the Docker container with proper bindings.
-- **Electron Scripts**:
-  - **`pnpm electron:build:deps`**: Builds Electron main and preload scripts.
-  - **`pnpm electron:build:main`**: Builds the Electron main process.
-  - **`pnpm electron:build:preload`**: Builds the Electron preload script.
-  - **`pnpm electron:build:renderer`**: Builds the Electron renderer.
-  - **`pnpm electron:build:unpack`**: Creates an unpacked Electron build.
-  - **`pnpm electron:build:mac`**: Builds for macOS.
-  - **`pnpm electron:build:win`**: Builds for Windows.
-  - **`pnpm electron:build:linux`**: Builds for Linux.
-  - **`pnpm electron:build:dist`**: Builds for all platforms.
+### Setting Up AI Providers
+
+CodinIT.dev offers two ways to configure AI providers:
+
+#### 1. Visual Interface (Recommended for Beginners)
+
+1. Click the **⚙️ Settings** icon in the sidebar
+2. Navigate to **Providers** tab
+3. Toggle and configure your desired providers
+4. Add API keys directly in the interface
+
+![Provider Settings](https://codinit.dev/chat.png)
+
+#### 2. Environment Variables (Recommended for Production)
+
+Create a `.env` file in the project root:
+
+```env
+# Cloud Providers
+OPENAI_API_KEY=your_openai_key
+ANTHROPIC_API_KEY=your_anthropic_key
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_key
+GROQ_API_KEY=your_groq_key
+XAI_API_KEY=your_xai_key
+
+# Provider Base URLs (optional)
+OLLAMA_BASE_URL=http://localhost:11434
+LM_STUDIO_BASE_URL=http://localhost:1234
+OPENAI_LIKE_API_BASE_URL=https://your-custom-endpoint
+
+# Additional Configuration
+VITE_LOG_LEVEL=debug
+```
+
+### Supported AI Providers
+
+<details>
+<summary><b>☁️ Cloud Providers (19+)</b></summary>
+
+| Provider | Models | Best For |
+|----------|--------|----------|
+| **OpenAI** | GPT-4, GPT-4 Turbo, GPT-3.5 | General purpose, production apps |
+| **Anthropic** | Claude 3.5 Sonnet, Claude 3 Opus | Complex logic, code generation |
+| **Google** | Gemini 1.5 Pro, Gemini 1.5 Flash | Fast prototyping, multimodal |
+| **Groq** | Llama 3, Mixtral | Ultra-fast inference |
+| **xAI** | Grok-2, Grok-2 Vision | Real-time data, reasoning |
+| **DeepSeek** | DeepSeek Coder | Specialized code generation |
+| **Mistral** | Mixtral 8x7B, Mistral 7B | Cost-effective, efficient |
+| **Cohere** | Command R, Command R+ | Enterprise applications |
+| **OpenRouter** | Access to 100+ models | Model comparison, flexibility |
+
+</details>
+
+<details>
+<summary><b>🏠 Local Providers</b></summary>
+
+| Provider | Description | Setup |
+|----------|-------------|-------|
+| **Ollama** | Run models locally (Llama, Mistral, etc.) | [Install Ollama](https://ollama.ai) |
+| **LM Studio** | User-friendly local model runner | [Install LM Studio](https://lmstudio.ai) |
+| **OpenAI-like** | Any OpenAI-compatible API | Configure base URL |
+
+**Privacy & Cost Benefits:**
+- ✅ Complete data privacy
+- ✅ No API costs
+- ✅ Offline capability
+- ✅ Unlimited usage
+
+</details>
+
+---
+
+## 📚 Usage Guide
+
+### Creating Your First Application
+
+1. **Choose Your AI Model**
+   - Select from the model dropdown (top of chat interface)
+   - Different models excel at different tasks
+
+2. **Describe Your Application**
+   ```
+   Create a task management app with:
+   - User authentication
+   - Task creation and editing
+   - Categories and tags
+   - Due dates and reminders
+   - Dark mode support
+   ```
+
+3. **Review & Iterate**
+   - Watch as AI generates your full-stack application
+   - Use the diff view to see what changed
+   - Request modifications: "Add a calendar view"
+
+4. **Test & Deploy**
+   - Test in the integrated preview
+   - Use the terminal for debugging
+   - Deploy with one click
+
+### Pro Tips
+
+💡 **Model Selection Strategy:**
+- Use **Claude 3.5 Sonnet** or **GPT-4** for initial app generation
+- Switch to **GPT-3.5** or **Gemini Flash** for simple UI tweaks
+- Use **DeepSeek Coder** for complex algorithmic problems
+- Try **local models** for privacy-sensitive projects
+
+💡 **Best Practices:**
+- Attach UI mockups or screenshots for better results
+- Break complex features into smaller prompts
+- Use file locking when making manual edits
+- Create snapshots before major changes
+
+---
+
+## 🏗️ Architecture
+
+CodinIT.dev is built with modern web technologies:
+
+### Frontend
+- **React** - UI framework
+- **Remix** - Full-stack framework
+- **Vite** - Build tool
+- **TailwindCSS** - Styling
+- **UnoCSS** - Utility-first CSS
+
+### Backend
+- **Node.js** - Runtime
+- **WebContainer API** - Browser-based runtime
+- **Cloudflare Workers** - Serverless functions
+- **Supabase** - Database & authentication
+
+### AI Integration
+- **Vercel AI SDK** - Unified AI provider interface
+- **MCP** - Model Context Protocol support
+- **Streaming** - Real-time AI responses
+
+### Desktop
+- **Electron** - Native desktop application
+- **electron-builder** - Cross-platform builds
+
+---
+
+## 📦 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run dev` | Start development server |
+| `pnpm run build` | Build for production |
+| `pnpm run preview` | Preview production build |
+| `pnpm run typecheck` | Run TypeScript checks |
+| `pnpm run lint` | Check code quality |
+| `pnpm run test` | Run test suite |
+| `pnpm run deploy` | Deploy to Cloudflare Pages |
+
+### Docker Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run dockerbuild:dev` | Build development Docker image |
+| `pnpm run dockerbuild:prod` | Build production Docker image |
+| `pnpm run dockerrun` | Run Docker container |
+
+### Electron Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm run electron:build` | Build Electron app (unpacked) |
+| `pnpm run electron:build:mac` | Build for macOS |
+| `pnpm run electron:build:win` | Build for Windows |
+| `pnpm run electron:build:linux` | Build for Linux |
+| `pnpm run electron:build:all` | Build for all platforms |
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the community! CodinIT.dev is a collaborative effort to build the best open-source AI development platform.
+
+### Ways to Contribute
+
+- 🐛 **Report Bugs** - [Open an issue](https://github.com/Gerome-Elassaad/codinit-app/issues)
+- 💡 **Request Features** - Share your ideas
+- 📖 **Improve Documentation** - Help others get started
+- 💻 **Submit Code** - Fix bugs or add features
+- 🌍 **Translations** - Make CodinIT.dev multilingual
+
+### Development Setup
+
+```bash
+# Fork and clone the repository
+git clone https://github.com/YOUR_USERNAME/codinit-app.git
+cd codinit-app
+
+# Install dependencies
+pnpm install
+
+# Create a new branch
+git checkout -b feature/your-feature-name
+
+# Make your changes and test
+pnpm run dev
+pnpm run typecheck
+pnpm run lint
+
+# Commit and push
+git commit -m "Add your feature"
+git push origin feature/your-feature-name
+```
+
+Then open a Pull Request!
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📖 Documentation
+
+- **[Official Documentation](https://gerome-elassaad.github.io/codinit-app)** - Complete guides and tutorials
+- **[FAQ](FAQ.md)** - Frequently asked questions
+- **[Changelog](CHANGES.md)** - What's new in each version
+- **[Project Roadmap](PROJECT.md)** - Future plans and features
+
+---
+
+## 🆚 Comparison with Alternatives
+
+### vs Bolt.new
+
+**Advantages:**
+- ✅ 19+ AI providers vs single provider
+- ✅ Open source vs proprietary
+- ✅ Local development + desktop app
+- ✅ Use your own API keys
+- ✅ Self-hosting options
+- ✅ Advanced diff view and file locking
+
+**Trade-offs:**
+- ⚠️ Requires local setup (or use desktop app)
+- ⚠️ Self-managed infrastructure
+
+### vs Lovable.dev
+
+**Advantages:**
+- ✅ Model flexibility (switch per prompt)
+- ✅ Works offline with local models
+- ✅ Complete code ownership
+- ✅ No vendor lock-in
+- ✅ Free to use (bring your own keys)
+- ✅ Desktop application available
+
+**Trade-offs:**
+- ⚠️ No built-in managed hosting (but easy deployment)
+- ⚠️ Requires API key management
+
+---
+
+
+### ✅ Completed
+- [x] 19+ AI provider integrations
+- [x] Electron desktop application
+- [x] Docker support
+- [x] Git integration
+- [x] MCP support
+- [x] File locking system
+- [x] Diff view
+- [x] Voice input
+- [x] Project snapshots
+
+### 🚧 In Progress
+- [ ] Plugin/Extension system
+- [ ] Multi-language support
+- [ ] Collaborative editing
+- [ ] Cloud sync (optional)
+- [ ] Mobile app builder enhancements
+
+### 
