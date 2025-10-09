@@ -7,7 +7,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 export default class OpenAIProvider extends BaseProvider {
   name = 'OpenAI';
   getApiKeyLink = 'https://platform.openai.com/api-keys';
-  icon = '/icons/OpenAI.svg';
+  icon = '/thirdparty/logos/OpenAI.svg';
 
   config = {
     apiTokenKey: 'OPENAI_API_KEY',

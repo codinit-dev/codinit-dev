@@ -7,7 +7,7 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 export default class AnthropicProvider extends BaseProvider {
   name = 'Anthropic';
   getApiKeyLink = 'https://console.anthropic.com/settings/keys';
-  icon = '/icons/Anthropic.svg';
+  icon = '/thirdparty/logos/Anthropic.svg';
 
   config = {
     apiTokenKey: 'ANTHROPIC_API_KEY',

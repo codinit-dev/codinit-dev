@@ -21,7 +21,7 @@ interface OpenRouterModelsResponse {
 export default class OpenRouterProvider extends BaseProvider {
   name = 'OpenRouter';
   getApiKeyLink = 'https://openrouter.ai/settings/keys';
-  icon = '/icons/OpenRouter.svg';
+  icon = '/thirdparty/logos/OpenRouter.svg';
 
   config = {
     apiTokenKey: 'OPEN_ROUTER_API_KEY',

@@ -14,7 +14,7 @@ interface AWSBedRockConfig {
 export default class AmazonBedrockProvider extends BaseProvider {
   name = 'AmazonBedrock';
   getApiKeyLink = 'https://console.aws.amazon.com/iam/home';
-  icon = '/icons/AmazonBedrock.svg';
+  icon = '/thirdparty/logos/AmazonBedrock.svg';
 
   config = {
     apiTokenKey: 'AWS_BEDROCK_CONFIG',

@@ -7,7 +7,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 export default class GoogleProvider extends BaseProvider {
   name = 'Google';
   getApiKeyLink = 'https://aistudio.google.com/app/apikey';
-  icon = '/icons/Google.svg';
+  icon = '/thirdparty/logos/Google.svg';
 
   config = {
     apiTokenKey: 'GOOGLE_GENERATIVE_AI_API_KEY',

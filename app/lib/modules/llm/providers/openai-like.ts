@@ -6,7 +6,7 @@ import type { LanguageModelV1 } from 'ai';
 export default class OpenAILikeProvider extends BaseProvider {
   name = 'OpenAILike';
   getApiKeyLink = undefined;
-  icon = '/icons/OpenAILike.svg';
+  icon = '/thirdparty/logos/OpenAILike.svg';
 
   config = {
     baseUrlKey: 'OPENAI_LIKE_API_BASE_URL',
