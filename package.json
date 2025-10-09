@@ -5,10 +5,10 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
-    "name": "CodinIT.dev team",
-    "email": "maintainers@codinit.dev"
+    "name": "Gerome-Elassaad",
+    "email": "gerome.e24@gmail.com"
   },
   "scripts": {
     "deploy": "npm run build && wrangler pages deploy",
