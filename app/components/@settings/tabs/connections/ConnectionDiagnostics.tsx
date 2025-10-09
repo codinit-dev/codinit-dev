@@ -393,7 +393,7 @@ export default function ConnectionDiagnostics() {
         {/* Vercel Connection Card */}
         <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
-            <div className="i-si:vercel text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
+            <div className="i-simple-icons:vercel text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
             <div className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
               Vercel Connection
             </div>
@@ -458,7 +458,7 @@ export default function ConnectionDiagnostics() {
         {/* Supabase Connection Card */}
         <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
-            <div className="i-si:supabase text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
+            <div className="i-simple-icons:supabase text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
             <div className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
               Supabase Connection
             </div>
@@ -550,7 +550,7 @@ export default function ConnectionDiagnostics() {
           variant="outline"
           className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <div className="i-si:netlify w-4 h-4" />
+          <div className="i-simple-icons:netlify w-4 h-4" />
           Reset Netlify
         </Button>
 
@@ -560,7 +560,7 @@ export default function ConnectionDiagnostics() {
           variant="outline"
           className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <div className="i-si:vercel w-4 h-4" />
+          <div className="i-simple-icons:vercel w-4 h-4" />
           Reset Vercel
         </Button>
 
@@ -570,7 +570,7 @@ export default function ConnectionDiagnostics() {
           variant="outline"
           className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <div className="i-si:supabase w-4 h-4" />
+          <div className="i-simple-icons:supabase w-4 h-4" />
           Reset Supabase
         </Button>
       </div>
