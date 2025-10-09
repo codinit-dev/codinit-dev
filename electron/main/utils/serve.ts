@@ -67,5 +67,5 @@ export async function serveAsset(req: Request, assetsPath: string): Promise<Resp
   const body = createReadableStreamFromReadable(createReadStream(fullPath));
 
   // eslint-disable-next-line consistent-return
-  return new Response(body, { headers });
+  return new Response(body, { headers }) as Response;
 }
