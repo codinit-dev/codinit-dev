@@ -33,7 +33,6 @@ win:
   icon: assets/icons/icon.ico
   target:
     - nsis
-  signDlls: false
   artifactName: ${name}-${version}-${os}-${arch}.${ext}
 
 linux:
@@ -58,7 +57,7 @@ publish:
   provider: github
   owner: Gerome-Elassaad
   repo: codinit-app
-  private: true
+  private: false
   releaseType: release
 
 electronDownload:

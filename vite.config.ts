@@ -94,6 +94,21 @@ export default defineConfig((config) => {
     build: {
       target: 'esnext',
       sourcemap: 'hidden',
+      rollupOptions: {
+        onwarn(warning, warn) {
+          // Suppress "Generated an empty chunk" warnings for API routes
+          if (warning.code === 'EMPTY_BUNDLE' && warning.message?.includes('Generated an empty chunk')) {
+            return;
+          }
+
+          // Suppress sourcemap warnings from node_modules
+          if (warning.code === 'SOURCEMAP_ERROR' && warning.message?.includes('node_modules')) {
+            return;
+          }
+
+          warn(warning);
+        },
+      },
     },
     plugins: [
       nodePolyfills({
