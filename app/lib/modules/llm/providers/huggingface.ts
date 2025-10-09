@@ -7,6 +7,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 export default class HuggingFaceProvider extends BaseProvider {
   name = 'HuggingFace';
   getApiKeyLink = 'https://huggingface.co/settings/tokens';
+  icon = '/icons/HuggingFace.svg';
 
   config = {
     apiTokenKey: 'HuggingFace_API_KEY',

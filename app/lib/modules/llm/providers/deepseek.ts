@@ -7,6 +7,7 @@ import { createDeepSeek } from '@ai-sdk/deepseek';
 export default class DeepseekProvider extends BaseProvider {
   name = 'Deepseek';
   getApiKeyLink = 'https://platform.deepseek.com/apiKeys';
+  icon = '/icons/Deepseek.svg';
 
   config = {
     apiTokenKey: 'DEEPSEEK_API_KEY',
