@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest] # Use unsigned macOS builds for now
-        node-version: [18.18.0]
+        node-version: [20.15.1]
       fail-fast: false
 
     steps:
@@ -37,7 +37,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 9.14.4
+          version: 9.15.9
           run_install: false
 
       - name: Get pnpm store directory

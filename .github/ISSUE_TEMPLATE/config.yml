@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
   - name: codinit.new related issues
-    url: https://github.com/stackblitz/codinit.new/issues/new/choose
-    about: Report issues related to codinit.new (not codinit.dev)
-  - name: Chat
-    url: https://thinktank.ottomator.ai
-    about: Ask questions and discuss with other codinit.dev users.
+    url: https://github.com/Gerome-Elassaad/codinit-app/issues/new/choose
+    about: Report issues related to codinit.dev
