@@ -9,6 +9,7 @@ import { EditorStore } from './editor';
 import { FilesStore, type FileMap } from './files';
 import { PreviewsStore } from './previews';
 import { TerminalStore } from './terminal';
+import { onWebContainerPreviewError } from '~/lib/webcontainer';
 import JSZip from 'jszip';
 import fileSaver from 'file-saver';
 import { Octokit, type RestEndpointMethodTypes } from '@octokit/rest';
@@ -77,6 +78,11 @@ export class WorkbenchStore {
         }
       }
     }
+
+    // Register the webcontainer preview error callback
+    onWebContainerPreviewError((alert) => {
+      this.actionAlert.set(alert);
+    });
   }
 
   addToExecutionQueue(callback: () => Promise<void>) {
