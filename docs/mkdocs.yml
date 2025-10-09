@@ -1,4 +1,4 @@
-site_name: CodinIT.dev Docs
+site_name: Docs - CodinIT.dev
 site_dir: ../site
 theme:
   name: material
@@ -28,9 +28,9 @@ theme:
     # - navigation.expand
     # - content.code.annotate
   icon:
-    repo: fontawesome/brands/github
-    logo: assets/logo.png
-    favicon: assets/icon.png
+   repo: fontawesome/brands/github
+  # logo: assets/logo.png
+  # favicon: assets/icon.png
 repo_name: CodingIT
 repo_url: https://github.com/Gerome-Elassaad/CodingIT
 edit_uri: ''
