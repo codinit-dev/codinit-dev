@@ -245,7 +245,10 @@ export const ModelSelector = ({
           tabIndex={0}
         >
           <div className="flex items-center justify-between">
-            <div className="truncate">{provider?.name || 'Select provider'}</div>
+            <div className="flex items-center gap-2 truncate">
+              {provider?.icon && <img src={provider.icon} alt={provider.name} className="w-5 h-5 flex-shrink-0" />}
+              <span className="truncate">{provider?.name || 'Select provider'}</span>
+            </div>
             <div
               className={classNames(
                 'i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary opacity-75',
@@ -339,7 +342,12 @@ export const ModelSelector = ({
                     }}
                     tabIndex={focusedProviderIndex === index ? 0 : -1}
                   >
-                    {providerOption.name}
+                    <div className="flex items-center gap-2">
+                      {providerOption.icon && (
+                        <img src={providerOption.icon} alt={providerOption.name} className="w-4 h-4 flex-shrink-0" />
+                      )}
+                      <span className="truncate">{providerOption.name}</span>
+                    </div>
                   </div>
                 ))
               )}
