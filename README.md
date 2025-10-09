@@ -212,7 +212,6 @@ The Cloud Providers tab displays all cloud-based AI services in an organized car
 - **Provider Icons**: Each provider has a distinctive icon for easy identification
 - **Descriptions**: Helpful descriptions explain each provider's capabilities
 
-![chat](https://codinit.dev/chat.png)
 
 ### Local Providers Configuration
 
@@ -287,6 +286,8 @@ LMSTUDIO_BASE_URL=http://127.0.0.1:1234
 - 🔵 **Blue Pencil**: Click to edit configuration
 
 ### Supported Providers Overview
+
+![chat](https://codinit.dev/chat.png)
 
 #### Cloud Providers
 - **OpenAI** - GPT-4, GPT-3.5, and other OpenAI models

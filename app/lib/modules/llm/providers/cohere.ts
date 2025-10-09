@@ -7,7 +7,7 @@ import { createCohere } from '@ai-sdk/cohere';
 export default class CohereProvider extends BaseProvider {
   name = 'Cohere';
   getApiKeyLink = 'https://dashboard.cohere.com/api-keys';
-  icon = '/thirdparty/logos/Cohere.svg';
+  icon = '/thirdparty/logos/cohere.svg';
 
   config = {
     apiTokenKey: 'COHERE_API_KEY',
