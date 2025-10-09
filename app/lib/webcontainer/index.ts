@@ -1,6 +1,7 @@
 import { WebContainer } from '@webcontainer/api';
 import { WORK_DIR_NAME } from '~/utils/constants';
 import { cleanStackTrace } from '~/utils/stacktrace';
+import type { ActionAlert } from '~/types/actions';
 
 interface WebContainerContext {
   loaded: boolean;
@@ -18,6 +19,12 @@ export let webcontainer: Promise<WebContainer> = new Promise(() => {
   // noop for ssr
 });
 
+let _onWebContainerPreviewErrorCallback: ((alert: ActionAlert) => void) | undefined;
+
+export function onWebContainerPreviewError(callback: (alert: ActionAlert) => void) {
+  _onWebContainerPreviewErrorCallback = callback;
+}
+
 if (!import.meta.env.SSR) {
   webcontainer =
     import.meta.hot?.data.webcontainer ??
@@ -29,20 +36,21 @@ if (!import.meta.env.SSR) {
           forwardPreviewErrors: true, // Enable error forwarding from iframes
         });
       })
-      .then(async (webcontainer) => {
+      .then(async (wc) => {
         webcontainerContext.loaded = true;
 
-        const { workbenchStore } = await import('~/lib/stores/workbench');
-
         // Listen for preview errors
-        webcontainer.on('preview-message', (message) => {
+        wc.on('preview-message', (message) => {
           console.log('WebContainer preview message:', message);
 
           // Handle both uncaught exceptions and unhandled promise rejections
-          if (message.type === 'PREVIEW_UNCAUGHT_EXCEPTION' || message.type === 'PREVIEW_UNHANDLED_REJECTION') {
+          if (
+            (message.type === 'PREVIEW_UNCAUGHT_EXCEPTION' || message.type === 'PREVIEW_UNHANDLED_REJECTION') &&
+            _onWebContainerPreviewErrorCallback
+          ) {
             const isPromise = message.type === 'PREVIEW_UNHANDLED_REJECTION';
             const title = isPromise ? 'Unhandled Promise Rejection' : 'Uncaught Exception';
-            workbenchStore.actionAlert.set({
+            _onWebContainerPreviewErrorCallback({
               type: 'preview',
               title,
               description: 'message' in message ? message.message : 'Unknown error',
@@ -52,7 +60,7 @@ if (!import.meta.env.SSR) {
           }
         });
 
-        return webcontainer;
+        return wc;
       });
 
   if (import.meta.hot) {
