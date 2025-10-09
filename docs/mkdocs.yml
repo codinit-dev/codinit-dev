@@ -29,8 +29,8 @@ theme:
     # - content.code.annotate
   icon:
     repo: fontawesome/brands/github
-  # logo: assets/logo.png
-  # favicon: assets/logo.png
+    logo: assets/logo.png
+    favicon: assets/icon.png
 repo_name: CodingIT
 repo_url: https://github.com/Gerome-Elassaad/CodingIT
 edit_uri: ''

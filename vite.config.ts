@@ -93,6 +93,7 @@ export default defineConfig((config) => {
     },
     build: {
       target: 'esnext',
+      sourcemap: 'hidden',
     },
     plugins: [
       nodePolyfills({
