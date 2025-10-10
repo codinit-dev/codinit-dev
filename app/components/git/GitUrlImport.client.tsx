@@ -79,9 +79,9 @@ export function GitUrlImport() {
 ${fileContents
   .map(
     (file) =>
-      `<codinitAction type="file" filePath="${file.path}">
+      `<CodinitAction type="file" filePath="${file.path}">
 ${escapecodinitTags(file.content)}
-</codinitAction>`,
+</CodinitAction>`,
   )
   .join('\n')}
 </codinitArtifact>`,

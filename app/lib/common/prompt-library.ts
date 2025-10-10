@@ -1,6 +1,6 @@
 import { getSystemPrompt } from './prompts/prompts';
-import optimized from './prompts/optimized';
-import { getFineTunedPrompt } from './prompts/new-prompt';
+import getFineTunedPrompt from './prompts/optimized';
+import { discussPrompt } from './prompts/discuss-prompt';
 
 export interface PromptOptions {
   cwd: string;
@@ -27,18 +27,18 @@ export class PromptLibrary {
   > = {
     default: {
       label: 'Default Prompt',
-      description: 'This is the battle tested default system Prompt',
-      get: (options) => getSystemPrompt(options.cwd, options.supabase),
+      description: 'An fine tuned prompt for better results and less token usage',
+      get: (options) => getFineTunedPrompt(options),
     },
-    enhanced: {
-      label: 'Fine Tuned Prompt',
-      description: 'An fine tuned prompt for better results',
-      get: (options) => getFineTunedPrompt(options.cwd, options.supabase),
+    original: {
+      label: 'Old Default Prompt',
+      description: 'The OG battle tested default system Prompt',
+      get: (options) => getSystemPrompt(options.cwd, options.supabase),
     },
     optimized: {
       label: 'Optimized Prompt (experimental)',
-      description: 'an Experimental version of the prompt for lower token usage',
-      get: (options) => optimized(options),
+      description: 'An Experimental version of the prompt for lower token usage',
+      get: () => discussPrompt(),
     },
   };
   static getList() {
