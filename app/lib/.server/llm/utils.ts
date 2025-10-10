@@ -44,9 +44,9 @@ export function extractPropertiesFromMessage(message: Omit<Message, 'id'>): {
   return { model, provider, content: cleanedContent };
 }
 
-export function simplifycodinitActions(input: string): string {
-  // Using regex to match codinitAction tags that have type="file"
-  const regex = /(<codinitAction[^>]*type="file"[^>]*>)([\s\S]*?)(<\/codinitAction>)/g;
+export function simplifyCodinitActions(input: string): string {
+  // Using regex to match CodinitAction tags that have type="file"
+  const regex = /(<CodinitAction[^>]*type="file"[^>]*>)([\s\S]*?)(<\/CodinitAction>)/g;
 
   // Replace each matching occurrence
   return input.replace(regex, (_0, openingTag, _2, closingTag) => {
@@ -82,7 +82,7 @@ export function createFilesContext(files: FileMap, useRelativePath?: boolean) {
         filePath = path.replace('/home/project/', '');
       }
 
-      return `<codinitAction type="file" filePath="${filePath}">${codeWithLinesNumbers}</codinitAction>`;
+      return `<CodinitAction type="file" filePath="${filePath}">${codeWithLinesNumbers}</CodinitAction>`;
     });
 
   return `<codinitArtifact id="code-content" title="Code Content" >\n${fileContexts.join('\n')}\n</codinitArtifact>`;

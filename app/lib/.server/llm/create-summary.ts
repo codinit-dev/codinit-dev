@@ -1,7 +1,7 @@
 import { generateText, type CoreTool, type GenerateTextResult, type Message } from 'ai';
 import type { IProviderSetting } from '~/types/model';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROVIDER_LIST } from '~/utils/constants';
-import { extractCurrentContext, extractPropertiesFromMessage, simplifycodinitActions } from './utils';
+import { extractCurrentContext, extractPropertiesFromMessage, simplifyCodinitActions } from './utils';
 import { createScopedLogger } from '~/utils/logger';
 import { LLMManager } from '~/lib/modules/llm/manager';
 
@@ -29,7 +29,7 @@ export async function createSummary(props: {
     } else if (message.role == 'assistant') {
       let content = message.content;
 
-      content = simplifycodinitActions(content);
+      content = simplifyCodinitActions(content);
       content = content.replace(/<div class=\\"__codinitThought__\\">.*?<\/div>/s, '');
       content = content.replace(/<think>.*?<\/think>/s, '');
 

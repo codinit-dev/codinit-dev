@@ -65,7 +65,7 @@ export async function streamText(props: {
 
       // Remove package-lock.json content specifically keeping token usage MUCH lower
       content = content.replace(
-        /<codinitAction type="file" filePath="package-lock\.json">[\s\S]*?<\/codinitAction>/g,
+        /<CodinitAction type="file" filePath="package-lock\.json">[\s\S]*?<\/CodinitAction>/g,
         '[package-lock.json content removed]',
       );
 
