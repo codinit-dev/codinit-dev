@@ -136,9 +136,9 @@ export function useChatHistory() {
                     .map(([key, value]) => {
                       if (value?.type === 'file') {
                         return `
-                      <codinitAction type="file" filePath="${key}">
+                      <CodinitAction type="file" filePath="${key}">
 ${value.content}
-                      </codinitAction>
+                      </CodinitAction>
                       `;
                       } else {
                         return ``;

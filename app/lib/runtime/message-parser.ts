@@ -1,7 +1,7 @@
 import type {
   ActionType,
-  codinitAction,
-  codinitActionData,
+  CodinitAction,
+  CodinitActionData,
   FileAction,
   ShellAction,
   SupabaseAction,
@@ -12,8 +12,8 @@ import { unreachable } from '~/utils/unreachable';
 
 const ARTIFACT_TAG_OPEN = '<codinitArtifact';
 const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
-const ARTIFACT_ACTION_TAG_OPEN = '<codinitAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</codinitAction>';
+const ARTIFACT_ACTION_TAG_OPEN = '<CodinitAction';
+const ARTIFACT_ACTION_TAG_CLOSE = '</CodinitAction>';
 
 const logger = createScopedLogger('MessageParser');
 
@@ -25,7 +25,7 @@ export interface ActionCallbackData {
   artifactId: string;
   messageId: string;
   actionId: string;
-  action: codinitAction;
+  action: CodinitAction;
 }
 
 export type ArtifactCallback = (data: ArtifactCallbackData) => void;
@@ -55,7 +55,7 @@ interface MessageState {
   insideArtifact: boolean;
   insideAction: boolean;
   currentArtifact?: codinitArtifactData;
-  currentAction: codinitActionData;
+  currentAction: CodinitActionData;
   actionId: number;
 }
 
@@ -140,7 +140,7 @@ export class StreamingMessageParser {
                */
               actionId: String(state.actionId - 1),
 
-              action: currentAction as codinitAction,
+              action: currentAction as CodinitAction,
             });
 
             state.insideAction = false;
@@ -186,7 +186,7 @@ export class StreamingMessageParser {
                 artifactId: currentArtifact.id,
                 messageId,
                 actionId: String(state.actionId++),
-                action: state.currentAction as codinitAction,
+                action: state.currentAction as CodinitAction,
               });
 
               i = actionEndIndex + 1;

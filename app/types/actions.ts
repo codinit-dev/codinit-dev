@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import type { Change } from 'diff';
 
 export type ActionType = 'file' | 'shell' | 'supabase';
@@ -31,9 +30,9 @@ export interface SupabaseAction extends BaseAction {
   projectId?: string;
 }
 
-export type codinitAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
+export type CodinitAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
 
-export type codinitActionData = codinitAction | BaseAction;
+export type CodinitActionData = CodinitAction | BaseAction;
 
 export interface ActionAlert {
   type: string;
@@ -60,7 +59,16 @@ export interface DeployAlert {
   stage?: 'building' | 'deploying' | 'complete';
   buildStatus?: 'pending' | 'running' | 'complete' | 'failed';
   deployStatus?: 'pending' | 'running' | 'complete' | 'failed';
-  source?: 'vercel' | 'netlify' | 'github';
+  source?: 'vercel' | 'netlify' | 'github' | 'gitlab';
+}
+
+export interface LlmErrorAlertType {
+  type: 'error' | 'warning';
+  title: string;
+  description: string;
+  content?: string;
+  provider?: string;
+  errorType?: 'authentication' | 'rate_limit' | 'quota' | 'network' | 'unknown';
 }
 
 export interface FileHistory {
