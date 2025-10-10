@@ -73,10 +73,7 @@ const parseSelectedTemplate = (llmOutput: string): { template: string; title: st
       return null;
     }
 
-    return {
-      template: templateNameMatch[1].trim(),
-      title: titleMatch?.[1].trim() || 'Untitled Project',
-    };
+    return { template: templateNameMatch[1].trim(), title: titleMatch?.[1].trim() || 'Untitled Project' };
   } catch (error) {
     console.error('Error parsing template selection:', error);
     return null;
@@ -190,9 +187,9 @@ codinit is initializing your project with the required files using the ${templat
 ${filesToImport.files
   .map(
     (file) =>
-      `<codinitAction type="file" filePath="${file.path}">
+      `<CodinitAction type="file" filePath="${file.path}">
 ${file.content}
-</codinitAction>`,
+</CodinitAction>`,
   )
   .join('\n')}
 </codinitArtifact>
