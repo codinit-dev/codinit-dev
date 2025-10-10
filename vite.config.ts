@@ -93,22 +93,6 @@ export default defineConfig((config) => {
     },
     build: {
       target: 'esnext',
-      sourcemap: 'hidden',
-      rollupOptions: {
-        onwarn(warning, warn) {
-          // Suppress "Generated an empty chunk" warnings for API routes
-          if (warning.code === 'EMPTY_BUNDLE' && warning.message?.includes('Generated an empty chunk')) {
-            return;
-          }
-
-          // Suppress sourcemap warnings from node_modules
-          if (warning.code === 'SOURCEMAP_ERROR' && warning.message?.includes('node_modules')) {
-            return;
-          }
-
-          warn(warning);
-        },
-      },
     },
     plugins: [
       nodePolyfills({
@@ -178,7 +162,7 @@ function chrome129IssuePlugin() {
           if (version === 129) {
             res.setHeader('content-type', 'text/html');
             res.end(
-              '<body><h1>Please use Chrome Canary for testing.</h1><p>Chrome 129 has an issue with JavaScript modules & Vite local development, see <a href="https://github.com/stackblitz/bolt.new/issues/86#issuecomment-2395519258">for more information.</a></p><p><b>Note:</b> This only impacts <u>local development</u>. `pnpm run build` and `pnpm run start` will work fine in this browser.</p></body>',
+              '<body><h1>Please use Chrome Canary for testing.</h1><p>Chrome 129 has an issue with JavaScript modules & Vite local development, see <a href="https://github.com/stackblitz/codinit.new/issues/86#issuecomment-2395519258">for more information.</a></p><p><b>Note:</b> This only impacts <u>local development</u>. `pnpm run build` and `pnpm run start` will work fine in this browser.</p></body>',
             );
 
             return;
