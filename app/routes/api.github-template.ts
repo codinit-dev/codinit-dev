@@ -12,8 +12,8 @@ export async function loader({ request }: { request: Request }) {
   try {
     const baseUrl = 'https://api.github.com';
 
-    // Get the latest release
-    const releaseResponse = await fetch(`${baseUrl}/repos/${repo}/releases/latest`, {
+    // Get repository info to find the default branch
+    const repoResponse = await fetch(`${baseUrl}/repos/${repo}`, {
       headers: {
         Accept: 'application/vnd.github.v3+json',
 
@@ -22,22 +22,26 @@ export async function loader({ request }: { request: Request }) {
       },
     });
 
-    if (!releaseResponse.ok) {
-      throw new Error(`GitHub API error: ${releaseResponse.status}`);
+    if (!repoResponse.ok) {
+      throw new Error(`GitHub API error: ${repoResponse.status}`);
     }
 
-    const releaseData = (await releaseResponse.json()) as any;
-    const zipballUrl = releaseData.zipball_url;
+    const repoData = (await repoResponse.json()) as any;
+    const defaultBranch = repoData.default_branch || 'main';
+
+    // Construct zipball URL for the default branch
+    const zipballUrl = `${baseUrl}/repos/${repo}/zipball/${defaultBranch}`;
 
     // Fetch the zipball
     const zipResponse = await fetch(zipballUrl, {
       headers: {
+        Accept: 'application/vnd.github.v3+json',
         ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
       },
     });
 
     if (!zipResponse.ok) {
-      throw new Error(`Failed to fetch release zipball: ${zipResponse.status}`);
+      throw new Error(`Failed to fetch repository zipball: ${zipResponse.status}`);
     }
 
     // Get the zip content as ArrayBuffer

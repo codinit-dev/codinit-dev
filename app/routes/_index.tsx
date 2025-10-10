@@ -7,10 +7,10 @@ import BackgroundRays from '~/components/ui/BackgroundRays';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'codinit' },
+    { title: 'CodinIT.dev' },
     {
       name: 'description',
-      content: 'Talk with codinit, an AI assistant from StackBlitz',
+      content: 'Talk with codinit, an AI assistant from CodinIT.dev',
     },
   ];
 };
