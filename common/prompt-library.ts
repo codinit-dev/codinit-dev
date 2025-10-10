@@ -1,6 +1,6 @@
-import { getSystemPrompt } from './prompts/prompts';
-import getFineTunedPrompt from './prompts/optimized';
+import { getSystemPrompt } from './prompts/prompt';
 import { discussPrompt } from './prompts/discuss-prompt';
+import getFineTunedPrompt from '~/lib/common/prompts/optimized'; // Correctly import getFineTunedPrompt
 
 export interface PromptOptions {
   cwd: string;
@@ -28,12 +28,12 @@ export class PromptLibrary {
     default: {
       label: 'Default Prompt',
       description: 'An fine tuned prompt for better results and less token usage',
-      get: (options) => getFineTunedPrompt(options),
+      get: (options) => getFineTunedPrompt(options), // Pass the entire options object
     },
     original: {
       label: 'Old Default Prompt',
       description: 'The OG battle tested default system Prompt',
-      get: (options) => getSystemPrompt(options.cwd, options.supabase),
+      get: (options) => getSystemPrompt(options.cwd, options.supabase), // Removed designScheme
     },
     optimized: {
       label: 'Optimized Prompt (experimental)',

@@ -35,9 +35,9 @@ describe('StreamingMessageParser', () => {
 
   describe('invalid or incomplete artifacts', () => {
     it.each<[string | string[], ExpectedResult | string]>([
-      ['Foo bar <b', 'Foo bar '],
+      ['Foo bar <b', 'Foo bar <b'],
       ['Foo bar <ba', 'Foo bar <ba'],
-      ['Foo bar <bol', 'Foo bar '],
+      ['Foo bar <c', 'Foo bar '],
       ['Foo bar <codinit', 'Foo bar '],
       ['Foo bar <codinita', 'Foo bar <codinita'],
       ['Foo bar <codinitA', 'Foo bar '],
@@ -174,7 +174,7 @@ describe('StreamingMessageParser', () => {
   describe('valid artifacts with actions', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       [
-        'Before <codinitArtifact title="Some title" id="artifact_1"><codinitAction type="shell">npm install</codinitAction></codinitArtifact> After',
+        'Before <codinitArtifact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction></codinitArtifact> After',
         {
           output: 'Before  After',
           callbacks: {
@@ -186,7 +186,7 @@ describe('StreamingMessageParser', () => {
         },
       ],
       [
-        'Before <codinitArtifact title="Some title" id="artifact_1"><codinitAction type="shell">npm install</codinitAction><codinitAction type="file" filePath="index.js">some content</codinitAction></codinitArtifact> After',
+        'Before <codinitArtifact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction><CodinitAction type="file" filePath="index.js">some content</CodinitAction></codinitArtifact> After',
         {
           output: 'Before  After',
           callbacks: {

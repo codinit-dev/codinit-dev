@@ -41,9 +41,9 @@ export const createChatFromFolder = async (
 <codinitArtifact id="imported-files" title="Imported Files" type="bundled" >
 ${fileArtifacts
   .map(
-    (file) => `<codinitAction type="file" filePath="${file.path}">
+    (file) => `<CodinitAction type="file" filePath="${file.path}">
 ${escapecodinitTags(file.content)}
-</codinitAction>`,
+</CodinitAction>`,
   )
   .join('\n\n')}
 </codinitArtifact>`,

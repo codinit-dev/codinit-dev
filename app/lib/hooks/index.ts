@@ -9,3 +9,4 @@ export { useFeatures } from './useFeatures';
 export { useNotifications } from './useNotifications';
 export { useConnectionStatus } from './useConnectionStatus';
 export { useDebugStatus } from './useDebugStatus';
+export { useStickToBottom } from './useStickToBottom';

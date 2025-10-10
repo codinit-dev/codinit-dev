@@ -110,9 +110,9 @@ export const filesToArtifacts = (files: { [path: string]: { content: string } },
 ${Object.keys(files)
   .map(
     (filePath) => `
-<codinitAction type="file" filePath="${filePath}">
+<CodinitAction type="file" filePath="${filePath}">
 ${files[filePath].content}
-</codinitAction>
+</CodinitAction>
 `,
   )
   .join('\n')}

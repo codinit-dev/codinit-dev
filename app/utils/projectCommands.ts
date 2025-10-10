@@ -72,12 +72,12 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
 
   if (commands.setupCommand) {
     commandString += `
-<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
+<CodinitAction type="shell">${commands.setupCommand}</CodinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<codinitAction type="start">${commands.startCommand}</codinitAction>
+<CodinitAction type="start">${commands.startCommand}</CodinitAction>
 `;
   }
 
@@ -111,7 +111,7 @@ export function escapecodinitArtifactTags(input: string) {
 
 export function escapecodinitAActionTags(input: string) {
   // Regular expression to match codinitArtifact tags and their content
-  const regex = /(<codinitAction[^>]*>)([\s\S]*?)(<\/codinitAction>)/g;
+  const regex = /(<CodinitAction[^>]*>)([\s\S]*?)(<\/CodinitAction>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -140,12 +140,12 @@ export function createCommandActionsString(commands: ProjectCommands): string {
 
   if (commands.setupCommand) {
     commandString += `
-<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
+<CodinitAction type="shell">${commands.setupCommand}</CodinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<codinitAction type="start">${commands.startCommand}</codinitAction>
+<CodinitAction type="start">${commands.startCommand}</CodinitAction>
 `;
   }
 
