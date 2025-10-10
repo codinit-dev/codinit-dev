@@ -36,16 +36,17 @@ export default function McpServerList({
           <div key={serverName} className="flex flex-col p-2 rounded-md bg-codinit-elements-background-depth-1">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 min-w-0 flex-1">
-                <div
+                <button
+                  type="button"
                   onClick={() => toggleServerExpanded(serverName)}
-                  className="flex items-center gap-1.5 text-codinit-elements-textPrimary"
+                  className="flex items-center gap-1.5 text-codinit-elements-textPrimary bg-transparent border-none cursor-pointer p-0"
                   aria-expanded={isExpanded}
                 >
                   <div
                     className={`i-ph:${isExpanded ? 'caret-down' : 'caret-right'} w-3 h-3 transition-transform duration-150`}
                   />
                   <span className="font-medium truncate text-left">{serverName}</span>
-                </div>
+                </button>
 
                 <div className="flex-1 min-w-0 truncate">
                   {mcpServer.config.type === 'sse' || mcpServer.config.type === 'streamable-http' ? (

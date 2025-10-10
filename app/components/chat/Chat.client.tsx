@@ -236,14 +236,19 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
         };
       })}
       enhancePrompt={() => {
+        if (!model || !provider) {
+          toast.error('Please select an active provider to enhance prompts.');
+          return;
+        }
+
         enhancePrompt(
           input,
           (input) => {
             setInput(input);
             scrollTextArea();
           },
-          model!,
-          provider!,
+          model,
+          provider,
           apiKeys,
         );
       }}
