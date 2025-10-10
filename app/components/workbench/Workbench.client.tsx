@@ -7,7 +7,8 @@ import { Popover, Transition } from '@headlessui/react';
 import { diffLines, type Change } from 'diff';
 import { ActionRunner } from '~/lib/runtime/action-runner';
 import { getLanguageFromExtension } from '~/utils/getLanguageFromExtension';
-import type { FileHistory } from '~/types/actions';
+import type { FileHistory, ActionAlert, SupabaseAlert, DeployAlert } from '~/types/actions';
+import { webcontainer } from '~/lib/webcontainer';
 import { DiffView } from './DiffView';
 import {
   type OnChangeCallback as OnEditorChange,
@@ -26,11 +27,13 @@ import useViewport from '~/lib/hooks';
 import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { usePreviewStore } from '~/lib/stores/previews';
+import type { ElementInfo } from '~/components/workbench/Inspector';
 
 interface WorkspaceProps {
   chatStarted?: boolean;
   isStreaming?: boolean;
-  actionRunner: ActionRunner;
+  actionRunner?: ActionRunner;
+  setSelectedElement?: (element: ElementInfo | null) => void;
   metadata?: {
     gitUrl?: string;
   };
@@ -285,7 +288,20 @@ const FileModifiedDropdown = memo(
 
 export const Workbench = memo(
   ({ chatStarted, isStreaming, actionRunner, metadata, updateChatMestaData }: WorkspaceProps) => {
-    renderLogger.trace('Workbench');
+    renderLogger.trace('Workbench', 'component render');
+
+    const effectiveActionRunner = useMemo(
+      () =>
+        actionRunner ||
+        new ActionRunner(
+          webcontainer,
+          () => workbenchStore.codinitTerminal,
+          (alert: ActionAlert) => workbenchStore.actionAlert.set(alert),
+          (alert: SupabaseAlert) => workbenchStore.supabaseAlert.set(alert),
+          (alert: DeployAlert) => workbenchStore.deployAlert.set(alert),
+        ),
+      [actionRunner],
+    );
 
     const [isSyncing, setIsSyncing] = useState(false);
     const [isPushDialogOpen, setIsPushDialogOpen] = useState(false);
@@ -493,7 +509,11 @@ export const Workbench = memo(
                       x: selectedView === 'diff' ? '0%' : selectedView === 'code' ? '100%' : '-100%',
                     }}
                   >
-                    <DiffView fileHistory={fileHistory} setFileHistory={setFileHistory} actionRunner={actionRunner} />
+                    <DiffView
+                      fileHistory={fileHistory}
+                      setFileHistory={setFileHistory}
+                      actionRunner={effectiveActionRunner}
+                    />
                   </View>
                   <View initial={{ x: '100%' }} animate={{ x: selectedView === 'preview' ? '0%' : '100%' }}>
                     <Preview />
