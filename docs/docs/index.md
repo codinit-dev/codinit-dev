@@ -68,13 +68,13 @@ If you're new to installing software from GitHub, don't worry! If you encounter 
 
 ### Clone the Repository
 
-Alternatively, you can download the latest version of the project directly from the [Releases Page](https://github.com/stackblitz-labs/CodinIT.dev/releases/latest). Simply download the .zip file, extract it, and proceed with the setup instructions below. If you are comfertiable using git then run the command below.
+Alternatively, you can download the latest version of the project directly from the [Releases Page](https://github.com/Gerome-Elassaad/codinit-app/releases/latest). Simply download the .zip file, extract it, and proceed with the setup instructions below. If you are comfertiable using git then run the command below.
 
 Clone the repository using Git:
 
 ```bash
-git clone https://github.com/stackblitz-labs/CodinIT.dev
-cd CodinIT.dev
+git clone https://github.com/Gerome-Elassaad/codinit-app
+cd codinit-app
 ```
 
 ---
@@ -87,7 +87,7 @@ There are two ways to configure your API keys in CodinIT.dev:
 
 When setting up the application, you will need to add your API keys for the LLMs you wish to use. You can do this by renaming the `.env.example` file to `.env.local` and adding your API keys there.
 
-- On **Mac**, you can find the file at `[your name]/CodinIT.dev/.env.example`.
+- On **Mac**, you can find the file at `[your name]/codinit-app/.env.example`.
 - On **Windows/Linux**, the path will be similar.
 
 If you can't see the file, it's likely because hidden files are not being shown. On **Mac**, open a Terminal window and enter the following command to show hidden files:
