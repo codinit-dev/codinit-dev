@@ -74,12 +74,12 @@ Let's get you up and running with the stable version of CodinIT.dev!
 
 ## Quick Installation
 
-[![Download Latest Release](https://img.shields.io/github/v/release/Gerome-Elassaad/codingit?label=Download%20CodinIT&sort=semver)](https://github.com/Gerome-Elassaad/codingit/releases/latest) ← Click here to go to the latest release version!
+[![Download Latest Release](https://img.shields.io/github/v/release/Gerome-Elassaad/codinit-app?label=Download%20CodinIT&sort=semver)](https://github.com/Gerome-Elassaad/codinit-app/releases/latest) ← Click here to go to the latest release version!
 
 - Download the binary for your platform (available for Windows, macOS, and Linux)
 - **Note**: For macOS, if you get the error "This app is damaged", run:
   ```bash
-  xattr -cr /path/to/codingit.app
+  xattr -cr /path/to/codinit-app.app
   ```
 
 ## Manual installation
@@ -160,7 +160,7 @@ This option requires some familiarity with Docker but provides a more isolated e
 For users who prefer a native desktop experience, CodinIT.dev is also available as an Electron desktop application:
 
 1. **Download the Desktop App**:
-   - Visit the [latest release](https://github.com/Gerome-Elassaad/codingit/releases/latest)
+   - Visit the [latest release](https://github.com/Gerome-Elassaad/codinit-app/releases/latest)
    - Download the appropriate binary for your operating system
    - For macOS: Extract and run the `.dmg` file
    - For Windows: Run the `.exe` installer
@@ -332,13 +332,13 @@ This method is recommended for developers who want to:
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/Gerome-Elassaad/codingit.git
+   git clone https://github.com/Gerome-Elassaad/codinit-app.git
    ```
 
 2. **Navigate to Project Directory**:
 
    ```bash
-   cd codingit
+   cd codinit-app
    ```
 
 3. **Install Dependencies**:

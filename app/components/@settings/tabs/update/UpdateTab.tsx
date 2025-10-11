@@ -479,7 +479,7 @@ const UpdateTab = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p>
-                  Updates are fetched from: <span className="font-mono">Gerome-Elassaad/CodingIT</span> (
+                  Updates are fetched from: <span className="font-mono">Gerome-Elassaad/codinit-app</span> (
                   {isLatestBranch ? 'main' : 'stable'} branch)
                 </p>
                 <p className="mt-1">

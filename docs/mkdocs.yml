@@ -1,4 +1,4 @@
-site_name: Docs - CodinIT.dev
+site_name: Docs CodinIT.dev
 site_dir: ../site
 theme:
   name: material
@@ -33,7 +33,7 @@ theme:
   # favicon: assets/icon.png
 repo_name: CodingIT
 repo_url: https://github.com/Gerome-Elassaad/CodingIT
-edit_uri: ''
+edit_uri: 'https://github.com/Gerome-Elassaad/codinit-app'
 
 extra:
   generator: false
