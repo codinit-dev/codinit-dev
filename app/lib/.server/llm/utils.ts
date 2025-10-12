@@ -85,7 +85,7 @@ export function createFilesContext(files: FileMap, useRelativePath?: boolean) {
       return `<CodinitAction type="file" filePath="${filePath}">${codeWithLinesNumbers}</CodinitAction>`;
     });
 
-  return `<codinitArtifact id="code-content" title="Code Content" >\n${fileContexts.join('\n')}\n</codinitArtifact>`;
+  return `<codinitArticact id="code-content" title="Code Content" >\n${fileContexts.join('\n')}\n</codinitArticact>`;
 }
 
 export function extractCurrentContext(messages: Message[]) {

@@ -3,14 +3,31 @@ import JSZip from 'jszip';
 
 export async function loader({ request }: { request: Request }) {
   const url = new URL(request.url);
-  const repo = url.searchParams.get('repo');
+  const repoPath = url.searchParams.get('repo');
 
-  if (!repo) {
+  if (!repoPath) {
     return json({ error: 'Repository name is required' }, { status: 400 });
   }
 
   try {
     const baseUrl = 'https://api.github.com';
+
+    /*
+     * Parse the repo path to separate repo from subdirectory
+     * e.g., "codinit-dev/starters/nextjs-shadcn" -> repo: "codinit-dev/starters", subdir: "nextjs-shadcn"
+     */
+    const pathParts = repoPath.split('/');
+    let repo: string;
+    let subdirectory: string | null = null;
+
+    if (pathParts.length > 2) {
+      // Monorepo with subdirectory
+      repo = `${pathParts[0]}/${pathParts[1]}`;
+      subdirectory = pathParts.slice(2).join('/');
+    } else {
+      // Regular repo without subdirectory
+      repo = repoPath;
+    }
 
     // Get repository info to find the default branch
     const repoResponse = await fetch(`${baseUrl}/repos/${repo}`, {
@@ -77,6 +94,16 @@ export async function loader({ request }: { request: Request }) {
 
       if (rootFolderName && filename.startsWith(rootFolderName + '/')) {
         normalizedPath = filename.substring(rootFolderName.length + 1);
+      }
+
+      // If we're looking for a specific subdirectory, filter to only files in that subdirectory
+      if (subdirectory) {
+        if (!normalizedPath.startsWith(subdirectory + '/')) {
+          return null;
+        }
+
+        // Remove the subdirectory prefix from the path
+        normalizedPath = normalizedPath.substring(subdirectory.length + 1);
       }
 
       // Get the file content

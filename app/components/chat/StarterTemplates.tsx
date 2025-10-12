@@ -6,23 +6,25 @@ interface TemplateCardProps {
   template: Template;
 }
 
-const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => (
-  <a
-    href={`/git?url=https://github.com/${template.githubRepo}.git`}
-    data-state="closed"
-    data-discover="true"
-    className="group flex-shrink-0"
-  >
-    <div className="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 hover:bg-codinit-elements-background-depth-3 hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-300 w-[90px] h-[90px] cursor-pointer transform hover:scale-105 hover:shadow-lg">
-      <div
-        className={`${template.icon} w-8 h-8 text-3xl text-codinit-elements-textSecondary group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-all duration-300 group-hover:scale-110`}
-      />
-      <span className="text-[10px] font-medium text-codinit-elements-textSecondary group-hover:text-codinit-elements-textPrimary transition-colors text-center line-clamp-2 w-full px-1">
-        {template.label}
-      </span>
-    </div>
-  </a>
-);
+const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
+  const buildUrl = () => {
+    const baseUrl = `/git?url=https://github.com/${template.githubRepo}.git`;
+    return template.subdir ? `${baseUrl}&subdir=${encodeURIComponent(template.subdir)}` : baseUrl;
+  };
+
+  return (
+    <a href={buildUrl()} data-state="closed" data-discover="true" className="group flex-shrink-0">
+      <div className="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 hover:bg-codinit-elements-background-depth-3 hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-300 w-[90px] h-[90px] cursor-pointer transform hover:scale-105 hover:shadow-lg">
+        <div
+          className={`${template.icon} w-8 h-8 text-3xl text-codinit-elements-textSecondary group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-all duration-300 group-hover:scale-110`}
+        />
+        <span className="text-[10px] font-medium text-codinit-elements-textSecondary group-hover:text-codinit-elements-textPrimary transition-colors text-center line-clamp-2 w-full px-1">
+          {template.label}
+        </span>
+      </div>
+    </a>
+  );
+};
 
 const StarterTemplates: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);

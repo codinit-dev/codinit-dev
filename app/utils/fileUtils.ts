@@ -106,7 +106,7 @@ export const detectProjectType = async (
 
 export const filesToArtifacts = (files: { [path: string]: { content: string } }, id: string): string => {
   return `
-<codinitArtifact id="${id}" title="User Updated Files">
+<codinitArticact id="${id}" title="User Updated Files">
 ${Object.keys(files)
   .map(
     (filePath) => `
@@ -116,6 +116,6 @@ ${files[filePath].content}
 `,
   )
   .join('\n')}
-</codinitArtifact>
+</codinitArticact>
   `;
 };

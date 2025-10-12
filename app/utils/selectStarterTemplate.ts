@@ -4,7 +4,9 @@ import type { Template } from '~/types/template';
 import { STARTER_TEMPLATES } from './constants';
 
 const starterTemplateSelectionPrompt = (templates: Template[]) => `
-You are an experienced developer who helps people choose the best starter template for their projects, Vite is preferred.
+You are an experienced developer who helps people choose the best starter template for their projects.
+IMPORTANT: Vite is preferred
+IMPORTANT: Only choose shadcn templates if the user explicitly asks for shadcn.
 
 Available templates:
 <template>
@@ -187,9 +189,9 @@ codinit is initializing your project with the required files using the ${templat
 ${filesToImport.files
   .map(
     (file) =>
-      `<CodinitAction type="file" filePath="${file.path}">
+      `<codinitAction type="file" filePath="${file.path}">
 ${file.content}
-</CodinitAction>`,
+</codinitAction>`,
   )
   .join('\n')}
 </codinitArtifact>

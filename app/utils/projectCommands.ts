@@ -85,17 +85,17 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
     role: 'assistant',
     content: `
 ${commands.followupMessage ? `\n\n${commands.followupMessage}` : ''}
-<codinitArtifact id="project-setup" title="Project Setup">
+<codinitArticact id="project-setup" title="Project Setup">
 ${commandString}
-</codinitArtifact>`,
+</codinitArticact>`,
     id: generateId(),
     createdAt: new Date(),
   };
 }
 
-export function escapecodinitArtifactTags(input: string) {
-  // Regular expression to match codinitArtifact tags and their content
-  const regex = /(<codinitArtifact[^>]*>)([\s\S]*?)(<\/codinitArtifact>)/g;
+export function escapecodinitArticactTags(input: string) {
+  // Regular expression to match codinitArticact tags and their content
+  const regex = /(<codinitArticact[^>]*>)([\s\S]*?)(<\/codinitArticact>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -110,7 +110,7 @@ export function escapecodinitArtifactTags(input: string) {
 }
 
 export function escapecodinitAActionTags(input: string) {
-  // Regular expression to match codinitArtifact tags and their content
+  // Regular expression to match codinitArticact tags and their content
   const regex = /(<CodinitAction[^>]*>)([\s\S]*?)(<\/CodinitAction>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
@@ -126,7 +126,7 @@ export function escapecodinitAActionTags(input: string) {
 }
 
 export function escapecodinitTags(input: string) {
-  return escapecodinitArtifactTags(escapecodinitAActionTags(input));
+  return escapecodinitArticactTags(escapecodinitAActionTags(input));
 }
 
 // We have this seperate function to simplify the restore snapshot process in to one single artifact.
