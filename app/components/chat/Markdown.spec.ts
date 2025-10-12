@@ -4,13 +4,13 @@ import { stripCodeFenceFromArtifact } from './Markdown';
 describe('stripCodeFenceFromArtifact', () => {
   it('should remove code fences around artifact element', () => {
     const input = "```xml\n<div class='__codinitArticact__'></div>\n```";
-    const expected = "\n<div class='__codinitArticact__'></div>\n";
+    const expected = "<div class='__codinitArticact__'></div>";
     expect(stripCodeFenceFromArtifact(input)).toBe(expected);
   });
 
   it('should handle code fence with language specification', () => {
     const input = "```typescript\n<div class='__codinitArticact__'></div>\n```";
-    const expected = "\n<div class='__codinitArticact__'></div>\n";
+    const expected = "<div class='__codinitArticact__'></div>";
     expect(stripCodeFenceFromArtifact(input)).toBe(expected);
   });
 
@@ -39,15 +39,7 @@ describe('stripCodeFenceFromArtifact', () => {
       '```',
     ].join('\n');
 
-    const expected = [
-      'Some text',
-      '',
-      "<div class='__codinitArticact__'></div>",
-      '',
-      '```',
-      'regular code',
-      '```',
-    ].join('\n');
+    const expected = ['Some text', "<div class='__codinitArticact__'></div>", '```', 'regular code', '```'].join('\n');
 
     expect(stripCodeFenceFromArtifact(input)).toBe(expected);
   });

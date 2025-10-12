@@ -10,8 +10,8 @@ import type { codinitArticactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<codinitArticact';
-const ARTIFACT_TAG_CLOSE = '</codinitArticact>';
+const ARTIFACT_TAG_OPEN = '<codinitArtifact';
+const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
 const ARTIFACT_ACTION_TAG_OPEN = '<CodinitAction';
 const ARTIFACT_ACTION_TAG_CLOSE = '</CodinitAction>';
 
