@@ -41,9 +41,9 @@ describe('StreamingMessageParser', () => {
       ['Foo bar <codinit', 'Foo bar '],
       ['Foo bar <codinita', 'Foo bar <codinita'],
       ['Foo bar <codinitA', 'Foo bar '],
-      ['Foo bar <codinitArtifacs></codinitArtifact>', 'Foo bar <codinitArtifacs></codinitArtifact>'],
-      ['Before <oltArtfiact>foo</codinitArtifact> After', 'Before <oltArtfiact>foo</codinitArtifact> After'],
-      ['Before <codinitArtifactt>foo</codinitArtifact> After', 'Before <codinitArtifactt>foo</codinitArtifact> After'],
+      ['Foo bar <codinitArtifacs></codinitArticact>', 'Foo bar <codinitArtifacs></codinitArticact>'],
+      ['Before <oltArtfiact>foo</codinitArticact> After', 'Before <oltArtfiact>foo</codinitArticact> After'],
+      ['Before <codinitArticactt>foo</codinitArticact> After', 'Before <codinitArticactt>foo</codinitArticact> After'],
     ])('should correctly parse chunks and strip out codinit artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
@@ -52,7 +52,7 @@ describe('StreamingMessageParser', () => {
   describe('valid artifacts without actions', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       [
-        'Some text before <codinitArtifact title="Some title" id="artifact_1">foo bar</codinitArtifact> Some more text',
+        'Some text before <codinitArticact title="Some title" id="artifact_1">foo bar</codinitArticact> Some more text',
         {
           output: 'Some text before  Some more text',
           callbacks: {
@@ -67,7 +67,7 @@ describe('StreamingMessageParser', () => {
         [
           'Some text before <codinitArti',
           'fact',
-          ' title="Some title" id="artifact_1" type="bundled" >foo</codinitArtifact> Some more text',
+          ' title="Some title" id="artifact_1" type="bundled" >foo</codinitArticact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -86,7 +86,7 @@ describe('StreamingMessageParser', () => {
           't title="Some title" id="artifact_1"',
           ' ',
           '>',
-          'foo</codinitArtifact> Some more text',
+          'foo</codinitArticact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -104,7 +104,7 @@ describe('StreamingMessageParser', () => {
           'fact',
           ' title="Some title" id="artifact_1"',
           ' >fo',
-          'o</codinitArtifact> Some more text',
+          'o</codinitArticact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -124,7 +124,7 @@ describe('StreamingMessageParser', () => {
           'title" id="artifact_1">fo',
           'o',
           '<',
-          '/codinitArtifact> Some more text',
+          '/codinitArticact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -142,7 +142,7 @@ describe('StreamingMessageParser', () => {
           'fact title="Some title" id="artif',
           'act_1">fo',
           'o<',
-          '/codinitArtifact> Some more text',
+          '/codinitArticact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -155,7 +155,7 @@ describe('StreamingMessageParser', () => {
         },
       ],
       [
-        'Before <codinitArtifact title="Some title" id="artifact_1">foo</codinitArtifact> After',
+        'Before <codinitArticact title="Some title" id="artifact_1">foo</codinitArticact> After',
         {
           output: 'Before  After',
           callbacks: {
@@ -174,7 +174,7 @@ describe('StreamingMessageParser', () => {
   describe('valid artifacts with actions', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       [
-        'Before <codinitArtifact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction></codinitArtifact> After',
+        'Before <codinitArticact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction></codinitArticact> After',
         {
           output: 'Before  After',
           callbacks: {
@@ -186,7 +186,7 @@ describe('StreamingMessageParser', () => {
         },
       ],
       [
-        'Before <codinitArtifact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction><CodinitAction type="file" filePath="index.js">some content</CodinitAction></codinitArtifact> After',
+        'Before <codinitArticact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction><CodinitAction type="file" filePath="index.js">some content</CodinitAction></codinitArticact> After',
         {
           output: 'Before  After',
           callbacks: {
