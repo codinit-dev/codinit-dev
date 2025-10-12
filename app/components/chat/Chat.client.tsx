@@ -14,6 +14,9 @@ import { fileModificationsToHTML } from '~/utils/diff';
 import { cubicEasingFn } from '~/utils/easings';
 import { createScopedLogger, renderLogger } from '~/utils/logger';
 import { BaseChat } from './BaseChat';
+import Cookies from 'js-cookie';
+import type { ProviderInfo } from '~/types/model';
+import { DEFAULT_MODEL, DEFAULT_PROVIDER } from '~/utils/constants';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -77,11 +80,51 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
   const { showChat } = useStore(chatStore);
   const providers = useStore(providersStore);
 
-  const activeProvider = Object.values(providers).find((provider) => provider.settings.enabled);
+  // Get list of enabled providers
+  const enabledProviders = Object.values(providers).filter((provider) => provider.settings.enabled);
 
-  const model = activeProvider?.name;
-  const provider = activeProvider;
+  // Load selected model and provider from cookies or use defaults
+  const [selectedModel, setSelectedModelState] = useState<string>(() => {
+    const savedModel = Cookies.get('selectedModel');
+    return savedModel || DEFAULT_MODEL;
+  });
+
+  const [selectedProvider, setSelectedProviderState] = useState<ProviderInfo | undefined>(() => {
+    const savedProviderName = Cookies.get('selectedProvider');
+
+    if (savedProviderName) {
+      const found = enabledProviders.find((p) => p.name === savedProviderName);
+
+      if (found) {
+        return found;
+      }
+    }
+
+    // Fallback to first enabled provider or default
+    return enabledProviders[0] || DEFAULT_PROVIDER;
+  });
+
   const apiKeys = getApiKeysFromCookie(document.cookie);
+
+  // Handler to update model and persist to cookies
+  const handleSetModel = (modelName: string) => {
+    setSelectedModelState(modelName);
+    Cookies.set('selectedModel', modelName, { expires: 365, sameSite: 'strict' });
+  };
+
+  // Handler to update provider and persist to cookies
+  const handleSetProvider = (provider: ProviderInfo) => {
+    setSelectedProviderState(provider);
+    Cookies.set('selectedProvider', provider.name, { expires: 365, sameSite: 'strict' });
+  };
+
+  // Update selected provider if it's no longer enabled
+  useEffect(() => {
+    if (selectedProvider && !enabledProviders.find((p) => p.name === selectedProvider.name)) {
+      const newProvider = enabledProviders[0] || DEFAULT_PROVIDER;
+      handleSetProvider(newProvider);
+    }
+  }, [enabledProviders, selectedProvider]);
 
   const [animationScope, animate] = useAnimate();
 
@@ -178,6 +221,9 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
 
     runAnimation();
 
+    // Prefix message with model and provider information
+    const modelPrefix = `[Model: ${selectedModel}]\n\n[Provider: ${selectedProvider?.name}]\n\n`;
+
     if (fileModifications !== undefined) {
       const diff = fileModificationsToHTML(fileModifications);
 
@@ -188,7 +234,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
        * manually reset the input and we'd have to manually pass in file attachments. However, those
        * aren't relevant here.
        */
-      append({ role: 'user', content: `${diff}\n\n${_input}` });
+      append({ role: 'user', content: `${modelPrefix}${diff}\n\n${_input}` });
 
       /**
        * After sending a new message we reset all modifications since the model
@@ -196,7 +242,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
        */
       workbenchStore.resetAllFileModifications();
     } else {
-      append({ role: 'user', content: _input });
+      append({ role: 'user', content: `${modelPrefix}${_input}` });
     }
 
     setInput('');
@@ -225,6 +271,11 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
       handleStop={abort}
       chatMode={chatMode}
       setChatMode={setChatMode}
+      model={selectedModel}
+      setModel={handleSetModel}
+      provider={selectedProvider}
+      setProvider={handleSetProvider}
+      providerList={enabledProviders}
       messages={messages.map((message, i) => {
         if (message.role === 'user') {
           return message;
@@ -236,7 +287,7 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
         };
       })}
       enhancePrompt={() => {
-        if (!model || !provider) {
+        if (!selectedModel || !selectedProvider) {
           toast.error('Please select an active provider to enhance prompts.');
           return;
         }
@@ -247,8 +298,8 @@ export const ChatImpl = memo(({ initialMessages, storeMessageHistory }: ChatProp
             setInput(input);
             scrollTextArea();
           },
-          model,
-          provider,
+          selectedModel,
+          selectedProvider,
           apiKeys,
         );
       }}
