@@ -104,8 +104,8 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           {() => (
             <div
               className={classNames(
-                'transition-all duration-200 ease-in-out overflow-hidden',
-                props.isModelSettingsCollapsed ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100',
+                'transition-all duration-200 ease-in-out',
+                props.isModelSettingsCollapsed ? 'max-h-0 opacity-0 overflow-hidden' : 'max-h-[500px] opacity-100',
               )}
             >
               <div className="mb-2 space-y-2">
