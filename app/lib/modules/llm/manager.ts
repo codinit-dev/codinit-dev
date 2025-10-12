@@ -111,7 +111,19 @@ export class LLMManager {
               return models;
             })
             .catch((err) => {
+              const errorMessage = err?.message || err?.toString() || err;
+              const isExpectedError =
+                errorMessage.includes('Missing Api Key') ||
+                errorMessage.includes('fetch failed') ||
+                errorMessage.includes('ECONNREFUSED');
+
+              if (isExpectedError) {
+                // Silent for expected errors (missing API keys or local services not running)
+                return [];
+              }
+
               logger.error(`Error getting dynamic models ${provider.name} :`, err);
+
               return [];
             });
 
@@ -177,7 +189,19 @@ export class LLMManager {
         return models;
       })
       .catch((err) => {
+        const errorMessage = err?.message || err?.toString() || err;
+        const isExpectedError =
+          errorMessage.includes('Missing Api Key') ||
+          errorMessage.includes('fetch failed') ||
+          errorMessage.includes('ECONNREFUSED');
+
+        if (isExpectedError) {
+          // Silent for expected errors (missing API keys or local services not running)
+          return [];
+        }
+
         logger.error(`Error getting dynamic models ${provider.name} :`, err);
+
         return [];
       });
     const dynamicModelsName = dynamicModels.map((d) => d.name);
