@@ -222,14 +222,18 @@ export const ModelSelector = ({
   return (
     <div className="flex gap-2 flex-col sm:flex-row">
       {/* Provider Combobox */}
-      <div className="relative flex w-full" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
+      <div className="relative flex w-full z-50" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
         <div
           className={classNames(
-            'w-full p-2 rounded-lg border border-codinit-elements-borderColor',
-            'bg-codinit-elements-prompt-background text-codinit-elements-textPrimary',
-            'focus-within:outline-none focus-within:ring-2 focus-within:ring-codinit-elements-focus',
-            'transition-all cursor-pointer',
-            isProviderDropdownOpen ? 'ring-2 ring-codinit-elements-focus' : undefined,
+            'w-full px-3 py-2 rounded-lg cursor-pointer',
+            'bg-codinit-elements-background-depth-1/30 backdrop-blur-sm',
+            'border border-codinit-elements-borderColor/40',
+            'text-codinit-elements-textPrimary',
+            'transition-all duration-200 ease-in-out',
+            'hover:border-codinit-elements-borderColor/70 hover:bg-codinit-elements-background-depth-1/50',
+            isProviderDropdownOpen
+              ? 'ring-2 ring-accent-500/30 border-accent-500/50 shadow-lg shadow-accent-500/5'
+              : 'shadow-sm',
           )}
           onClick={() => setIsProviderDropdownOpen(!isProviderDropdownOpen)}
           onKeyDown={(e) => {
@@ -246,12 +250,14 @@ export const ModelSelector = ({
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 truncate">
-              {provider?.icon && <img src={provider.icon} alt={provider.name} className="w-5 h-5 flex-shrink-0" />}
-              <span className="truncate">{provider?.name || 'Select provider'}</span>
+              {provider?.icon && (
+                <img src={provider.icon} alt={provider.name} className="w-4 h-4 flex-shrink-0 rounded" />
+              )}
+              <span className="truncate font-medium text-xs">{provider?.name || 'Select provider'}</span>
             </div>
             <div
               className={classNames(
-                'i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary opacity-75',
+                'i-ph:caret-down w-3.5 h-3.5 text-codinit-elements-textSecondary transition-transform duration-200',
                 isProviderDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
@@ -260,53 +266,51 @@ export const ModelSelector = ({
 
         {isProviderDropdownOpen && (
           <div
-            className="absolute z-20 w-full mt-1 py-1 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 shadow-lg"
+            className="absolute z-[100] w-full mt-1 py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
             role="listbox"
             id="provider-listbox"
           >
-            <div className="px-2 pb-2">
+            <div className="px-2 pb-1.5">
               <div className="relative">
+                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary text-xs" />
+                </div>
                 <input
                   ref={providerSearchInputRef}
                   type="text"
                   value={providerSearchQuery}
                   onChange={(e) => setProviderSearchQuery(e.target.value)}
-                  placeholder="Search providers..."
+                  placeholder="Search..."
                   className={classNames(
-                    'w-full pl-2 py-1.5 rounded-md text-sm',
-                    'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
-                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary',
-                    'focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus',
-                    'transition-all',
+                    'w-full pl-7 pr-2 py-1.5 rounded-md text-xs',
+                    'bg-codinit-elements-background-depth-1/50 border border-codinit-elements-borderColor/40',
+                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary/60',
+                    'focus:outline-none focus:ring-1 focus:ring-accent-500/30 focus:border-accent-500/50',
+                    'transition-all duration-150',
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
                   aria-label="Search providers"
                 />
-                <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
-                  <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary" />
-                </div>
               </div>
             </div>
 
             <div
               className={classNames(
-                'max-h-60 overflow-y-auto',
+                'max-h-48 overflow-y-auto px-0.5',
                 'sm:scrollbar-none',
-                '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
-                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor',
-                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColorHover',
+                '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5',
+                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColor',
                 '[&::-webkit-scrollbar-thumb]:rounded-full',
-                '[&::-webkit-scrollbar-track]:bg-codinit-elements-background-depth-2',
+                '[&::-webkit-scrollbar-track]:bg-transparent',
                 '[&::-webkit-scrollbar-track]:rounded-full',
-                'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
-                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
-                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-codinit-elements-borderColor',
-                'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
               {filteredProviders.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No providers found</div>
+                <div className="px-3 py-2 text-xs text-codinit-elements-textTertiary/70 text-center">
+                  No providers found
+                </div>
               ) : (
                 filteredProviders.map((providerOption, index) => (
                   <div
@@ -315,14 +319,13 @@ export const ModelSelector = ({
                     role="option"
                     aria-selected={provider?.name === providerOption.name}
                     className={classNames(
-                      'px-3 py-2 text-sm cursor-pointer',
-                      'hover:bg-codinit-elements-background-depth-3',
-                      'text-codinit-elements-textPrimary',
+                      'px-2.5 py-1.5 mx-1 mb-0.5 text-xs cursor-pointer rounded-md',
+                      'transition-all duration-150 ease-in-out',
                       'outline-none',
-                      provider?.name === providerOption.name || focusedProviderIndex === index
-                        ? 'bg-codinit-elements-background-depth-2'
-                        : undefined,
-                      focusedProviderIndex === index ? 'ring-1 ring-inset ring-codinit-elements-focus' : undefined,
+                      provider?.name === providerOption.name
+                        ? 'bg-accent-500/10 text-accent-500 font-medium'
+                        : 'text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-3/50',
+                      focusedProviderIndex === index ? 'ring-1 ring-inset ring-accent-500/30' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -344,7 +347,11 @@ export const ModelSelector = ({
                   >
                     <div className="flex items-center gap-2">
                       {providerOption.icon && (
-                        <img src={providerOption.icon} alt={providerOption.name} className="w-4 h-4 flex-shrink-0" />
+                        <img
+                          src={providerOption.icon}
+                          alt={providerOption.name}
+                          className="w-3.5 h-3.5 flex-shrink-0 rounded"
+                        />
                       )}
                       <span className="truncate">{providerOption.name}</span>
                     </div>
@@ -357,14 +364,18 @@ export const ModelSelector = ({
       </div>
 
       {/* Model Combobox */}
-      <div className="relative flex w-full min-w-[70%]" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
+      <div className="relative flex w-full min-w-[70%] z-50" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
         <div
           className={classNames(
-            'w-full p-2 rounded-lg border border-codinit-elements-borderColor',
-            'bg-codinit-elements-prompt-background text-codinit-elements-textPrimary',
-            'focus-within:outline-none focus-within:ring-2 focus-within:ring-codinit-elements-focus',
-            'transition-all cursor-pointer',
-            isModelDropdownOpen ? 'ring-2 ring-codinit-elements-focus' : undefined,
+            'w-full px-3 py-2 rounded-lg cursor-pointer',
+            'bg-codinit-elements-background-depth-1/30 backdrop-blur-sm',
+            'border border-codinit-elements-borderColor/40',
+            'text-codinit-elements-textPrimary',
+            'transition-all duration-200 ease-in-out',
+            'hover:border-codinit-elements-borderColor/70 hover:bg-codinit-elements-background-depth-1/50',
+            isModelDropdownOpen
+              ? 'ring-2 ring-accent-500/30 border-accent-500/50 shadow-lg shadow-accent-500/5'
+              : 'shadow-sm',
           )}
           onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}
           onKeyDown={(e) => {
@@ -380,10 +391,12 @@ export const ModelSelector = ({
           tabIndex={0}
         >
           <div className="flex items-center justify-between">
-            <div className="truncate">{modelList.find((m) => m.name === model)?.label || 'Select model'}</div>
+            <div className="truncate font-medium text-xs">
+              {modelList.find((m) => m.name === model)?.label || 'Select model'}
+            </div>
             <div
               className={classNames(
-                'i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary opacity-75',
+                'i-ph:caret-down w-3.5 h-3.5 text-codinit-elements-textSecondary transition-transform duration-200',
                 isModelDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
@@ -392,71 +405,71 @@ export const ModelSelector = ({
 
         {isModelDropdownOpen && (
           <div
-            className="absolute z-10 w-full mt-1 py-1 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 shadow-lg"
+            className="absolute z-[100] w-full mt-1 py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
             role="listbox"
             id="model-listbox"
           >
-            <div className="px-2 pb-2">
+            <div className="px-2 pb-1.5">
               <div className="relative">
+                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary text-xs" />
+                </div>
                 <input
                   ref={modelSearchInputRef}
                   type="text"
                   value={modelSearchQuery}
                   onChange={(e) => setModelSearchQuery(e.target.value)}
-                  placeholder="Search models..."
+                  placeholder="Search..."
                   className={classNames(
-                    'w-full pl-2 py-1.5 rounded-md text-sm',
-                    'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
-                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary',
-                    'focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus',
-                    'transition-all',
+                    'w-full pl-7 pr-2 py-1.5 rounded-md text-xs',
+                    'bg-codinit-elements-background-depth-1/50 border border-codinit-elements-borderColor/40',
+                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary/60',
+                    'focus:outline-none focus:ring-1 focus:ring-accent-500/30 focus:border-accent-500/50',
+                    'transition-all duration-150',
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
                   aria-label="Search models"
                 />
-                <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
-                  <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary" />
-                </div>
               </div>
             </div>
 
             <div
               className={classNames(
-                'max-h-60 overflow-y-auto',
+                'max-h-48 overflow-y-auto px-0.5',
                 'sm:scrollbar-none',
-                '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
-                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor',
-                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColorHover',
+                '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5',
+                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColor',
                 '[&::-webkit-scrollbar-thumb]:rounded-full',
-                '[&::-webkit-scrollbar-track]:bg-codinit-elements-background-depth-2',
+                '[&::-webkit-scrollbar-track]:bg-transparent',
                 '[&::-webkit-scrollbar-track]:rounded-full',
-                'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
-                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
-                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-codinit-elements-borderColor',
-                'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
               {modelLoading === 'all' || modelLoading === provider?.name ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">Loading...</div>
+                <div className="px-3 py-2 text-xs text-codinit-elements-textTertiary/70 text-center flex items-center justify-center gap-2">
+                  <div className="i-svg-spinners:90-ring-with-bg text-accent-500 text-sm animate-spin"></div>
+                  <span>Loading...</span>
+                </div>
               ) : filteredModels.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No models found</div>
+                <div className="px-3 py-2 text-xs text-codinit-elements-textTertiary/70 text-center">
+                  No models found
+                </div>
               ) : (
                 filteredModels.map((modelOption, index) => (
                   <div
                     ref={(el) => (modelOptionsRef.current[index] = el)}
-                    key={index} // Consider using modelOption.name if unique
+                    key={index}
                     role="option"
                     aria-selected={model === modelOption.name}
                     className={classNames(
-                      'px-3 py-2 text-sm cursor-pointer',
-                      'hover:bg-codinit-elements-background-depth-3',
-                      'text-codinit-elements-textPrimary',
+                      'px-2.5 py-1.5 mx-1 mb-0.5 text-xs cursor-pointer rounded-md',
+                      'transition-all duration-150 ease-in-out',
                       'outline-none',
-                      model === modelOption.name || focusedModelIndex === index
-                        ? 'bg-codinit-elements-background-depth-2'
-                        : undefined,
-                      focusedModelIndex === index ? 'ring-1 ring-inset ring-codinit-elements-focus' : undefined,
+                      model === modelOption.name
+                        ? 'bg-accent-500/10 text-accent-500 font-medium'
+                        : 'text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-3/50',
+                      focusedModelIndex === index ? 'ring-1 ring-inset ring-accent-500/30' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
