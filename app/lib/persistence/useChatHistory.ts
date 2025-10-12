@@ -131,7 +131,7 @@ export function useChatHistory() {
 
                   // Combine followup message and the artifact with files and command actions
                   content: `codinit Restored your chat from a snapshot. You can revert this message to load the full chat history.
-                  <codinitArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
+                  <codinitArticact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
                   ${Object.entries(snapshot?.files || {})
                     .map(([key, value]) => {
                       if (value?.type === 'file') {
@@ -146,7 +146,7 @@ ${value.content}
                     })
                     .join('\n')}
                   ${commandActionsString} 
-                  </codinitArtifact>
+                  </codinitArticact>
                   `, // Added commandActionsString, followupMessage, updated id and title
                   annotations: [
                     'no-store',

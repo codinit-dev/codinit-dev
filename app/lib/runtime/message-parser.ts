@@ -6,18 +6,18 @@ import type {
   ShellAction,
   SupabaseAction,
 } from '~/types/actions';
-import type { codinitArtifactData } from '~/types/artifact';
+import type { codinitArticactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<codinitArtifact';
-const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
+const ARTIFACT_TAG_OPEN = '<codinitArticact';
+const ARTIFACT_TAG_CLOSE = '</codinitArticact>';
 const ARTIFACT_ACTION_TAG_OPEN = '<CodinitAction';
 const ARTIFACT_ACTION_TAG_CLOSE = '</CodinitAction>';
 
 const logger = createScopedLogger('MessageParser');
 
-export interface ArtifactCallbackData extends codinitArtifactData {
+export interface ArtifactCallbackData extends codinitArticactData {
   messageId: string;
 }
 
@@ -54,7 +54,7 @@ interface MessageState {
   position: number;
   insideArtifact: boolean;
   insideAction: boolean;
-  currentArtifact?: codinitArtifactData;
+  currentArtifact?: codinitArticactData;
   currentAction: CodinitActionData;
   actionId: number;
 }
@@ -246,7 +246,7 @@ export class StreamingMessageParser {
                 id: artifactId,
                 title: artifactTitle,
                 type,
-              } satisfies codinitArtifactData;
+              } satisfies codinitArticactData;
 
               state.currentArtifact = currentArtifact;
 
@@ -349,7 +349,7 @@ export class StreamingMessageParser {
 
 const createArtifactElement: ElementFactory = (props) => {
   const elementProps = [
-    'class="__codinitArtifact__"',
+    'class="__codinitArticact__"',
     ...Object.entries(props).map(([key, value]) => {
       return `data-${camelToDashCase(key)}=${JSON.stringify(value)}`;
     }),

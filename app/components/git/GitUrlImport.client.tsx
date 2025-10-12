@@ -43,7 +43,7 @@ export function GitUrlImport() {
   const [imported, setImported] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const importRepo = async (repoUrl?: string) => {
+  const importRepo = async (repoUrl?: string, subdirectory?: string) => {
     if (!gitReady && !historyReady) {
       return;
     }
@@ -55,14 +55,31 @@ export function GitUrlImport() {
         const { workdir, data } = await gitClone(repoUrl);
 
         if (importChat) {
-          const filePaths = Object.keys(data).filter((filePath) => !ig.ignores(filePath));
+          let filePaths = Object.keys(data);
+
+          // If subdirectory is specified, filter to only files in that subdirectory
+          if (subdirectory) {
+            const subdirPrefix = subdirectory + '/';
+            filePaths = filePaths.filter((filePath) => filePath.startsWith(subdirPrefix));
+          }
+
+          // Filter out ignored patterns
+          filePaths = filePaths.filter((filePath) => !ig.ignores(filePath));
+
           const textDecoder = new TextDecoder('utf-8');
 
           const fileContents = filePaths
             .map((filePath) => {
               const { data: content, encoding } = data[filePath];
+
+              // Remove subdirectory prefix from the path if specified
+              const displayPath =
+                subdirectory && filePath.startsWith(subdirectory + '/')
+                  ? filePath.substring(subdirectory.length + 1)
+                  : filePath;
+
               return {
-                path: filePath,
+                path: displayPath,
                 content:
                   encoding === 'utf8' ? content : content instanceof Uint8Array ? textDecoder.decode(content) : '',
               };
@@ -75,7 +92,7 @@ export function GitUrlImport() {
           const filesMessage: Message = {
             role: 'assistant',
             content: `Cloning the repo ${repoUrl} into ${workdir}
-<codinitArtifact id="imported-files" title="Git Cloned Files"  type="bundled">
+<codinitArticact id="imported-files" title="Git Cloned Files"  type="bundled">
 ${fileContents
   .map(
     (file) =>
@@ -84,7 +101,7 @@ ${escapecodinitTags(file.content)}
 </CodinitAction>`,
   )
   .join('\n')}
-</codinitArtifact>`,
+</codinitArticact>`,
             id: generateId(),
             createdAt: new Date(),
           };
@@ -100,7 +117,8 @@ ${escapecodinitTags(file.content)}
             messages.push(commandsMessage);
           }
 
-          await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
+          const projectName = subdirectory || repoUrl.split('/').slice(-1)[0];
+          await importChat(`Git Project: ${projectName}`, messages, { gitUrl: repoUrl });
         }
       } catch (error) {
         console.error('Error during import:', error);
@@ -119,13 +137,14 @@ ${escapecodinitTags(file.content)}
     }
 
     const url = searchParams.get('url');
+    const subdir = searchParams.get('subdir');
 
     if (!url) {
       window.location.href = '/';
       return;
     }
 
-    importRepo(url).catch((error) => {
+    importRepo(url, subdir || undefined).catch((error) => {
       console.error('Error importing repo:', error);
       toast.error('Failed to import repository');
       setLoading(false);
