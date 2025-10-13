@@ -389,7 +389,7 @@ export class ActionRunner {
     this.onDeployAlert?.({
       type: 'info',
       title: 'Building Application',
-      description: 'Building your application...',
+      description: 'Installing dependencies and building your application...',
       stage: 'building',
       buildStatus: 'running',
       deployStatus: 'pending',
@@ -397,6 +397,36 @@ export class ActionRunner {
     });
 
     const webcontainer = await this.#webcontainer;
+
+    // First, run npm install to ensure dependencies are up to date
+    const installProcess = await webcontainer.spawn('npm', ['install']);
+
+    let installOutput = '';
+    installProcess.output.pipeTo(
+      new WritableStream({
+        write(data) {
+          installOutput += data;
+        },
+      }),
+    );
+
+    const installExitCode = await installProcess.exit;
+
+    if (installExitCode !== 0) {
+      // Trigger install failed alert
+      this.onDeployAlert?.({
+        type: 'error',
+        title: 'Dependency Installation Failed',
+        description: 'Failed to install dependencies',
+        content: installOutput || 'No install output available',
+        stage: 'building',
+        buildStatus: 'failed',
+        deployStatus: 'pending',
+        source: 'netlify',
+      });
+
+      throw new ActionCommandError('Dependency Installation Failed', installOutput || 'No Output Available');
+    }
 
     // Create a new terminal specifically for the build
     const buildProcess = await webcontainer.spawn('npm', ['run', 'build']);
