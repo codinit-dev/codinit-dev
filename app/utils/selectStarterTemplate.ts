@@ -189,9 +189,9 @@ codinit is initializing your project with the required files using the ${templat
 ${filesToImport.files
   .map(
     (file) =>
-      `<codinitAction type="file" filePath="${file.path}">
+      `<CodinitAction type="file" filePath="${file.path}">
 ${file.content}
-</codinitAction>`,
+</CodinitAction>`,
   )
   .join('\n')}
 </codinitArtifact>
