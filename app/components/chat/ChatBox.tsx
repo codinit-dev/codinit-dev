@@ -58,6 +58,8 @@ interface ChatBoxProps {
   setChatMode?: (mode: 'discuss' | 'build') => void;
   selectedElement?: ElementInfo | null;
   setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
+  isMcpPanelOpen?: boolean;
+  setIsMcpPanelOpen?: (open: boolean) => void;
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -275,7 +277,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         </ClientOnly>
         <div className="flex justify-between items-center px-3 py-2 border-t border-codinit-elements-borderColor/20">
           <div className="flex gap-0.5 items-center">
-            <McpTools />
+            <McpTools onOpenPanel={() => props.setIsMcpPanelOpen?.(true)} />
             <IconButton
               title="Upload file"
               className="hover:bg-codinit-elements-item-backgroundAccent/50 transition-all duration-150 rounded-lg"
