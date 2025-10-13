@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import { classNames } from '~/utils/classNames';
 import { AssistantMessage } from './AssistantMessage';
 import { UserMessage } from './UserMessage';
+import { ToolInvocations } from './ToolInvocations';
 import { useLocation } from '@remix-run/react';
 import { db, chatId } from '~/lib/persistence/useChatHistory';
 import { forkChat } from '~/lib/persistence/db';
@@ -12,7 +13,7 @@ import { profileStore } from '~/lib/stores/profile';
 import { forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
 import type { ProviderInfo } from '~/types/model';
-
+import type { ToolCallAnnotation } from '~/types/context';
 interface MessagesProps {
   id?: string;
   className?: string;
@@ -28,7 +29,7 @@ interface MessagesProps {
 
 export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
   (props: MessagesProps, ref: ForwardedRef<HTMLDivElement> | undefined) => {
-    const { id, isStreaming = false, messages = [] } = props;
+    const { id, isStreaming = false, messages = [], addToolResult } = props;
     const location = useLocation();
     const profile = useStore(profileStore);
 
@@ -96,13 +97,41 @@ export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
                     {isUserMessage ? (
                       <UserMessage content={content} />
                     ) : (
-                      <AssistantMessage
-                        content={content}
-                        annotations={message.annotations}
-                        messageId={messageId}
-                        onRewind={handleRewind}
-                        onFork={handleFork}
-                      />
+                      <>
+                        <AssistantMessage
+                          content={content}
+                          annotations={message.annotations}
+                          messageId={messageId}
+                          onRewind={handleRewind}
+                          onFork={handleFork}
+                        />
+                        {/* Render MCP Tool Approval Cards */}
+                        {annotations &&
+                          addToolResult &&
+                          (() => {
+                            const toolCallAnnotations = annotations.filter((ann): ann is ToolCallAnnotation => {
+                              if (!ann || typeof ann !== 'object') {
+                                return false;
+                              }
+
+                              return 'type' in ann && ann.type === 'toolCall';
+                            });
+
+                            const toolInvocations = (message as any).toolInvocations || [];
+
+                            if (toolCallAnnotations.length === 0 && toolInvocations.length === 0) {
+                              return null;
+                            }
+
+                            return (
+                              <ToolInvocations
+                                toolCallAnnotations={toolCallAnnotations}
+                                toolInvocations={toolInvocations}
+                                addToolResult={addToolResult}
+                              />
+                            );
+                          })()}
+                      </>
                     )}
                   </div>
                 </div>
