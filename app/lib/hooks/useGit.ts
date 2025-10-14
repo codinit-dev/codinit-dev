@@ -51,9 +51,19 @@ export function useGit() {
       fileData.current = {};
 
       /*
-       * Skip Git initialization for now - let isomorphic-git handle it
-       * This avoids potential issues with our manual initialization
+       * Normalize the URL for GitHub compatibility
+       * GitHub's smart HTTP protocol requires URLs WITHOUT .git suffix
+       * isomorphic-git will append /info/refs?service=git-upload-pack automatically
        */
+      let normalizedUrl = url;
+
+      // Remove .git suffix if present - it causes GitHub to redirect incorrectly
+      normalizedUrl = url.replace(/\.git$/, '');
+
+      // Convert SSH URLs to HTTPS for GitHub
+      if (normalizedUrl.startsWith('git@github.com:')) {
+        normalizedUrl = normalizedUrl.replace('git@github.com:', 'https://github.com/');
+      }
 
       const headers: {
         [x: string]: string;
@@ -61,7 +71,7 @@ export function useGit() {
         'User-Agent': 'codinit.dev',
       };
 
-      const auth = lookupSavedPassword(url);
+      const auth = lookupSavedPassword(normalizedUrl);
 
       if (auth) {
         headers.Authorization = `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`;
@@ -78,7 +88,7 @@ export function useGit() {
           fs,
           http,
           dir: webcontainer.workdir,
-          url,
+          url: normalizedUrl,
           depth: 1,
           singleBranch: true,
           corsProxy: '/api/git-proxy',
@@ -136,6 +146,10 @@ export function useGit() {
         if (errorMessage.includes('Authentication failed')) {
           toast.error(`Authentication failed. Please check your GitHub credentials and try again.`);
           throw error;
+        } else if (errorMessage.includes('smart') && errorMessage.includes('HTTP')) {
+          // Handle the "smart" HTTP protocol error - this usually means we're hitting a web page instead of git service
+          toast.error(`Invalid Git URL. Make sure you're using a valid repository URL (without .git suffix).`);
+          throw new Error(`Invalid Git URL. The URL should point to a Git repository, not a web page.`);
         } else if (
           errorMessage.includes('ENOTFOUND') ||
           errorMessage.includes('ETIMEDOUT') ||

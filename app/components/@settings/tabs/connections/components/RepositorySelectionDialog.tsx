@@ -260,12 +260,11 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
   };
 
   const formatGitUrl = (url: string): string => {
-    // Remove any tree references and ensure .git extension
     const baseUrl = url
       .replace(/\/tree\/[^/]+/, '') // Remove /tree/branch-name
       .replace(/\/$/, '') // Remove trailing slash
       .replace(/\.git$/, ''); // Remove .git if present
-    return `${baseUrl}.git`;
+    return baseUrl; // Return clean URL without .git suffix
   };
 
   const verifyRepository = async (repoUrl: string): Promise<RepositoryStats | null> => {

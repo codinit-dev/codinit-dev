@@ -83,7 +83,16 @@ async function handleProxyRequest(request: Request, path: string | undefined) {
 
     // Reconstruct the target URL with query parameters
     const url = new URL(request.url);
-    const targetURL = `https://${domain}/${remainingPath}${url.search}`;
+
+    // GitHub-specific handling: remove .git from path if present before /info/refs
+    // GitHub's smart HTTP protocol expects: /user/repo/info/refs not /user/repo.git/info/refs
+    let cleanedPath = remainingPath;
+    if (domain === 'github.com' && remainingPath.includes('.git/info/refs')) {
+      cleanedPath = remainingPath.replace('.git/info/refs', '/info/refs');
+      console.log('Cleaned GitHub path:', cleanedPath);
+    }
+
+    let targetURL = `https://${domain}/${cleanedPath}${url.search}`;
 
     console.log('Target URL:', targetURL);
 
@@ -111,7 +120,7 @@ async function handleProxyRequest(request: Request, path: string | undefined) {
     const fetchOptions: RequestInit = {
       method: request.method,
       headers,
-      redirect: 'follow',
+      redirect: 'manual', // Handle redirects manually to avoid HTML pages
     };
 
     // Add body for non-GET/HEAD requests
@@ -126,9 +135,29 @@ async function handleProxyRequest(request: Request, path: string | undefined) {
     }
 
     // Forward the request to the target URL
-    const response = await fetch(targetURL, fetchOptions);
+    let response = await fetch(targetURL, fetchOptions);
 
     console.log('Response status:', response.status);
+
+    // Handle redirects manually to ensure we follow them correctly
+    if (response.status >= 300 && response.status < 400) {
+      const redirectLocation = response.headers.get('location');
+
+      if (redirectLocation) {
+        console.log('Following redirect to:', redirectLocation);
+
+        // If it's a relative redirect, make it absolute
+        const redirectURL = redirectLocation.startsWith('http') ? redirectLocation : `https://${domain}${redirectLocation}`;
+
+        // Follow the redirect
+        response = await fetch(redirectURL, {
+          ...fetchOptions,
+          redirect: 'follow', // Allow following subsequent redirects
+        });
+
+        console.log('Redirect response status:', response.status);
+      }
+    }
 
     // Create response headers
     const responseHeaders = new Headers();
