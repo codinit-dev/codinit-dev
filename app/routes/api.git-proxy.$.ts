@@ -84,15 +84,18 @@ async function handleProxyRequest(request: Request, path: string | undefined) {
     // Reconstruct the target URL with query parameters
     const url = new URL(request.url);
 
-    // GitHub-specific handling: remove .git from path if present before /info/refs
-    // GitHub's smart HTTP protocol expects: /user/repo/info/refs not /user/repo.git/info/refs
+    /*
+     * GitHub-specific handling: remove .git from path if present before /info/refs
+     * GitHub's smart HTTP protocol expects: /user/repo/info/refs not /user/repo.git/info/refs
+     */
     let cleanedPath = remainingPath;
+
     if (domain === 'github.com' && remainingPath.includes('.git/info/refs')) {
       cleanedPath = remainingPath.replace('.git/info/refs', '/info/refs');
       console.log('Cleaned GitHub path:', cleanedPath);
     }
 
-    let targetURL = `https://${domain}/${cleanedPath}${url.search}`;
+    const targetURL = `https://${domain}/${cleanedPath}${url.search}`;
 
     console.log('Target URL:', targetURL);
 
@@ -147,7 +150,9 @@ async function handleProxyRequest(request: Request, path: string | undefined) {
         console.log('Following redirect to:', redirectLocation);
 
         // If it's a relative redirect, make it absolute
-        const redirectURL = redirectLocation.startsWith('http') ? redirectLocation : `https://${domain}${redirectLocation}`;
+        const redirectURL = redirectLocation.startsWith('http')
+          ? redirectLocation
+          : `https://${domain}${redirectLocation}`;
 
         // Follow the redirect
         response = await fetch(redirectURL, {

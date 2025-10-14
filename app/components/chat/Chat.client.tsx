@@ -453,6 +453,7 @@ export const ChatImpl = memo(
           } else {
             toast.warning('Failed to import starter template\n Continuing with blank template');
           }
+
           return null;
         });
 
@@ -469,6 +470,7 @@ export const ChatImpl = memo(
           resetEnhancer();
           textareaRef.current?.blur();
           setFakeLoading(false);
+
           return;
         }
 
