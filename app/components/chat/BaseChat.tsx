@@ -31,6 +31,7 @@ import { StickToBottom, useStickToBottomContext } from '~/lib/hooks';
 import { ChatBox } from './ChatBox';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import LlmErrorAlert from './LLMApiAlert';
+import { McpIntegrationPanel } from './MCPIntegrationPanel';
 
 const TEXTAREA_MIN_HEIGHT = 76;
 
@@ -138,6 +139,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const [progressAnnotations, setProgressAnnotations] = useState<ProgressAnnotation[]>([]);
     const expoUrl = useStore(expoUrlAtom);
     const [qrModalOpen, setQrModalOpen] = useState(false);
+    const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
 
     useEffect(() => {
       if (expoUrl) {
@@ -457,6 +459,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   setChatMode={setChatMode}
                   selectedElement={selectedElement}
                   setSelectedElement={setSelectedElement}
+                  isMcpPanelOpen={isMcpPanelOpen}
+                  setIsMcpPanelOpen={setIsMcpPanelOpen}
                 />
               </div>
             </StickToBottom>
@@ -476,6 +480,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             )}
           </ClientOnly>
         </div>
+        <McpIntegrationPanel isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} />
       </div>
     );
 
