@@ -1,42 +1,13 @@
 import { useSearchParams } from '@remix-run/react';
-import { generateId, type Message } from 'ai';
-import ignore from 'ignore';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { ClientOnly } from 'remix-utils/client-only';
 import { BaseChat } from '~/components/chat/BaseChat';
 import { Chat } from '~/components/chat/Chat.client';
+import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { useGit } from '~/lib/hooks/useGit';
 import { useChatHistory } from '~/lib/persistence';
-import { createCommandsMessage, detectProjectCommands, escapeCodinitTags } from '~/utils/projectCommands';
-import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
-import { toast } from 'react-toastify';
-
-const IGNORE_PATTERNS = [
-  'node_modules/**',
-  '.git/**',
-  '.github/**',
-  '.vscode/**',
-  '**/*.jpg',
-  '**/*.jpeg',
-  '**/*.png',
-  'dist/**',
-  'build/**',
-  '.next/**',
-  'coverage/**',
-  '.cache/**',
-  '.vscode/**',
-  '.idea/**',
-  '**/*.log',
-  '**/.DS_Store',
-  '**/npm-debug.log*',
-  '**/yarn-debug.log*',
-  '**/yarn-error.log*',
-  '**/pnpm-lock.yaml*',
-  '**/package-lock.json*',
-
-  // Include this so npm install runs much faster '**/*lock.json',
-  '**/*lock.yaml',
-];
+import { initFromGitRepo } from '~/lib/services/projectInit';
 
 export function GitUrlImport() {
   const [searchParams] = useSearchParams();
@@ -51,56 +22,20 @@ export function GitUrlImport() {
     }
 
     if (repoUrl) {
-      const ig = ignore().add(IGNORE_PATTERNS);
-
       try {
         const { workdir, data } = await gitClone(repoUrl);
 
         if (importChat) {
-          const filePaths = Object.keys(data).filter((filePath) => !ig.ignores(filePath));
-          const textDecoder = new TextDecoder('utf-8');
-
-          const fileContents = filePaths
-            .map((filePath) => {
-              const { data: content, encoding } = data[filePath];
-              return {
-                path: filePath,
-                content:
-                  encoding === 'utf8' ? content : content instanceof Uint8Array ? textDecoder.decode(content) : '',
-              };
-            })
-            .filter((f) => f.content);
-
-          const commands = await detectProjectCommands(fileContents);
-          const commandsMessage = createCommandsMessage(commands);
-
-          const filesMessage: Message = {
-            role: 'assistant',
-            content: `Cloning the repo ${repoUrl} into ${workdir}
-<codinitArtifact id="imported-files" title="Git Cloned Files"  type="bundled">
-${fileContents
-  .map(
-    (file) =>
-      `<CodinitAction type="file" filePath="${file.path}">
-${escapeCodinitTags(file.content)}
-</CodinitAction>`,
-  )
-  .join('\n')}
-</codinitArtifact>`,
-            id: generateId(),
-            createdAt: new Date(),
-          };
-
-          const messages = [filesMessage];
-
-          if (commandsMessage) {
-            messages.push({
-              role: 'user',
-              id: generateId(),
-              content: 'Setup the codebase and Start the application',
-            });
-            messages.push(commandsMessage);
-          }
+          const { messages } = await initFromGitRepo({
+            repoUrl,
+            workdir,
+            fileData: Object.fromEntries(
+              Object.entries(data).map(([path, file]) => [
+                path,
+                { data: file.data, encoding: file.encoding || 'utf8' },
+              ]),
+            ),
+          });
 
           await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
         }
