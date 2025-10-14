@@ -3,6 +3,11 @@ import { StreamingMessageParser, type StreamingMessageParserOptions } from './me
 
 const logger = createScopedLogger('EnhancedMessageParser');
 
+/**
+ * Enhanced message parser that detects code blocks and file patterns
+ * even when AI models don't wrap them in proper artifact tags.
+ * Fixes issue #1797 where code outputs to chat instead of files.
+ */
 export class EnhancedStreamingMessageParser extends StreamingMessageParser {
   private _processedCodeBlocks = new Map<string, Set<string>>();
   private _artifactCounter = 0;

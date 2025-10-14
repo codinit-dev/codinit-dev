@@ -1,7 +1,7 @@
 import ignore from 'ignore';
 import { useGit } from '~/lib/hooks/useGit';
 import type { Message } from 'ai';
-import { detectProjectCommands, createCommandsMessage, escapecodinitTags } from '~/utils/projectCommands';
+import { detectProjectCommands, createCommandsMessage, escapeCodinitTags } from '~/utils/projectCommands';
 import { generateId } from '~/utils/fileUtils';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -127,7 +127,7 @@ ${fileContents
   .map(
     (file) =>
       `<CodinitAction type="file" filePath="${file.path}">
-${escapecodinitTags(file.content)}
+${escapeCodinitTags(file.content)}
 </CodinitAction>`,
   )
   .join('\n')}

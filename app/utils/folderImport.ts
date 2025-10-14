@@ -1,6 +1,6 @@
 import type { Message } from 'ai';
 import { generateId } from './fileUtils';
-import { detectProjectCommands, createCommandsMessage, escapecodinitTags } from './projectCommands';
+import { detectProjectCommands, createCommandsMessage, escapeCodinitTags } from './projectCommands';
 
 export const createChatFromFolder = async (
   files: File[],
@@ -42,7 +42,7 @@ export const createChatFromFolder = async (
 ${fileArtifacts
   .map(
     (file) => `<CodinitAction type="file" filePath="${file.path}">
-${escapecodinitTags(file.content)}
+${escapeCodinitTags(file.content)}
 </CodinitAction>`,
   )
   .join('\n\n')}

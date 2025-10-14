@@ -36,6 +36,7 @@ export async function streamText(props: {
   contextFiles?: FileMap;
   summary?: string;
   messageSliceId?: number;
+  chatMode?: 'discuss' | 'build';
 }) {
   const {
     messages,
@@ -48,6 +49,7 @@ export async function streamText(props: {
     contextOptimization,
     contextFiles,
     summary,
+    chatMode,
   } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
@@ -110,7 +112,7 @@ export async function streamText(props: {
   const dynamicMaxTokens = modelDetails && modelDetails.maxTokenAllowed ? modelDetails.maxTokenAllowed : MAX_TOKENS;
 
   let systemPrompt =
-    PromptLibrary.getPropmtFromLibrary(promptId || 'default', {
+    PromptLibrary.getPropmtFromLibrary(chatMode === 'discuss' ? 'discuss' : promptId || 'default', {
       cwd: WORK_DIR,
       allowedHtmlElements: allowedHTMLElements,
       modificationTagName: MODIFICATIONS_TAG_NAME,
