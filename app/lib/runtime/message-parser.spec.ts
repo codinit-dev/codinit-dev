@@ -766,16 +766,12 @@ function runTest(input: string | string[], outputOrExpectedResult: string | Expe
     callbacks,
   });
 
-  let message = '';
-
   let result = '';
 
   const chunks = Array.isArray(input) ? input : input.split('');
 
   for (const chunk of chunks) {
-    message += chunk;
-
-    result += parser.parse('message_1', message);
+    result += parser.parse('message_1', chunk);
   }
 
   for (const name in expected.callbacks) {

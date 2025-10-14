@@ -10,10 +10,10 @@ import type { codinitArticactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<codinitArtifact';
-const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
-const ARTIFACT_ACTION_TAG_OPEN = '<codinitAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</codinitAction>';
+const ARTIFACT_TAG_OPEN = '<codinitArticact';
+const ARTIFACT_TAG_CLOSE = '</codinitArticact>';
+const ARTIFACT_ACTION_TAG_OPEN = '<CodinitAction';
+const ARTIFACT_ACTION_TAG_CLOSE = '</CodinitAction>';
 const CODINIT_QUICK_ACTIONS_OPEN = '<codinit-quick-actions>';
 const CODINIT_QUICK_ACTIONS_CLOSE = '</codinit-quick-actions>';
 
@@ -219,7 +219,7 @@ export class StreamingMessageParser {
             const actionEndIndex = this.#buffer.indexOf('>', actionOpenIndex);
 
             if (actionEndIndex !== -1) {
-              parsedOutput += this.#buffer.slice(lastOutputIndex, actionOpenIndex); // Add content before action open
+              // Content inside artifacts should not be added to output - skip to action tag
               state.insideAction = true;
               state.currentAction = this.#parseActionTag(this.#buffer, actionOpenIndex, actionEndIndex);
 
@@ -237,7 +237,7 @@ export class StreamingMessageParser {
               break;
             }
           } else if (artifactCloseIndex !== -1) {
-            parsedOutput += this.#buffer.slice(lastOutputIndex, artifactCloseIndex); // Add content before artifact close
+            // Content inside artifacts should not be added to output - it's handled by actions
             this._options.callbacks?.onArtifactClose?.({
               messageId,
               artifactId: currentArtifact.id,

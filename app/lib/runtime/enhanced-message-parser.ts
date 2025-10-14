@@ -51,7 +51,7 @@ export class EnhancedStreamingMessageParser extends StreamingMessageParser {
   }
 
   private _hasDetectedArtifacts(input: string): boolean {
-    return input.includes('<codinitArtifact') || input.includes('</codinitArtifact>');
+    return input.includes('<codinitArticact') || input.includes('</codinitArticact>');
   }
 
   private _detectAndWrapCodeBlocks(messageId: string, input: string): string {
@@ -204,21 +204,21 @@ export class EnhancedStreamingMessageParser extends StreamingMessageParser {
   private _wrapInArtifact(artifactId: string, filePath: string, content: string): string {
     const title = filePath.split('/').pop() || 'File';
 
-    return `<codinitArtifact id="${artifactId}" title="${title}" type="bundled">
-<codinitAction type="file" filePath="${filePath}">
+    return `<codinitArticact id="${artifactId}" title="${title}" type="bundled">
+<CodinitAction type="file" filePath="${filePath}">
 ${content}
-</codinitAction>
-</codinitArtifact>`;
+</CodinitAction>
+</codinitArticact>`;
   }
 
   private _wrapInShellAction(content: string, messageId: string): string {
     const artifactId = `artifact-${messageId}-${this._artifactCounter++}`;
 
-    return `<codinitArtifact id="${artifactId}" title="Shell Command" type="shell">
-<codinitAction type="shell">
+    return `<codinitArticact id="${artifactId}" title="Shell Command" type="shell">
+<CodinitAction type="shell">
 ${content.trim()}
-</codinitAction>
-</codinitArtifact>`;
+</CodinitAction>
+</codinitArticact>`;
   }
 
   private _normalizeFilePath(filePath: string): string {
