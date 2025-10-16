@@ -5,17 +5,14 @@ import { memo, useCallback, useEffect, useState, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { Popover, Transition } from '@headlessui/react';
 import { diffLines, type Change } from 'diff';
-import { ActionRunner } from '~/lib/runtime/action-runner';
 import { getLanguageFromExtension } from '~/utils/getLanguageFromExtension';
-import type { FileHistory, ActionAlert, SupabaseAlert, DeployAlert } from '~/types/actions';
-import { webcontainer } from '~/lib/webcontainer';
+import type { FileHistory } from '~/types/actions';
 import { DiffView } from './DiffView';
 import {
   type OnChangeCallback as OnEditorChange,
   type OnScrollCallback as OnEditorScroll,
 } from '~/components/editor/codemirror/CodeMirrorEditor';
 import { IconButton } from '~/components/ui/IconButton';
-import { PanelHeaderButton } from '~/components/ui/PanelHeaderButton';
 import { Slider, type SliderOptions } from '~/components/ui/Slider';
 import { workbenchStore, type WorkbenchViewType } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
@@ -24,20 +21,23 @@ import { renderLogger } from '~/utils/logger';
 import { EditorPanel } from './EditorPanel';
 import { Preview } from './Preview';
 import useViewport from '~/lib/hooks';
-import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+
 import { usePreviewStore } from '~/lib/stores/previews';
-import type { ElementInfo } from '~/components/workbench/Inspector';
+import { chatStore } from '~/lib/stores/chat';
+import type { ElementInfo } from './Inspector';
+import { ExportChatButton } from '~/components/chat/chatExportAndImport/ExportChatButton';
+import { useChatHistory } from '~/lib/persistence';
+import { streamingState } from '~/lib/stores/streaming';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 interface WorkspaceProps {
   chatStarted?: boolean;
   isStreaming?: boolean;
-  actionRunner?: ActionRunner;
-  setSelectedElement?: (element: ElementInfo | null) => void;
   metadata?: {
     gitUrl?: string;
   };
   updateChatMestaData?: (metadata: any) => void;
+  setSelectedElement?: (element: ElementInfo | null) => void;
 }
 
 const viewTransition = { ease: cubicEasingFn };
@@ -207,13 +207,7 @@ const FileModifiedDropdown = memo(
                                         });
 
                                         return changes.reduce(
-                                          (
-                                            acc: {
-                                              additions: number;
-                                              deletions: number;
-                                            },
-                                            change: Change,
-                                          ) => {
+                                          (acc: { additions: number; deletions: number }, change: Change) => {
                                             if (change.added) {
                                               acc.additions += change.value.split('\n').length;
                                             }
@@ -287,24 +281,15 @@ const FileModifiedDropdown = memo(
 );
 
 export const Workbench = memo(
-  ({ chatStarted, isStreaming, actionRunner, metadata, updateChatMestaData }: WorkspaceProps) => {
-    renderLogger.trace('Workbench', 'component render');
+  ({
+    chatStarted,
+    isStreaming,
+    metadata: _metadata,
+    updateChatMestaData: _updateChatMestaData,
+    setSelectedElement,
+  }: WorkspaceProps) => {
+    renderLogger.trace('Workbench');
 
-    const effectiveActionRunner = useMemo(
-      () =>
-        actionRunner ||
-        new ActionRunner(
-          webcontainer,
-          () => workbenchStore.codinitTerminal,
-          (alert: ActionAlert) => workbenchStore.actionAlert.set(alert),
-          (alert: SupabaseAlert) => workbenchStore.supabaseAlert.set(alert),
-          (alert: DeployAlert) => workbenchStore.deployAlert.set(alert),
-        ),
-      [actionRunner],
-    );
-
-    const [isSyncing, setIsSyncing] = useState(false);
-    const [isPushDialogOpen, setIsPushDialogOpen] = useState(false);
     const [fileHistory, setFileHistory] = useState<Record<string, FileHistory>>({});
 
     // const modifiedFiles = Array.from(useStore(workbenchStore.unsavedFiles).keys());
@@ -316,8 +301,13 @@ export const Workbench = memo(
     const unsavedFiles = useStore(workbenchStore.unsavedFiles);
     const files = useStore(workbenchStore.files);
     const selectedView = useStore(workbenchStore.currentView);
+    const { showChat } = useStore(chatStore);
+    const canHideChat = showWorkbench || !showChat;
 
     const isSmallViewport = useViewport(1024);
+    const streaming = useStore(streamingState);
+    const { exportChat } = useChatHistory();
+    const [isSyncing, setIsSyncing] = useState(false);
 
     const setSelectedView = (view: WorkbenchViewType) => {
       workbenchStore.currentView.set(view);
@@ -362,6 +352,11 @@ export const Workbench = memo(
       workbenchStore.resetCurrentDocument();
     }, []);
 
+    const handleSelectFile = useCallback((filePath: string) => {
+      workbenchStore.setSelectedFile(filePath);
+      workbenchStore.currentView.set('diff');
+    }, []);
+
     const handleSyncFiles = useCallback(async () => {
       setIsSyncing(true);
 
@@ -377,11 +372,6 @@ export const Workbench = memo(
       }
     }, []);
 
-    const handleSelectFile = useCallback((filePath: string) => {
-      workbenchStore.setSelectedFile(filePath);
-      workbenchStore.currentView.set('diff');
-    }, []);
-
     return (
       chatStarted && (
         <motion.div
@@ -392,7 +382,7 @@ export const Workbench = memo(
         >
           <div
             className={classNames(
-              'fixed top-[calc(var(--header-height)+1.5rem)] bottom-6 w-[var(--workbench-inner-width)] mr-4 z-0 transition-[left,width] duration-200 codinit-ease-cubic-bezier',
+              'fixed top-[calc(var(--header-height)+1.2rem)] bottom-6 w-[var(--workbench-inner-width)] z-0 transition-[left,width] duration-200 codinit-ease-cubic-bezier',
               {
                 'w-full': isSmallViewport,
                 'left-0': showWorkbench && isSmallViewport,
@@ -401,77 +391,79 @@ export const Workbench = memo(
               },
             )}
           >
-            <div className="absolute inset-0 px-2 lg:px-6">
+            <div className="absolute inset-0 px-2 lg:px-4">
               <div className="h-full flex flex-col bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor shadow-sm rounded-lg overflow-hidden">
-                <div className="flex items-center px-3 py-2 border-b border-codinit-elements-borderColor gap-1">
+                <div className="flex items-center px-3 py-2 border-b border-codinit-elements-borderColor gap-1.5">
+                  <button
+                    className={`${showChat ? 'i-ph:sidebar-simple-fill' : 'i-ph:sidebar-simple'} text-lg text-codinit-elements-textSecondary mr-1`}
+                    disabled={!canHideChat || isSmallViewport}
+                    onClick={() => {
+                      if (canHideChat) {
+                        chatStore.setKey('showChat', !showChat);
+                      }
+                    }}
+                  />
                   <Slider selected={selectedView} options={sliderOptions} setSelected={setSelectedView} />
                   <div className="ml-auto" />
                   {selectedView === 'code' && (
                     <div className="flex overflow-y-auto">
-                      <PanelHeaderButton
-                        className="mr-1 text-sm"
-                        onClick={() => {
-                          workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
-                        }}
-                      >
-                        <div className="i-ph:terminal" />
-                        Toggle Terminal
-                      </PanelHeaderButton>
-                      <DropdownMenu.Root>
-                        <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md p-1 enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed">
-                          <div className="i-ph:box-arrow-up" />
-                          Sync & Export
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content
-                          className={classNames(
-                            'min-w-[240px] z-[250]',
-                            'bg-white dark:bg-[#141414]',
-                            'rounded-lg shadow-lg',
-                            'border border-gray-200/50 dark:border-gray-800/50',
-                            'animate-in fade-in-0 zoom-in-95',
-                            'py-1',
-                          )}
-                          sideOffset={5}
-                          align="end"
+                      {/* Export Chat Button */}
+                      <ExportChatButton exportChat={exportChat} />
+
+                      {/* Sync Button */}
+                      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden ml-1">
+                        <DropdownMenu.Root>
+                          <DropdownMenu.Trigger
+                            disabled={isSyncing || streaming}
+                            className="rounded-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-codinit-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-codinit-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.7"
+                          >
+                            {isSyncing ? 'Syncing...' : 'Sync'}
+                            <span className={classNames('i-ph:caret-down transition-transform')} />
+                          </DropdownMenu.Trigger>
+                          <DropdownMenu.Content
+                            className={classNames(
+                              'min-w-[240px] z-[250]',
+                              'bg-white dark:bg-[#141414]',
+                              'rounded-lg shadow-lg',
+                              'border border-gray-200/50 dark:border-gray-800/50',
+                              'animate-in fade-in-0 zoom-in-95',
+                              'py-1',
+                            )}
+                            sideOffset={5}
+                            align="end"
+                          >
+                            <DropdownMenu.Item
+                              className={classNames(
+                                'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
+                              )}
+                              onClick={handleSyncFiles}
+                              disabled={isSyncing}
+                            >
+                              <div className="flex items-center gap-2">
+                                {isSyncing ? (
+                                  <div className="i-ph:spinner" />
+                                ) : (
+                                  <div className="i-ph:cloud-arrow-down" />
+                                )}
+                                <span>{isSyncing ? 'Syncing...' : 'Sync Files'}</span>
+                              </div>
+                            </DropdownMenu.Item>
+                          </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                      </div>
+
+                      {/* Toggle Terminal Button */}
+                      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden ml-1">
+                        <button
+                          onClick={() => {
+                            workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
+                          }}
+                          className="rounded-md items-center justify-center [&:is(:disabled,.disabled)]:cursor-not-allowed [&:is(:disabled,.disabled)]:opacity-60 px-3 py-1.5 text-xs bg-accent-500 text-white hover:text-codinit-elements-item-contentAccent [&:not(:disabled,.disabled)]:hover:bg-codinit-elements-button-primary-backgroundHover outline-accent-500 flex gap-1.7"
                         >
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={() => {
-                              workbenchStore.downloadZip();
-                            }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="i-ph:download-simple"></div>
-                              <span>Download Code</span>
-                            </div>
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={handleSyncFiles}
-                            disabled={isSyncing}
-                          >
-                            <div className="flex items-center gap-2">
-                              {isSyncing ? <div className="i-ph:spinner" /> : <div className="i-ph:cloud-arrow-down" />}
-                              <span>{isSyncing ? 'Syncing...' : 'Sync Files'}</span>
-                            </div>
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={() => setIsPushDialogOpen(true)}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="i-ph:git-branch" />
-                              Push to GitHub
-                            </div>
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
+                          <div className="i-ph:terminal" />
+                          Toggle Terminal
+                        </button>
+                      </div>
                     </div>
                   )}
 
@@ -505,48 +497,17 @@ export const Workbench = memo(
                   </View>
                   <View
                     initial={{ x: '100%' }}
-                    animate={{
-                      x: selectedView === 'diff' ? '0%' : selectedView === 'code' ? '100%' : '-100%',
-                    }}
+                    animate={{ x: selectedView === 'diff' ? '0%' : selectedView === 'code' ? '100%' : '-100%' }}
                   >
-                    <DiffView
-                      fileHistory={fileHistory}
-                      setFileHistory={setFileHistory}
-                      actionRunner={effectiveActionRunner}
-                    />
+                    <DiffView fileHistory={fileHistory} setFileHistory={setFileHistory} />
                   </View>
                   <View initial={{ x: '100%' }} animate={{ x: selectedView === 'preview' ? '0%' : '100%' }}>
-                    <Preview />
+                    <Preview setSelectedElement={setSelectedElement} />
                   </View>
                 </div>
               </div>
             </div>
           </div>
-          <PushToGitHubDialog
-            isOpen={isPushDialogOpen}
-            onClose={() => setIsPushDialogOpen(false)}
-            onPush={async (repoName, username, token, isPrivate) => {
-              try {
-                console.log('Dialog onPush called with isPrivate =', isPrivate);
-
-                const commitMessage = prompt('Please enter a commit message:', 'Initial commit') || 'Initial commit';
-                const repoUrl = await workbenchStore.pushToGitHub(repoName, commitMessage, username, token, isPrivate);
-
-                if (updateChatMestaData && !metadata?.gitUrl) {
-                  updateChatMestaData({
-                    ...(metadata || {}),
-                    gitUrl: repoUrl,
-                  });
-                }
-
-                return repoUrl;
-              } catch (error) {
-                console.error('Error pushing to GitHub:', error);
-                toast.error('Failed to push to GitHub');
-                throw error;
-              }
-            }}
-          />
         </motion.div>
       )
     );

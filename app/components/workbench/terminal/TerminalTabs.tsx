@@ -157,7 +157,7 @@ export const TerminalTabs = memo(() => {
                   ref={(ref) => {
                     terminalRefs.current.push(ref);
                   }}
-                  onTerminalReady={(terminal) => workbenchStore.attachcodinitTerminal(terminal)}
+                  onTerminalReady={(terminal) => workbenchStore.attachTerminal(terminal)}
                   onTerminalResize={(cols, rows) => workbenchStore.onTerminalResize(cols, rows)}
                   theme={theme}
                 />
