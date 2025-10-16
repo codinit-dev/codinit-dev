@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export interface codinitArticactData {
+export interface CodinitArtifactData {
   id: string;
   title: string;
   type?: string | undefined;

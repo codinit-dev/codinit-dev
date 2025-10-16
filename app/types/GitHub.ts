@@ -13,18 +13,24 @@ export interface GitHubUserResponse {
 }
 
 export interface GitHubRepoInfo {
+  id: number;
   name: string;
   full_name: string;
   html_url: string;
+  clone_url: string;
   description: string;
   stargazers_count: number;
   forks_count: number;
+  watchers_count: number;
   default_branch: string;
   updated_at: string;
   language: string;
   languages_url: string;
   private?: boolean;
   topics?: string[];
+  fork?: boolean;
+  archived?: boolean;
+  size?: number;
 }
 
 export interface GitHubContent {
@@ -92,6 +98,14 @@ export interface GitHubStats {
   recentActivity: GitHubEvent[];
   languages: GitHubLanguageStats;
   totalGists: number;
+  publicRepos: number;
+  privateRepos: number;
+  stars: number;
+  forks: number;
+  followers: number;
+  publicGists: number;
+  privateGists: number;
+  lastUpdated: string;
 }
 
 export interface GitHubConnection {
