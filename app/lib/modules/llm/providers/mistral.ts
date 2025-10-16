@@ -7,7 +7,6 @@ import { createMistral } from '@ai-sdk/mistral';
 export default class MistralProvider extends BaseProvider {
   name = 'Mistral';
   getApiKeyLink = 'https://console.mistral.ai/api-keys/';
-  icon = '/thirdparty/logos/mistral.svg';
 
   config = {
     apiTokenKey: 'MISTRAL_API_KEY',
@@ -19,54 +18,63 @@ export default class MistralProvider extends BaseProvider {
       label: 'Mistral 7B',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'open-mixtral-8x7b',
       label: 'Mistral 8x7B',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'open-mixtral-8x22b',
       label: 'Mistral 8x22B',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'open-codestral-mamba',
       label: 'Codestral Mamba',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'open-mistral-nemo',
       label: 'Mistral Nemo',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'ministral-8b-latest',
       label: 'Mistral 8B',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'mistral-small-latest',
       label: 'Mistral Small',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'codestral-latest',
       label: 'Codestral',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'mistral-large-latest',
       label: 'Mistral Large Latest',
       provider: 'Mistral',
       maxTokenAllowed: 8000,
+      maxCompletionTokens: 8192,
     },
   ];
 

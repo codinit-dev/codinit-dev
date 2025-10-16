@@ -7,7 +7,6 @@ import { createOpenAI } from '@ai-sdk/openai';
 export default class HyperbolicProvider extends BaseProvider {
   name = 'Hyperbolic';
   getApiKeyLink = 'https://app.hyperbolic.xyz/settings';
-  icon = '/thirdparty/logos/hyperbolic.svg';
 
   config = {
     apiTokenKey: 'HYPERBOLIC_API_KEY',

@@ -9,7 +9,7 @@ export default class LMStudioProvider extends BaseProvider {
   name = 'LMStudio';
   getApiKeyLink = 'https://lmstudio.ai/';
   labelForGetApiKey = 'Get LMStudio';
-  icon = '/thirdparty/logos/lmstudio.svg';
+  icon = 'i-ph:cloud-arrow-down';
 
   config = {
     baseUrlKey: 'LMSTUDIO_API_BASE_URL',
