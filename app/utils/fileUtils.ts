@@ -44,16 +44,16 @@ export const shouldIncludeFile = (path: string): boolean => {
 
 export const filesToArtifacts = (files: { [path: string]: { content: string } }, id: string): string => {
   return `
-<codinitArticact id="${id}" title="User Updated Files">
+<codinitArtifact id="${id}" title="User Updated Files">
 ${Object.keys(files)
   .map(
     (filePath) => `
-<CodinitAction type="file" filePath="${filePath}">
+<codinitAction type="file" filePath="${filePath}">
 ${files[filePath].content}
-</CodinitAction>
+</codinitAction>
 `,
   )
   .join('\n')}
-</codinitArticact>
+</codinitArtifact>
   `;
 };

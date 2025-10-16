@@ -23,13 +23,17 @@ function makeNonInteractive(command: string): string {
     { pattern: /npx\s+([^@\s]+@?[^\s]*)\s+init/g, replacement: 'echo "y" | npx --yes $1 init --defaults --yes' },
     { pattern: /npx\s+create-([^\s]+)/g, replacement: 'npx --yes create-$1 --template default' },
     { pattern: /npx\s+([^@\s]+@?[^\s]*)\s+add/g, replacement: 'npx --yes $1 add --defaults --yes' },
+    { pattern: /npm\s+install(?!\s+--)/g, replacement: 'npm install --yes --no-audit --no-fund --silent' },
     { pattern: /yarn\s+add(?!\s+--)/g, replacement: 'yarn add --non-interactive' },
     { pattern: /pnpm\s+add(?!\s+--)/g, replacement: 'pnpm add --yes' },
   ];
 
-  const processedCommand = interactivePackages.reduce((acc, { pattern, replacement }) => {
-    return acc.replace(pattern, replacement);
-  }, command);
+  let processedCommand = command;
+
+  // Apply replacements for known interactive patterns
+  interactivePackages.forEach(({ pattern, replacement }) => {
+    processedCommand = processedCommand.replace(pattern, replacement);
+  });
 
   return `${envVars} && ${processedCommand}`;
 }
@@ -62,7 +66,7 @@ export async function detectProjectCommands(files: FileContent[]): Promise<Proje
       const availableCommand = preferredCommands.find((cmd) => scripts[cmd]);
 
       // Build setup command with non-interactive handling
-      let baseSetupCommand = 'npx update-browserslist-db@latest && npm install --no-audit --no-fund';
+      let baseSetupCommand = 'npx update-browserslist-db@latest && npm install';
 
       // Add shadcn init if it's a shadcn project
       if (isShadcnProject) {
@@ -112,12 +116,12 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
 
   if (commands.setupCommand) {
     commandString += `
-<CodinitAction type="shell">${commands.setupCommand}</CodinitAction>`;
+<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<CodinitAction type="start">${commands.startCommand}</CodinitAction>
+<codinitAction type="start">${commands.startCommand}</codinitAction>
 `;
   }
 
@@ -134,8 +138,8 @@ ${commandString}
 }
 
 export function escapeCodinitArtifactTags(input: string) {
-  // Regular expression to match codinitArtifact tags and their content
-  const regex = /(<codinitArtifact[^>]*>)([\s\S]*?)(<\/codinitArtifact>)/g;
+  // Regular expression to match CodinitArtifact tags and their content
+  const regex = /(<CodinitArtifact[^>]*>)([\s\S]*?)(<\/CodinitArtifact>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -150,8 +154,8 @@ export function escapeCodinitArtifactTags(input: string) {
 }
 
 export function escapeCodinitAActionTags(input: string) {
-  // Regular expression to match codinitArtifact tags and their content
-  const regex = /(<CodinitAction[^>]*>)([\s\S]*?)(<\/CodinitAction>)/g;
+  // Regular expression to match CodinitAction tags and their content
+  const regex = /(<codinitAction[^>]*>)([\s\S]*?)(<\/codinitAction>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -180,12 +184,12 @@ export function createCommandActionsString(commands: ProjectCommands): string {
 
   if (commands.setupCommand) {
     commandString += `
-<CodinitAction type="shell">${commands.setupCommand}</CodinitAction>`;
+<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<CodinitAction type="start">${commands.startCommand}</CodinitAction>
+<codinitAction type="start">${commands.startCommand}</codinitAction>
 `;
   }
 
