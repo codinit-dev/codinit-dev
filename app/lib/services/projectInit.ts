@@ -35,6 +35,7 @@ export interface InitFromTemplateOptions {
   model: string;
   provider: ProviderInfo;
   autoSelectTemplate: boolean;
+  forceTemplate?: string; // Optional: force a specific template instead of auto-selecting
 }
 
 export interface InitFromTemplateResult {
@@ -65,9 +66,9 @@ function createFilesArtifact(files: Array<{ path: string; content: string }>, ti
 ${files
   .map(
     (file) =>
-      `<CodinitAction type="file" filePath="${file.path}">
+      `<codinitAction type="file" filePath="${file.path}">
 ${escapeCodinitTags(file.content)}
-</CodinitAction>`,
+</codinitAction>`,
   )
   .join('\n')}
 </codinitArtifact>`;
@@ -78,12 +79,12 @@ function createCommandsArtifact(commands: ProjectCommands, id: string): string {
 
   if (commands.setupCommand) {
     commandString += `
-<CodinitAction type="shell">${commands.setupCommand}</CodinitAction>`;
+<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<CodinitAction type="start">${commands.startCommand}</CodinitAction>`;
+<codinitAction type="start">${commands.startCommand}</codinitAction>`;
   }
 
   return `${commands.followupMessage ? `\n\n${commands.followupMessage}` : ''}
@@ -96,19 +97,30 @@ ${commandString}
  * Handles template selection and loading for chat-initiated builds
  */
 export async function initFromTemplate(options: InitFromTemplateOptions): Promise<InitFromTemplateResult | null> {
-  const { message, model, provider, autoSelectTemplate } = options;
+  const { message, model, provider, autoSelectTemplate, forceTemplate } = options;
 
-  // If autoSelectTemplate is false, return null
-  if (!autoSelectTemplate) {
+  // If autoSelectTemplate is false and no forced template, return null
+  if (!autoSelectTemplate && !forceTemplate) {
     return null;
   }
 
-  // Call selectStarterTemplate
-  const { template, title } = await selectStarterTemplate({
-    message,
-    model,
-    provider,
-  });
+  let template: string;
+  let title: string;
+
+  // If forceTemplate is provided, use it directly
+  if (forceTemplate) {
+    template = forceTemplate;
+    title = 'Project Setup';
+  } else {
+    // Call selectStarterTemplate for auto-selection
+    const selected = await selectStarterTemplate({
+      message,
+      model,
+      provider,
+    });
+    template = selected.template;
+    title = selected.title;
+  }
 
   // If template is 'blank', return null
   if (template === 'blank') {
@@ -212,6 +224,11 @@ ${createFilesArtifact(fileContents, 'Git Cloned Files', 'imported-files')}`,
       createdAt: new Date(),
     });
   }
+
+  /*
+   * Note: Workbench display is now triggered after files are actually imported
+   * See GitUrlImport.client.tsx for the proper timing
+   */
 
   return { messages, commands };
 }
