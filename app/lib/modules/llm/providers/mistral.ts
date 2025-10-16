@@ -7,6 +7,7 @@ import { createMistral } from '@ai-sdk/mistral';
 export default class MistralProvider extends BaseProvider {
   name = 'Mistral';
   getApiKeyLink = 'https://console.mistral.ai/api-keys/';
+  icon = '/thirdparty/logos/mistral.svg';
 
   config = {
     apiTokenKey: 'MISTRAL_API_KEY',

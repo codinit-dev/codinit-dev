@@ -7,6 +7,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 export default class PerplexityProvider extends BaseProvider {
   name = 'Perplexity';
   getApiKeyLink = 'https://www.perplexity.ai/settings/api';
+  icon = '/thirdparty/logos/perplexity.svg';
 
   config = {
     apiTokenKey: 'PERPLEXITY_API_KEY',

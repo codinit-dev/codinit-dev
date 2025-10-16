@@ -7,6 +7,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 export default class XAIProvider extends BaseProvider {
   name = 'xAI';
   getApiKeyLink = 'https://docs.x.ai/docs/quickstart#creating-an-api-key';
+  icon = '/thirdparty/logos/xai.svg';
 
   config = {
     apiTokenKey: 'XAI_API_KEY',

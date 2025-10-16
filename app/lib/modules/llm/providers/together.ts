@@ -6,6 +6,7 @@ import type { LanguageModelV1 } from 'ai';
 export default class TogetherProvider extends BaseProvider {
   name = 'Together';
   getApiKeyLink = 'https://api.together.xyz/settings/api-keys';
+  icon = '/thirdparty/logos/togetherai.svg';
 
   config = {
     baseUrlKey: 'TOGETHER_API_BASE_URL',

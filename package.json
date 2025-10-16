@@ -210,7 +210,8 @@
   },
   "pnpm": {
     "overrides": {
-      "wrangler": "^4.42.1"
+      "wrangler": "^4.42.1",
+      "jsondiffpatch": "^0.7.2"
     },
     "peerDependencyRules": {
       "allowedVersions": {
@@ -218,5 +219,5 @@
       }
     }
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@10.0.0"
 }

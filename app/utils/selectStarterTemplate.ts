@@ -139,8 +139,7 @@ export async function getTemplates(templateName: string, title?: string) {
   }
 
   const githubRepo = template.githubRepo;
-  const repoPath = template.subdir ? `${githubRepo}/${template.subdir}` : githubRepo;
-  const files = await getGitHubRepoContent(repoPath);
+  const files = await getGitHubRepoContent(githubRepo);
 
   let filteredFiles = files;
 
@@ -245,18 +244,12 @@ edit only the files that need to be changed, and you can create new files as nee
 NO NOT EDIT/WRITE ANY FILES THAT ALREADY EXIST IN THE PROJECT AND DOES NOT NEED TO BE MODIFIED
 ---
 Now that the Template is imported please continue with my original request
+
+IMPORTANT: Dont Forget to install the dependencies before running the app by using \`npm install && npm run dev\`
 `;
 
-  // Add setup and start commands automatically
-  const setupArtifact = `
-
-<codinitArtifact id="setup-project" title="Install Dependencies and Start Dev Server">
-<codinitAction type="shell">npm install</codinitAction>
-<codinitAction type="start">npm run dev</codinitAction>
-</codinitArtifact>`;
-
   return {
-    assistantMessage: assistantMessage + setupArtifact,
+    assistantMessage,
     userMessage,
   };
 }

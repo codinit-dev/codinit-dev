@@ -7,6 +7,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 export default class GroqProvider extends BaseProvider {
   name = 'Groq';
   getApiKeyLink = 'https://console.groq.com/keys';
+  icon = '/thirdparty/logos/groq.svg';
 
   config = {
     apiTokenKey: 'GROQ_API_KEY',

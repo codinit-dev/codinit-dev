@@ -7,6 +7,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 export default class MoonshotProvider extends BaseProvider {
   name = 'Moonshot';
   getApiKeyLink = 'https://platform.moonshot.ai/console/api-keys';
+  icon = '/thirdparty/logos/moonshot.svg';
 
   config = {
     apiTokenKey: 'MOONSHOT_API_KEY',
