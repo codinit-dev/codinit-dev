@@ -80,7 +80,8 @@ Interested in maintaining and growing the project? Fill out our [Contributor App
 
 - Clone the repository:
   ```bash
-  git clone https://github.com/Gerome-Elassaad/codingit.git
+  git clone https://github.com/Gerome-Elassaad/codinit-app.git
+  cd codinit-app
   ```
 - Install dependencies:
   ```bash
@@ -88,18 +89,21 @@ Interested in maintaining and growing the project? Fill out our [Contributor App
   ```
 - Set up environment variables:
   1. Rename `.env.example` to `.env.local`.
-  2. Add your API keys:
+  2. Add your API keys for providers you want to use:
      ```bash
      GROQ_API_KEY=XXX
-     HuggingFace_API_KEY=XXX
      OPENAI_API_KEY=XXX
-     ...
+     ANTHROPIC_API_KEY=XXX
+     GOOGLE_GENERATIVE_AI_API_KEY=XXX
+     MOONSHOT_API_KEY=XXX
+     XAI_API_KEY=XXX
+     # ... add other provider keys as needed
      ```
   3. **For Docker users**: Run the setup script or manually copy `.env.local` to `.env`:
      ```bash
      # Option 1: Use the setup script
      ./scripts/setup-env.sh
-     
+
      # Option 2: Manual copy
      cp .env.local .env
      ```
@@ -107,6 +111,7 @@ Interested in maintaining and growing the project? Fill out our [Contributor App
   4. Optionally set:
      - Debug level: `VITE_LOG_LEVEL=debug`
      - Context size: `DEFAULT_NUM_CTX=32768`
+     - Local provider base URLs (Ollama, LM Studio): Use `127.0.0.1` instead of `localhost`
 
 **Note**: Never commit your `.env.local` or `.env` files to version control. They're already in `.gitignore`.
 

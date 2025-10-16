@@ -3,7 +3,7 @@
 ## Models and Setup
 
 ??? question "What are the best models for CodinIT.dev?"
-For the best experience with CodinIT.dev, we recommend using the following models from our 19 supported providers:
+For the best experience with CodinIT.dev, we recommend using the following models from our 19+ supported providers:
 
     **Top Recommended Models:**
     - **Claude 3.5 Sonnet** (Anthropic): Best overall coder, excellent for complex applications
@@ -136,22 +136,223 @@ Follow these proven strategies for optimal results:
     - **Use Git integration**: Version control your projects with GitHub
     - **Deploy easily**: Use built-in Vercel, Netlify, or GitHub Pages deployment
 
-??? question "How do I use MCP (Model Context Protocol) tools?"
-MCP extends CodinIT.dev's AI capabilities with external tools:
+??? question "What is MCP and why should I use it?"
+MCP (Model Context Protocol) is an open protocol that extends CodinIT.dev's AI capabilities by allowing it to interact with external tools and data sources:
 
-    **Setting up MCP:**
-    1. Go to Settings → MCP tab
-    2. Add MCP server configurations
-    3. Configure server endpoints and authentication
-    4. Enable/disable servers as needed
+    **What MCP Enables:**
+    - **Database Access**: Query SQL databases, MongoDB, Redis, and more
+    - **File Operations**: Read/write files with proper permissions
+    - **API Integrations**: Connect to REST APIs, GraphQL endpoints
+    - **Custom Tools**: Build domain-specific tools for your workflow
+    - **Real-time Data**: Access live data during AI conversations
 
-    **Available MCP Capabilities:**
-    - Database connections and queries
-    - File system operations
-    - API integrations
-    - Custom business logic tools
+    **Why Use MCP:**
+    - Makes the AI aware of your specific data and context
+    - Automates complex workflows with multiple tool calls
+    - Securely connects to enterprise systems
+    - Standardized protocol supported by multiple AI platforms
 
-    The MCP integration allows the AI to interact with external services and data sources during conversations.
+??? question "How do I set up MCP servers in CodinIT.dev?"
+Setting up MCP servers is straightforward:
+
+    **Step-by-Step Setup:**
+    1. **Open Settings**: Click the settings icon (⚙️) in the sidebar
+    2. **Navigate to MCP Tab**: Select "MCP" from the settings menu
+    3. **Add Server**: Click "Add Server" or "Configure Server"
+    4. **Choose Server Type**:
+       - **STDIO**: For local command-line tools
+       - **SSE**: For Server-Sent Events servers
+       - **HTTP**: For HTTP-based MCP servers
+    5. **Configure Connection**:
+       - Enter server name and description
+       - Set command/URL based on server type
+       - Add required environment variables or headers
+    6. **Save and Enable**: Save configuration and enable the server
+
+    **Example STDIO Configuration (PostgreSQL)**:
+    ```json
+    {
+      "name": "postgres-db",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "postgresql://user:pass@localhost/mydb"
+      }
+    }
+    ```
+
+    **Example SSE Configuration (Remote API)**:
+    ```json
+    {
+      "name": "my-api",
+      "type": "sse",
+      "url": "https://api.example.com/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_TOKEN"
+      }
+    }
+    ```
+
+??? question "What MCP server types are supported?"
+CodinIT.dev supports three types of MCP server connections:
+
+    **1. STDIO Servers (Local Tools)**
+    - Run as local command-line processes
+    - Communicate via standard input/output
+    - Best for: Local databases, file systems, CLI tools
+    - Examples: PostgreSQL server, filesystem server, git tools
+
+    **2. SSE Servers (Server-Sent Events)**
+    - Connect to remote servers via HTTP
+    - Real-time streaming with Server-Sent Events
+    - Best for: Remote APIs, cloud services
+    - Examples: Cloud database services, third-party APIs
+
+    **3. Streamable HTTP Servers**
+    - HTTP-based protocol with streaming support
+    - Flexible connection options
+    - Best for: Custom services, enterprise systems
+    - Examples: Internal APIs, custom business logic
+
+    Each type has different setup requirements and use cases. Choose based on your needs.
+
+??? question "How do MCP tools work during conversations?"
+When MCP servers are configured, their tools become available to the AI:
+
+    **Tool Discovery:**
+    - CodinIT.dev automatically detects all tools from connected servers
+    - Tools appear in the AI's available tool list
+    - Tool descriptions help the AI understand when to use them
+
+    **Tool Execution Flow:**
+    1. **AI Decides**: Based on your prompt, AI determines which tool to use
+    2. **User Approval**: You review and approve the tool execution for security
+    3. **Tool Runs**: The MCP server executes the tool with provided parameters
+    4. **Results Return**: Tool output is sent back to the AI
+    5. **AI Responds**: AI incorporates tool results into its response
+
+    **Approval States:**
+    - **APPROVE**: Allow the tool to execute
+    - **REJECT**: Deny the tool execution
+    - **ERROR**: Tool execution failed
+
+    **Security Features:**
+    - All tool executions require explicit user approval
+    - Tool parameters are shown before execution
+    - Failed executions are logged with error details
+
+??? question "What are common MCP use cases?"
+MCP enables many powerful workflows:
+
+    **Development & DevOps:**
+    - Query database schemas and generate migrations
+    - Read/write code files for automated refactoring
+    - Execute git commands for version control
+    - Deploy applications to cloud platforms
+    - Run test suites and analyze results
+
+    **Data Analysis:**
+    - Query SQL databases for business intelligence
+    - Process CSV/JSON files for data transformation
+    - Generate charts and visualizations
+    - Fetch real-time data from APIs
+    - Aggregate data from multiple sources
+
+    **Business Operations:**
+    - Integrate with CRM systems (Salesforce, HubSpot)
+    - Manage customer support tickets
+    - Access inventory and order management systems
+    - Generate reports from business data
+    - Automate routine administrative tasks
+
+    **Content Management:**
+    - Read/write documentation files
+    - Manage blog posts and articles
+    - Update website content
+    - Process and optimize images
+    - Version control content changes
+
+??? question "How do I troubleshoot MCP connection issues?"
+Common MCP issues and solutions:
+
+    **Server Won't Connect:**
+    - Verify server endpoint/command is correct
+    - Check authentication credentials (API keys, tokens)
+    - Ensure network connectivity for remote servers
+    - Review server logs for specific error messages
+    - Confirm MCP protocol version compatibility
+
+    **Tools Not Appearing:**
+    - Restart the MCP server to refresh tool list
+    - Check server configuration in Settings → MCP
+    - Verify server is enabled (toggle switch on)
+    - Look for errors in browser console (F12)
+    - Confirm server implements tool discovery correctly
+
+    **Tool Execution Failures:**
+    - Check tool parameters are valid
+    - Ensure required permissions are granted
+    - Verify environment variables are set correctly
+    - Review tool-specific error messages
+    - Test the tool outside CodinIT.dev first
+
+    **Performance Issues:**
+    - Limit number of concurrent tool calls
+    - Use smaller result sets when querying databases
+    - Implement caching in your MCP server
+    - Monitor server response times
+    - Consider using local servers for better performance
+
+    **Conflict Resolution:**
+    - If multiple servers provide the same tool name, CodinIT.dev will detect the conflict
+    - Rename tools in server configuration to avoid conflicts
+    - Disable unused servers to reduce tool namespace pollution
+
+??? question "Can I build my own MCP servers?"
+Yes! You can create custom MCP servers for your specific needs:
+
+    **Building Custom Servers:**
+    - Use the official MCP SDK: `@modelcontextprotocol/sdk`
+    - Implement server in TypeScript, Python, or other languages
+    - Define custom tools with input schemas and handlers
+    - Deploy as STDIO, SSE, or HTTP server
+
+    **Basic Server Example (TypeScript)**:
+    ```typescript
+    import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+    import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+    const server = new Server({
+      name: 'my-custom-server',
+      version: '1.0.0',
+    });
+
+    // Register a custom tool
+    server.setRequestHandler('tools/list', async () => ({
+      tools: [{
+        name: 'get_user_data',
+        description: 'Fetch user data from database',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            userId: { type: 'string' }
+          }
+        }
+      }]
+    }));
+
+    // Start the server
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+    ```
+
+    **Resources:**
+    - MCP Documentation: [modelcontextprotocol.io](https://modelcontextprotocol.io)
+    - Example Servers: GitHub MCP organization
+    - SDK Reference: @modelcontextprotocol/sdk package
+
+    Custom servers allow you to integrate any system or data source with CodinIT.dev!
 
 ??? question "How do I deploy my CodinIT.dev projects?"
 CodinIT.dev supports one-click deployment to multiple platforms:
@@ -168,32 +369,37 @@ CodinIT.dev supports one-click deployment to multiple platforms:
     - Preview deployments for testing
 
 ??? question "How do I use Git integration features?"
-CodinIT.dev provides comprehensive Git and GitHub integration:
+CodinIT.dev provides comprehensive Git integration with GitHub and GitLab:
 
     **Basic Git Operations:**
     - Import existing repositories by URL
-    - Create new repositories on GitHub
+    - Create new repositories on GitHub or GitLab
     - Automatic commits for major changes
     - Push/pull changes seamlessly
 
-    **Advanced Features:**
-    - Connect GitHub account in Settings → Connections
+    **GitHub Integration:**
+    - Connect GitHub account in Settings → Connections → GitHub
     - Import from your connected repositories
+    - Create and manage branches
+    - View repository statistics
+
+    **GitLab Integration:**
+    - Connect GitLab account in Settings → Connections → GitLab
+    - Browse and import GitLab projects
+    - Manage GitLab branches
+    - Access project metadata
+
+    **Advanced Features:**
     - Version control with diff visualization
     - Collaborative development support
+    - Bug report generation with automatic system information
 
 ## Project Information
 
 ??? question "How do I contribute to CodinIT.dev?"
 Check out our [Contribution Guide](CONTRIBUTING.md) for more details on how to get involved!
 
-??? question "What are the future plans for CodinIT.dev?"
-Visit our [Roadmap](https://roadmap.sh/r/ottodev-roadmap-2ovzo) for the latest updates.  
- New features and improvements are on the way!
-
 ??? question "Why are there so many open issues/pull requests?"
-CodinIT.dev began as a small showcase project on @ColeMedin's YouTube channel to explore editing open-source projects with local LLMs. However, it quickly grew into a massive community effort!
-
     We're forming a team of maintainers to manage demand and streamline issue resolution. The maintainers are rockstars, and we're also exploring partnerships to help the project thrive.
 
 ## New Features & Technologies
@@ -212,9 +418,10 @@ Recent major additions to CodinIT.dev include:
     - **Project Templates**: 15+ starter templates for popular frameworks
 
     **Version Control & Collaboration:**
-    - **Git Integration**: Import/export projects with GitHub
+    - **Git Integration**: Import/export projects with GitHub and GitLab
     - **Automatic Commits**: Smart version control for project changes
     - **Diff Visualization**: See code changes clearly
+    - **Bug Reporting**: Built-in bug report generation and tracking
 
     **Backend & Database:**
     - **Supabase Integration**: Built-in database and authentication

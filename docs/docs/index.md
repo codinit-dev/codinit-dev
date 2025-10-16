@@ -1,6 +1,6 @@
 # Welcome to CodinIT.dev
 
-CodinIT.dev allows you to choose the LLM that you use for each prompt! Currently, you can use models from 19 providers including OpenAI, Anthropic, Ollama, OpenRouter, Google/Gemini, LMStudio, Mistral, xAI, HuggingFace, DeepSeek, Groq, Cohere, Together AI, Perplexity AI, Hyperbolic, Moonshot AI (Kimi), Amazon Bedrock, GitHub Models, and more - with easy extensibility to add any other model supported by the Vercel AI SDK! See the instructions below for running this locally and extending it to include more models.
+CodinIT.dev allows you to choose the LLM that you use for each prompt! Currently, you can use models from 19+ providers including OpenAI, Anthropic, Ollama, OpenRouter, Google/Gemini, LMStudio, Mistral, xAI, HuggingFace, DeepSeek, Groq, Cohere, Together AI, Perplexity AI, Hyperbolic, Moonshot AI (Kimi), Amazon Bedrock, GitHub Models, and more - with easy extensibility to add any other model supported by the Vercel AI SDK! See the instructions below for running this locally and extending it to include more models.
 
 ## Table of Contents
 
@@ -31,21 +31,23 @@ CodinIT.dev allows you to choose the LLM that you use for each prompt! Currently
 ## Features
 
 - **AI-powered full-stack web development** directly in your browser with live preview
-- **Support for 19 LLM providers** with an extensible architecture to integrate additional models
+- **Support for 19+ LLM providers** with an extensible architecture to integrate additional models
 - **Attach images and files to prompts** for better contextual understanding
 - **Integrated terminal** with WebContainer sandbox for running commands and testing
-- **Version control with Git** - import/export projects, connect to GitHub repositories
+- **Version control with Git** - import/export projects, connect to GitHub and GitLab repositories
 - **MCP (Model Context Protocol)** integration for enhanced AI capabilities and tool calling
 - **Database integration** with Supabase for backend development
 - **One-click deployments** to Vercel, Netlify, and GitHub Pages
 - **Project templates** for popular frameworks (React, Vue, Angular, Next.js, Astro, etc.)
 - **Real-time collaboration** and project sharing
 - **Code diff visualization** and version history
-- **Download projects as ZIP** or push directly to GitHub
+- **Download projects as ZIP** or push directly to GitHub/GitLab
 - **Docker support** for containerized development environments
 - **Electron app** for native desktop experience
 - **Theme customization** and accessibility features
 - **Help icon** in sidebar linking to comprehensive documentation
+- **Bug reporting system** with automatic system information collection
+- **Provider configuration API** for runtime provider management
 
 ---
 
@@ -369,29 +371,146 @@ The modular architecture makes it easy to add new providers while maintaining co
 
 ## MCP (Model Context Protocol) Integration
 
-CodinIT.dev supports MCP (Model Context Protocol) servers to extend AI capabilities with external tools and services. MCP allows you to connect various tools and services that the AI can use during conversations.
+CodinIT.dev supports the Model Context Protocol (MCP) to extend AI capabilities with external tools and services. MCP is an open protocol that enables LLMs to securely interact with external data sources, APIs, and tools during conversations.
+
+### What is MCP?
+
+The Model Context Protocol standardizes how AI assistants connect to different data sources and tools. With MCP, you can:
+
+- **Connect to databases** - Query and manipulate data in real-time
+- **Access file systems** - Read and write files with proper permissions
+- **Integrate APIs** - Call external services and retrieve data
+- **Use custom tools** - Extend the AI with domain-specific capabilities
+- **Combine multiple sources** - Use tools from different servers simultaneously
+
+### Supported MCP Server Types
+
+CodinIT.dev supports three types of MCP server connections:
+
+1. **STDIO Servers** - Local command-line tools that communicate via standard input/output
+2. **SSE Servers** - Server-Sent Events based servers for real-time streaming
+3. **Streamable HTTP** - HTTP-based MCP servers with streaming support
 
 ### Setting up MCP Servers
 
-1. Navigate to Settings → MCP tab
-2. Add MCP server configurations
-3. Configure server endpoints and authentication
-4. Enable/disable servers as needed
+#### Basic Setup
 
-MCP servers can provide:
-- Database connections and queries
-- File system operations
-- API integrations
-- Custom business logic tools
-- And much more...
+1. **Navigate to Settings** → Click the settings icon (⚙️) in the sidebar
+2. **Open MCP Tab** → Select the "MCP" tab from the settings menu
+3. **Add Server Configuration**:
+   - Click "Add Server" or "Configure Server"
+   - Enter server name and description
+   - Choose server type (STDIO, SSE, or HTTP)
+   - Configure connection details
 
-The MCP integration enhances the AI's ability to perform complex tasks by giving it access to external tools and data sources.
+#### Configuration Examples
+
+**STDIO Server Example (Local Tool)**:
+```json
+{
+  "name": "database-tools",
+  "type": "stdio",
+  "command": "npx",
+  "args": ["-y", "@modelcontextprotocol/server-postgres"],
+  "env": {
+    "DATABASE_URL": "postgresql://localhost/mydb"
+  }
+}
+```
+
+**SSE Server Example (Remote Service)**:
+```json
+{
+  "name": "api-connector",
+  "type": "sse",
+  "url": "https://api.example.com/mcp",
+  "headers": {
+    "Authorization": "Bearer YOUR_TOKEN"
+  }
+}
+```
+
+### MCP Tool Usage
+
+Once configured, MCP tools become available to the AI during conversations:
+
+1. **Automatic Tool Discovery** - CodinIT.dev automatically detects available tools from connected servers
+2. **Tool Approval Workflow** - Review and approve tool executions for security
+3. **Tool Annotations** - AI responses include tool descriptions and usage information
+4. **Conflict Detection** - Handles multiple servers providing the same tool name
+
+### Security Features
+
+- **User Approval Required** - All tool executions require explicit user approval
+- **Tool Isolation** - Each server runs in its own isolated context
+- **Permission Management** - Control which tools can be used in each session
+- **Error Handling** - Comprehensive error reporting for failed tool executions
+
+### Common MCP Use Cases
+
+**Development Workflows**:
+- Database schema exploration and queries
+- File system operations for code generation
+- Git operations and version control
+- API testing and integration
+
+**Data Analysis**:
+- Query databases and data warehouses
+- Process CSV/JSON files
+- Generate reports and visualizations
+- Real-time data fetching
+
+**Business Operations**:
+- CRM integrations
+- Customer support ticket management
+- Inventory and order management
+- Analytics and reporting
+
+### MCP Server Management
+
+**Enable/Disable Servers**:
+- Toggle servers on/off without removing configuration
+- Useful for testing or temporary disconnections
+
+**Server Health Monitoring**:
+- Connection status indicators
+- Error logs and diagnostics
+- Tool availability tracking
+
+**Configuration Persistence**:
+- Server configurations saved in browser localStorage
+- Export/import configurations for sharing
+
+### Troubleshooting MCP
+
+**Connection Issues**:
+- Verify server endpoints and authentication
+- Check network connectivity
+- Review server logs for errors
+
+**Tool Execution Failures**:
+- Ensure proper permissions are granted
+- Verify tool parameters are correct
+- Check server compatibility with MCP protocol version
+
+**Performance Optimization**:
+- Limit number of concurrent tool calls
+- Use caching where appropriate
+- Monitor server response times
+
+### Available MCP Resources
+
+- **MCP Specification**: [Model Context Protocol Documentation](https://modelcontextprotocol.io)
+- **Server Examples**: Browse community-built MCP servers
+- **Custom Server Development**: Build your own MCP servers for specific needs
+
+The MCP integration transforms CodinIT.dev into a powerful platform that can interact with your entire development ecosystem, making the AI truly context-aware of your data and tools.
 
 ---
 
 ## Git Integration and Version Control
 
-CodinIT.dev provides comprehensive Git integration for version control, collaboration, and project management.
+CodinIT.dev provides comprehensive Git integration for version control, collaboration, and project management with support for both GitHub and GitLab.
 
 ### GitHub Integration
 
@@ -399,6 +518,16 @@ CodinIT.dev provides comprehensive Git integration for version control, collabor
 2. **Import existing repositories** by URL or from your connected account
 3. **Push projects directly to GitHub** with automatic repository creation
 4. **Sync changes** between local development and remote repositories
+5. **View repository statistics** including stars, forks, and contributors
+6. **Manage branches** and create new ones directly from the interface
+
+### GitLab Integration
+
+1. **Connect your GitLab account** in Settings → Connections → GitLab
+2. **Browse and import** your GitLab projects
+3. **Manage GitLab branches** and project metadata
+4. **Push projects** to GitLab repositories
+5. **Access project information** and collaboration features
 
 ### Version Control Features
 
@@ -407,12 +536,13 @@ CodinIT.dev provides comprehensive Git integration for version control, collabor
 - **Branch management** and merge conflict resolution
 - **Revert to previous versions** for debugging
 - **Collaborative development** with team members
+- **Bug report generation** with automatic system information
 
 ### Export Options
 
 - **Download as ZIP** for easy sharing
-- **Push to GitHub** for version control and collaboration
-- **Import from GitHub** to continue working on existing projects
+- **Push to GitHub or GitLab** for version control and collaboration
+- **Import from GitHub or GitLab** to continue working on existing projects
 
 ---
 
