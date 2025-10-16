@@ -131,22 +131,22 @@ export function useChatHistory() {
 
                   // Combine followup message and the artifact with files and command actions
                   content: `codinit Restored your chat from a snapshot. You can revert this message to load the full chat history.
-                  <codinitArticact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
+                  <codinitArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
                   ${Object.entries(snapshot?.files || {})
                     .map(([key, value]) => {
                       if (value?.type === 'file') {
                         return `
-                      <CodinitAction type="file" filePath="${key}">
+                      <codinitAction type="file" filePath="${key}">
 ${value.content}
-                      </CodinitAction>
+                      </codinitAction>
                       `;
                       } else {
                         return ``;
                       }
                     })
                     .join('\n')}
-                  ${commandActionsString} 
-                  </codinitArticact>
+                  ${commandActionsString}
+                  </codinitArtifact>
                   `, // Added commandActionsString, followupMessage, updated id and title
                   annotations: [
                     'no-store',
@@ -404,9 +404,14 @@ ${value.content}
 
 function navigateChat(nextId: string) {
   /**
-   * FIXME: Using the intended navigate function causes a rerender for <Chat /> that breaks the app.
+   * Use window.history.replaceState instead of Remix's navigate() to avoid triggering
+   * a full route loader re-execution, which would cause the Chat component to remount
+   * and lose its internal state. This is a conscious design choice to maintain chat
+   * continuity during initial chat creation and URL updates.
    *
-   * `navigate(`/chat/${nextId}`, { replace: true });`
+   * The alternative `navigate('/chat/${nextId}', { replace: true })` would work for
+   * URL updates but causes the entire route to reload, disrupting the user experience
+   * during active chat sessions.
    */
   const url = new URL(window.location.href);
   url.pathname = `/chat/${nextId}`;

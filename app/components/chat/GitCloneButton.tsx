@@ -122,16 +122,16 @@ ${skippedFiles.map((f) => `- ${f}`).join('\n')}`
     : ''
 }
 
-<codinitArticact id="imported-files" title="Git Cloned Files" type="bundled">
+<codinitArtifact id="imported-files" title="Git Cloned Files" type="bundled">
 ${fileContents
   .map(
     (file) =>
-      `<CodinitAction type="file" filePath="${file.path}">
+      `<codinitAction type="file" filePath="${file.path}">
 ${escapeCodinitTags(file.content)}
-</CodinitAction>`,
+</codinitAction>`,
   )
   .join('\n')}
-</codinitArticact>`,
+</codinitArtifact>`,
           id: generateId(),
           createdAt: new Date(),
         };
