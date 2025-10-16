@@ -55,8 +55,7 @@ export async function newShellProcess(webcontainer: WebContainer, terminal: ITer
 
 export type ExecutionResult = { output: string; exitCode: number } | undefined;
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export class codinitShell {
+export class CodinitShell {
   #initialized: (() => void) | undefined;
   #readyPromise: Promise<void>;
   #webcontainer: WebContainer | undefined;
@@ -89,7 +88,7 @@ export class codinitShell {
     this.#terminal = terminal;
 
     // Use all three streams from tee: one for terminal, one for command execution, one for Expo URL detection
-    const { process, commandStream, expoUrlStream } = await this.newcodinitShellProcess(webcontainer, terminal);
+    const { process, commandStream, expoUrlStream } = await this.newCodinitShellProcess(webcontainer, terminal);
     this.#process = process;
     this.#outputStream = commandStream.getReader();
 
@@ -100,7 +99,7 @@ export class codinitShell {
     this.#initialized?.();
   }
 
-  async newcodinitShellProcess(webcontainer: WebContainer, terminal: ITerminal) {
+  async newCodinitShellProcess(webcontainer: WebContainer, terminal: ITerminal) {
     const args: string[] = [];
     const process = await webcontainer.spawn('/bin/jsh', ['--osc', ...args], {
       terminal: {
@@ -360,6 +359,6 @@ export function cleanTerminalOutput(input: string): string {
     .replace(/\u0000/g, ''); // Remove null characters
 }
 
-export function newcodinitShellProcess() {
-  return new codinitShell();
+export function newCodinitShellProcess() {
+  return new CodinitShell();
 }
