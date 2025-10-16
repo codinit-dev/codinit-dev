@@ -37,14 +37,14 @@ describe('StreamingMessageParser', () => {
   describe('invalid or incomplete artifacts', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       ['Foo bar <c', 'Foo bar '],
-      ['Foo bar <ca', 'Foo bar <ca'],
+      ['Foo bar <co', 'Foo bar '],
       ['Foo bar <cod', 'Foo bar '],
-      ['Foo bar <codinit', 'Foo bar '],
-      ['Foo bar <codinita', 'Foo bar <codinita'],
+      ['Foo bar <codin', 'Foo bar '],
+      ['Foo bar <codini', 'Foo bar '],
       ['Foo bar <codinitA', 'Foo bar '],
-      ['Foo bar <codinitArtifacs></codinitArticact>', 'Foo bar <codinitArtifacs></codinitArticact>'],
-      ['Before <oltArtfiact>foo</codinitArticact> After', 'Before <oltArtfiact>foo</codinitArticact> After'],
-      ['Before <codinitArtifactt>foo</codinitArticact> After', 'Before <codinitArtifactt>foo</codinitArticact> After'],
+      ['Foo bar <codinitArtifacs></codinitArtifact>', 'Foo bar <codinitArtifacs></codinitArtifact>'],
+      ['Before <odinitArtfiact>foo</codinitArtifact> After', 'Before <odinitArtfiact>foo</codinitArtifact> After'],
+      ['Before <codinitArtifactt>foo</codinitArtifact> After', 'Before <codinitArtifactt>foo</codinitArtifact> After'],
     ])('should correctly parse chunks and strip out codinit artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
@@ -53,7 +53,7 @@ describe('StreamingMessageParser', () => {
   describe('valid artifacts without actions', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       [
-        'Some text before <codinitArticact title="Some title" id="artifact_1">foo bar</codinitArticact> Some more text',
+        'Some text before <codinitArtifact title="Some title" id="artifact_1">foo bar</codinitArtifact> Some more text',
         {
           output: 'Some text before  Some more text',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
@@ -62,8 +62,8 @@ describe('StreamingMessageParser', () => {
       [
         [
           'Some text before <codinitArti',
-          'cact',
-          ' title="Some title" id="artifact_1" type="bundled" >foo</codinitArticact> Some more text',
+          'fact',
+          ' title="Some title" id="artifact_1" type="bundled" >foo</codinitArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -73,11 +73,11 @@ describe('StreamingMessageParser', () => {
       [
         [
           'Some text before <codinitArti',
-          'cac',
+          'fac',
           't title="Some title" id="artifact_1"',
           ' ',
           '>',
-          'foo</codinitArticact> Some more text',
+          'foo</codinitArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -87,10 +87,10 @@ describe('StreamingMessageParser', () => {
       [
         [
           'Some text before <codinitArti',
-          'cact',
+          'fact',
           ' title="Some title" id="artifact_1"',
           ' >fo',
-          'o</codinitArticact> Some more text',
+          'o</codinitArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -100,12 +100,12 @@ describe('StreamingMessageParser', () => {
       [
         [
           'Some text before <codinitArti',
-          'cact tit',
+          'fact tit',
           'le="Some ',
           'title" id="artifact_1">fo',
           'o',
           '<',
-          '/codinitArticact> Some more text',
+          '/codinitArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -115,10 +115,10 @@ describe('StreamingMessageParser', () => {
       [
         [
           'Some text before <codinitArti',
-          'cact title="Some title" id="artif',
+          'fact title="Some title" id="artif',
           'act_1">fo',
           'o<',
-          '/codinitArticact> Some more text',
+          '/codinitArtifact> Some more text',
         ],
         {
           output: 'Some text before  Some more text',
@@ -126,7 +126,7 @@ describe('StreamingMessageParser', () => {
         },
       ],
       [
-        'Before <codinitArticact title="Some title" id="artifact_1">foo</codinitArticact> After',
+        'Before <codinitArtifact title="Some title" id="artifact_1">foo</codinitArtifact> After',
         {
           output: 'Before  After',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
@@ -140,14 +140,14 @@ describe('StreamingMessageParser', () => {
   describe('valid artifacts with actions', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       [
-        'Before <codinitArticact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction></codinitArticact> After',
+        'Before <codinitArtifact title="Some title" id="artifact_1"><codinitAction type="shell">npm install</codinitAction></codinitArtifact> After',
         {
           output: 'Before  After',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 1, onActionClose: 1 },
         },
       ],
       [
-        'Before <codinitArticact title="Some title" id="artifact_1"><CodinitAction type="shell">npm install</CodinitAction><CodinitAction type="file" filePath="index.js">some content</CodinitAction></codinitArticact> After',
+        'Before <codinitArtifact title="Some title" id="artifact_1"><codinitAction type="shell">npm install</codinitAction><codinitAction type="file" filePath="index.js">some content</codinitAction></codinitArtifact> After',
         {
           output: 'Before  After',
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 2, onActionClose: 2 },
@@ -766,12 +766,16 @@ function runTest(input: string | string[], outputOrExpectedResult: string | Expe
     callbacks,
   });
 
+  let message = '';
+
   let result = '';
 
   const chunks = Array.isArray(input) ? input : input.split('');
 
   for (const chunk of chunks) {
-    result += parser.parse('message_1', chunk);
+    message += chunk;
+
+    result += parser.parse('message_1', message);
   }
 
   for (const name in expected.callbacks) {

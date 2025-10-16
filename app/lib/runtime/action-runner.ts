@@ -12,7 +12,7 @@ import type {
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 import type { ActionCallbackData } from './message-parser';
-import type { codinitShell } from '~/utils/shell';
+import type { CodinitShell } from '~/utils/shell';
 
 const logger = createScopedLogger('ActionRunner');
 
@@ -73,7 +73,7 @@ class ActionCommandError extends Error {
 export class ActionRunner {
   #webcontainer: Promise<WebContainer>;
   #currentExecutionPromise: Promise<void> = Promise.resolve();
-  #shellTerminal: () => codinitShell;
+  #shellTerminal: () => CodinitShell;
   runnerId = atom<string>(`${Date.now()}`);
   actions: ActionsMap = map({});
   onAlert?: (alert: ActionAlert) => void;
@@ -83,7 +83,7 @@ export class ActionRunner {
 
   constructor(
     webcontainerPromise: Promise<WebContainer>,
-    getShellTerminal: () => codinitShell,
+    getShellTerminal: () => CodinitShell,
     onAlert?: (alert: ActionAlert) => void,
     onSupabaseAlert?: (alert: SupabaseAlert) => void,
     onDeployAlert?: (alert: DeployAlert) => void,
@@ -389,7 +389,7 @@ export class ActionRunner {
     this.onDeployAlert?.({
       type: 'info',
       title: 'Building Application',
-      description: 'Installing dependencies and building your application...',
+      description: 'Building your application...',
       stage: 'building',
       buildStatus: 'running',
       deployStatus: 'pending',
@@ -397,36 +397,6 @@ export class ActionRunner {
     });
 
     const webcontainer = await this.#webcontainer;
-
-    // First, run npm install to ensure dependencies are up to date
-    const installProcess = await webcontainer.spawn('npm', ['install']);
-
-    let installOutput = '';
-    installProcess.output.pipeTo(
-      new WritableStream({
-        write(data) {
-          installOutput += data;
-        },
-      }),
-    );
-
-    const installExitCode = await installProcess.exit;
-
-    if (installExitCode !== 0) {
-      // Trigger install failed alert
-      this.onDeployAlert?.({
-        type: 'error',
-        title: 'Dependency Installation Failed',
-        description: 'Failed to install dependencies',
-        content: installOutput || 'No install output available',
-        stage: 'building',
-        buildStatus: 'failed',
-        deployStatus: 'pending',
-        source: 'netlify',
-      });
-
-      throw new ActionCommandError('Dependency Installation Failed', installOutput || 'No Output Available');
-    }
 
     // Create a new terminal specifically for the build
     const buildProcess = await webcontainer.spawn('npm', ['run', 'build']);

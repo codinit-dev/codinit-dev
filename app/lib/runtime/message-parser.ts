@@ -6,20 +6,20 @@ import type {
   ShellAction,
   SupabaseAction,
 } from '~/types/actions';
-import type { codinitArticactData } from '~/types/artifact';
+import type { CodinitArtifactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<codinitArticact';
-const ARTIFACT_TAG_CLOSE = '</codinitArticact>';
-const ARTIFACT_ACTION_TAG_OPEN = '<CodinitAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</CodinitAction>';
+const ARTIFACT_TAG_OPEN = '<codinitArtifact';
+const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
+const ARTIFACT_ACTION_TAG_OPEN = '<codinitAction';
+const ARTIFACT_ACTION_TAG_CLOSE = '</codinitAction>';
 const CODINIT_QUICK_ACTIONS_OPEN = '<codinit-quick-actions>';
 const CODINIT_QUICK_ACTIONS_CLOSE = '</codinit-quick-actions>';
 
 const logger = createScopedLogger('MessageParser');
 
-export interface ArtifactCallbackData extends codinitArticactData {
+export interface ArtifactCallbackData extends CodinitArtifactData {
   messageId: string;
   artifactId?: string;
 }
@@ -59,7 +59,7 @@ interface MessageState {
   insideArtifact: boolean;
   insideAction: boolean;
   artifactCounter: number;
-  currentArtifact?: codinitArticactData;
+  currentArtifact?: CodinitArtifactData;
   currentAction: CodinitActionData;
   actionId: number;
 }
@@ -83,7 +83,6 @@ function cleanEscapedTags(content: string) {
 export class StreamingMessageParser {
   #messages = new Map<string, MessageState>();
   #artifactCounter = 0;
-  #buffer = ''; // Add a buffer to accumulate incoming chunks
 
   constructor(private _options: StreamingMessageParserOptions = {}) {}
 
@@ -103,21 +102,18 @@ export class StreamingMessageParser {
       this.#messages.set(messageId, state);
     }
 
-    this.#buffer += input; // Append new input to the buffer
+    let output = '';
+    let i = state.position;
+    let earlyBreak = false;
 
-    let parsedOutput = ''; // Use a new variable for the output of this parse call
-    let i = 0; // Current position in the buffer
-    let lastOutputIndex = 0; // Tracks the last index from which content was appended to parsedOutput
-
-    while (i < this.#buffer.length) {
-      // Handle CODINIT_QUICK_ACTIONS_OPEN
-      if (this.#buffer.startsWith(CODINIT_QUICK_ACTIONS_OPEN, i)) {
-        const actionsBlockEnd = this.#buffer.indexOf(CODINIT_QUICK_ACTIONS_CLOSE, i);
+    while (i < input.length) {
+      if (input.startsWith(CODINIT_QUICK_ACTIONS_OPEN, i)) {
+        const actionsBlockEnd = input.indexOf(CODINIT_QUICK_ACTIONS_CLOSE, i);
 
         if (actionsBlockEnd !== -1) {
-          parsedOutput += this.#buffer.slice(lastOutputIndex, i); // Add content before the quick actions block
+          const actionsBlockContent = input.slice(i + CODINIT_QUICK_ACTIONS_OPEN.length, actionsBlockEnd);
 
-          const actionsBlockContent = this.#buffer.slice(i + CODINIT_QUICK_ACTIONS_OPEN.length, actionsBlockEnd);
+          // Find all <codinit-quick-action ...>label</codinit-quick-action> inside
           const quickActionRegex = /<codinit-quick-action([^>]*)>([\s\S]*?)<\/codinit-quick-action>/g;
           let match;
           const buttons = [];
@@ -136,17 +132,12 @@ export class StreamingMessageParser {
               ),
             );
           }
-          parsedOutput += createQuickActionGroup(buttons);
+          output += createQuickActionGroup(buttons);
           i = actionsBlockEnd + CODINIT_QUICK_ACTIONS_CLOSE.length;
-          lastOutputIndex = i; // Update lastOutputIndex after processing quick actions
           continue;
-        } else {
-          // Incomplete quick actions block, wait for more data
-          break;
         }
       }
 
-      // Handle insideArtifact state
       if (state.insideArtifact) {
         const currentArtifact = state.currentArtifact;
 
@@ -155,11 +146,12 @@ export class StreamingMessageParser {
         }
 
         if (state.insideAction) {
-          const closeIndex = this.#buffer.indexOf(ARTIFACT_ACTION_TAG_CLOSE, i);
+          const closeIndex = input.indexOf(ARTIFACT_ACTION_TAG_CLOSE, i);
+
           const currentAction = state.currentAction;
 
           if (closeIndex !== -1) {
-            currentAction.content += this.#buffer.slice(i, closeIndex);
+            currentAction.content += input.slice(i, closeIndex);
 
             let content = currentAction.content.trim();
 
@@ -178,7 +170,14 @@ export class StreamingMessageParser {
             this._options.callbacks?.onActionClose?.({
               artifactId: currentArtifact.id,
               messageId,
+
+              /**
+               * We decrement the id because it's been incremented already
+               * when `onActionOpen` was emitted to make sure the ids are
+               * the same.
+               */
               actionId: String(state.actionId - 1),
+
               action: currentAction as CodinitAction,
             });
 
@@ -186,11 +185,9 @@ export class StreamingMessageParser {
             state.currentAction = { content: '' };
 
             i = closeIndex + ARTIFACT_ACTION_TAG_CLOSE.length;
-            lastOutputIndex = i; // Update lastOutputIndex after processing action close
           } else {
-            // Incomplete action, stream content and wait for more data
             if ('type' in currentAction && currentAction.type === 'file') {
-              let content = this.#buffer.slice(i);
+              let content = input.slice(i);
 
               if (!currentAction.filePath.endsWith('.md')) {
                 content = cleanoutMarkdownSyntax(content);
@@ -212,16 +209,16 @@ export class StreamingMessageParser {
             break;
           }
         } else {
-          const actionOpenIndex = this.#buffer.indexOf(ARTIFACT_ACTION_TAG_OPEN, i);
-          const artifactCloseIndex = this.#buffer.indexOf(ARTIFACT_TAG_CLOSE, i);
+          const actionOpenIndex = input.indexOf(ARTIFACT_ACTION_TAG_OPEN, i);
+          const artifactCloseIndex = input.indexOf(ARTIFACT_TAG_CLOSE, i);
 
           if (actionOpenIndex !== -1 && (artifactCloseIndex === -1 || actionOpenIndex < artifactCloseIndex)) {
-            const actionEndIndex = this.#buffer.indexOf('>', actionOpenIndex);
+            const actionEndIndex = input.indexOf('>', actionOpenIndex);
 
             if (actionEndIndex !== -1) {
-              // Content inside artifacts should not be added to output - skip to action tag
               state.insideAction = true;
-              state.currentAction = this.#parseActionTag(this.#buffer, actionOpenIndex, actionEndIndex);
+
+              state.currentAction = this.#parseActionTag(input, actionOpenIndex, actionEndIndex);
 
               this._options.callbacks?.onActionOpen?.({
                 artifactId: currentArtifact.id,
@@ -231,13 +228,10 @@ export class StreamingMessageParser {
               });
 
               i = actionEndIndex + 1;
-              lastOutputIndex = i; // Update lastOutputIndex after processing action open
             } else {
-              // Incomplete action open tag, wait for more data
               break;
             }
           } else if (artifactCloseIndex !== -1) {
-            // Content inside artifacts should not be added to output - it's handled by actions
             this._options.callbacks?.onArtifactClose?.({
               messageId,
               artifactId: currentArtifact.id,
@@ -248,42 +242,35 @@ export class StreamingMessageParser {
             state.currentArtifact = undefined;
 
             i = artifactCloseIndex + ARTIFACT_TAG_CLOSE.length;
-            lastOutputIndex = i; // Update lastOutputIndex after processing artifact close
           } else {
-            // Incomplete artifact, wait for more data
             break;
           }
         }
-      } else if (this.#buffer[i] === '<' && this.#buffer[i + 1] !== '/') {
+      } else if (input[i] === '<' && input[i + 1] !== '/') {
         let j = i;
         let potentialTag = '';
-        let tagFound = false;
 
-        while (j < this.#buffer.length && potentialTag.length < ARTIFACT_TAG_OPEN.length) {
-          potentialTag += this.#buffer[j];
+        while (j < input.length && potentialTag.length < ARTIFACT_TAG_OPEN.length) {
+          potentialTag += input[j];
 
           if (potentialTag === ARTIFACT_TAG_OPEN) {
-            const nextChar = this.#buffer[j + 1];
+            const nextChar = input[j + 1];
 
             if (nextChar && nextChar !== '>' && nextChar !== ' ') {
-              // This is not a codinitArtifact tag, treat as normal text
-              parsedOutput += this.#buffer.slice(lastOutputIndex, j + 1);
+              output += input.slice(i, j + 1);
               i = j + 1;
-              lastOutputIndex = i;
-              tagFound = true;
               break;
             }
 
-            const openTagEnd = this.#buffer.indexOf('>', j);
+            const openTagEnd = input.indexOf('>', j);
 
             if (openTagEnd !== -1) {
-              parsedOutput += this.#buffer.slice(lastOutputIndex, i); // Add content before artifact open
-
-              const artifactTag = this.#buffer.slice(i, openTagEnd + 1);
+              const artifactTag = input.slice(i, openTagEnd + 1);
 
               const artifactTitle = this.#extractAttribute(artifactTag, 'title') as string;
               const type = this.#extractAttribute(artifactTag, 'type') as string;
 
+              // const artifactId = this.#extractAttribute(artifactTag, 'id') as string;
               const artifactId = `${messageId}-${state.artifactCounter++}`;
 
               if (!artifactTitle) {
@@ -300,7 +287,7 @@ export class StreamingMessageParser {
                 id: artifactId,
                 title: artifactTitle,
                 type,
-              } satisfies codinitArticactData;
+              } satisfies CodinitArtifactData;
 
               state.currentArtifact = currentArtifact;
 
@@ -312,44 +299,43 @@ export class StreamingMessageParser {
 
               const artifactFactory = this._options.artifactElement ?? createArtifactElement;
 
-              parsedOutput += artifactFactory({ messageId, artifactId });
+              output += artifactFactory({ messageId, artifactId });
 
               i = openTagEnd + 1;
-              lastOutputIndex = i; // Update lastOutputIndex after processing artifact open
-              tagFound = true;
             } else {
-              // Incomplete artifact open tag, wait for more data
-              break;
+              earlyBreak = true;
             }
 
             break;
           } else if (!ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
-            // Not a codinitArtifact tag, treat as normal text
-            parsedOutput += this.#buffer.slice(lastOutputIndex, j + 1);
+            output += input.slice(i, j + 1);
             i = j + 1;
-            lastOutputIndex = i;
-            tagFound = true;
             break;
           }
 
           j++;
         }
 
-        if (!tagFound) {
-          // If no tag was found or it's an incomplete potential tag, break and wait for more data
+        if (j === input.length && ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
           break;
         }
       } else {
-        // Normal text character
+        /*
+         * Note: Auto-file-creation from code blocks is now handled by EnhancedMessageParser
+         * to avoid duplicate processing and provide better shell command detection
+         */
+        output += input[i];
         i++;
+      }
+
+      if (earlyBreak) {
+        break;
       }
     }
 
-    // Append any remaining non-processed content to the output
-    parsedOutput += this.#buffer.slice(lastOutputIndex, i);
-    this.#buffer = this.#buffer.slice(i); // Remove processed content from the buffer
+    state.position = i;
 
-    return parsedOutput;
+    return output;
   }
 
   reset() {
@@ -394,7 +380,7 @@ export class StreamingMessageParser {
       }
 
       (actionAttributes as FileAction).filePath = filePath;
-    } else if (!['shell', 'start', 'build'].includes(actionType)) {
+    } else if (!['shell', 'start'].includes(actionType)) {
       logger.warn(`Unknown action type '${actionType}'`);
     }
 

@@ -1,13 +1,13 @@
 import type { WebContainer, WebContainerProcess } from '@webcontainer/api';
 import { atom, type WritableAtom } from 'nanostores';
 import type { ITerminal } from '~/types/terminal';
-import { newcodinitShellProcess, newShellProcess } from '~/utils/shell';
+import { newCodinitShellProcess, newShellProcess } from '~/utils/shell';
 import { coloredText } from '~/utils/terminal';
 
 export class TerminalStore {
   #webcontainer: Promise<WebContainer>;
   #terminals: Array<{ terminal: ITerminal; process: WebContainerProcess }> = [];
-  #codinitTerminal = newcodinitShellProcess();
+  #codinitTerminal = newCodinitShellProcess();
 
   showTerminal: WritableAtom<boolean> = import.meta.hot?.data.showTerminal ?? atom(true);
 
@@ -25,7 +25,7 @@ export class TerminalStore {
   toggleTerminal(value?: boolean) {
     this.showTerminal.set(value !== undefined ? value : !this.showTerminal.get());
   }
-  async attachcodinitTerminal(terminal: ITerminal) {
+  async attachCodinitTerminal(terminal: ITerminal) {
     try {
       const wc = await this.#webcontainer;
       await this.#codinitTerminal.init(wc, terminal);
@@ -48,6 +48,21 @@ export class TerminalStore {
   onTerminalResize(cols: number, rows: number) {
     for (const { process } of this.#terminals) {
       process.resize({ cols, rows });
+    }
+  }
+
+  async detachTerminal(terminal: ITerminal) {
+    const terminalIndex = this.#terminals.findIndex((t) => t.terminal === terminal);
+
+    if (terminalIndex !== -1) {
+      const { process } = this.#terminals[terminalIndex];
+
+      try {
+        process.kill();
+      } catch (error) {
+        console.warn('Failed to kill terminal process:', error);
+      }
+      this.#terminals.splice(terminalIndex, 1);
     }
   }
 }
