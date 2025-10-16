@@ -21,7 +21,7 @@ export const checkConnection = async (): Promise<ConnectionStatus> => {
     const endpoints = [
       '/api/health',
       '/', // Fallback to root route
-      '/favicon.ico', // Another common fallback
+      '/icon.png', // Another common fallback
     ];
 
     let latency = 0;
