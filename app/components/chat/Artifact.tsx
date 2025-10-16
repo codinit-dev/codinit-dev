@@ -33,6 +33,11 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
   const artifacts = useStore(workbenchStore.artifacts);
   const artifact = artifacts[messageId];
 
+  // Guard against race condition where artifact may not be initialized yet
+  if (!artifact) {
+    return null;
+  }
+
   const actions = useStore(
     computed(artifact.runner.actions, (actions) => {
       // Filter out Supabase actions except for migrations

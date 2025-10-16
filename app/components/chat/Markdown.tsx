@@ -23,7 +23,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
   const components = useMemo(() => {
     return {
       div: ({ className, children, node, ...props }) => {
-        if (className?.includes('__codinitArticact__')) {
+        if (className?.includes('__codinitArtifact__')) {
           const messageId = node?.properties.dataMessageId as string;
 
           if (!messageId) {
@@ -79,7 +79,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
 });
 
 export const stripCodeFenceFromArtifact = (content: string) => {
-  if (!content || !content.includes('__codinitArticact__')) {
+  if (!content || !content.includes('__codinitArtifact__')) {
     return content;
   }
 
@@ -102,20 +102,21 @@ export const stripCodeFenceFromArtifact = (content: string) => {
           break;
         }
 
-        if (lines[j]?.includes('__codinitArticact__')) {
+        if (lines[j]?.includes('__codinitArtifact__')) {
           hasArtifact = true;
         }
       }
 
       // If we found a complete fence block containing an artifact, remove the fence markers
       if (fenceEnd !== -1 && hasArtifact) {
-        // Remove the closing fence
-        lines.splice(fenceEnd, 1);
+        // Replace the closing fence with empty line to preserve spacing
+        lines[fenceEnd] = '';
 
-        // Remove the opening fence
-        lines.splice(fenceStart, 1);
+        // Replace the opening fence with empty line to preserve spacing
+        lines[fenceStart] = '';
 
-        // Continue from the same position since we removed lines
+        // Move past the fence block we just processed
+        i = fenceEnd + 1;
         continue;
       }
     }

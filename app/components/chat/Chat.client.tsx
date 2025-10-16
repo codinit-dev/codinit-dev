@@ -64,15 +64,18 @@ export function Chat() {
           );
         }}
         icon={({ type }) => {
-          /**
-           * @todo Handle more types if we need them. This may require extra color palettes.
-           */
           switch (type) {
             case 'success': {
               return <div className="i-ph:check-bold text-codinit-elements-icon-success text-2xl" />;
             }
             case 'error': {
               return <div className="i-ph:warning-circle-bold text-codinit-elements-icon-error text-2xl" />;
+            }
+            case 'warning': {
+              return <div className="i-ph:warning-bold text-orange-500 text-2xl" />;
+            }
+            case 'info': {
+              return <div className="i-ph:info-bold text-blue-500 text-2xl" />;
             }
           }
 
@@ -442,11 +445,13 @@ export const ChatImpl = memo(
       if (!chatStarted) {
         setFakeLoading(true);
 
+        // ALWAYS load default Vite React template on first message
         const initResult = await initFromTemplate({
           message: finalMessageContent,
           model,
           provider,
-          autoSelectTemplate,
+          autoSelectTemplate, // Use value from settings
+          forceTemplate: 'react-basic-starter', // Always use Vite React
         }).catch((e) => {
           if (e.message.includes('rate limit')) {
             toast.warning('Rate limit exceeded. Skipping starter template\n Continuing with blank template');
@@ -458,7 +463,7 @@ export const ChatImpl = memo(
         });
 
         if (initResult) {
-          // Template selected and loaded
+          // Template loaded - now set messages and reload
           const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
 
           setMessages(initResult.messages);
@@ -474,7 +479,7 @@ export const ChatImpl = memo(
           return;
         }
 
-        // If initResult is null (no template or autoSelectTemplate disabled), proceed with normal flow
+        // Fallback if template loading fails - proceed with normal flow
         const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
         const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
 
