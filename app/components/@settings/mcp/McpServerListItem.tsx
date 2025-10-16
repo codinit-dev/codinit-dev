@@ -43,9 +43,7 @@ export default function McpServerListItem({ toolName, toolSchema }: McpToolProps
                   <div className="flex items-start">
                     <span className="font-medium text-codinit-elements-textPrimary">
                       {paramName}
-                      {requiredParams.includes(paramName) && (
-                        <span className="text-red-600 dark:text-red-400 ml-1">*</span>
-                      )}
+                      {requiredParams.includes(paramName) && <span className="text-red-500 ml-1">*</span>}
                     </span>
 
                     <span className="mx-2 text-codinit-elements-textSecondary">•</span>
