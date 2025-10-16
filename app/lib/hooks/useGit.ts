@@ -43,7 +43,7 @@ export function useGit() {
   }, []);
 
   const gitClone = useCallback(
-    async (url: string, retryCount = 0) => {
+    async (url: string, retryCount = 0, subdir?: string) => {
       if (!webcontainer || !fs || !ready) {
         throw new Error('Webcontainer not initialized. Please try again later.');
       }
@@ -131,8 +131,21 @@ export function useGit() {
 
         const data: Record<string, { data: any; encoding?: string }> = {};
 
-        for (const [key, value] of Object.entries(fileData.current)) {
-          data[key] = value;
+        // If a subdirectory is specified, filter files to only include those in the subdirectory
+        if (subdir) {
+          const subdirPrefix = subdir + '/';
+
+          for (const [key, value] of Object.entries(fileData.current)) {
+            if (key.startsWith(subdirPrefix)) {
+              // Remove the subdirectory prefix from the path
+              const newPath = key.substring(subdirPrefix.length);
+              data[newPath] = value;
+            }
+          }
+        } else {
+          for (const [key, value] of Object.entries(fileData.current)) {
+            data[key] = value;
+          }
         }
 
         return { workdir: webcontainer.workdir, data };
@@ -159,7 +172,7 @@ export function useGit() {
 
           // Retry for network errors, up to 3 times
           if (retryCount < 3) {
-            return gitClone(url, retryCount + 1);
+            return gitClone(url, retryCount + 1, subdir);
           }
 
           throw new Error(
