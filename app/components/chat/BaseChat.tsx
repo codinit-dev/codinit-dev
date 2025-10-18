@@ -79,6 +79,7 @@ interface BaseChatProps {
   setSelectedElement?: (element: ElementInfo | null) => void;
   addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: JSONValue }) => void;
   onSelectTemplate?: (templateName: string) => void;
+  selectedTemplate?: string | null;
 }
 
 export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
@@ -127,6 +128,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
         throw new Error('addToolResult not implemented');
       },
       onSelectTemplate,
+      selectedTemplate,
     },
     ref,
   ) => {
@@ -474,7 +476,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                 </div>
               )}
               <div className="flex flex-col">
-                {!chatStarted && <StarterTemplates onSelectTemplate={onSelectTemplate} />}
+                {!chatStarted && (
+                  <StarterTemplates onSelectTemplate={onSelectTemplate} selectedTemplate={selectedTemplate} />
+                )}
               </div>
             </div>
           </div>

@@ -172,7 +172,7 @@ export const ChatImpl = memo(
     const [imageDataList, setImageDataList] = useState<string[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [fakeLoading, setFakeLoading] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+    const [selectedTemplate, setSelectedTemplate] = useState<string | null>('Vite React'); // Auto-select default template
     const files = useStore(workbenchStore.files);
     const actionAlert = useStore(workbenchStore.alert);
     const deployAlert = useStore(workbenchStore.deployAlert);
@@ -489,7 +489,7 @@ export const ChatImpl = memo(
         finalMessageContent = messageContent + elementInfo;
       }
 
-      runAnimation();
+      await runAnimation();
 
       if (!chatStarted) {
         setFakeLoading(true);
@@ -745,6 +745,7 @@ export const ChatImpl = memo(
         setSelectedElement={setSelectedElement}
         addToolResult={addToolResult}
         onSelectTemplate={handleTemplateSelection}
+        selectedTemplate={selectedTemplate}
       />
     );
   },
