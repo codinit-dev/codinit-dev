@@ -710,7 +710,7 @@ export const ChatImpl = memo(
 
           return {
             ...message,
-            content: parsedMessages[i] || '',
+            content: parsedMessages[i] || message.content,
           };
         })}
         enhancePrompt={() => {
@@ -745,7 +745,6 @@ export const ChatImpl = memo(
         setSelectedElement={setSelectedElement}
         addToolResult={addToolResult}
         onSelectTemplate={handleTemplateSelection}
-        selectedTemplate={selectedTemplate}
       />
     );
   },
