@@ -11,6 +11,13 @@ interface AppContext {
   };
 }
 
+interface ApiStatus {
+  isReachable: boolean;
+  status?: number;
+  statusText?: string;
+  error?: string;
+}
+
 export const loader: LoaderFunction = async ({ request, context }: LoaderFunctionArgs & { context: AppContext }) => {
   // Get environment variables
   const envVars = {
@@ -64,7 +71,7 @@ export const loader: LoaderFunction = async ({ request, context }: LoaderFunctio
   };
 
   // Test GitHub API connectivity
-  let githubApiStatus;
+  let githubApiStatus: ApiStatus;
 
   try {
     const githubResponse = await fetch('https://api.github.com/zen', {
@@ -87,7 +94,7 @@ export const loader: LoaderFunction = async ({ request, context }: LoaderFunctio
   }
 
   // Test Netlify API connectivity
-  let netlifyApiStatus;
+  let netlifyApiStatus: ApiStatus;
 
   try {
     const netlifyResponse = await fetch('https://api.netlify.com/api/v1/', {
