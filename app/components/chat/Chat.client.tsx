@@ -172,7 +172,6 @@ export const ChatImpl = memo(
     const [imageDataList, setImageDataList] = useState<string[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [fakeLoading, setFakeLoading] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState<string | null>('Vite React'); // Auto-select default template
     const files = useStore(workbenchStore.files);
     const actionAlert = useStore(workbenchStore.alert);
     const deployAlert = useStore(workbenchStore.deployAlert);
@@ -489,21 +488,16 @@ export const ChatImpl = memo(
         finalMessageContent = messageContent + elementInfo;
       }
 
-      await runAnimation();
+      runAnimation();
 
       if (!chatStarted) {
         setFakeLoading(true);
 
-        // Prioritize: manually selected > detected from prompt > default 'Vite React'
+        // Detect if user mentions a specific template, otherwise use default Vite React
         const detectedTemplate = detectTemplateFromPrompt(finalMessageContent);
-        const templateToUse = selectedTemplate || detectedTemplate || 'Vite React';
-        const templateSource = selectedTemplate
-          ? '(manually selected)'
-          : detectedTemplate
-            ? '(detected from prompt)'
-            : '(default)';
+        const templateToUse = detectedTemplate || 'Vite React';
 
-        logger.info(`Loading template: ${templateToUse} ${templateSource}`);
+        logger.info(`Loading template: ${templateToUse}${detectedTemplate ? ' (detected from prompt)' : ' (default)'}`);
 
         const initResult = await initFromTemplate({
           message: finalMessageContent,
@@ -662,20 +656,6 @@ export const ChatImpl = memo(
       Cookies.set('selectedProvider', newProvider.name, { expires: 30 });
     };
 
-    const handleTemplateSelection = useCallback(
-      (templateName: string) => {
-        setSelectedTemplate(templateName);
-
-        const defaultMessage = `Start a new project with ${templateName}`;
-        setInput(defaultMessage);
-
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-        }
-      },
-      [setInput],
-    );
-
     return (
       <BaseChat
         ref={animationScope}
@@ -744,8 +724,6 @@ export const ChatImpl = memo(
         selectedElement={selectedElement}
         setSelectedElement={setSelectedElement}
         addToolResult={addToolResult}
-        onSelectTemplate={handleTemplateSelection}
-        selectedTemplate={selectedTemplate}
       />
     );
   },
