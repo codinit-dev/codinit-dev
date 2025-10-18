@@ -1,8 +1,9 @@
-import { rm, existsSync } from 'fs';
-import { join } from 'path';
-import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+// biome-ignore assist/source/organizeImports: <explanation>
+import { rm, existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
