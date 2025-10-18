@@ -77,7 +77,7 @@ interface BaseChatProps {
   append?: (message: Message) => void;
   selectedElement?: ElementInfo | null;
   setSelectedElement?: (element: ElementInfo | null) => void;
-  addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
+  addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: JSONValue }) => void;
 }
 
 export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
@@ -150,8 +150,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     useEffect(() => {
       if (data) {
         const progressList = data.filter(
-          (x) => typeof x === 'object' && (x as any).type === 'progress',
-        ) as ProgressAnnotation[];
+          (x): x is ProgressAnnotation => typeof x === 'object' && x !== null && 'type' in x && x.type === 'progress',
+        );
         setProgressAnnotations(progressList);
       }
     }, [data]);
@@ -392,7 +392,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       alert={deployAlert}
                       clearAlert={() => clearDeployAlert?.()}
                       postMessage={(message: string | undefined) => {
-                        sendMessage?.({} as any, message);
+                        sendMessage?.({} as React.UIEvent, message);
                         clearSupabaseAlert?.();
                       }}
                     />
@@ -402,7 +402,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       alert={supabaseAlert}
                       clearAlert={() => clearSupabaseAlert?.()}
                       postMessage={(message) => {
-                        sendMessage?.({} as any, message);
+                        sendMessage?.({} as React.UIEvent, message);
                         clearSupabaseAlert?.();
                       }}
                     />
@@ -412,7 +412,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       alert={actionAlert}
                       clearAlert={() => clearAlert?.()}
                       postMessage={(message) => {
-                        sendMessage?.({} as any, message);
+                        sendMessage?.({} as React.UIEvent, message);
                         clearAlert?.();
                       }}
                     />
