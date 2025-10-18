@@ -19,7 +19,7 @@ interface ConfiguredProvidersResponse {
  */
 export const loader: LoaderFunction = async ({ context }) => {
   try {
-    const llmManager = LLMManager.getInstance(context?.cloudflare?.env as any);
+    const llmManager = LLMManager.getInstance(context?.cloudflare?.env as unknown as Record<string, string>);
     const configuredProviders: ConfiguredProvider[] = [];
 
     // Check each local provider for environment configuration
@@ -37,7 +37,7 @@ export const loader: LoaderFunction = async ({ context }) => {
          */
         if (config.baseUrlKey) {
           const baseUrlEnvVar = config.baseUrlKey;
-          const cloudflareEnv = (context?.cloudflare?.env as Record<string, any>)?.[baseUrlEnvVar];
+          const cloudflareEnv = (context?.cloudflare?.env as unknown as Record<string, string>)?.[baseUrlEnvVar];
           const processEnv = process.env[baseUrlEnvVar];
           const managerEnv = llmManager.env[baseUrlEnvVar];
 
@@ -65,7 +65,7 @@ export const loader: LoaderFunction = async ({ context }) => {
         if (config.apiTokenKey && !isConfigured) {
           const apiTokenEnvVar = config.apiTokenKey;
           const envApiToken =
-            (context?.cloudflare?.env as Record<string, any>)?.[apiTokenEnvVar] ||
+            (context?.cloudflare?.env as unknown as Record<string, string>)?.[apiTokenEnvVar] ||
             process.env[apiTokenEnvVar] ||
             llmManager.env[apiTokenEnvVar];
 
