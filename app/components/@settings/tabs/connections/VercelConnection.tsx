@@ -1,22 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
 import { useStore } from '@nanostores/react';
+import { motion } from 'framer-motion';
+import type React from 'react';
+import { useEffect, useId, useState } from 'react';
+import { toast } from 'react-toastify';
 import { logStore } from '~/lib/stores/logs';
-import { classNames } from '~/utils/classNames';
 import {
-  vercelConnection,
+  fetchVercelStats,
   isConnecting,
   isFetchingStats,
   updateVercelConnection,
-  fetchVercelStats,
+  vercelConnection,
 } from '~/lib/stores/vercel';
+import type { VercelUser } from '~/types/vercel';
+import { classNames } from '~/utils/classNames';
+
+interface VercelUserResponse {
+  user?: {
+    username?: string;
+    email?: string;
+  };
+  username?: string;
+  email?: string;
+}
 
 export default function VercelConnection() {
   const connection = useStore(vercelConnection);
   const connecting = useStore(isConnecting);
   const fetchingStats = useStore(isFetchingStats);
   const [isProjectsExpanded, setIsProjectsExpanded] = useState(false);
+  const tokenInputId = useId();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -43,9 +55,9 @@ export default function VercelConnection() {
         throw new Error('Invalid token or unauthorized');
       }
 
-      const userData = (await response.json()) as any;
+      const userData = (await response.json()) as VercelUserResponse;
       updateVercelConnection({
-        user: userData.user || userData, // Handle both possible structures
+        user: (userData.user || userData) as unknown as VercelUser, // Handle both possible structures
         token: connection.token,
       });
 
@@ -84,6 +96,7 @@ export default function VercelConnection() {
               width="24"
               crossOrigin="anonymous"
               src={`https://cdn.simpleicons.org/vercel/black`}
+              alt="Vercel"
             />
             <h3 className="text-base font-medium text-codinit-elements-textPrimary">Vercel Connection</h3>
           </div>
@@ -92,8 +105,11 @@ export default function VercelConnection() {
         {!connection.user ? (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-codinit-elements-textSecondary mb-2">Personal Access Token</label>
+              <label htmlFor={tokenInputId} className="block text-sm text-codinit-elements-textSecondary mb-2">
+                Personal Access Token
+              </label>
               <input
+                id={tokenInputId}
                 type="password"
                 value={connection.token}
                 onChange={(e) =>
@@ -127,6 +143,7 @@ export default function VercelConnection() {
             </div>
 
             <button
+              type="button"
               onClick={handleConnect}
               disabled={connecting || !connection.token}
               className={classNames(
@@ -155,6 +172,7 @@ export default function VercelConnection() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
+                  type="button"
                   onClick={handleDisconnect}
                   className={classNames(
                     'px-4 py-2 rounded-lg text-sm flex items-center gap-2',
@@ -201,6 +219,7 @@ export default function VercelConnection() {
             ) : (
               <div>
                 <button
+                  type="button"
                   onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
                   className="w-full bg-transparent text-left text-sm font-medium text-codinit-elements-textPrimary mb-3 flex items-center gap-2"
                 >
