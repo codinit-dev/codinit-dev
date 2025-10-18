@@ -22,7 +22,8 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "~/*": ["./app/*"],
-      "#build/*": ["./build/*"]
+      "#build/*": ["./build/*"],
+      "@templates/*": ["./templates/*"]
     },
 
     "noEmit": true
@@ -34,5 +35,9 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "templates/**/*"
   ]
 }
