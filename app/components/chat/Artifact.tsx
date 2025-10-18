@@ -171,7 +171,6 @@ function ShellCodeBlock({ classsName, code }: ShellCodeBlockProps) {
   return (
     <div
       className={classNames('text-xs', classsName)}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: Required for syntax highlighting via Shiki
       dangerouslySetInnerHTML={{
         __html: shellHighlighter.codeToHtml(code, {
           lang: 'shell',
