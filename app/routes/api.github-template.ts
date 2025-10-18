@@ -1,8 +1,47 @@
 import { json } from '@remix-run/cloudflare';
 import JSZip from 'jszip';
 
+interface CloudflareContext {
+  cloudflare?: {
+    env?: {
+      CF_PAGES?: string;
+      CF_PAGES_URL?: string;
+      CF_PAGES_COMMIT_SHA?: string;
+      GITHUB_TOKEN?: string;
+    };
+  };
+}
+
+interface GitHubRepoData {
+  default_branch: string;
+}
+
+interface GitHubTreeItem {
+  type: string;
+  path: string;
+  size: number;
+}
+
+interface GitHubTreeData {
+  tree: GitHubTreeItem[];
+}
+
+interface GitHubContentData {
+  content: string;
+}
+
+interface GitHubReleaseData {
+  zipball_url: string;
+}
+
+interface FileItem {
+  name: string;
+  path: string;
+  content: string;
+}
+
 // Function to detect if we're running in Cloudflare
-function isCloudflareEnvironment(context: any): boolean {
+function isCloudflareEnvironment(context: CloudflareContext): boolean {
   // Check if we're in production AND have Cloudflare Pages specific env vars
   const isProduction = process.env.NODE_ENV === 'production';
   const hasCfPagesVars = !!(
@@ -15,7 +54,7 @@ function isCloudflareEnvironment(context: any): boolean {
 }
 
 // Cloudflare-compatible method using GitHub Contents API
-async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
+async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): Promise<(FileItem | null)[]> {
   const baseUrl = 'https://api.github.com';
 
   // Get repository info to find default branch
@@ -31,7 +70,7 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
     throw new Error(`Repository not found: ${repo}`);
   }
 
-  const repoData = (await repoResponse.json()) as any;
+  const repoData = (await repoResponse.json()) as GitHubRepoData;
   const defaultBranch = repoData.default_branch;
 
   // Get the tree recursively
@@ -47,10 +86,10 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
     throw new Error(`Failed to fetch repository tree: ${treeResponse.status}`);
   }
 
-  const treeData = (await treeResponse.json()) as any;
+  const treeData = (await treeResponse.json()) as GitHubTreeData;
 
   // Filter for files only (not directories) and limit size
-  const files = treeData.tree.filter((item: any) => {
+  const files = treeData.tree.filter((item: GitHubTreeItem) => {
     if (item.type !== 'blob') {
       return false;
     }
@@ -75,11 +114,11 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
 
   // Fetch file contents in batches to avoid overwhelming the API
   const batchSize = 10;
-  const fileContents = [];
+  const fileContents: (FileItem | null)[] = [];
 
   for (let i = 0; i < files.length; i += batchSize) {
     const batch = files.slice(i, i + batchSize);
-    const batchPromises = batch.map(async (file: any) => {
+    const batchPromises = batch.map(async (file: GitHubTreeItem): Promise<FileItem | null> => {
       try {
         const contentResponse = await fetch(`${baseUrl}/repos/${repo}/contents/${file.path}`, {
           headers: {
@@ -94,7 +133,7 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
           return null;
         }
 
-        const contentData = (await contentResponse.json()) as any;
+        const contentData = (await contentResponse.json()) as GitHubContentData;
         const content = atob(contentData.content.replace(/\s/g, ''));
 
         return {
@@ -121,7 +160,7 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
 }
 
 // Your existing method for non-Cloudflare environments
-async function fetchRepoContentsZip(repo: string, githubToken?: string) {
+async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise<(FileItem | null)[]> {
   const baseUrl = 'https://api.github.com';
 
   // Get the latest release
@@ -137,7 +176,7 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string) {
     throw new Error(`GitHub API error: ${releaseResponse.status} - ${releaseResponse.statusText}`);
   }
 
-  const releaseData = (await releaseResponse.json()) as any;
+  const releaseData = (await releaseResponse.json()) as GitHubReleaseData;
   const zipballUrl = releaseData.zipball_url;
 
   // Fetch the zipball
@@ -182,7 +221,7 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string) {
     // Remove the root folder from the path
     let normalizedPath = filename;
 
-    if (rootFolderName && filename.startsWith(rootFolderName + '/')) {
+    if (rootFolderName && filename.startsWith(`${rootFolderName}/`)) {
       normalizedPath = filename.substring(rootFolderName.length + 1);
     }
 
@@ -201,7 +240,7 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string) {
   return results.filter(Boolean);
 }
 
-export async function loader({ request, context }: { request: Request; context: any }) {
+export async function loader({ request, context }: { request: Request; context: CloudflareContext }) {
   const url = new URL(request.url);
   const repo = url.searchParams.get('repo');
 
@@ -214,7 +253,7 @@ export async function loader({ request, context }: { request: Request; context: 
     const githubToken =
       context?.cloudflare?.env?.GITHUB_TOKEN || process.env.GITHUB_TOKEN || process.env.VITE_GITHUB_ACCESS_TOKEN;
 
-    let fileList;
+    let fileList: (FileItem | null)[];
 
     if (isCloudflareEnvironment(context)) {
       fileList = await fetchRepoContentsCloudflare(repo, githubToken);
@@ -223,7 +262,7 @@ export async function loader({ request, context }: { request: Request; context: 
     }
 
     // Filter out .git files for both methods
-    const filteredFiles = fileList.filter((file: any) => !file.path.startsWith('.git'));
+    const filteredFiles = fileList.filter((file): file is FileItem => file !== null && !file.path.startsWith('.git'));
 
     return json(filteredFiles);
   } catch (error) {

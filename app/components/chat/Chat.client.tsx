@@ -117,24 +117,24 @@ function detectTemplateFromPrompt(message: string): string | null {
 
   // Template name mappings for common variations
   const templateMappings: Record<string, string> = {
-    'expo': 'Expo App',
-    'astro': 'Basic Astro',
+    expo: 'Expo App',
+    astro: 'Basic Astro',
     'next.js': 'Next.JS',
-    'nextjs': 'Next.JS',
+    nextjs: 'Next.JS',
     'next js': 'Next.JS',
     'vite shadcn': 'Vite Shadcn',
-    'shadcn': 'Vite Shadcn',
-    'qwik': 'Qwik Typescript',
-    'remix': 'Remix Typescript',
-    'slidev': 'Slidev',
-    'svelte': 'Sveltekit',
-    'sveltekit': 'Sveltekit',
-    'vanilla': 'Vanilla Vite',
+    shadcn: 'Vite Shadcn',
+    qwik: 'Qwik Typescript',
+    remix: 'Remix Typescript',
+    slidev: 'Slidev',
+    svelte: 'Sveltekit',
+    sveltekit: 'Sveltekit',
+    vanilla: 'Vanilla Vite',
     'vanilla vite': 'Vanilla Vite',
-    'vue': 'Vue',
-    'angular': 'Angular',
-    'solidjs': 'SolidJS',
-    'solid': 'SolidJS',
+    vue: 'Vue',
+    angular: 'Angular',
+    solidjs: 'SolidJS',
+    solid: 'SolidJS',
   };
 
   // Check for direct template name matches
