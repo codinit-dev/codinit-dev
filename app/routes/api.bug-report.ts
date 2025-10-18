@@ -1,4 +1,5 @@
-import { json, type ActionFunctionArgs } from '@remix-run/cloudflare';
+import type { ActionFunctionArgs } from '@remix-run/cloudflare';
+import { json } from '@remix-run/cloudflare';
 import { Octokit } from '@octokit/rest';
 import { z } from 'zod';
 
@@ -79,7 +80,7 @@ function isSpam(title: string, description: string): boolean {
     /\b(make money|work from home|earn \$\$)\b/i,
   ];
 
-  const content = title + ' ' + description;
+  const content = `${title} ${description}`;
 
   return spamPatterns.some((pattern) => pattern.test(content));
 }
@@ -157,7 +158,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     // Parse and validate request body
     const formData = await request.formData();
-    const rawData: any = Object.fromEntries(formData.entries());
+    const rawData: Record<string, FormDataEntryValue | boolean | undefined> = Object.fromEntries(formData.entries());
 
     // Parse environment info if provided
     if (rawData.environmentInfo && typeof rawData.environmentInfo === 'string') {
@@ -191,12 +192,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
     }
 
     // Get GitHub configuration
-    const githubToken =
-      (context?.cloudflare?.env as any)?.GITHUB_BUG_REPORT_TOKEN || process.env.GITHUB_BUG_REPORT_TOKEN;
-    const targetRepo =
-      (context?.cloudflare?.env as any)?.BUG_REPORT_REPO ||
-      process.env.BUG_REPORT_REPO ||
-      'Gerome-Elassaad/codinit-app';
+    const env = context?.cloudflare?.env as unknown as Record<string, string> | undefined;
+    const githubToken = env?.GITHUB_BUG_REPORT_TOKEN || process.env.GITHUB_BUG_REPORT_TOKEN;
+    const targetRepo = env?.BUG_REPORT_REPO || process.env.BUG_REPORT_REPO || 'Gerome-Elassaad/codinit-app';
 
     if (!githubToken) {
       console.error('GitHub bug report token not configured');
