@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import React, { Suspense, useState } from 'react';
+import { Button } from '~/components/ui/Button';
 import { classNames } from '~/utils/classNames';
 import ConnectionDiagnostics from './ConnectionDiagnostics';
-import { Button } from '~/components/ui/Button';
 import VercelConnection from './VercelConnection';
 
 // Use React.lazy for dynamic imports
@@ -72,6 +72,7 @@ export default function ConnectionsTab() {
       >
         <div className="p-6">
           <button
+            type="button"
             onClick={() => setIsEnvVarsExpanded(!isEnvVarsExpanded)}
             className={classNames(
               'w-full bg-transparent flex items-center justify-between',
