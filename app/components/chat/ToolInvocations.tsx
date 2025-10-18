@@ -1,4 +1,5 @@
 import type { ToolInvocationUIPart } from '@ai-sdk/ui-utils';
+import type { JSONValue } from 'ai';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useMemo, useState, useEffect } from 'react';
 import { createHighlighter, type BundledLanguage, type BundledTheme, type HighlighterGeneric } from 'shiki';
@@ -73,7 +74,7 @@ function JsonCodeBlock({ className, code, theme }: JsonCodeBlockProps) {
 interface ToolInvocationsProps {
   toolInvocations: ToolInvocationUIPart[];
   toolCallAnnotations: ToolCallAnnotation[];
-  addToolResult: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
+  addToolResult: ({ toolCallId, result }: { toolCallId: string; result: JSONValue }) => void;
 }
 
 export const ToolInvocations = memo(({ toolInvocations, toolCallAnnotations, addToolResult }: ToolInvocationsProps) => {
@@ -269,7 +270,7 @@ const ToolResultsList = memo(({ toolInvocations, toolCallAnnotations, theme }: T
 interface ToolCallsListProps {
   toolInvocations: ToolInvocationUIPart[];
   toolCallAnnotations: ToolCallAnnotation[];
-  addToolResult: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
+  addToolResult: ({ toolCallId, result }: { toolCallId: string; result: JSONValue }) => void;
   theme: Theme;
 }
 

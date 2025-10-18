@@ -1,4 +1,5 @@
-import type { Message } from 'ai';
+import type { JSONValue, Message } from 'ai';
+import type { ToolInvocationUIPart } from '@ai-sdk/ui-utils';
 import { Fragment } from 'react';
 import { classNames } from '~/utils/classNames';
 import { AssistantMessage } from './AssistantMessage';
@@ -14,6 +15,7 @@ import { forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
 import type { ProviderInfo } from '~/types/model';
 import type { ToolCallAnnotation } from '~/types/context';
+
 interface MessagesProps {
   id?: string;
   className?: string;
@@ -24,7 +26,7 @@ interface MessagesProps {
   setChatMode?: (mode: 'discuss' | 'build') => void;
   provider?: ProviderInfo;
   model?: string;
-  addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
+  addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: JSONValue }) => void;
 }
 
 export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
@@ -117,7 +119,8 @@ export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
                               return 'type' in ann && ann.type === 'toolCall';
                             });
 
-                            const toolInvocations = (message as any).toolInvocations || [];
+                            const toolInvocations =
+                              (message.toolInvocations as unknown as ToolInvocationUIPart[]) || [];
 
                             if (toolCallAnnotations.length === 0 && toolInvocations.length === 0) {
                               return null;
