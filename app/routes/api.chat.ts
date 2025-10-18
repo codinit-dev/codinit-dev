@@ -1,19 +1,19 @@
-import { type ActionFunctionArgs } from '@remix-run/cloudflare';
+import type { ActionFunctionArgs } from '@remix-run/cloudflare';
 import { createDataStream, generateId } from 'ai';
 import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS, type FileMap } from '~/lib/.server/llm/constants';
-import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
+import { createSummary } from '~/lib/.server/llm/create-summary';
+import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
+import { StreamRecoveryManager } from '~/lib/.server/llm/stream-recovery';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
-import type { IProviderSetting } from '~/types/model';
-import { createScopedLogger } from '~/utils/logger';
-import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
-import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
-import { WORK_DIR } from '~/utils/constants';
-import { createSummary } from '~/lib/.server/llm/create-summary';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
-import type { DesignScheme } from '~/types/design-scheme';
+import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
 import { MCPService } from '~/lib/services/mcpService';
-import { StreamRecoveryManager } from '~/lib/.server/llm/stream-recovery';
+import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
+import type { DesignScheme } from '~/types/design-scheme';
+import type { IProviderSetting } from '~/types/model';
+import { WORK_DIR } from '~/utils/constants';
+import { createScopedLogger } from '~/utils/logger';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -51,7 +51,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
   const { messages, files, promptId, contextOptimization, supabase, chatMode, designScheme, maxLLMSteps } =
     await request.json<{
       messages: Messages;
-      files: any;
+      files: FileMap;
       promptId?: string;
       contextOptimization: boolean;
       chatMode: 'discuss' | 'build';
@@ -88,15 +88,15 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
 
-    let lastChunk: string | undefined = undefined;
+    let lastChunk: string | undefined;
 
     const dataStream = createDataStream({
       async execute(dataStream) {
         streamRecovery.startMonitoring();
 
         const filePaths = getFilePaths(files || {});
-        let filteredFiles: FileMap | undefined = undefined;
-        let summary: string | undefined = undefined;
+        let filteredFiles: FileMap | undefined;
+        let summary: string | undefined;
         let messageSliceId = 0;
 
         const processedMessages = await mcpService.processToolInvocations(messages, dataStream);
@@ -257,7 +257,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
             logger.info(`Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`);
 
-            const lastUserMessage = processedMessages.filter((x) => x.role == 'user').slice(-1)[0];
+            const lastUserMessage = processedMessages.filter((x) => x.role === 'user').slice(-1)[0];
             const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
             processedMessages.push({ id: generateId(), role: 'assistant', content });
             processedMessages.push({
@@ -287,7 +287,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             (async () => {
               for await (const part of result.fullStream) {
                 if (part.type === 'error') {
-                  const error: any = part.error;
+                  const error: unknown = part.error;
                   logger.error(`${error}`);
 
                   return;
@@ -328,14 +328,14 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             streamRecovery.updateActivity();
 
             if (part.type === 'error') {
-              const error: any = part.error;
+              const error: unknown = part.error;
               logger.error('Streaming error:', error);
               streamRecovery.stop();
 
               // Enhanced error handling for common streaming issues
-              if (error.message?.includes('Invalid JSON response')) {
+              if (error instanceof Error && error.message?.includes('Invalid JSON response')) {
                 logger.error('Invalid JSON response detected - likely malformed API response');
-              } else if (error.message?.includes('token')) {
+              } else if (error instanceof Error && error.message?.includes('token')) {
                 logger.error('Token-related error detected - possible token limit exceeded');
               }
 
@@ -346,9 +346,9 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         })();
         result.mergeIntoDataStream(dataStream);
       },
-      onError: (error: any) => {
+      onError: (error: unknown) => {
         // Provide more specific error messages for common issues
-        const errorMessage = error.message || 'Unknown error';
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
         if (errorMessage.includes('model') && errorMessage.includes('not found')) {
           return 'Custom error: Invalid model selected. Please check that the model name is correct and available.';
@@ -427,18 +427,25 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         'Text-Encoding': 'chunked',
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error(error);
 
     const errorResponse = {
       error: true,
-      message: error.message || 'An unexpected error occurred',
-      statusCode: error.statusCode || 500,
-      isRetryable: error.isRetryable !== false, // Default to retryable unless explicitly false
-      provider: error.provider || 'unknown',
+      message: error instanceof Error ? error.message : 'An unexpected error occurred',
+      statusCode:
+        typeof error === 'object' && error !== null && 'statusCode' in error && typeof error.statusCode === 'number'
+          ? error.statusCode
+          : 500,
+      isRetryable:
+        typeof error === 'object' && error !== null && 'isRetryable' in error ? error.isRetryable !== false : true, // Default to retryable unless explicitly false
+      provider:
+        typeof error === 'object' && error !== null && 'provider' in error && typeof error.provider === 'string'
+          ? error.provider
+          : 'unknown',
     };
 
-    if (error.message?.includes('API key')) {
+    if (error instanceof Error && error.message?.includes('API key')) {
       return new Response(
         JSON.stringify({
           ...errorResponse,
