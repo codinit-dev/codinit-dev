@@ -183,6 +183,7 @@
     "crypto-browserify": "^3.12.1",
     "electron": "^35.7.5",
     "electron-builder": "^26.0.12",
+    "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "fast-glob": "^3.3.3",
