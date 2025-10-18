@@ -108,6 +108,52 @@ const processSampledMessages = createSampler(
   50,
 );
 
+/**
+ * Detects if the user's prompt mentions a specific starter template
+ * Returns the template name if found, otherwise null
+ */
+function detectTemplateFromPrompt(message: string): string | null {
+  const lowerMessage = message.toLowerCase();
+
+  // Template name mappings for common variations
+  const templateMappings: Record<string, string> = {
+    'expo': 'Expo App',
+    'astro': 'Basic Astro',
+    'next.js': 'Next.JS',
+    'nextjs': 'Next.JS',
+    'next js': 'Next.JS',
+    'vite shadcn': 'Vite Shadcn',
+    'shadcn': 'Vite Shadcn',
+    'qwik': 'Qwik Typescript',
+    'remix': 'Remix Typescript',
+    'slidev': 'Slidev',
+    'svelte': 'Sveltekit',
+    'sveltekit': 'Sveltekit',
+    'vanilla': 'Vanilla Vite',
+    'vanilla vite': 'Vanilla Vite',
+    'vue': 'Vue',
+    'angular': 'Angular',
+    'solidjs': 'SolidJS',
+    'solid': 'SolidJS',
+  };
+
+  // Check for direct template name matches
+  for (const [keyword, templateName] of Object.entries(templateMappings)) {
+    if (lowerMessage.includes(keyword)) {
+      logger.info(`Detected template "${templateName}" from prompt keyword "${keyword}"`);
+      return templateName;
+    }
+  }
+
+  // Check if message explicitly mentions "react" or "vite react" but not shadcn
+  if ((lowerMessage.includes('react') || lowerMessage.includes('vite')) && !lowerMessage.includes('shadcn')) {
+    logger.info('Detected React/Vite in prompt, using default Vite React template');
+    return 'Vite React';
+  }
+
+  return null;
+}
+
 interface ChatProps {
   initialMessages: Message[];
   storeMessageHistory: (messages: Message[]) => Promise<void>;
