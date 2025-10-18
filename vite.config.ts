@@ -146,6 +146,33 @@ export default defineConfig((config) => {
         },
       },
     },
+    test: {
+      projects: [
+        // Regular tests (non-browser)
+        {
+          test: {
+            name: 'unit',
+            environment: 'jsdom',
+            include: ['app/**/*.spec.ts', 'app/**/*.test.ts'],
+            exclude: ['node_modules', 'dist', 'build', 'templates'],
+          },
+        },
+
+        // Browser tests for templates
+        {
+          test: {
+            name: 'browser',
+            include: ['templates/test/**/*.test.ts'],
+            browser: {
+              enabled: true,
+              name: 'chromium',
+              provider: 'playwright',
+              headless: true,
+            },
+          },
+        },
+      ],
+    },
   };
 });
 

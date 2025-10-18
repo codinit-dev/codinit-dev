@@ -36,8 +36,5 @@
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
   ],
-  "exclude": [
-    "node_modules",
-    "templates/**/*"
-  ]
+  "exclude": ["node_modules", "templates/**/*"]
 }

@@ -21,14 +21,12 @@ const app = express();
 app.use(
   '/',
   graphqlHTTP({
-    schema: schema,
+    schema,
     rootValue: root,
     graphiql: {
       defaultQuery: '{\n  hello\n}\n',
     },
-  })
+  }),
 );
 
-app.listen(4000, () =>
-  console.log('Running a GraphQL API server at http://localhost:4000/')
-);
+app.listen(4000, () => console.log('Running a GraphQL API server at http://localhost:4000/'));
