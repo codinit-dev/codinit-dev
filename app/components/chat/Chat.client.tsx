@@ -491,18 +491,29 @@ export const ChatImpl = memo(
       if (!chatStarted) {
         setFakeLoading(true);
 
-        // ALWAYS load default Vite React template on first message
+        // Detect if user mentions a specific template, otherwise use default Vite React
+        const detectedTemplate = detectTemplateFromPrompt(finalMessageContent);
+        const templateToUse = detectedTemplate || 'Vite React';
+
+        logger.info(`Loading template: ${templateToUse}${detectedTemplate ? ' (detected from prompt)' : ' (default)'}`);
+
         const initResult = await initFromTemplate({
           message: finalMessageContent,
           model,
           provider,
           autoSelectTemplate, // Use value from settings
-          forceTemplate: 'react-basic-starter', // Always use Vite React
+          forceTemplate: templateToUse, // Use detected template or default Vite React
         }).catch((e) => {
+          logger.error('Template loading failed:', e);
+
           if (e.message.includes('rate limit')) {
-            toast.warning('Rate limit exceeded. Skipping starter template\n Continuing with blank template');
+            toast.error('Rate limit exceeded when loading template. Continuing with blank template.', {
+              autoClose: 5000,
+            });
           } else {
-            toast.warning('Failed to import starter template\n Continuing with blank template');
+            toast.error(`Failed to load ${templateToUse} template: ${e.message}. Continuing with blank template.`, {
+              autoClose: 5000,
+            });
           }
 
           return null;
