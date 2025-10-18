@@ -745,6 +745,7 @@ export const ChatImpl = memo(
         setSelectedElement={setSelectedElement}
         addToolResult={addToolResult}
         onSelectTemplate={handleTemplateSelection}
+        selectedTemplate={selectedTemplate}
       />
     );
   },
