@@ -5,8 +5,18 @@ import { STARTER_TEMPLATES } from './constants';
 
 const starterTemplateSelectionPrompt = (templates: Template[]) => `
 You are an experienced developer who helps people choose the best starter template for their projects.
-IMPORTANT: Vite is preferred
-IMPORTANT: Only choose shadcn templates if the user explicitly asks for shadcn.
+
+CRITICAL DEFAULT RULE:
+- When the user does NOT specify a framework (e.g., "build a todo app", "create a website", "make an app"), ALWAYS default to "Vite React"
+- This is the standard, go-to template for most web development projects
+- Only deviate from "Vite React" when the user explicitly mentions another framework
+
+IMPORTANT RULES:
+- Vite React is the DEFAULT for any web application, website, or app request
+- Only choose shadcn templates if the user explicitly asks for shadcn or mentions "shadcn"
+- Only choose Next.js if the user explicitly mentions "Next.js" or "Next"
+- Only choose mobile templates (Expo) if the user explicitly mentions "mobile", "iOS", "Android", or "app" in a mobile context
+- Only choose other frameworks (Vue, Angular, Svelte) if explicitly mentioned
 
 Available templates:
 <template>
@@ -38,8 +48,26 @@ Examples:
 User: I need to build a todo app
 Response:
 <selection>
-  <templateName>react-basic-starter</templateName>
-  <title>Simple React todo application</title>
+  <templateName>Vite React</templateName>
+  <title>Todo Application</title>
+</selection>
+</example>
+
+<example>
+User: Create a blog website
+Response:
+<selection>
+  <templateName>Vite React</templateName>
+  <title>Blog Website</title>
+</selection>
+</example>
+
+<example>
+User: Build a dashboard with Next.js
+Response:
+<selection>
+  <templateName>Next.JS</templateName>
+  <title>Dashboard Application</title>
 </selection>
 </example>
 
@@ -48,19 +76,28 @@ User: Write a script to generate numbers from 1 to 100
 Response:
 <selection>
   <templateName>blank</templateName>
-  <title>script to generate numbers from 1 to 100</title>
+  <title>Number Generation Script</title>
+</selection>
+</example>
+
+<example>
+User: Create a mobile app for tracking habits
+Response:
+<selection>
+  <templateName>Expo App</templateName>
+  <title>Habit Tracker Mobile App</title>
 </selection>
 </example>
 
 Instructions:
 1. For trivial tasks and simple scripts, always recommend the blank template
-2. For more complex projects, recommend templates from the provided list
-3. Follow the exact XML format
-4. Consider both technical requirements and tags
-5. If no perfect match exists, recommend the closest option
+2. For web apps/websites without a specified framework, ALWAYS use "Vite React" (the DEFAULT)
+3. Only choose other frameworks when explicitly mentioned by the user
+4. Follow the exact XML format
+5. Consider both technical requirements and tags
 
 Important: Provide only the selection tags in your response, no additional text.
-MOST IMPORTANT: YOU DONT HAVE TIME TO THINK JUST START RESPONDING BASED ON HUNCH 
+MOST IMPORTANT: YOU DONT HAVE TIME TO THINK JUST START RESPONDING BASED ON HUNCH
 `;
 
 const templates: Template[] = STARTER_TEMPLATES.filter((t) => !t.name.includes('shadcn'));
@@ -131,6 +168,26 @@ const getGitHubRepoContent = async (repoName: string): Promise<{ name: string; p
   }
 };
 
+const getLocalTemplateContent = async (
+  templatePath: string,
+): Promise<{ name: string; path: string; content: string }[]> => {
+  try {
+    // Fetch from local template API endpoint
+    const response = await fetch(`/api/local-template?template=${encodeURIComponent(templatePath)}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const files = (await response.json()) as { name: string; path: string; content: string }[];
+
+    return files;
+  } catch (error) {
+    console.error('Error fetching local template:', error);
+    throw error;
+  }
+};
+
 export async function getTemplates(templateName: string, title?: string) {
   const template = STARTER_TEMPLATES.find((t) => t.name == templateName);
 
@@ -138,8 +195,18 @@ export async function getTemplates(templateName: string, title?: string) {
     return null;
   }
 
-  const githubRepo = template.githubRepo;
-  const files = await getGitHubRepoContent(githubRepo);
+  // Determine the source and fetch accordingly
+  let files: { name: string; path: string; content: string }[];
+
+  if (template.source === 'local' && template.localPath) {
+    // Fetch from local templates directory
+    files = await getLocalTemplateContent(template.localPath);
+  } else if (template.githubRepo) {
+    // Fetch from GitHub (fallback)
+    files = await getGitHubRepoContent(template.githubRepo);
+  } else {
+    throw new Error(`Template ${templateName} has no valid source configured`);
+  }
 
   let filteredFiles = files;
 
