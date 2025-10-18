@@ -7,7 +7,10 @@ import { Header } from '~/components/header/Header';
 import BackgroundRays from '~/components/ui/BackgroundRays';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'CodinIT' }, { name: 'description', content: 'Talk with CodinIT, an AI assistant from StackBlitz' }];
+  return [
+    { title: 'CodinIT' },
+    { name: 'description', content: 'Talk with CodinIT, an AI assistant from CodinIT.dev' },
+  ];
 };
 
 export async function loader(args: LoaderFunctionArgs) {

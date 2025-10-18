@@ -82,7 +82,6 @@ function cleanEscapedTags(content: string) {
 }
 export class StreamingMessageParser {
   #messages = new Map<string, MessageState>();
-  #artifactCounter = 0;
 
   constructor(private _options: StreamingMessageParserOptions = {}) {}
 

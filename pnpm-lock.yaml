@@ -184,6 +184,9 @@ importers:
       '@webcontainer/api':
         specifier: 1.6.1-internal.1
         version: 1.6.1-internal.1
+      '@webcontainer/test':
+        specifier: ^0.2.0
+        version: 0.2.0(vitest@2.1.9(@types/node@24.7.0)(jsdom@26.1.0)(sass-embedded@1.93.2)(sass@1.93.2))
       '@xterm/addon-fit':
         specifier: ^0.10.0
         version: 0.10.0(@xterm/xterm@5.5.0)
@@ -2163,6 +2166,10 @@ packages:
     resolution: {integrity: sha512-kOQ4+fHuT4KbR2iq2IjeV32HiihueuOf1vJkq18z08CLZ1UQrTc8BXJpVfxZkq45+inLLD+D4xx4nBjUelJa4Q==}
     engines: {node: '>=18'}
 
+  '@msgpack/msgpack@3.1.2':
+    resolution: {integrity: sha512-JEW4DEtBzfe8HvUYecLU9e6+XJnKDlUAIve8FvPzF3Kzs6Xo/KuZkZJsDH0wJXl/qEZbeeE7edxDNY3kMs39hQ==}
+    engines: {node: '>= 18'}
+
   '@nanostores/react@0.7.3':
     resolution: {integrity: sha512-/XuLAMENRu/Q71biW4AZ4qmU070vkZgiQ28gaTSNRPm2SZF5zGAR81zPE1MaMB4SeOp6ZTst92NBaG75XSspNg==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -3723,8 +3730,21 @@ packages:
   '@web3-storage/multipart-parser@1.0.0':
     resolution: {integrity: sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==}
 
+  '@webcontainer/api@1.6.1':
+    resolution: {integrity: sha512-2RS2KiIw32BY1Icf6M1DvqSmcon9XICZCDgS29QJb2NmF12ZY2V5Ia+949hMKB3Wno+P/Y8W+sPP59PZeXSELg==}
+
   '@webcontainer/api@1.6.1-internal.1':
     resolution: {integrity: sha512-3kIlLzJonzKlPzONuKudMWHICqwkwyXSsIoUHt4vJwjAr8/qFjlMVxq8ggHS6Yck9JBh1JllDWfCiC95ipSsxw==}
+
+  '@webcontainer/snapshot@0.1.0':
+    resolution: {integrity: sha512-PTIGQ3osUpTbK/dqB8RYbcZGv8IK+DJACx709z5sFbeIlngB3hUFpTEYFYs1SbUvr/AEQqvd0/bhc4ectrPRRw==}
+    engines: {node: '>=16'}
+
+  '@webcontainer/test@0.2.0':
+    resolution: {integrity: sha512-ewlp/SjLqGuyB2EslLvKrEBhXTXCramL99GPlVnYpS/FWutx+uzlkfjvCaGQ06Bmz2cuPlkW7WT9N/TjDyeJyQ==}
+    peerDependencies:
+      '@vitest/browser': ^3.1
+      vitest: ^3.1
 
   '@xmldom/xmldom@0.8.11':
     resolution: {integrity: sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw==}
@@ -10209,6 +10229,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@msgpack/msgpack@3.1.2': {}
+
   '@nanostores/react@0.7.3(nanostores@0.10.3)(react@18.3.1)':
     dependencies:
       nanostores: 0.10.3
@@ -12119,7 +12141,19 @@ snapshots:
 
   '@web3-storage/multipart-parser@1.0.0': {}
 
+  '@webcontainer/api@1.6.1': {}
+
   '@webcontainer/api@1.6.1-internal.1': {}
+
+  '@webcontainer/snapshot@0.1.0':
+    dependencies:
+      '@msgpack/msgpack': 3.1.2
+
+  '@webcontainer/test@0.2.0(vitest@2.1.9(@types/node@24.7.0)(jsdom@26.1.0)(sass-embedded@1.93.2)(sass@1.93.2))':
+    dependencies:
+      '@webcontainer/api': 1.6.1
+      '@webcontainer/snapshot': 0.1.0
+      vitest: 2.1.9(@types/node@24.7.0)(jsdom@26.1.0)(sass-embedded@1.93.2)(sass@1.93.2)
 
   '@xmldom/xmldom@0.8.11': {}
 
