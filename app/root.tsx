@@ -2,17 +2,17 @@ import { useStore } from '@nanostores/react';
 import type { LinksFunction } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
-import { themeStore } from './lib/stores/theme';
-import { stripIndents } from './utils/stripIndent';
-import { createHead } from 'remix-island';
+import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 import { useEffect } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { ClientOnly } from 'remix-utils/client-only';
-
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
+import { createHead } from 'remix-island';
+import { ClientOnly } from 'remix-utils/client-only';
+import { logStore } from './lib/stores/logs';
+import { themeStore } from './lib/stores/theme';
 import globalStyles from './styles/index.scss?url';
-import xtermStyles from '@xterm/xterm/css/xterm.css?url';
+import { stripIndents } from './utils/stripIndent';
 
 import 'virtual:uno.css';
 
@@ -61,6 +61,7 @@ export const Head = createHead(() => (
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <Meta />
     <Links />
+    {/* biome-ignore lint/security/noDangerouslySetInnerHtml: Safe static code for theme initialization */}
     <script dangerouslySetInnerHTML={{ __html: inlineThemeCode }} />
   </>
 ));
@@ -80,8 +81,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     </>
   );
 }
-
-import { logStore } from './lib/stores/logs';
 
 export default function App() {
   const theme = useStore(themeStore);
@@ -111,7 +110,7 @@ export default function App() {
       .catch((error) => {
         logStore.logError('Failed to initialize debug logging', error);
       });
-  }, []);
+  }, [theme]);
 
   return (
     <Layout>
