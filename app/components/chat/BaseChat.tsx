@@ -78,6 +78,7 @@ interface BaseChatProps {
   selectedElement?: ElementInfo | null;
   setSelectedElement?: (element: ElementInfo | null) => void;
   addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: JSONValue }) => void;
+  onSelectTemplate?: (templateName: string) => void;
 }
 
 export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
@@ -125,6 +126,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       addToolResult = () => {
         throw new Error('addToolResult not implemented');
       },
+      onSelectTemplate,
     },
     ref,
   ) => {
@@ -471,7 +473,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   <GitCloneButton importChat={importChat} />
                 </div>
               )}
-              <div className="flex flex-col">{!chatStarted && <StarterTemplates />}</div>
+              <div className="flex flex-col">
+                {!chatStarted && <StarterTemplates onSelectTemplate={onSelectTemplate} />}
+              </div>
             </div>
           </div>
           <ClientOnly>

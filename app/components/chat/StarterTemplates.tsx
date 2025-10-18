@@ -4,16 +4,25 @@ import { STARTER_TEMPLATES } from '~/utils/constants';
 
 interface TemplateCardProps {
   template: Template;
+  onSelectTemplate?: (template: Template) => void;
 }
 
-const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
-  const buildUrl = () => {
-    const baseUrl = `/git?url=https://github.com/${template.githubRepo}.git`;
-    return template.subdir ? `${baseUrl}&subdir=${encodeURIComponent(template.subdir)}` : baseUrl;
+const TemplateCard: React.FC<TemplateCardProps> = ({ template, onSelectTemplate }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (onSelectTemplate) {
+      onSelectTemplate(template);
+    }
   };
 
   return (
-    <a href={buildUrl()} data-state="closed" data-discover="true" className="group flex-shrink-0">
+    <button
+      onClick={handleClick}
+      data-state="closed"
+      data-discover="true"
+      className="group flex-shrink-0 bg-transparent border-0 p-0"
+    >
       <div className="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 hover:bg-codinit-elements-background-depth-3 hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-300 w-[90px] h-[90px] cursor-pointer transform hover:scale-105 hover:shadow-lg">
         <div
           className={`${template.icon} w-8 h-8 text-3xl text-codinit-elements-textSecondary group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-all duration-300 group-hover:scale-110`}
@@ -22,12 +31,23 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
           {template.label}
         </span>
       </div>
-    </a>
+    </button>
   );
 };
 
-const StarterTemplates: React.FC = () => {
+interface StarterTemplatesProps {
+  onSelectTemplate?: (templateName: string) => void;
+}
+
+const StarterTemplates: React.FC<StarterTemplatesProps> = ({ onSelectTemplate }) => {
   const [isPaused, setIsPaused] = useState(false);
+
+  const handleTemplateSelect = (template: Template) => {
+    if (onSelectTemplate) {
+      // Pass the template name to trigger initialization
+      onSelectTemplate(template.name);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-4 w-full px-4">
@@ -42,11 +62,11 @@ const StarterTemplates: React.FC = () => {
         >
           {/* First set of templates */}
           {STARTER_TEMPLATES.map((template) => (
-            <TemplateCard key={`${template.name}-1`} template={template} />
+            <TemplateCard key={`${template.name}-1`} template={template} onSelectTemplate={handleTemplateSelect} />
           ))}
           {/* Duplicate set for seamless loop */}
           {STARTER_TEMPLATES.map((template) => (
-            <TemplateCard key={`${template.name}-2`} template={template} />
+            <TemplateCard key={`${template.name}-2`} template={template} onSelectTemplate={handleTemplateSelect} />
           ))}
         </div>
       </div>
