@@ -230,7 +230,7 @@ export const ChatImpl = memo(
         maxLLMSteps: mcpSettings.maxLLMSteps,
       },
       sendExtraMessageFields: true,
-      onError: (e) => {
+      onError: (e: Error) => {
         setFakeLoading(false);
         handleError(e, 'chat');
       },
@@ -311,7 +311,7 @@ export const ChatImpl = memo(
     };
 
     const handleError = useCallback(
-      (error: any, context: 'chat' | 'template' | 'llmcall' = 'chat') => {
+      (error: unknown, context: 'chat' | 'template' | 'llmcall' = 'chat') => {
         logger.error(`${context} request failed`, error);
 
         stop();
@@ -326,7 +326,7 @@ export const ChatImpl = memo(
           retryDelay: 0,
         };
 
-        if (error.message) {
+        if (error instanceof Error && error.message) {
           try {
             const parsed = JSON.parse(error.message);
 
@@ -338,6 +338,8 @@ export const ChatImpl = memo(
           } catch {
             errorInfo.message = error.message;
           }
+        } else if (typeof error === 'string') {
+          errorInfo.message = error;
         }
 
         let errorType: LlmErrorAlertType['errorType'] = 'unknown';
