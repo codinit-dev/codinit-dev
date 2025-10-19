@@ -94,18 +94,14 @@ export const STARTER_TEMPLATES: Template[] = [
     tags: ['qwik', 'typescript', 'performance', 'resumable'],
     icon: 'i-codinit:qwik',
   },
-
-  /*
-   * Note: Remix template not available in starters repo yet
-   * {
-   *   name: 'Remix Typescript',
-   *   label: 'Remix TypeScript',
-   *   description: 'Remix framework starter with TypeScript for full-stack web applications',
-   *   githubRepo: 'codinit-dev/starters/remix',
-   *   tags: ['remix', 'typescript', 'fullstack', 'react'],
-   *   icon: 'i-codinit:remix',
-   * },
-   */
+  {
+    name: 'Remix Shadcn',
+    label: 'Remix + shadcn/ui',
+    description: 'Remix framework starter with TypeScript and shadcn/ui for full-stack web applications',
+    githubRepo: 'codinit-dev/codinit-remix-shadcn',
+    tags: ['remix', 'typescript', 'fullstack', 'react', 'shadcn'],
+    icon: 'i-codinit:remix',
+  },
   {
     name: 'Slidev',
     label: 'Slidev Presentation',
@@ -118,17 +114,17 @@ export const STARTER_TEMPLATES: Template[] = [
     name: 'Sveltekit',
     label: 'SvelteKit',
     description: 'SvelteKit starter template for building fast, efficient web applications',
-    githubRepo: 'codinit-dev/starters/sveltekit',
+    githubRepo: 'codinit-dev/codinit-sveltekit-template',
     tags: ['svelte', 'sveltekit', 'typescript'],
     icon: 'i-codinit:svelte',
   },
   {
-    name: 'Vanilla JavaScript',
-    label: 'Vanilla JS',
-    description: 'Minimal JavaScript starter template for simple projects',
-    githubRepo: 'codinit-dev/starters/js',
-    tags: ['javascript', 'vanilla-js', 'minimal'],
-    icon: 'i-codinit:javascript',
+    name: 'Vanilla Vite',
+    label: 'Vanilla + Vite',
+    description: 'Minimal Vite starter template for vanilla JavaScript projects',
+    githubRepo: 'codinit-dev/codinit-vanilla-vite-template',
+    tags: ['vite', 'javascript', 'vanilla-js', 'minimal'],
+    icon: 'i-codinit:vite',
   },
   {
     name: 'Vite React',

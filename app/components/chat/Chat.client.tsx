@@ -147,13 +147,12 @@ function detectTemplateFromPrompt(message: string): string | null {
     'vite shadcn': 'Vite Shadcn',
     shadcn: 'Vite Shadcn',
     qwik: 'Qwik Typescript',
-
-    // remix: 'Remix Typescript', // Template not available yet
+    remix: 'Remix Shadcn',
     slidev: 'Slidev',
     svelte: 'Sveltekit',
     sveltekit: 'Sveltekit',
-    vanilla: 'Vanilla JavaScript',
-    'vanilla js': 'Vanilla JavaScript',
+    vanilla: 'Vanilla Vite',
+    'vanilla vite': 'Vanilla Vite',
     vue: 'Vue',
     angular: 'Angular',
     typescript: 'TypeScript',
