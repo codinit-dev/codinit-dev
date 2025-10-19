@@ -182,6 +182,10 @@ export class CodinitShell {
     }
   }
 
+  get webcontainer() {
+    return this.#webcontainer;
+  }
+
   get terminal() {
     return this.#terminal;
   }
@@ -201,19 +205,16 @@ export class CodinitShell {
       state.abort();
     }
 
-    /*
-     * interrupt the current execution
-     *  this.#shellInputStream?.write('\x03');
-     */
-    this.terminal.input('\x03');
+    // Interrupt the current execution by writing directly to shell input
+    this.#shellInputStream?.write('\x03');
     await this.waitTillOscCode('prompt');
 
     if (state && state.executionPrms) {
       await state.executionPrms;
     }
 
-    //start a new execution
-    this.terminal.input(command.trim() + '\n');
+    // Start a new execution by writing directly to shell input
+    this.#shellInputStream?.write(command.trim() + '\n');
 
     //wait for the execution to finish
     const executionPromise = this.getCurrentExecutionResult();
