@@ -36,35 +36,46 @@ PROVIDER_LIST.forEach((provider) => {
  * 1. Basic: "owner/repo" - Fetches from repository root
  * 2. Subdirectory: "owner/repo/path/to/subdirectory" - Fetches specific subdirectory
  *
- * Most templates use the monorepo format: "codinit-dev/starters/template-name"
+ * All templates use the monorepo format: "codinit-dev/starters/template-name"
  * Where:
  * - owner: codinit-dev
  * - repo: starters
- * - subdirectory: template-name (e.g., codinit-expo-template, codinit-astro-basic-template)
+ * - subdirectory: template-name (e.g., codinit-expo, astro-shadcn, nextjs-shadcn)
+ *
+ * Template directories must match exactly with the directory names in the starters repository:
+ * https://github.com/codinit-dev/starters
  */
 export const STARTER_TEMPLATES: Template[] = [
   {
     name: 'Expo App',
     label: 'Expo App',
     description: 'Expo starter template for building cross-platform mobile apps',
-    githubRepo: 'codinit-dev/starters/codinit-expo-template',
+    githubRepo: 'codinit-dev/starters/codinit-expo',
     tags: ['mobile', 'expo', 'mobile-app', 'android', 'iphone'],
     icon: 'i-codinit:expo',
   },
   {
-    name: 'Basic Astro',
-    label: 'Astro Basic',
-    description: 'Lightweight Astro starter template for building fast static websites',
-    githubRepo: 'codinit-dev/starters/codinit-astro-basic-template',
-    tags: ['astro', 'blog', 'performance'],
+    name: 'Astro Shadcn',
+    label: 'Astro + shadcn/ui',
+    description: 'Astro starter template integrated with shadcn/ui components for building fast static websites',
+    githubRepo: 'codinit-dev/starters/astro-shadcn',
+    tags: ['astro', 'blog', 'performance', 'shadcn'],
     icon: 'i-codinit:astro',
   },
   {
     name: 'NextJS Shadcn',
     label: 'Next.js with shadcn/ui',
     description: 'Next.js starter fullstack template integrated with shadcn/ui components and styling system',
-    githubRepo: 'codinit-dev/starters/codinit-nextjs-shadcn-template',
+    githubRepo: 'codinit-dev/starters/nextjs-shadcn',
     tags: ['nextjs', 'react', 'typescript', 'shadcn', 'tailwind'],
+    icon: 'i-codinit:nextjs',
+  },
+  {
+    name: 'Next.JS',
+    label: 'Next.js',
+    description: 'Next.js starter template for building full-stack React applications',
+    githubRepo: 'codinit-dev/starters/nextjs',
+    tags: ['nextjs', 'react', 'typescript', 'fullstack'],
     icon: 'i-codinit:nextjs',
   },
   {
@@ -79,23 +90,27 @@ export const STARTER_TEMPLATES: Template[] = [
     name: 'Qwik Typescript',
     label: 'Qwik TypeScript',
     description: 'Qwik framework starter with TypeScript for building resumable applications',
-    githubRepo: 'codinit-dev/starters/codinit-qwik-ts-template',
+    githubRepo: 'codinit-dev/starters/codinit-qwik',
     tags: ['qwik', 'typescript', 'performance', 'resumable'],
     icon: 'i-codinit:qwik',
   },
-  {
-    name: 'Remix Typescript',
-    label: 'Remix TypeScript',
-    description: 'Remix framework starter with TypeScript for full-stack web applications',
-    githubRepo: 'codinit-dev/starters/codinit-remix-ts-template',
-    tags: ['remix', 'typescript', 'fullstack', 'react'],
-    icon: 'i-codinit:remix',
-  },
+
+  /*
+   * Note: Remix template not available in starters repo yet
+   * {
+   *   name: 'Remix Typescript',
+   *   label: 'Remix TypeScript',
+   *   description: 'Remix framework starter with TypeScript for full-stack web applications',
+   *   githubRepo: 'codinit-dev/starters/remix',
+   *   tags: ['remix', 'typescript', 'fullstack', 'react'],
+   *   icon: 'i-codinit:remix',
+   * },
+   */
   {
     name: 'Slidev',
     label: 'Slidev Presentation',
     description: 'Slidev starter template for creating developer-friendly presentations using Markdown',
-    githubRepo: 'codinit-dev/starters/codinit-slidev-template',
+    githubRepo: 'codinit-dev/starters/slidev',
     tags: ['slidev', 'presentation', 'markdown'],
     icon: 'i-codinit:slidev',
   },
@@ -103,39 +118,39 @@ export const STARTER_TEMPLATES: Template[] = [
     name: 'Sveltekit',
     label: 'SvelteKit',
     description: 'SvelteKit starter template for building fast, efficient web applications',
-    githubRepo: 'codinit-dev/starters/codinit-sveltekit-template',
+    githubRepo: 'codinit-dev/starters/sveltekit',
     tags: ['svelte', 'sveltekit', 'typescript'],
     icon: 'i-codinit:svelte',
   },
   {
-    name: 'Vanilla Vite',
-    label: 'Vanilla + Vite',
-    description: 'Minimal Vite starter template for vanilla JavaScript projects',
-    githubRepo: 'codinit-dev/starters/vanilla-vite-template',
-    tags: ['vite', 'vanilla-js', 'minimal'],
-    icon: 'i-codinit:vite',
+    name: 'Vanilla JavaScript',
+    label: 'Vanilla JS',
+    description: 'Minimal JavaScript starter template for simple projects',
+    githubRepo: 'codinit-dev/starters/js',
+    tags: ['javascript', 'vanilla-js', 'minimal'],
+    icon: 'i-codinit:javascript',
   },
   {
     name: 'Vite React',
     label: 'React + Vite + typescript',
     description: 'React starter template powered by Vite for fast development experience',
-    githubRepo: 'codinit-dev/starters/codinit-vite-react-ts-template',
+    githubRepo: 'codinit-dev/starters/codinit-vite-react-ts',
     tags: ['react', 'vite', 'frontend', 'website', 'app'],
     icon: 'i-codinit:react',
   },
   {
-    name: 'Vite Typescript',
-    label: 'Vite + TypeScript',
-    description: 'Vite starter template with TypeScript configuration for type-safe development',
-    githubRepo: 'codinit-dev/starters/codinit-vite-ts-template',
-    tags: ['vite', 'typescript', 'minimal'],
+    name: 'TypeScript',
+    label: 'TypeScript',
+    description: 'Basic TypeScript starter template for type-safe development',
+    githubRepo: 'codinit-dev/starters/typescript',
+    tags: ['typescript', 'minimal'],
     icon: 'i-codinit:typescript',
   },
   {
     name: 'Vue',
     label: 'Vue.js',
     description: 'Vue.js starter template with modern tooling and best practices',
-    githubRepo: 'codinit-dev/starters/codinit-vue-template',
+    githubRepo: 'codinit-dev/starters/vue',
     tags: ['vue', 'typescript', 'frontend'],
     icon: 'i-codinit:vue',
   },
@@ -143,16 +158,20 @@ export const STARTER_TEMPLATES: Template[] = [
     name: 'Angular',
     label: 'Angular Starter',
     description: 'A modern Angular starter template with TypeScript support and best practices configuration',
-    githubRepo: 'codinit-dev/starters/codinit-angular-template',
+    githubRepo: 'codinit-dev/starters/angular',
     tags: ['angular', 'typescript', 'frontend', 'spa'],
     icon: 'i-codinit:angular',
   },
-  {
-    name: 'SolidJS',
-    label: 'SolidJS Tailwind',
-    description: 'Lightweight SolidJS starter template for building fast static websites',
-    githubRepo: 'codinit-dev/starters/solidjs-ts-tw',
-    tags: ['solidjs'],
-    icon: 'i-codinit:solidjs',
-  },
+
+  /*
+   * Note: SolidJS template not available in starters repo yet
+   * {
+   *   name: 'SolidJS',
+   *   label: 'SolidJS Tailwind',
+   *   description: 'Lightweight SolidJS starter template for building fast static websites',
+   *   githubRepo: 'codinit-dev/starters/solidjs',
+   *   tags: ['solidjs'],
+   *   icon: 'i-codinit:solidjs',
+   * },
+   */
 ];
