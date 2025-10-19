@@ -163,10 +163,9 @@ export default defineConfig((config) => {
         // Browser tests for templates
         {
           plugins: [vitestWebContainers()],
-          root: './templates',
           test: {
             name: 'browser',
-            include: ['test/**/*.test.ts'],
+            include: ['templates/test/**/*.test.ts'],
             hookTimeout: 60_000,
             testTimeout: 60_000,
             browser: {
