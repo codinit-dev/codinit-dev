@@ -30,13 +30,13 @@ const getGitInfo = () => {
     };
   } catch {
     return {
-      commitHash: 'no-git-info',
-      branch: 'unknown',
+      commitHash: '20691fb06bd47b973bd2a58c6329ee8432e36780',
+      branch: 'main',
       commitTime: 'unknown',
-      author: 'unknown',
-      email: 'unknown',
-      remoteUrl: 'unknown',
-      repoName: 'unknown',
+      author: 'Gerome-Elassaad',
+      email: 'grambo328@gmail.com',
+      remoteUrl: 'https://github.com/Gerome-Elassaad/codinit-app',
+      repoName: 'codinit-app',
     };
   }
 };
@@ -151,6 +151,7 @@ export default defineConfig((config) => {
       projects: [
         // Regular tests (non-browser)
         {
+          plugins: [tsconfigPaths({ ignoreConfigErrors: true })],
           test: {
             name: 'unit',
             environment: 'jsdom',
@@ -162,9 +163,10 @@ export default defineConfig((config) => {
         // Browser tests for templates
         {
           plugins: [vitestWebContainers()],
+          root: './templates',
           test: {
             name: 'browser',
-            include: ['templates/test/**/*.test.ts'],
+            include: ['test/**/*.test.ts'],
             hookTimeout: 60_000,
             testTimeout: 60_000,
             browser: {
