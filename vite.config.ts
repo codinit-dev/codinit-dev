@@ -10,6 +10,9 @@ import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
+// Load environment variables from multiple files
+dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
 dotenv.config();
 
 // Get detailed git info with fallbacks
@@ -136,6 +139,7 @@ export default defineConfig((config) => {
     envPrefix: [
       'VITE_',
       'OPENAI_LIKE_API_BASE_URL',
+      'OPENAI_LIKE_API_MODELS',
       'OLLAMA_API_BASE_URL',
       'LMSTUDIO_API_BASE_URL',
       'TOGETHER_API_BASE_URL',
