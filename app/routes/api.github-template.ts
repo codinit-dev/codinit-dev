@@ -40,6 +40,108 @@ interface FileItem {
   content: string;
 }
 
+/**
+ * Constants for GitHub repository path handling
+ */
+const GITHUB_REPO_PATH_FORMAT = {
+  /**
+   * Basic format: "owner/repo"
+   * Example: "facebook/react"
+   */
+  BASIC: 'owner/repo',
+
+  /**
+   * With subdirectory: "owner/repo/path/to/subdirectory"
+   * Example: "vercel/next.js/examples/basic"
+   */
+  WITH_SUBDIRECTORY: 'owner/repo/path/to/subdirectory',
+} as const;
+
+/**
+ * Configuration constants for file filtering and API handling
+ */
+const GITHUB_FETCH_CONFIG = {
+  /**
+   * Maximum file size for non-lock files (100KB)
+   * Files larger than this will be skipped unless they are lock files
+   */
+  MAX_FILE_SIZE: 100000,
+
+  /**
+   * Number of files to fetch in parallel when using Contents API
+   * Helps avoid overwhelming the GitHub API
+   */
+  BATCH_SIZE: 10,
+
+  /**
+   * Delay between batches in milliseconds
+   * Adds rate limiting to be respectful to GitHub API
+   */
+  BATCH_DELAY_MS: 100,
+
+  /**
+   * Patterns for files that should be excluded
+   */
+  EXCLUDED_PATTERNS: {
+    GIT_DIR: '.git/',
+  },
+
+  /**
+   * Lock files that are allowed even if they exceed MAX_FILE_SIZE
+   */
+  ALLOWED_LOCK_FILES: ['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml'] as readonly string[],
+} as const;
+
+/**
+ * Interface for parsed GitHub repository information
+ */
+interface ParsedGitHubRepo {
+  owner: string;
+  repoName: string;
+  repoPath: string; // "owner/repo" format for API calls
+  subdirectory: string; // Empty string if no subdirectory, otherwise the path
+  hasSubdirectory: boolean;
+}
+
+/**
+ * Parse a GitHub repository path to extract owner, repo name, and optional subdirectory
+ * Supports formats:
+ * - "owner/repo" - Basic repository
+ * - "owner/repo/path/to/subdirectory" - Repository with subdirectory
+ *
+ * @param repoPath - Full repository path from user input
+ * @returns Parsed repository information
+ *
+ * @example
+ * parseGitHubRepoPath("facebook/react")
+ * // Returns: { owner: "facebook", repoName: "react", repoPath: "facebook/react", subdirectory: "", hasSubdirectory: false }
+ *
+ * @example
+ * parseGitHubRepoPath("vercel/next.js/examples/with-tailwindcss")
+ * // Returns: { owner: "vercel", repoName: "next.js", repoPath: "vercel/next.js", subdirectory: "examples/with-tailwindcss", hasSubdirectory: true }
+ */
+function parseGitHubRepoPath(repoPath: string): ParsedGitHubRepo {
+  const parts = repoPath.split('/');
+
+  if (parts.length < 2) {
+    throw new Error(
+      `Invalid GitHub repository path: "${repoPath}". Expected format: "${GITHUB_REPO_PATH_FORMAT.BASIC}" or "${GITHUB_REPO_PATH_FORMAT.WITH_SUBDIRECTORY}"`,
+    );
+  }
+
+  const owner = parts[0];
+  const repoName = parts[1];
+  const subdirectory = parts.slice(2).join('/'); // Everything after owner/repo
+
+  return {
+    owner,
+    repoName,
+    repoPath: `${owner}/${repoName}`,
+    subdirectory,
+    hasSubdirectory: subdirectory.length > 0,
+  };
+}
+
 // Function to detect if we're running in Cloudflare
 function isCloudflareEnvironment(context: CloudflareContext): boolean {
   // Check if we're in production AND have Cloudflare Pages specific env vars
@@ -57,27 +159,34 @@ function isCloudflareEnvironment(context: CloudflareContext): boolean {
 async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): Promise<(FileItem | null)[]> {
   const baseUrl = 'https://api.github.com';
 
+  // Parse repository path using the helper function
+  const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(repo);
+
+  console.log(
+    `Fetching from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
+  );
+
   // Get repository info to find default branch
-  const repoResponse = await fetch(`${baseUrl}/repos/${repo}`, {
+  const repoResponse = await fetch(`${baseUrl}/repos/${repoPath}`, {
     headers: {
       Accept: 'application/vnd.github.v3+json',
-      'User-Agent': 'codinit.dev-app',
+      'User-Agent': 'CodinIT-App (https://codinit.dev)',
       ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
     },
   });
 
   if (!repoResponse.ok) {
-    throw new Error(`Repository not found: ${repo}`);
+    throw new Error(`Repository not found: ${repoPath}`);
   }
 
   const repoData = (await repoResponse.json()) as GitHubRepoData;
   const defaultBranch = repoData.default_branch;
 
   // Get the tree recursively
-  const treeResponse = await fetch(`${baseUrl}/repos/${repo}/git/trees/${defaultBranch}?recursive=1`, {
+  const treeResponse = await fetch(`${baseUrl}/repos/${repoPath}/git/trees/${defaultBranch}?recursive=1`, {
     headers: {
       Accept: 'application/vnd.github.v3+json',
-      'User-Agent': 'codinit.dev-app',
+      'User-Agent': 'CodinIT-App (https://codinit.dev)',
       ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
     },
   });
@@ -94,18 +203,20 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
       return false;
     }
 
-    if (item.path.startsWith('.git/')) {
+    // If subdirectory is specified, only include files from that subdirectory
+    if (subdirectory && !item.path.startsWith(`${subdirectory}/`)) {
+      return false;
+    }
+
+    if (item.path.startsWith(GITHUB_FETCH_CONFIG.EXCLUDED_PATTERNS.GIT_DIR)) {
       return false;
     }
 
     // Allow lock files even if they're large
-    const isLockFile =
-      item.path.endsWith('package-lock.json') ||
-      item.path.endsWith('yarn.lock') ||
-      item.path.endsWith('pnpm-lock.yaml');
+    const isLockFile = GITHUB_FETCH_CONFIG.ALLOWED_LOCK_FILES.some((lockFile) => item.path.endsWith(lockFile));
 
-    // For non-lock files, limit size to 100KB
-    if (!isLockFile && item.size >= 100000) {
+    // For non-lock files, limit size to configured maximum
+    if (!isLockFile && item.size >= GITHUB_FETCH_CONFIG.MAX_FILE_SIZE) {
       return false;
     }
 
@@ -113,17 +224,17 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
   });
 
   // Fetch file contents in batches to avoid overwhelming the API
-  const batchSize = 10;
+  const batchSize = GITHUB_FETCH_CONFIG.BATCH_SIZE;
   const fileContents: (FileItem | null)[] = [];
 
   for (let i = 0; i < files.length; i += batchSize) {
     const batch = files.slice(i, i + batchSize);
     const batchPromises = batch.map(async (file: GitHubTreeItem): Promise<FileItem | null> => {
       try {
-        const contentResponse = await fetch(`${baseUrl}/repos/${repo}/contents/${file.path}`, {
+        const contentResponse = await fetch(`${baseUrl}/repos/${repoPath}/contents/${file.path}`, {
           headers: {
             Accept: 'application/vnd.github.v3+json',
-            'User-Agent': 'codinit.dev-app',
+            'User-Agent': 'CodinIT-App (https://codinit.dev)',
             ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
           },
         });
@@ -136,9 +247,16 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
         const contentData = (await contentResponse.json()) as GitHubContentData;
         const content = atob(contentData.content.replace(/\s/g, ''));
 
+        // Strip subdirectory prefix from path if present
+        let relativePath = file.path;
+
+        if (subdirectory && file.path.startsWith(`${subdirectory}/`)) {
+          relativePath = file.path.substring(subdirectory.length + 1);
+        }
+
         return {
-          name: file.path.split('/').pop() || '',
-          path: file.path,
+          name: relativePath.split('/').pop() || '',
+          path: relativePath,
           content,
         };
       } catch (error) {
@@ -152,7 +270,7 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
 
     // Add a small delay between batches to be respectful to the API
     if (i + batchSize < files.length) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, GITHUB_FETCH_CONFIG.BATCH_DELAY_MS));
     }
   }
 
@@ -163,8 +281,15 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
 async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise<(FileItem | null)[]> {
   const baseUrl = 'https://api.github.com';
 
+  // Parse repository path using the helper function
+  const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(repo);
+
+  console.log(
+    `Fetching ZIP from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
+  );
+
   // Get the latest release
-  const releaseResponse = await fetch(`${baseUrl}/repos/${repo}/releases/latest`, {
+  const releaseResponse = await fetch(`${baseUrl}/repos/${repoPath}/releases/latest`, {
     headers: {
       Accept: 'application/vnd.github.v3+json',
       'User-Agent': 'codinit.dev-app',
@@ -225,6 +350,21 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise
       normalizedPath = filename.substring(rootFolderName.length + 1);
     }
 
+    // If subdirectory is specified, only include files from that subdirectory
+    if (subdirectory) {
+      if (!normalizedPath.startsWith(`${subdirectory}/`)) {
+        return null;
+      }
+
+      // Strip subdirectory prefix from path
+      normalizedPath = normalizedPath.substring(subdirectory.length + 1);
+    }
+
+    // Skip .git files
+    if (normalizedPath.startsWith(GITHUB_FETCH_CONFIG.EXCLUDED_PATTERNS.GIT_DIR)) {
+      return null;
+    }
+
     // Get the file content
     const content = await zipEntry.async('string');
 
@@ -262,7 +402,9 @@ export async function loader({ request, context }: { request: Request; context: 
     }
 
     // Filter out .git files for both methods
-    const filteredFiles = fileList.filter((file): file is FileItem => file !== null && !file.path.startsWith('.git'));
+    const filteredFiles = fileList.filter(
+      (file): file is FileItem => file !== null && !file.path.startsWith(GITHUB_FETCH_CONFIG.EXCLUDED_PATTERNS.GIT_DIR),
+    );
 
     return json(filteredFiles);
   } catch (error) {
