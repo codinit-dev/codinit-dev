@@ -109,6 +109,28 @@ const processSampledMessages = createSampler(
 );
 
 /**
+ * Detects GitHub starters repo URL in the prompt
+ * Returns the template path if found (e.g., "codinit-dev/starters/my-template")
+ */
+function detectGitHubStartersRepo(message: string): string | null {
+  /*
+   * Match patterns like:
+   * - https://github.com/codinit-dev/starters/tree/main/template-name
+   * - https://github.com/codinit-dev/starters/blob/main/template-name
+   * - github.com/codinit-dev/starters/template-name
+   */
+  const githubUrlPattern = /github\.com\/codinit-dev\/starters(?:\/(?:tree|blob)\/[^/]+)?\/([^\s/?#]+)/i;
+  const match = message.match(githubUrlPattern);
+
+  if (match && match[1]) {
+    // Return the full GitHub repo path with template subdirectory
+    return `codinit-dev/starters/${match[1]}`;
+  }
+
+  return null;
+}
+
+/**
  * Detects if the user's prompt mentions a specific starter template
  * Returns the template name if found, otherwise null
  */
@@ -493,6 +515,38 @@ export const ChatImpl = memo(
 
       if (!chatStarted) {
         setFakeLoading(true);
+
+        // Check if user mentions GitHub starters repo first
+        const githubStartersPath = detectGitHubStartersRepo(finalMessageContent);
+
+        if (githubStartersPath) {
+          // User mentioned a specific template from the GitHub starters repo
+          logger.info(`Detected GitHub starters repo: ${githubStartersPath}`);
+
+          const initResult = await initFromTemplate({
+            message: finalMessageContent,
+            model,
+            provider,
+            autoSelectTemplate,
+            githubRepoPath: githubStartersPath, // Pass the GitHub repo path
+          }).catch((e) => {
+            logger.error('Template loading failed:', e);
+            toast.error(`Failed to load template from ${githubStartersPath}: ${e.message}`, {
+              autoClose: 5000,
+            });
+
+            return null;
+          });
+
+          if (initResult) {
+            setMessages([...initResult.messages]);
+            chatStore.setKey('started', true);
+          }
+
+          setFakeLoading(false);
+
+          return;
+        }
 
         // Prioritize: manually selected > detected from prompt > default 'Vite React'
         const detectedTemplate = detectTemplateFromPrompt(finalMessageContent);

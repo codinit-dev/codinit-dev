@@ -36,6 +36,7 @@ export interface InitFromTemplateOptions {
   provider: ProviderInfo;
   autoSelectTemplate: boolean;
   forceTemplate?: string; // Optional: force a specific template instead of auto-selecting
+  githubRepoPath?: string; // Optional: GitHub repo path like "owner/repo/subdirectory"
 }
 
 export interface InitFromTemplateResult {
@@ -97,7 +98,52 @@ ${commandString}
  * Handles template selection and loading for chat-initiated builds
  */
 export async function initFromTemplate(options: InitFromTemplateOptions): Promise<InitFromTemplateResult | null> {
-  const { message, model, provider, autoSelectTemplate, forceTemplate } = options;
+  const { message, model, provider, autoSelectTemplate, forceTemplate, githubRepoPath } = options;
+
+  // If GitHub repo path is provided, use it directly
+  if (githubRepoPath) {
+    console.log(`Loading template from GitHub repo: ${githubRepoPath}`);
+
+    try {
+      // Extract template name from path (e.g., "codinit-dev/starters/my-template" => "my-template")
+      const templateName = githubRepoPath.split('/').pop() || 'GitHub Template';
+      const temResp = await getTemplates(githubRepoPath, templateName);
+
+      if (!temResp) {
+        throw new Error('Failed to fetch template from GitHub repo');
+      }
+
+      const { assistantMessage, userMessage } = temResp;
+
+      // Create standardized 3-message array
+      const messages: Message[] = [
+        {
+          id: generateId(),
+          role: 'user',
+          content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${message}`,
+          createdAt: new Date(),
+        },
+        {
+          id: generateId(),
+          role: 'assistant',
+          content: assistantMessage,
+          createdAt: new Date(),
+        },
+        {
+          id: generateId(),
+          role: 'user',
+          content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userMessage}`,
+          annotations: ['hidden'],
+          createdAt: new Date(),
+        },
+      ];
+
+      return { messages, template: githubRepoPath };
+    } catch (error: any) {
+      console.error('Failed to fetch template from GitHub repo:', error);
+      throw error;
+    }
+  }
 
   // If autoSelectTemplate is false and no forced template, return null
   if (!autoSelectTemplate && !forceTemplate) {
@@ -110,7 +156,7 @@ export async function initFromTemplate(options: InitFromTemplateOptions): Promis
   // If forceTemplate is provided, use it directly
   if (forceTemplate) {
     template = forceTemplate;
-    title = 'Project Setup';
+    title = '';
   } else {
     // Call selectStarterTemplate for auto-selection
     const selected = await selectStarterTemplate({
