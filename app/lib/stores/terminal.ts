@@ -9,12 +9,12 @@ export class TerminalStore {
   #terminals: Array<{ terminal: ITerminal; process: WebContainerProcess }> = [];
   #codinitTerminal = newCodinitShellProcess();
 
-  showTerminal: WritableAtom<boolean> = import.meta.hot?.data.showTerminal ?? atom(true);
+  showTerminal: WritableAtom<boolean> = import.meta.hot?.data?.showTerminal ?? atom(true);
 
   constructor(webcontainerPromise: Promise<WebContainer>) {
     this.#webcontainer = webcontainerPromise;
 
-    if (import.meta.hot) {
+    if (import.meta.hot && import.meta.hot.data) {
       import.meta.hot.data.showTerminal = this.showTerminal;
     }
   }
