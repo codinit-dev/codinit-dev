@@ -102,7 +102,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <rect className={classNames(styles.PromptEffectLine)} pathLength="100" strokeLinecap="round"></rect>
         <rect className={classNames(styles.PromptShine)} x="48" y="24" width="70" height="1"></rect>
       </svg>
-      <div className="p-3 pb-0">
+      <div className="p-2.5 pb-0">
         <ClientOnly>
           {() => (
             <div
@@ -111,8 +111,8 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 props.isModelSettingsCollapsed ? 'max-h-0 opacity-0 overflow-hidden' : 'max-h-[500px] opacity-100',
               )}
             >
-              <div className="mb-2 space-y-2">
-                <div className="flex gap-2 flex-col sm:flex-row">
+              <div className="mb-1.5 space-y-1.5">
+                <div className="flex gap-1.5 flex-col sm:flex-row">
                   <ModelSelector
                     key={props.provider?.name + ':' + props.modelList.length}
                     model={props.model}
@@ -160,7 +160,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         )}
       </ClientOnly>
       {props.selectedElement && (
-        <div className="mx-3 mb-2 flex gap-2 items-center justify-between rounded-xl border border-accent-500/30 bg-accent-500/5 backdrop-blur-sm text-codinit-elements-textPrimary py-2 px-3 font-medium text-xs">
+        <div className="mx-2.5 mb-1.5 flex gap-2 items-center justify-between rounded-xl border border-accent-500/30 bg-accent-500/5 backdrop-blur-sm text-codinit-elements-textPrimary py-1.5 px-2.5 font-medium text-xs">
           <div className="flex gap-2 items-center lowercase">
             <code className="bg-accent-500 rounded-lg px-2 py-1 text-white font-mono text-xs">
               {props?.selectedElement?.tagName}
@@ -177,7 +177,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
       )}
       <div
         className={classNames(
-          'relative mx-3 mb-3',
+          'relative mx-2.5 mb-2.5',
           'bg-codinit-elements-background-depth-1/50 backdrop-blur-sm',
           'rounded-xl border border-codinit-elements-borderColor/30',
           'transition-all duration-200 ease-in-out',
@@ -188,7 +188,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <textarea
           ref={props.textareaRef}
           className={classNames(
-            'w-full px-4 pt-5 pb-3 pr-16',
+            'w-full px-3 pt-4 pb-2.5 pr-14',
             'outline-none resize-none bg-transparent',
             'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary/60',
             'text-sm leading-relaxed',
@@ -278,7 +278,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             />
           )}
         </ClientOnly>
-        <div className="flex justify-between items-center px-3 py-2 border-t border-codinit-elements-borderColor/20">
+        <div className="flex justify-between items-center px-2.5 py-1.5 border-t border-codinit-elements-borderColor/20">
           <div className="flex gap-0.5 items-center">
             <McpTools onOpenPanel={() => props.setIsMcpPanelOpen?.(true)} />
             <IconButton
