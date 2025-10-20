@@ -115,12 +115,12 @@ export const TokenConfigSelector = () => {
           aria-controls="token-config-listbox"
           aria-haspopup="listbox"
         >
-          <div className="i-ph:sliders w-[18px] h-[18px] text-codinit-elements-textSecondary" />
+          <div className="i-ph:sliders text-lg" />
         </button>
 
         {isDropdownOpen && (
           <div
-            className="absolute bottom-full mb-2 right-0 w-[280px] py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
+            className="absolute top-full mt-2 right-0 w-[280px] py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
             role="listbox"
             id="token-config-listbox"
           >
