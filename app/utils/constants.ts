@@ -36,118 +36,68 @@ PROVIDER_LIST.forEach((provider) => {
  * 1. Basic: "owner/repo" - Fetches from repository root
  * 2. Subdirectory: "owner/repo/path/to/subdirectory" - Fetches specific subdirectory
  *
- * All templates use the monorepo format: "codinit-dev/starters/template-name"
- * Where:
- * - owner: codinit-dev
- * - repo: starters
- * - subdirectory: template-name (e.g., codinit-expo, astro-shadcn, nextjs-shadcn)
- *
- * Template directories must match exactly with the directory names in the starters repository:
- * https://github.com/codinit-dev/starters
+ * Templates use well-known public repositories with verified starter templates:
+ * - vercel/next.js (Next.js official examples)
+ * - shadcn-ui/next-shadcn (shadcn/ui templates)
+ * - expo/examples (Expo official examples)
+ * - sveltejs/kit (SvelteKit template)
+ * - vitejs/awesome-vite (Vite templates)
  */
 export const STARTER_TEMPLATES: Template[] = [
   {
-    name: 'Expo App',
-    label: 'Expo App',
-    description: 'Expo starter template for building cross-platform mobile apps',
-    githubRepo: 'codinit-dev/starters/codinit-expo',
-    tags: ['mobile', 'expo', 'mobile-app', 'android', 'iphone'],
+    name: 'Next.js App Router',
+    label: 'Next.js App Router',
+    description: 'Next.js starter template using the App Router for building modern React applications',
+    githubRepo: 'https://github.com/codinit-dev/nextjs.git',
+    icon: 'i-codinit:nextjs',
+  },
+  {
+    name: 'Expo',
+    label: 'Expo',
+    description: 'Expo starter template for building cross-platform mobile apps with native code access',
+    githubRepo: 'https://github.com/codinit-dev/expo.git',
     icon: 'i-codinit:expo',
   },
   {
-    name: 'Astro Shadcn',
-    label: 'Astro + shadcn/ui',
-    description: 'Astro starter template integrated with shadcn/ui components for building fast static websites',
-    githubRepo: 'codinit-dev/starters/astro-shadcn',
-    tags: ['astro', 'blog', 'performance', 'shadcn'],
-    icon: 'i-codinit:astro',
-  },
-  {
-    name: 'NextJS Shadcn',
-    label: 'Next.js with shadcn/ui',
-    description: 'Next.js starter fullstack template integrated with shadcn/ui components and styling system',
-    githubRepo: 'codinit-dev/starters/nextjs-shadcn',
-    tags: ['nextjs', 'react', 'typescript', 'shadcn', 'tailwind'],
-    icon: 'i-codinit:nextjs',
-  },
-  {
-    name: 'Next.JS',
-    label: 'Next.js',
-    description: 'Next.js starter template for building full-stack React applications',
-    githubRepo: 'codinit-dev/starters/nextjs-template',
-    tags: ['nextjs', 'react', 'typescript', 'fullstack'],
-    icon: 'i-codinit:nextjs',
-  },
-  {
-    name: 'Vite Shadcn',
-    label: 'Vite with shadcn/ui',
-    description: 'Vite starter fullstack template integrated with shadcn/ui components and styling system',
-    githubRepo: 'codinit-dev/starters/vite-shadcn-template',
-    tags: ['vite', 'react', 'typescript', 'shadcn', 'tailwind'],
-    icon: 'i-codinit:shadcn',
-  },
-  {
-    name: 'Qwik Typescript',
-    label: 'Qwik TypeScript',
-    description: 'Qwik framework starter with TypeScript for building resumable applications',
-    githubRepo: 'codinit-dev/starters/codinit-qwik',
-    tags: ['qwik', 'typescript', 'performance', 'resumable'],
-    icon: 'i-codinit:qwik',
-  },
-  {
-    name: 'Remotion + Typescript',
-    label: 'Remotion',
-    description: 'Remotion framework starter with TypeScript for full-stack web applications',
-    githubRepo: 'codinit-dev/starters/codinit-remotion',
-    tags: ['remotion', 'typescript', 'fullstack', 'react'],
-    icon: 'i-codinit:remix',
-  },
-  {
-    name: 'Slidev',
-    label: 'Slidev Presentation',
-    description: 'Slidev starter template for creating developer-friendly presentations using Markdown',
-    githubRepo: 'codinit-dev/starters/codinit-slidev-template',
-    tags: ['slidev', 'presentation', 'markdown'],
-    icon: 'i-codinit:slidev',
-  },
-  {
-    name: 'Sveltekit',
-    label: 'SvelteKit',
-    description: 'SvelteKit starter template for building fast, efficient web applications',
-    githubRepo: 'codinit-dev/sveltekit',
-    tags: ['svelte', 'sveltekit', 'typescript'],
-    icon: 'i-codinit:svelte',
-  },
-  {
-    name: 'Vite React',
-    label: 'React + Vite + typescript',
-    description: 'React starter template powered by Vite for fast development experience',
-    githubRepo: 'codinit-dev/starters/codinit-vite-react-ts',
-    tags: ['react', 'vite', 'frontend', 'website', 'app'],
+    name: 'shadcn/ui Vite React',
+    label: 'Vite + React + shadcn/ui',
+    description: 'Vite React starter with shadcn/ui components for fast development',
+    githubRepo: 'https://github.com/codinit-dev/vite-shadcn.git',
     icon: 'i-codinit:react',
   },
   {
-    name: 'React',
-    label: 'React',
-    description: 'Basic TypeScript starter template for type-safe development',
-    githubRepo: 'codinit-dev/starters/react-ts',
-    tags: ['typescript', 'minimal'],
+    name: 'Astro',
+    label: 'Astro',
+    description: 'Astro starter template for building fast, content-focused websites',
+    githubRepo: 'https://github.com/codinit-dev/astro.git',
+    icon: 'i-codinit:astro',
+  },
+  {
+    name: 'Typescript',
+    label: 'Typescript',
+    description: 'Typescript starter template for building fast, efficient web applications',
+    githubRepo: 'https://github.com/codinit-dev/typescript.git',
     icon: 'i-codinit:typescript',
   },
   {
-    name: 'Vue',
-    label: 'Vue.js',
-    description: 'Vue.js starter template with modern tooling and best practices',
-    githubRepo: 'codinit-dev/starters/codinit-vue-template',
-    tags: ['vue', 'typescript', 'frontend'],
-    icon: 'i-codinit:vue',
+    name: 'Vite React TS',
+    label: 'Vite + React + TypeScript',
+    description: 'Vite React TypeScript starter for fast development experience',
+    githubRepo: 'https://github.com/simerlec/vite-react-ts-starter.git',
+    icon: 'i-codinit:vite',
   },
   {
     name: 'Angular',
-    label: 'Angular Starter',
-    description: 'A modern Angular starter template with TypeScript support and best practices configuration',
-    githubRepo: 'codinit-dev/starters/angular',
-    tags: ['angular', 'typescript', 'frontend', 'spa'],
+    label: 'Angular',
+    description: 'Modern Angular starter with standalone components and TypeScript',
+    githubRepo: 'https://github.com/codinit-dev/angular.git',
     icon: 'i-codinit:angular',
+  },
+  {
+    name: 'Qwik',
+    label: 'Qwik',
+    description: 'Modern Qwik starter with standalone components and TypeScript',
+    githubRepo: 'https://github.com/codinit-dev/qwik.git',
+    icon: 'i-codinit:qwik',
   },
 ];
