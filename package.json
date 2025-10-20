@@ -12,11 +12,7 @@
   },
   "scripts": {
     "deploy": "npm run build && wrangler pages deploy",
-    "prebuild": "node scripts/collect-build-metadata.cjs --embed app/utils/build-info.ts",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 remix vite:build",
-    "postbuild": "node scripts/verify-build.cjs --mode warn --verbose",
-    "verify": "node scripts/verify-build.cjs",
-    "verify:enforce": "node scripts/verify-build.cjs --mode enforce --verbose",
     "dev": "node pre-start.cjs && remix vite:dev",
     "test": "vitest --run",
     "test:watch": "vitest",
@@ -183,7 +179,6 @@
     "@types/react-dom": "^18.3.7",
     "@types/react-window": "^1.8.8",
     "@vitejs/plugin-react": "^4.7.0",
-    "@vitest/browser": "^3.2.4",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.1",
@@ -197,7 +192,6 @@
     "is-ci": "^3.0.1",
     "jsdom": "^26.1.0",
     "node-fetch": "^3.3.2",
-    "playwright": "^1.56.1",
     "pnpm": "^9.15.9",
     "prettier": "^3.6.2",
     "rimraf": "^4.4.1",
@@ -210,7 +204,7 @@
     "vite-plugin-copy": "^0.1.6",
     "vite-plugin-optimize-css-modules": "^1.2.0",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^3.2.4",
+    "vitest": "^2.1.9",
     "wrangler": "^4.42.0"
   },
   "resolutions": {
