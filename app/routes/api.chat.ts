@@ -48,7 +48,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     },
   });
 
-  const { messages, files, promptId, contextOptimization, supabase, chatMode, designScheme, maxLLMSteps } =
+  const { messages, files, promptId, contextOptimization, supabase, chatMode, designScheme, maxLLMSteps, tokenConfig } =
     await request.json<{
       messages: Messages;
       files: FileMap;
@@ -65,6 +65,14 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         };
       };
       maxLLMSteps: number;
+      tokenConfig?: {
+        maxTokens?: number;
+        temperature?: number;
+        topP?: number;
+        topK?: number;
+        frequencyPenalty?: number;
+        presencePenalty?: number;
+      };
     }>();
 
   const cookieHeader = request.headers.get('Cookie');
@@ -212,6 +220,14 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           toolChoice: 'auto',
           tools: mcpService.toolsWithoutExecute,
           maxSteps: maxLLMSteps,
+
+          // Add token configuration parameters if provided
+          ...(tokenConfig?.temperature !== undefined && { temperature: tokenConfig.temperature }),
+          ...(tokenConfig?.topP !== undefined && { topP: tokenConfig.topP }),
+          ...(tokenConfig?.topK !== undefined && { topK: tokenConfig.topK }),
+          ...(tokenConfig?.frequencyPenalty !== undefined && { frequencyPenalty: tokenConfig.frequencyPenalty }),
+          ...(tokenConfig?.presencePenalty !== undefined && { presencePenalty: tokenConfig.presencePenalty }),
+          ...(tokenConfig?.maxTokens !== undefined && { maxTokens: tokenConfig.maxTokens }),
           onStepFinish: ({ toolCalls }) => {
             // add tool call annotations for frontend processing
             toolCalls.forEach((toolCall) => {
