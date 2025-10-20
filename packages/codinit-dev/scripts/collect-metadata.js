@@ -9,7 +9,7 @@
  *   node scripts/collect-metadata.js --embed src/generated/build-info.ts
  */
 
-const { collectBuildMetadata } = require('../dist/collector');
+const { collectBuildMetadata } = require('../dist/index');
 const fs = require('fs');
 const path = require('path');
 

@@ -12,6 +12,9 @@
  * - Configurable enforcement levels (warn vs enforce)
  */
 
+import { collectBuildMetadata as collectMetadata } from './collector';
+import { performVerification as performVerify } from './verifier';
+
 export { collectBuildMetadata, verifySignature } from './collector';
 export { verifyBuild, performVerification, createVerificationMiddleware } from './verifier';
 export type { BuildMetadata, VerificationConfig, VerificationResult } from './types';
@@ -31,11 +34,8 @@ export type { BuildMetadata, VerificationConfig, VerificationResult } from './ty
  * ```
  */
 export function quickVerify(config?: import('./types').VerificationConfig): void {
-  const { collectBuildMetadata } = require('./collector');
-  const { performVerification } = require('./verifier');
-
-  const metadata = collectBuildMetadata();
-  performVerification(metadata, config);
+  const metadata = collectMetadata();
+  performVerify(metadata, config);
 }
 
 /**
@@ -50,6 +50,5 @@ export function quickVerify(config?: import('./types').VerificationConfig): void
  * ```
  */
 export function getBuildInfo(): import('./types').BuildMetadata {
-  const { collectBuildMetadata } = require('./collector');
-  return collectBuildMetadata();
+  return collectMetadata();
 }

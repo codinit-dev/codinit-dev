@@ -10,8 +10,7 @@
  *   node scripts/verify-build.js --metadata build-info.json
  */
 
-const { collectBuildMetadata } = require('../dist/collector');
-const { performVerification } = require('../dist/verifier');
+const { collectBuildMetadata, performVerification } = require('../dist/index');
 const fs = require('fs');
 const path = require('path');
 
