@@ -98,17 +98,10 @@ export class ActionRunner {
   addAction(data: ActionCallbackData) {
     const { actionId } = data;
 
-    console.log('[ActionRunner] addAction called:', {
-      actionId,
-      actionType: data.action.type,
-      runnerId: this.runnerId.get(),
-    });
-
     const actions = this.actions.get();
     const action = actions[actionId];
 
     if (action) {
-      console.warn('[ActionRunner] addAction: Action already exists, skipping', { actionId });
       // action already added
       return;
     }
@@ -126,10 +119,7 @@ export class ActionRunner {
       abortSignal: abortController.signal,
     });
 
-    console.log('[ActionRunner] addAction: Action added with pending status', { actionId });
-
     this.#currentExecutionPromise.then(() => {
-      console.log('[ActionRunner] addAction: Updating action to running status', { actionId });
       this.#updateAction(actionId, { status: 'running' });
     });
   }
@@ -137,70 +127,37 @@ export class ActionRunner {
   async runAction(data: ActionCallbackData, isStreaming: boolean = false) {
     const { actionId } = data;
 
-    console.log('[ActionRunner] runAction called:', {
-      actionId,
-      actionType: data.action.type,
-      isStreaming,
-      runnerId: this.runnerId.get(),
-    });
-
     const action = this.actions.get()[actionId];
 
     if (!action) {
-      console.error('[ActionRunner] runAction ERROR: Action not found in runner!', {
-        actionId,
-        availableActions: Object.keys(this.actions.get()),
-      });
       unreachable(`Action ${actionId} not found`);
     }
 
     if (action.executed) {
-      console.warn('[ActionRunner] runAction: Action already executed, skipping', {
-        actionId,
-        actionStatus: action.status,
-      });
-      return; // No return value here
+      return;
     }
 
     if (isStreaming && action.type !== 'file') {
-      console.log('[ActionRunner] runAction: Skipping non-file action in streaming mode', {
-        actionId,
-        actionType: action.type,
-      });
-      return; // No return value here
+      return;
     }
 
-    console.log('[ActionRunner] runAction: Marking action as executed and queuing execution', {
-      actionId,
-      willBeExecuted: !isStreaming,
-    });
     this.#updateAction(actionId, { ...action, ...data.action, executed: !isStreaming });
 
     this.#currentExecutionPromise = this.#currentExecutionPromise
       .then(() => {
-        console.log('[ActionRunner] runAction: Starting action execution', { actionId });
         return this.#executeAction(actionId, isStreaming);
       })
       .catch((error) => {
-        console.error('[ActionRunner] runAction: Action execution promise failed', { actionId, error });
         logger.error('Action execution promise failed:', error);
       });
 
-    console.log('[ActionRunner] runAction: Waiting for execution to complete', { actionId });
     await this.#currentExecutionPromise;
 
-    console.log('[ActionRunner] runAction: Execution completed', { actionId });
     return;
   }
 
   async #executeAction(actionId: string, isStreaming: boolean = false) {
     const action = this.actions.get()[actionId];
-
-    console.log('[ActionRunner] #executeAction: Starting execution', {
-      actionId,
-      actionType: action.type,
-      isStreaming,
-    });
 
     this.#updateAction(actionId, { status: 'running' });
 
@@ -303,13 +260,9 @@ export class ActionRunner {
       unreachable('Expected shell action');
     }
 
-    console.log('[ActionRunner] #runShellAction: Getting shell terminal');
-
     const shell = this.#shellTerminal();
 
-    console.log('[ActionRunner] #runShellAction: Waiting for shell to be ready');
     await shell.ready();
-    console.log('[ActionRunner] #runShellAction: Shell is ready');
 
     if (!shell || !shell.terminal || !shell.process) {
       unreachable('Shell terminal not found');
