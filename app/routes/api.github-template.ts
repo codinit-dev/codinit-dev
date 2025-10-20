@@ -175,12 +175,13 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
     headers: {
       Accept: 'application/vnd.github.v3+json',
       'User-Agent': 'CodinIT-App (https://codinit.dev)',
-      ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+      ...(githubToken ? { Authorization: `token ${githubToken}` } : {}),
     },
   });
 
   if (!repoResponse.ok) {
-    throw new Error(`Repository not found: ${repoPath}`);
+    const errorText = await repoResponse.text();
+    throw new Error(`GitHub API error (${repoResponse.status}): ${repoResponse.statusText} - ${errorText}`);
   }
 
   const repoData = (await repoResponse.json()) as GitHubRepoData;
@@ -191,7 +192,7 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
     headers: {
       Accept: 'application/vnd.github.v3+json',
       'User-Agent': 'CodinIT-App (https://codinit.dev)',
-      ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+      ...(githubToken ? { Authorization: `token ${githubToken}` } : {}),
     },
   });
 
@@ -239,7 +240,7 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
           headers: {
             Accept: 'application/vnd.github.v3+json',
             'User-Agent': 'CodinIT-App (https://codinit.dev)',
-            ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+            ...(githubToken ? { Authorization: `token ${githubToken}` } : {}),
           },
         });
 
@@ -299,8 +300,8 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise
   const releaseResponse = await fetch(`${baseUrl}/repos/${repoPath}/releases/latest`, {
     headers: {
       Accept: 'application/vnd.github.v3+json',
-      'User-Agent': 'codinit.dev-app',
-      ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+      'User-Agent': 'CodinIT-App (https://codinit.dev)',
+      ...(githubToken ? { Authorization: `token ${githubToken}` } : {}),
     },
   });
 
@@ -314,7 +315,7 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise
   // Fetch the zipball
   const zipResponse = await fetch(zipballUrl, {
     headers: {
-      ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+      ...(githubToken ? { Authorization: `token ${githubToken}` } : {}),
     },
   });
 
