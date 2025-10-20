@@ -1,0 +1,20 @@
+# Build output
+dist/
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Generated files
+build-metadata.json
+build-info.ts
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

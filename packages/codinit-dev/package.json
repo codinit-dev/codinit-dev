@@ -1,0 +1,34 @@
+{
+  "name": "@codinit/build-verification",
+  "version": "1.0.0",
+  "description": "Build verification and provenance system for CodinIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "creator": "Gerome-Elassaad",
+  "files": [
+    "dist",
+    "scripts"
+
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "build-verification",
+    "provenance",
+    "code-signing",
+    "security"
+  ],
+  "author": "CodinIT",
+  "license": "MIT",
+  "dependencies": {
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0"
+  }
+}

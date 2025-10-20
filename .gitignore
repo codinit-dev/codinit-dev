@@ -45,8 +45,8 @@ changelogUI.md
 docs/instructions/Roadmap.md
 .cursorrules
 *.md
+CLAUDE.md
 .qodo
-.CLAUDE.md
 settings.local.json
 .roo
 .claude
