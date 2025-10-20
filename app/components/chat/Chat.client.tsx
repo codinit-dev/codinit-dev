@@ -9,6 +9,7 @@ import { description, useChatHistory } from '~/lib/persistence';
 import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROMPT_COOKIE_KEY, PROVIDER_LIST } from '~/utils/constants';
+import { getActiveConfig } from '~/lib/stores/tokenConfig';
 import { cubicEasingFn } from '~/utils/easings';
 import { createScopedLogger, renderLogger } from '~/utils/logger';
 import { BaseChat } from './BaseChat';
@@ -255,6 +256,7 @@ export const ChatImpl = memo(
           },
         },
         maxLLMSteps: mcpSettings.maxLLMSteps,
+        tokenConfig: getActiveConfig(),
       },
       sendExtraMessageFields: true,
       onError: (e: Error) => {
