@@ -80,7 +80,12 @@ export class WorkbenchStore {
   }
 
   addToExecutionQueue(callback: () => Promise<void>) {
-    this.#globalExecutionQueue = this.#globalExecutionQueue.then(() => callback());
+    this.#globalExecutionQueue = this.#globalExecutionQueue
+      .then(() => callback())
+      .catch((error) => {
+        console.error('[WorkbenchStore] Execution queue error:', error);
+        throw error; // Re-throw to maintain error chain
+      });
   }
 
   get previews() {
@@ -523,23 +528,48 @@ export class WorkbenchStore {
     this.artifacts.setKey(artifactId, { ...artifact, ...state });
   }
   addAction(data: ActionCallbackData) {
+    console.log('[WorkbenchStore] addAction called:', {
+      actionId: data.actionId,
+      artifactId: data.artifactId,
+      actionType: data.action.type,
+    });
     // this._addAction(data);
 
     this.addToExecutionQueue(() => this._addAction(data));
   }
   async _addAction(data: ActionCallbackData) {
+    console.log('[WorkbenchStore] _addAction executing:', {
+      actionId: data.actionId,
+      artifactId: data.artifactId,
+      actionType: data.action.type,
+    });
+
     const { artifactId } = data;
 
     const artifact = this.#getArtifact(artifactId);
 
     if (!artifact) {
+      console.error('[WorkbenchStore] _addAction ERROR: Artifact not found!', {
+        requestedArtifactId: artifactId,
+        availableArtifacts: Object.keys(this.artifacts.get()),
+      });
       unreachable('Artifact not found');
     }
 
-    return artifact.runner.addAction(data);
+    console.log('[WorkbenchStore] _addAction: Artifact found, adding to runner');
+    const result = await artifact.runner.addAction(data);
+    console.log('[WorkbenchStore] _addAction: Action added to runner successfully');
+    return result;
   }
 
   runAction(data: ActionCallbackData, isStreaming: boolean = false) {
+    console.log('[WorkbenchStore] runAction called:', {
+      actionId: data.actionId,
+      artifactId: data.artifactId,
+      actionType: data.action.type,
+      isStreaming,
+    });
+
     if (isStreaming) {
       this.actionStreamSampler(data, isStreaming);
     } else {
@@ -547,17 +577,39 @@ export class WorkbenchStore {
     }
   }
   async _runAction(data: ActionCallbackData, isStreaming: boolean = false) {
+    console.log('[WorkbenchStore] _runAction executing:', {
+      actionId: data.actionId,
+      artifactId: data.artifactId,
+      actionType: data.action.type,
+      isStreaming,
+    });
+
     const { artifactId } = data;
 
     const artifact = this.#getArtifact(artifactId);
 
     if (!artifact) {
+      console.error('[WorkbenchStore] _runAction ERROR: Artifact not found!', {
+        requestedArtifactId: artifactId,
+        availableArtifacts: Object.keys(this.artifacts.get()),
+      });
       unreachable('Artifact not found');
     }
 
     const action = artifact.runner.actions.get()[data.actionId];
 
+    console.log('[WorkbenchStore] _runAction: Action state check:', {
+      actionExists: !!action,
+      actionExecuted: action?.executed,
+      actionStatus: action?.status,
+      willExecute: !(!action || action.executed),
+    });
+
     if (!action || action.executed) {
+      console.warn('[WorkbenchStore] _runAction: Skipping execution', {
+        reason: !action ? 'action not found in runner' : 'action already executed',
+        actionId: data.actionId,
+      });
       return;
     }
 
@@ -592,12 +644,16 @@ export class WorkbenchStore {
       }
 
       if (!isStreaming) {
+        console.log('[WorkbenchStore] _runAction: Calling runner.runAction for file action (non-streaming)');
         await artifact.runner.runAction(data);
         this.resetAllFileModifications();
       }
     } else {
+      console.log('[WorkbenchStore] _runAction: Calling runner.runAction for non-file action:', data.action.type);
       await artifact.runner.runAction(data);
     }
+
+    console.log('[WorkbenchStore] _runAction: Completed successfully');
   }
 
   actionStreamSampler = createSampler(async (data: ActionCallbackData, isStreaming: boolean = false) => {
