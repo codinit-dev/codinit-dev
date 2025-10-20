@@ -104,6 +104,43 @@ interface ParsedGitHubRepo {
 }
 
 /**
+ * Normalize a GitHub repository path or URL to the standard "owner/repo" format
+ * Handles both full URLs and simple paths:
+ * - "https://github.com/owner/repo.git" -> "owner/repo"
+ * - "https://github.com/owner/repo" -> "owner/repo"
+ * - "owner/repo" -> "owner/repo"
+ * - "owner/repo/subdirectory" -> "owner/repo/subdirectory"
+ *
+ * @param repoInput - GitHub URL or path
+ * @returns Normalized repository path
+ *
+ * @example
+ * normalizeGitHubRepoPath("https://github.com/facebook/react.git")
+ * // Returns: "facebook/react"
+ *
+ * @example
+ * normalizeGitHubRepoPath("vercel/next.js")
+ * // Returns: "vercel/next.js"
+ */
+function normalizeGitHubRepoPath(repoInput: string): string {
+  let normalized = repoInput.trim();
+
+  // Remove .git suffix if present
+  if (normalized.endsWith('.git')) {
+    normalized = normalized.slice(0, -4);
+  }
+
+  // Check if it's a full GitHub URL and strip protocol/domain
+  const githubUrlPattern = /^https?:\/\/github\.com\//i;
+
+  if (githubUrlPattern.test(normalized)) {
+    normalized = normalized.replace(githubUrlPattern, '');
+  }
+
+  return normalized;
+}
+
+/**
  * Parse a GitHub repository path to extract owner, repo name, and optional subdirectory
  * Supports formats:
  * - "owner/repo" - Basic repository
@@ -159,8 +196,11 @@ function isCloudflareEnvironment(context: CloudflareContext): boolean {
 async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): Promise<(FileItem | null)[]> {
   const baseUrl = 'https://api.github.com';
 
+  // Normalize the repository input (handles both URLs and paths)
+  const normalizedRepo = normalizeGitHubRepoPath(repo);
+
   // Parse repository path using the helper function
-  const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(repo);
+  const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(normalizedRepo);
 
   console.log(
     `Fetching from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
@@ -281,8 +321,11 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
 async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise<(FileItem | null)[]> {
   const baseUrl = 'https://api.github.com';
 
+  // Normalize the repository input (handles both URLs and paths)
+  const normalizedRepo = normalizeGitHubRepoPath(repo);
+
   // Parse repository path using the helper function
-  const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(repo);
+  const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(normalizedRepo);
 
   console.log(
     `Fetching ZIP from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
