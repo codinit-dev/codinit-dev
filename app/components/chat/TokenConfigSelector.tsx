@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import type { KeyboardEvent } from 'react';
 import { classNames } from '~/utils/classNames';
 import { useStore } from '@nanostores/react';
+import { IconButton } from '~/components/ui/IconButton';
 import {
   TOKEN_PRESETS,
   selectedPresetStore,
@@ -103,20 +104,16 @@ export const TokenConfigSelector = () => {
   return (
     <>
       <div className="relative z-50" onKeyDown={handleKeyDown} ref={dropdownRef}>
-        <button
+        <IconButton
+          title={`Token Config: ${currentPreset?.name || 'Default'}`}
           className={classNames(
-            'p-2 rounded-lg cursor-pointer transition-all duration-150',
-            'hover:bg-codinit-elements-item-backgroundAccent/50',
+            'hover:bg-codinit-elements-item-backgroundAccent/50 transition-all duration-150 rounded-lg',
             isDropdownOpen ? 'bg-codinit-elements-item-backgroundAccent/50' : '',
           )}
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          title={`Token Config: ${currentPreset?.name || 'Default'}`}
-          aria-expanded={isDropdownOpen}
-          aria-controls="token-config-listbox"
-          aria-haspopup="listbox"
         >
           <div className="i-ph:sliders text-lg" />
-        </button>
+        </IconButton>
 
         {isDropdownOpen && (
           <div
