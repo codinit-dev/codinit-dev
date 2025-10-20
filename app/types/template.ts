@@ -3,8 +3,7 @@ export interface Template {
   label: string;
   description: string;
   githubRepo?: string; // For remote templates
-  subdir?: string; // Subdirectory within the repo (for monorepos)
-  localPath?: string; // For local templates (e.g., 'codinit-vite-react-ts')
+  localPath?: string; // For local templates
   source?: 'local' | 'github'; // Indicate the source of the template
   tags?: string[];
   icon?: string;

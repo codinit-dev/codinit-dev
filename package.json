@@ -12,7 +12,11 @@
   },
   "scripts": {
     "deploy": "npm run build && wrangler pages deploy",
+    "prebuild": "node scripts/collect-build-metadata.cjs --embed app/utils/build-info.ts",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 remix vite:build",
+    "postbuild": "node scripts/verify-build.cjs --mode warn --verbose",
+    "verify": "node scripts/verify-build.cjs",
+    "verify:enforce": "node scripts/verify-build.cjs --mode enforce --verbose",
     "dev": "node pre-start.cjs && remix vite:dev",
     "test": "vitest --run",
     "test:watch": "vitest",
