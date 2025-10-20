@@ -18,6 +18,7 @@ import type { ProviderInfo } from '~/types/model';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { DiscussMode } from './DiscussMode';
+import { TokenConfigSelector } from './TokenConfigSelector';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -111,17 +112,24 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               )}
             >
               <div className="mb-2 space-y-2">
-                <ModelSelector
-                  key={props.provider?.name + ':' + props.modelList.length}
-                  model={props.model}
-                  setModel={props.setModel}
-                  modelList={props.modelList}
-                  provider={props.provider}
-                  setProvider={props.setProvider}
-                  providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
-                  apiKeys={props.apiKeys}
-                  modelLoading={props.isModelLoading}
-                />
+                <div className="flex gap-2 flex-col lg:flex-row">
+                  <div className="flex gap-2 flex-col sm:flex-row flex-1">
+                    <ModelSelector
+                      key={props.provider?.name + ':' + props.modelList.length}
+                      model={props.model}
+                      setModel={props.setModel}
+                      modelList={props.modelList}
+                      provider={props.provider}
+                      setProvider={props.setProvider}
+                      providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+                      apiKeys={props.apiKeys}
+                      modelLoading={props.isModelLoading}
+                    />
+                  </div>
+                  <div className="w-full lg:w-auto lg:min-w-[240px]">
+                    <TokenConfigSelector />
+                  </div>
+                </div>
                 {(props.providerList || []).length > 0 &&
                   props.provider &&
                   !LOCAL_PROVIDERS.includes(props.provider.name) && (
