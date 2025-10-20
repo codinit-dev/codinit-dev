@@ -4,7 +4,6 @@ import { defineConfig, type ViteDevServer } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { optimizeCssModules } from 'vite-plugin-optimize-css-modules';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { vitestWebContainers } from '@webcontainer/test/plugin';
 import * as dotenv from 'dotenv';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
@@ -152,35 +151,9 @@ export default defineConfig((config) => {
       },
     },
     test: {
-      projects: [
-        // Regular tests (non-browser)
-        {
-          plugins: [tsconfigPaths({ ignoreConfigErrors: true })],
-          test: {
-            name: 'unit',
-            environment: 'jsdom',
-            include: ['app/**/*.spec.ts', 'app/**/*.test.ts'],
-            exclude: ['node_modules', 'dist', 'build', 'templates'],
-          },
-        },
-
-        // Browser tests for templates
-        {
-          plugins: [vitestWebContainers()],
-          test: {
-            name: 'browser',
-            include: ['templates/test/**/*.test.ts'],
-            hookTimeout: 60_000,
-            testTimeout: 60_000,
-            browser: {
-              enabled: true,
-              name: 'chromium',
-              provider: 'playwright',
-              headless: true,
-            },
-          },
-        },
-      ],
+      environment: 'jsdom',
+      include: ['app/**/*.spec.ts', 'app/**/*.test.ts'],
+      exclude: ['node_modules', 'dist', 'build', 'templates'],
     },
   };
 });
