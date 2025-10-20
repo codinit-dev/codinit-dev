@@ -6,7 +6,6 @@ import type { BuildMetadata } from './types';
  * Collects build metadata from the current environment
  */
 export function collectBuildMetadata(): BuildMetadata {
-  const isCI = process.env.CI === 'true';
   const isOfficialBuild = checkOfficialBuild();
 
   // Collect git information
@@ -82,6 +81,7 @@ function getGitBranch(): string {
     if (process.env.GITHUB_REF) {
       return process.env.GITHUB_REF.replace('refs/heads/', '');
     }
+
     if (process.env.CI_COMMIT_BRANCH) {
       return process.env.CI_COMMIT_BRANCH;
     }
@@ -137,10 +137,22 @@ function getBuilderIdentity(): string {
  * Get build environment
  */
 function getEnvironment(): string {
-  if (process.env.GITHUB_ACTIONS === 'true') return 'github-actions';
-  if (process.env.GITLAB_CI === 'true') return 'gitlab-ci';
-  if (process.env.CF_PAGES === '1') return 'cloudflare-pages';
-  if (process.env.CI === 'true') return 'ci';
+  if (process.env.GITHUB_ACTIONS === 'true') {
+    return 'github-actions';
+  }
+
+  if (process.env.GITLAB_CI === 'true') {
+    return 'gitlab-ci';
+  }
+
+  if (process.env.CF_PAGES === '1') {
+    return 'cloudflare-pages';
+  }
+
+  if (process.env.CI === 'true') {
+    return 'ci';
+  }
+
   return 'local';
 }
 

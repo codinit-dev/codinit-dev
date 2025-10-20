@@ -4,16 +4,8 @@ import { verifySignature } from './collector';
 /**
  * Verifies build metadata and returns verification result
  */
-export function verifyBuild(
-  metadata: BuildMetadata,
-  config: VerificationConfig = {},
-): VerificationResult {
-  const {
-    mode = 'warn',
-    verbose = false,
-    requiredEnvVars = [],
-    allowedBuilders = [],
-  } = config;
+export function verifyBuild(metadata: BuildMetadata, config: VerificationConfig = {}): VerificationResult {
+  const { mode = 'warn', verbose = false, requiredEnvVars = [], allowedBuilders = [] } = config;
 
   const messages: string[] = [];
   let passed = true;
@@ -101,10 +93,7 @@ export function verifyBuild(
 /**
  * Perform verification and handle the result based on configuration
  */
-export function performVerification(
-  metadata: BuildMetadata,
-  config: VerificationConfig = {},
-): void {
+export function performVerification(metadata: BuildMetadata, config: VerificationConfig = {}): void {
   const result = verifyBuild(metadata, config);
   const { mode = 'warn', customMessage } = config;
 
@@ -161,8 +150,9 @@ export function createVerificationMiddleware(config: VerificationConfig = {}) {
           return {
             type: 'warning' as const,
             title: 'Unofficial Build',
-            message: `This build was created by ${metadata.builder} in a ${metadata.environment} environment. ` +
-                    'For verified official builds, please download from the official releases page.',
+            message:
+              `This build was created by ${metadata.builder} in a ${metadata.environment} environment. ` +
+              'For verified official builds, please download from the official releases page.',
             metadata: {
               commit: metadata.commit.slice(0, 7),
               branch: metadata.branch,

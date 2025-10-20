@@ -1,14 +1,13 @@
 {
-  "name": "@codinit/build-verification",
+  "name": "@codinit/verify",
   "version": "1.0.0",
-  "description": "Build verification and provenance system for CodinIT",
+  "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "creator": "Gerome-Elassaad",
   "files": [
     "dist",
     "scripts"
-
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",

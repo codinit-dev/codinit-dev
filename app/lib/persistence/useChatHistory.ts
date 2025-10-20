@@ -130,7 +130,7 @@ export function useChatHistory() {
                   role: 'assistant',
 
                   // Combine followup message and the artifact with files and command actions
-                  content: `codinit Restored your chat from a snapshot. You can revert this message to load the full chat history.
+                  content: `Repo has been imported. What would you like me to build?
                   <codinitArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
                   ${Object.entries(snapshot?.files || {})
                     .map(([key, value]) => {
