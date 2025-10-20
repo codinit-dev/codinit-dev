@@ -112,23 +112,18 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               )}
             >
               <div className="mb-2 space-y-2">
-                <div className="flex gap-2 flex-col lg:flex-row">
-                  <div className="flex gap-2 flex-col sm:flex-row flex-1">
-                    <ModelSelector
-                      key={props.provider?.name + ':' + props.modelList.length}
-                      model={props.model}
-                      setModel={props.setModel}
-                      modelList={props.modelList}
-                      provider={props.provider}
-                      setProvider={props.setProvider}
-                      providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
-                      apiKeys={props.apiKeys}
-                      modelLoading={props.isModelLoading}
-                    />
-                  </div>
-                  <div className="w-full lg:w-auto lg:min-w-[240px]">
-                    <TokenConfigSelector />
-                  </div>
+                <div className="flex gap-2 flex-col sm:flex-row">
+                  <ModelSelector
+                    key={props.provider?.name + ':' + props.modelList.length}
+                    model={props.model}
+                    setModel={props.setModel}
+                    modelList={props.modelList}
+                    provider={props.provider}
+                    setProvider={props.setProvider}
+                    providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+                    apiKeys={props.apiKeys}
+                    modelLoading={props.isModelLoading}
+                  />
                 </div>
                 {(props.providerList || []).length > 0 &&
                   props.provider &&
@@ -322,6 +317,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             <div className="w-px h-5 bg-codinit-elements-borderColor/30 mx-1"></div>
 
             <DiscussMode chatMode={props.chatMode} setChatMode={props.setChatMode} />
+            <TokenConfigSelector />
             <IconButton
               title="Model Settings"
               className={classNames('transition-all duration-150 flex items-center gap-1.5 rounded-lg px-2', {
