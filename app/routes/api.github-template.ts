@@ -103,25 +103,6 @@ interface ParsedGitHubRepo {
   hasSubdirectory: boolean;
 }
 
-/**
- * Normalize a GitHub repository path or URL to the standard "owner/repo" format
- * Handles both full URLs and simple paths:
- * - "https://github.com/owner/repo.git" -> "owner/repo"
- * - "https://github.com/owner/repo" -> "owner/repo"
- * - "owner/repo" -> "owner/repo"
- * - "owner/repo/subdirectory" -> "owner/repo/subdirectory"
- *
- * @param repoInput - GitHub URL or path
- * @returns Normalized repository path
- *
- * @example
- * normalizeGitHubRepoPath("https://github.com/facebook/react.git")
- * // Returns: "facebook/react"
- *
- * @example
- * normalizeGitHubRepoPath("vercel/next.js")
- * // Returns: "vercel/next.js"
- */
 function normalizeGitHubRepoPath(repoInput: string): string {
   let normalized = repoInput.trim();
 
@@ -140,23 +121,6 @@ function normalizeGitHubRepoPath(repoInput: string): string {
   return normalized;
 }
 
-/**
- * Parse a GitHub repository path to extract owner, repo name, and optional subdirectory
- * Supports formats:
- * - "owner/repo" - Basic repository
- * - "owner/repo/path/to/subdirectory" - Repository with subdirectory
- *
- * @param repoPath - Full repository path from user input
- * @returns Parsed repository information
- *
- * @example
- * parseGitHubRepoPath("facebook/react")
- * // Returns: { owner: "facebook", repoName: "react", repoPath: "facebook/react", subdirectory: "", hasSubdirectory: false }
- *
- * @example
- * parseGitHubRepoPath("vercel/next.js/examples/with-tailwindcss")
- * // Returns: { owner: "vercel", repoName: "next.js", repoPath: "vercel/next.js", subdirectory: "examples/with-tailwindcss", hasSubdirectory: true }
- */
 function parseGitHubRepoPath(repoPath: string): ParsedGitHubRepo {
   const parts = repoPath.split('/');
 
@@ -441,7 +405,14 @@ export async function loader({ request, context }: { request: Request; context: 
     if (isCloudflareEnvironment(context)) {
       fileList = await fetchRepoContentsCloudflare(repo, githubToken);
     } else {
-      fileList = await fetchRepoContentsZip(repo, githubToken);
+      // Try ZIP method first (requires releases), fallback to Contents API if it fails
+      try {
+        fileList = await fetchRepoContentsZip(repo, githubToken);
+      } catch (zipError) {
+        console.log('ZIP method failed, falling back to Contents API');
+        console.log('Error:', zipError instanceof Error ? zipError.message : String(zipError));
+        fileList = await fetchRepoContentsCloudflare(repo, githubToken);
+      }
     }
 
     // Filter out .git files for both methods
