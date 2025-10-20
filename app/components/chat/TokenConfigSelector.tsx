@@ -102,54 +102,25 @@ export const TokenConfigSelector = () => {
 
   return (
     <>
-      <div className="relative w-full z-50" onKeyDown={handleKeyDown} ref={dropdownRef}>
-        <div
+      <div className="relative z-50" onKeyDown={handleKeyDown} ref={dropdownRef}>
+        <button
           className={classNames(
-            'w-full px-3 py-2 rounded-lg cursor-pointer',
-            'bg-codinit-elements-background-depth-1/30 backdrop-blur-sm',
-            'border border-codinit-elements-borderColor/40',
-            'text-codinit-elements-textPrimary',
-            'transition-all duration-200 ease-in-out',
-            'hover:border-codinit-elements-borderColor/70 hover:bg-codinit-elements-background-depth-1/50',
-            isDropdownOpen
-              ? 'ring-2 ring-accent-500/30 border-accent-500/50 shadow-lg shadow-accent-500/5'
-              : 'shadow-sm',
+            'p-2 rounded-lg cursor-pointer transition-all duration-150',
+            'hover:bg-codinit-elements-item-backgroundAccent/50',
+            isDropdownOpen ? 'bg-codinit-elements-item-backgroundAccent/50' : '',
           )}
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setIsDropdownOpen(!isDropdownOpen);
-            }
-          }}
-          role="combobox"
+          title={`Token Config: ${currentPreset?.name || 'Default'}`}
           aria-expanded={isDropdownOpen}
           aria-controls="token-config-listbox"
           aria-haspopup="listbox"
-          tabIndex={0}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 truncate">
-              <div className="i-ph:sliders w-4 h-4 flex-shrink-0 text-codinit-elements-textSecondary" />
-              <div className="flex flex-col">
-                <span className="truncate font-medium text-xs">{currentPreset?.name || 'Token Config'}</span>
-                <span className="text-[10px] text-codinit-elements-textTertiary truncate">
-                  {currentPreset?.description}
-                </span>
-              </div>
-            </div>
-            <div
-              className={classNames(
-                'i-ph:caret-down w-3.5 h-3.5 text-codinit-elements-textSecondary transition-transform duration-200',
-                isDropdownOpen ? 'rotate-180' : undefined,
-              )}
-            />
-          </div>
-        </div>
+          <div className="i-ph:sliders w-[18px] h-[18px] text-codinit-elements-textSecondary" />
+        </button>
 
         {isDropdownOpen && (
           <div
-            className="absolute top-full z-[100] w-full mt-1 py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
+            className="absolute bottom-full mb-2 right-0 w-[280px] py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
             role="listbox"
             id="token-config-listbox"
           >
