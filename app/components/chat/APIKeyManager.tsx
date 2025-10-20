@@ -100,12 +100,12 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
               ) : isEnvKeySet ? (
                 <>
                   <div className="i-ph:check-circle-fill text-green-500 w-4 h-4" />
-                  <span className="text-xs text-green-500">Set via environment variable</span>
+                  <span className="text-xs text-green-500">Connected</span>
                 </>
               ) : (
                 <>
                   <div className="i-ph:x-circle-fill text-red-500 w-4 h-4" />
-                  <span className="text-xs text-red-500">Not Set (Please set via UI or ENV_VAR)</span>
+                  <span className="text-xs text-red-500">Not Connected (Enter API Key)</span>
                 </>
               )}
             </div>
