@@ -58,6 +58,7 @@ export function useMessageParser() {
   const [parsedMessages, setParsedMessages] = useState<{ [key: number]: string }>({});
   const [processedMessageIds, setProcessedMessageIds] = useState<Set<string>>(new Set());
   const [lastMessageCount, setLastMessageCount] = useState(0);
+  const [parsingComplete, setParsingComplete] = useState<{ [messageId: string]: boolean }>({});
 
   const parseMessages = useCallback(
     (messages: Message[], isLoading: boolean) => {
@@ -90,6 +91,7 @@ export function useMessageParser() {
             // Mark as processed if it's a complete message (not streaming)
             if (!isLoading && isNewMessage) {
               setProcessedMessageIds((prev) => new Set(prev).add(message.id));
+              setParsingComplete((prev) => ({ ...prev, [message.id]: true }));
             }
           }
         }
@@ -98,5 +100,9 @@ export function useMessageParser() {
     [lastMessageCount, processedMessageIds],
   );
 
-  return { parsedMessages, parseMessages };
+  return {
+    parsedMessages,
+    parseMessages,
+    isMessageParsed: (id: string) => parsingComplete[id] === true,
+  };
 }

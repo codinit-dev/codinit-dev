@@ -7,7 +7,7 @@ ENV HUSKY=0
 ENV CI=true
 
 # Use pnpm
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.19.0 --activate
 
 # Accept (optional) build-time public URL for Remix/Vite (Coolify can pass it)
 ARG VITE_PUBLIC_APP_URL

@@ -222,5 +222,5 @@
       }
     }
   },
-  "packageManager": "pnpm@10.0.0"
+  "packageManager": "pnpm@10.19.0"
 }

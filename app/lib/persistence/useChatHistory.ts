@@ -48,15 +48,17 @@ export function useChatHistory() {
   const [initialMessages, setInitialMessages] = useState<Message[]>([]);
   const [ready, setReady] = useState<boolean>(false);
   const [urlId, setUrlId] = useState<string | undefined>();
+  const [inMemoryMode, setInMemoryMode] = useState(false);
 
   useEffect(() => {
     if (!db) {
       setReady(true);
+      setInMemoryMode(true);
 
       if (persistenceEnabled) {
         const error = new Error('Chat persistence is unavailable');
         logStore.logError('Chat persistence initialization failed', error);
-        toast.error('Chat persistence is unavailable');
+        toast.error("Chat history unavailable - changes won't be saved");
       }
 
       return;
@@ -260,6 +262,7 @@ ${value.content}
   return {
     ready: !mixedId || ready,
     initialMessages,
+    inMemoryMode,
     updateChatMestaData: async (metadata: IChatMetadata) => {
       const id = chatId.get();
 
@@ -276,7 +279,8 @@ ${value.content}
       }
     },
     storeMessageHistory: async (messages: Message[]) => {
-      if (!db || messages.length === 0) {
+      // Early return only for empty messages
+      if (messages.length === 0) {
         return;
       }
 
@@ -284,14 +288,29 @@ ${value.content}
       messages = messages.filter((m) => !m.annotations?.includes('no-store'));
 
       let _urlId = urlId;
+      let _chatId = chatId.get();
+      let didNavigate = false;
 
-      if (!urlId && firstArtifact?.id) {
-        const urlId = await getUrlId(db, firstArtifact.id);
-        _urlId = urlId;
-        navigateChat(urlId);
-        setUrlId(urlId);
+      // STRATEGY 1: Try artifact-based URL ID
+      if (!_urlId && firstArtifact?.id) {
+        try {
+          if (db) {
+            const newUrlId = await getUrlId(db, firstArtifact.id);
+            _urlId = newUrlId;
+          } else {
+            // In-memory mode: use artifact ID directly
+            _urlId = firstArtifact.id;
+          }
+
+          navigateChat(_urlId);
+          setUrlId(_urlId);
+          didNavigate = true;
+        } catch (error) {
+          console.error('Failed to generate URL from artifact:', error);
+        }
       }
 
+      // Extract chat summary from last message
       let chatSummary: string | undefined = undefined;
       const lastMessage = messages[messages.length - 1];
 
@@ -307,42 +326,79 @@ ${value.content}
         }
       }
 
-      takeSnapshot(messages[messages.length - 1].id, workbenchStore.files.get(), _urlId, chatSummary);
+      // Take snapshot (with or without DB)
+      if (_urlId || _chatId) {
+        takeSnapshot(messages[messages.length - 1].id, workbenchStore.files.get(), _urlId || _chatId, chatSummary);
+      }
 
+      // Set description from artifact title
       if (!description.get() && firstArtifact?.title) {
         description.set(firstArtifact?.title);
       }
 
-      // Ensure chatId.get() is used here as well
-      if (initialMessages.length === 0 && !chatId.get()) {
-        const nextId = await getNextId(db);
+      // STRATEGY 2: Generate numeric/timestamp ID if needed
+      if (!_chatId) {
+        try {
+          let nextId;
 
-        chatId.set(nextId);
+          if (db) {
+            nextId = await getNextId(db);
+          } else {
+            // Fallback: use timestamp-based ID
+            nextId = `chat-${Date.now()}`;
+          }
 
-        if (!urlId) {
-          navigateChat(nextId);
+          _chatId = nextId;
+          chatId.set(nextId);
+
+          // Navigate if we haven't already
+          if (!didNavigate && !_urlId) {
+            navigateChat(nextId);
+            didNavigate = true;
+          }
+        } catch (error) {
+          console.error('Failed to generate chat ID:', error);
+
+          // Last resort: use timestamp
+          _chatId = `chat-${Date.now()}`;
+          chatId.set(_chatId);
+
+          if (!didNavigate) {
+            navigateChat(_chatId);
+            didNavigate = true;
+          }
         }
       }
 
-      // Ensure chatId.get() is used for the final setMessages call
-      const finalChatId = chatId.get();
+      // GUARANTEE: If we somehow still haven't navigated, do it now
+      if (!didNavigate) {
+        const fallbackId = _urlId || _chatId || `chat-${Date.now()}`;
+        navigateChat(fallbackId);
 
-      if (!finalChatId) {
-        console.error('Cannot save messages, chat ID is not set.');
-        toast.error('Failed to save chat messages: Chat ID missing.');
-
-        return;
+        if (!_chatId) {
+          chatId.set(fallbackId);
+          _chatId = fallbackId;
+        }
       }
 
-      await setMessages(
-        db,
-        finalChatId, // Use the potentially updated chatId
-        [...archivedMessages, ...messages],
-        urlId,
-        description.get(),
-        undefined,
-        chatMetadata.get(),
-      );
+      // Try to save to DB (but don't block if it fails)
+      if (db && _chatId) {
+        try {
+          await setMessages(
+            db,
+            _chatId,
+            [...archivedMessages, ...messages],
+            _urlId,
+            description.get(),
+            undefined,
+            chatMetadata.get(),
+          );
+        } catch (error) {
+          console.error('Failed to save messages to DB:', error);
+
+          // Navigation already happened - don't throw
+        }
+      }
     },
     duplicateCurrentChat: async (listItemId: string) => {
       if (!db || (!mixedId && !listItemId)) {

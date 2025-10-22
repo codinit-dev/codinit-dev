@@ -36,14 +36,45 @@ const toastAnimation = cssTransition({
 
 const logger = createScopedLogger('Chat');
 
+async function retryWithTimeout<T>(
+  fn: () => Promise<T>,
+  options: { retries: number; timeout: number; context: string },
+): Promise<T | null> {
+  for (let attempt = 1; attempt <= options.retries; attempt++) {
+    try {
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), options.timeout),
+      );
+      return await Promise.race([fn(), timeoutPromise]);
+    } catch (error) {
+      if (attempt === options.retries) {
+        console.error(`${options.context} failed after ${options.retries} attempts:`, error);
+        return null;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
+    }
+  }
+  return null;
+}
+
 export function Chat() {
   renderLogger.trace('Chat');
 
-  const { ready, initialMessages, storeMessageHistory, importChat, exportChat } = useChatHistory();
+  const { ready, initialMessages, storeMessageHistory, importChat, exportChat, inMemoryMode } = useChatHistory();
   const title = useStore(description);
   useEffect(() => {
     workbenchStore.setReloadedMessages(initialMessages.map((m) => m.id));
   }, [initialMessages]);
+
+  useEffect(() => {
+    if (inMemoryMode) {
+      toast.warning("Chat history unavailable - your work won't be saved", {
+        autoClose: false,
+        closeButton: true,
+      });
+    }
+  }, [inMemoryMode]);
 
   return (
     <>
@@ -306,7 +337,8 @@ export const ChatImpl = memo(
 
     useEffect(() => {
       chatStore.setKey('started', initialMessages.length > 0);
-    }, []);
+      setChatStarted(initialMessages.length > 0);
+    }, [initialMessages.length]);
 
     useEffect(() => {
       processSampledMessages({
@@ -433,13 +465,23 @@ export const ChatImpl = memo(
         return;
       }
 
-      await Promise.all([
-        animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }),
-        animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }),
-      ]);
+      try {
+        // Add timeout to prevent indefinite hanging
+        await Promise.race([
+          Promise.all([
+            animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }),
+            animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }),
+          ]),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Animation timeout')), 1000)),
+        ]);
+      } catch (error) {
+        console.warn('Animation failed or timed out:', error);
 
+        // Continue anyway - don't block chat
+      }
+
+      // Always set chatStarted, even if animation failed
       chatStore.setKey('started', true);
-
       setChatStarted(true);
     };
 
@@ -529,24 +571,24 @@ export const ChatImpl = memo(
           // User mentioned a specific template from the GitHub starters repo
           logger.info(`Detected GitHub starters repo: ${githubStartersPath}`);
 
-          const initResult = await initFromTemplate({
-            message: finalMessageContent,
-            model,
-            provider,
-            autoSelectTemplate,
-            githubRepoPath: githubStartersPath, // Pass the GitHub repo path
-          }).catch((e) => {
-            logger.error('Template loading failed:', e);
-            toast.error(`Failed to load template from ${githubStartersPath}: ${e.message}`, {
-              autoClose: 5000,
-            });
-
-            return null;
-          });
+          const initResult = await retryWithTimeout(
+            () =>
+              initFromTemplate({
+                message: finalMessageContent,
+                model,
+                provider,
+                autoSelectTemplate,
+                githubRepoPath: githubStartersPath,
+              }),
+            { retries: 2, timeout: 8000, context: 'GitHub template loading' },
+          );
 
           if (initResult) {
             setMessages([...initResult.messages]);
-            chatStore.setKey('started', true);
+          } else {
+            toast.warning(`Failed to load template from ${githubStartersPath} - starting with blank project`, {
+              autoClose: 5000,
+            });
           }
 
           setFakeLoading(false);
@@ -565,27 +607,17 @@ export const ChatImpl = memo(
 
         logger.info(`Loading template: ${templateToUse} ${templateSource}`);
 
-        const initResult = await initFromTemplate({
-          message: finalMessageContent,
-          model,
-          provider,
-          autoSelectTemplate, // Use value from settings
-          forceTemplate: templateToUse, // Use detected template or default Vite React
-        }).catch((e) => {
-          logger.error('Template loading failed:', e);
-
-          if (e.message.includes('rate limit')) {
-            toast.error('Rate limit exceeded when loading template. Continuing with blank template.', {
-              autoClose: 5000,
-            });
-          } else {
-            toast.error(`Failed to load ${templateToUse} template: ${e.message}. Continuing with blank template.`, {
-              autoClose: 5000,
-            });
-          }
-
-          return null;
-        });
+        const initResult = await retryWithTimeout(
+          () =>
+            initFromTemplate({
+              message: finalMessageContent,
+              model,
+              provider,
+              autoSelectTemplate,
+              forceTemplate: templateToUse,
+            }),
+          { retries: 2, timeout: 8000, context: 'Template loading' },
+        );
 
         if (initResult) {
           // Template loaded - now set messages and reload
@@ -596,10 +628,23 @@ export const ChatImpl = memo(
           // Wait for React effects to parse messages and add actions to queue
           await new Promise((resolve) => setTimeout(resolve, 150));
 
-          // Wait for all template actions (file writes, npm install, npm run dev) to complete
-          await workbenchStore.waitForExecutionQueue();
+          // Wait for all template actions with timeout
+          try {
+            await Promise.race([
+              workbenchStore.waitForExecutionQueue(),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('Queue timeout')), 5000)),
+            ]);
+          } catch (error) {
+            console.warn('Execution queue timed out, proceeding anyway:', error);
+          }
 
-          reload(attachments ? { experimental_attachments: attachments } : undefined);
+          try {
+            reload(attachments ? { experimental_attachments: attachments } : undefined);
+          } catch (error) {
+            console.error('Reload failed:', error);
+            toast.error('Failed to start AI response - please send another message');
+          }
+
           setInput('');
           Cookies.remove(PROMPT_COOKIE_KEY);
           setUploadedFiles([]);
@@ -608,10 +653,23 @@ export const ChatImpl = memo(
           textareaRef.current?.blur();
           setFakeLoading(false);
 
+          // Ensure navigation happens
+          setTimeout(async () => {
+            try {
+              await storeMessageHistory(messages);
+            } catch (error) {
+              console.error('Direct storeMessageHistory call failed:', error);
+            }
+          }, 200);
+
           return;
         }
 
         // Fallback if template loading fails - proceed with normal flow
+        toast.warning('Template loading failed - starting with blank project', {
+          autoClose: 4000,
+        });
+
         const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
         const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
 
@@ -624,16 +682,30 @@ export const ChatImpl = memo(
             experimental_attachments: attachments,
           },
         ]);
-        reload(attachments ? { experimental_attachments: attachments } : undefined);
+
+        try {
+          reload(attachments ? { experimental_attachments: attachments } : undefined);
+        } catch (error) {
+          console.error('Reload failed:', error);
+          toast.error('Failed to start AI response - please try again');
+        }
+
         setFakeLoading(false);
+
+        // Ensure navigation happens
+        setTimeout(async () => {
+          try {
+            await storeMessageHistory(messages);
+          } catch (error) {
+            console.error('Direct storeMessageHistory call failed:', error);
+          }
+        }, 200);
+
         setInput('');
         Cookies.remove(PROMPT_COOKIE_KEY);
-
         setUploadedFiles([]);
         setImageDataList([]);
-
         resetEnhancer();
-
         textareaRef.current?.blur();
 
         return;
