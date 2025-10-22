@@ -323,7 +323,17 @@ export class ActionRunner {
     }
 
     const webcontainer = await this.#webcontainer;
-    const relativePath = nodePath.relative(webcontainer.workdir, action.filePath);
+
+    // Handle both absolute and relative paths from AI
+    let relativePath: string;
+
+    if (nodePath.isAbsolute(action.filePath)) {
+      // If path is absolute (e.g., '/home/project/src/App.tsx'), convert to relative
+      relativePath = nodePath.relative(webcontainer.workdir, action.filePath);
+    } else {
+      // If path is already relative (e.g., 'src/App.tsx'), use it directly
+      relativePath = action.filePath;
+    }
 
     let folder = nodePath.dirname(relativePath);
 
