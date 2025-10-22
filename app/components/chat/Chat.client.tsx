@@ -517,6 +517,8 @@ export const ChatImpl = memo(
         finalMessageContent = messageContent + elementInfo;
       }
 
+      runAnimation();
+
       if (!chatStarted) {
         setFakeLoading(true);
 
@@ -543,10 +545,8 @@ export const ChatImpl = memo(
           });
 
           if (initResult) {
-            const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
             setMessages([...initResult.messages]);
-            runAnimation();
-            reload(attachments ? { experimental_attachments: attachments } : undefined);
+            chatStore.setKey('started', true);
           }
 
           setFakeLoading(false);
@@ -592,7 +592,13 @@ export const ChatImpl = memo(
           const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
 
           setMessages(initResult.messages);
-          runAnimation();
+
+          // Wait for React effects to parse messages and add actions to queue
+          await new Promise((resolve) => setTimeout(resolve, 150));
+
+          // Wait for all template actions (file writes, npm install, npm run dev) to complete
+          await workbenchStore.waitForExecutionQueue();
+
           reload(attachments ? { experimental_attachments: attachments } : undefined);
           setInput('');
           Cookies.remove(PROMPT_COOKIE_KEY);

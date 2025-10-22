@@ -56,25 +56,47 @@ const extractTextContent = (message: Message) =>
 
 export function useMessageParser() {
   const [parsedMessages, setParsedMessages] = useState<{ [key: number]: string }>({});
+  const [processedMessageIds, setProcessedMessageIds] = useState<Set<string>>(new Set());
+  const [lastMessageCount, setLastMessageCount] = useState(0);
 
-  const parseMessages = useCallback((messages: Message[], isLoading: boolean) => {
-    let reset = false;
-
-    if (import.meta.env.DEV && !isLoading) {
-      reset = true;
-      messageParser.reset();
-    }
-
-    for (const [index, message] of messages.entries()) {
-      if (message.role === 'assistant' || message.role === 'user') {
-        const newParsedContent = messageParser.parse(message.id, extractTextContent(message));
-        setParsedMessages((prevParsed) => ({
-          ...prevParsed,
-          [index]: !reset ? (prevParsed[index] || '') + newParsedContent : newParsedContent,
-        }));
+  const parseMessages = useCallback(
+    (messages: Message[], isLoading: boolean) => {
+      // Reset only if message count decreased (indicates new chat session)
+      if (messages.length < lastMessageCount) {
+        messageParser.reset();
+        setParsedMessages({});
+        setProcessedMessageIds(new Set());
+        setLastMessageCount(messages.length);
+      } else {
+        setLastMessageCount(messages.length);
       }
-    }
-  }, []);
+
+      for (const [index, message] of messages.entries()) {
+        if (message.role === 'assistant' || message.role === 'user') {
+          const textContent = extractTextContent(message);
+
+          // Check if this is a new message or streaming update
+          const isNewMessage = !processedMessageIds.has(message.id);
+          const isStreamingUpdate = isLoading && index === messages.length - 1;
+
+          if (isNewMessage || isStreamingUpdate) {
+            const newParsedContent = messageParser.parse(message.id, textContent);
+
+            setParsedMessages((prevParsed) => ({
+              ...prevParsed,
+              [index]: isNewMessage ? newParsedContent : (prevParsed[index] || '') + newParsedContent,
+            }));
+
+            // Mark as processed if it's a complete message (not streaming)
+            if (!isLoading && isNewMessage) {
+              setProcessedMessageIds((prev) => new Set(prev).add(message.id));
+            }
+          }
+        }
+      }
+    },
+    [lastMessageCount, processedMessageIds],
+  );
 
   return { parsedMessages, parseMessages };
 }

@@ -54,6 +54,7 @@ export class WorkbenchStore {
     import.meta.hot?.data?.supabaseAlert ?? atom<SupabaseAlert | undefined>(undefined);
   deployAlert: WritableAtom<DeployAlert | undefined> =
     import.meta.hot?.data?.deployAlert ?? atom<DeployAlert | undefined>(undefined);
+  executionQueuePending: WritableAtom<boolean> = import.meta.hot?.data?.executionQueuePending ?? atom(false);
   modifiedFiles = new Set<string>();
   artifactIdList: string[] = [];
   #globalExecutionQueue = Promise.resolve();
@@ -66,6 +67,7 @@ export class WorkbenchStore {
       import.meta.hot.data.actionAlert = this.actionAlert;
       import.meta.hot.data.supabaseAlert = this.supabaseAlert;
       import.meta.hot.data.deployAlert = this.deployAlert;
+      import.meta.hot.data.executionQueuePending = this.executionQueuePending;
 
       // Ensure binary files are properly preserved across hot reloads
       const filesMap = this.files.get();
@@ -80,12 +82,37 @@ export class WorkbenchStore {
   }
 
   addToExecutionQueue(callback: () => Promise<void>) {
+    this.executionQueuePending.set(true);
     this.#globalExecutionQueue = this.#globalExecutionQueue
       .then(() => callback())
       .catch((error) => {
         console.error('[WorkbenchStore] Execution queue error:', error);
         throw error; // Re-throw to maintain error chain
+      })
+      .finally(() => {
+        /*
+         * Check if this is the last item in the queue
+         * by comparing the current promise with the stored one
+         */
+        const currentQueue = this.#globalExecutionQueue;
+
+        // Use microtask to ensure this runs after any synchronously added items
+        Promise.resolve().then(() => {
+          if (this.#globalExecutionQueue === currentQueue) {
+            this.executionQueuePending.set(false);
+          }
+        });
       });
+  }
+
+  async waitForExecutionQueue(): Promise<void> {
+    // Wait for the current queue to complete
+    await this.#globalExecutionQueue;
+
+    // Double-check that no new items were added during the wait
+    if (this.executionQueuePending.get()) {
+      await this.waitForExecutionQueue();
+    }
   }
 
   get previews() {
