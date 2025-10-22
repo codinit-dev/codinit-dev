@@ -517,8 +517,6 @@ export const ChatImpl = memo(
         finalMessageContent = messageContent + elementInfo;
       }
 
-      runAnimation();
-
       if (!chatStarted) {
         setFakeLoading(true);
 
@@ -545,8 +543,10 @@ export const ChatImpl = memo(
           });
 
           if (initResult) {
+            const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
             setMessages([...initResult.messages]);
-            chatStore.setKey('started', true);
+            runAnimation();
+            reload(attachments ? { experimental_attachments: attachments } : undefined);
           }
 
           setFakeLoading(false);
@@ -592,6 +592,7 @@ export const ChatImpl = memo(
           const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
 
           setMessages(initResult.messages);
+          runAnimation();
           reload(attachments ? { experimental_attachments: attachments } : undefined);
           setInput('');
           Cookies.remove(PROMPT_COOKIE_KEY);
