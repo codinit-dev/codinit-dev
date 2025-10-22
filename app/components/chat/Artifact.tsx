@@ -14,11 +14,47 @@ const highlighterOptions = {
   themes: ['light-plus', 'dark-plus'],
 };
 
-const shellHighlighter: HighlighterGeneric<BundledLanguage, BundledTheme> =
-  import.meta.hot?.data?.shellHighlighter ?? (await createHighlighter(highlighterOptions));
+let shellHighlighter: HighlighterGeneric<BundledLanguage, BundledTheme> | null = null;
+let highlighterPromise: Promise<HighlighterGeneric<BundledLanguage, BundledTheme>> | null = null;
 
-if (import.meta.hot && import.meta.hot.data) {
-  import.meta.hot.data.shellHighlighter = shellHighlighter;
+async function getHighlighter(): Promise<HighlighterGeneric<BundledLanguage, BundledTheme>> {
+  if (shellHighlighter) {
+    return shellHighlighter;
+  }
+
+  if (!highlighterPromise) {
+    highlighterPromise = (async () => {
+      /*
+       * Check HMR cache if available.
+       * If a cached highlighter exists, return it.
+       */
+      if (import.meta.hot?.data?.shellHighlighter) {
+        const cachedHighlighter = import.meta.hot.data.shellHighlighter;
+
+        if (cachedHighlighter) {
+          return cachedHighlighter as HighlighterGeneric<BundledLanguage, BundledTheme>;
+        }
+      }
+
+      // Create new highlighter
+      const newHighlighter = await createHighlighter(highlighterOptions);
+
+      // Store in HMR cache if available
+      if (import.meta.hot && import.meta.hot.data) {
+        import.meta.hot.data.shellHighlighter = newHighlighter;
+      }
+
+      return newHighlighter;
+    })();
+  }
+
+  /*
+   * Await the promise to get the actual highlighter instance.
+   * We can assert here because the logic above ensures highlighterPromise is not null.
+   */
+  shellHighlighter = await (highlighterPromise as Promise<HighlighterGeneric<BundledLanguage, BundledTheme>>);
+
+  return shellHighlighter;
 }
 
 interface ArtifactProps {
@@ -163,22 +199,42 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
 });
 
 interface ShellCodeBlockProps {
-  classsName?: string;
+  className?: string;
   code: string;
 }
 
-function ShellCodeBlock({ classsName, code }: ShellCodeBlockProps) {
-  return (
-    <div
-      className={classNames('text-xs', classsName)}
-      dangerouslySetInnerHTML={{
-        __html: shellHighlighter.codeToHtml(code, {
+function ShellCodeBlock({ className, code }: ShellCodeBlockProps) {
+  const [highlightedCode, setHighlightedCode] = useState<string>('');
+
+  useEffect(() => {
+    getHighlighter()
+      .then((highlighter) => {
+        const html = highlighter.codeToHtml(code, {
           lang: 'shell',
           theme: 'dark-plus',
-        }),
-      }}
-    ></div>
-  );
+        });
+        setHighlightedCode(html);
+      })
+      .catch((error) => {
+        console.error('Failed to initialize highlighter:', error);
+
+        // Fallback to plain text
+        setHighlightedCode(`<pre><code>${code}</code></pre>`);
+      });
+  }, [code]);
+
+  if (!highlightedCode) {
+    // Loading state: show plain text
+    return (
+      <div className={classNames('text-xs', className)}>
+        <pre>
+          <code>{code}</code>
+        </pre>
+      </div>
+    );
+  }
+
+  return <div className={classNames('text-xs', className)} dangerouslySetInnerHTML={{ __html: highlightedCode }}></div>;
 }
 
 interface ActionListProps {
@@ -264,7 +320,7 @@ const ActionList = memo(({ actions }: ActionListProps) => {
               </div>
               {(type === 'shell' || type === 'start') && (
                 <ShellCodeBlock
-                  classsName={classNames('mt-1', {
+                  className={classNames('mt-1', {
                     'mb-3.5': !isLast,
                   })}
                   code={content}

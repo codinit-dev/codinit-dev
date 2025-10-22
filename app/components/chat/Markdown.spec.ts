@@ -51,4 +51,28 @@ describe('stripCodeFenceFromArtifact', () => {
 
     expect(stripCodeFenceFromArtifact(input)).toBe(expected);
   });
+
+  it('should remove code fences with c++ language identifier', () => {
+    const input = "```c++\n<div class='__codinitArtifact__'></div>\n```";
+    const expected = "\n<div class='__codinitArtifact__'></div>\n";
+    expect(stripCodeFenceFromArtifact(input)).toBe(expected);
+  });
+
+  it('should remove code fences with c# language identifier', () => {
+    const input = "```c#\n<div class='__codinitArtifact__'></div>\n```";
+    const expected = "\n<div class='__codinitArtifact__'></div>\n";
+    expect(stripCodeFenceFromArtifact(input)).toBe(expected);
+  });
+
+  it('should remove code fences with objective-c language identifier', () => {
+    const input = "```objective-c\n<div class='__codinitArtifact__'></div>\n```";
+    const expected = "\n<div class='__codinitArtifact__'></div>\n";
+    expect(stripCodeFenceFromArtifact(input)).toBe(expected);
+  });
+
+  it('should remove code fences with custom language identifier containing hyphens and numbers', () => {
+    const input = "```my-custom-lang-123\n<div class='__codinitArtifact__'></div>\n```";
+    const expected = "\n<div class='__codinitArtifact__'></div>\n";
+    expect(stripCodeFenceFromArtifact(input)).toBe(expected);
+  });
 });

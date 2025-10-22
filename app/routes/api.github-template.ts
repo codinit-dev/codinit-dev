@@ -167,11 +167,19 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
   const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(normalizedRepo);
 
   console.log(
-    `Fetching from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
+    `[GitHub Template] Fetching from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
+  );
+
+  console.log(
+    `[GitHub Template] GitHub Token (masked): ${githubToken ? githubToken.substring(0, 5) + '...' : 'Not provided'}`,
   );
 
   // Get repository info to find default branch
-  const repoResponse = await fetch(`${baseUrl}/repos/${repoPath}`, {
+  const repoUrl = `${baseUrl}/repos/${repoPath}`;
+
+  console.log(`[GitHub Template] Fetching repo info from: ${repoUrl}`);
+
+  const repoResponse = await fetch(repoUrl, {
     headers: {
       Accept: 'application/vnd.github.v3+json',
       'User-Agent': 'CodinIT-App (https://codinit.dev)',
@@ -188,7 +196,11 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string): 
   const defaultBranch = repoData.default_branch;
 
   // Get the tree recursively
-  const treeResponse = await fetch(`${baseUrl}/repos/${repoPath}/git/trees/${defaultBranch}?recursive=1`, {
+  const treeUrl = `${baseUrl}/repos/${repoPath}/git/trees/${defaultBranch}?recursive=1`;
+
+  console.log(`[GitHub Template] Fetching tree from: ${treeUrl}`);
+
+  const treeResponse = await fetch(treeUrl, {
     headers: {
       Accept: 'application/vnd.github.v3+json',
       'User-Agent': 'CodinIT-App (https://codinit.dev)',
@@ -293,11 +305,19 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise
   const { repoPath, subdirectory, hasSubdirectory } = parseGitHubRepoPath(normalizedRepo);
 
   console.log(
-    `Fetching ZIP from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
+    `[GitHub Template] Fetching ZIP from repo: ${repoPath}${hasSubdirectory ? `, subdirectory: ${subdirectory}` : ' (root directory)'}`,
+  );
+
+  console.log(
+    `[GitHub Template] GitHub Token (masked): ${githubToken ? githubToken.substring(0, 5) + '...' : 'Not provided'}`,
   );
 
   // Get the latest release
-  const releaseResponse = await fetch(`${baseUrl}/repos/${repoPath}/releases/latest`, {
+  const releaseUrl = `${baseUrl}/repos/${repoPath}/releases/latest`;
+
+  console.log(`[GitHub Template] Fetching release from: ${releaseUrl}`);
+
+  const releaseResponse = await fetch(releaseUrl, {
     headers: {
       Accept: 'application/vnd.github.v3+json',
       'User-Agent': 'CodinIT-App (https://codinit.dev)',
@@ -311,6 +331,7 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string): Promise
 
   const releaseData = (await releaseResponse.json()) as GitHubReleaseData;
   const zipballUrl = releaseData.zipball_url;
+  console.log(`[GitHub Template] Fetching zipball from: ${zipballUrl}`);
 
   // Fetch the zipball
   const zipResponse = await fetch(zipballUrl, {

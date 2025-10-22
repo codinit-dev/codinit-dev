@@ -28,6 +28,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
 
           if (!messageId) {
             logger.error(`Invalid message id ${messageId}`);
+            return null;
           }
 
           return <Artifact messageId={messageId} />;
@@ -90,7 +91,7 @@ export const stripCodeFenceFromArtifact = (content: string) => {
     const line = lines[i];
 
     // Check if this is a code fence opening
-    if (line?.trim().match(/^```\w*$/)) {
+    if (line?.trim().match(/^```.*$/)) {
       const fenceStart = i;
       let fenceEnd = -1;
       let hasArtifact = false;
