@@ -2,7 +2,7 @@ let webCrypto: Crypto;
 
 if (typeof document === 'undefined') {
   // Dynamically import Node.js crypto module for SSR
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
   // @ts-ignore: Node.js 'crypto' module is not directly typed as Web Crypto API, but its webcrypto property is.
   webCrypto = await import('node:crypto').then((m) => m.webcrypto);
 } else {
