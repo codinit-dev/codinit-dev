@@ -1,10 +1,10 @@
 services:
   app-prod:
-    image: bolt-ai:production
+    image: codinit-ai:production
     build:
       context: .
       dockerfile: Dockerfile
-      target: bolt-ai-production
+      target: codinit-ai-production
     ports:
       - '5173:5173'
     env_file: '.env.local'
@@ -34,9 +34,9 @@ services:
       - production
 
   app-dev:
-    image: bolt-ai:development
+    image: codinit-ai:development
     build:
-      target: bolt-ai-development
+      target: codinit-ai-development
     env_file: '.env.local'
     environment:
       - NODE_ENV=development
