@@ -40,6 +40,8 @@ import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { useStore } from '@nanostores/react';
 import { StickToBottom, useStickToBottomContext } from '~/lib/hooks';
+import { McpIntegrationPanel } from './MCPIntegrationPanel';
+import { useMCPStore } from '~/lib/stores/mcp';
 
 const TEXTAREA_MIN_HEIGHT = 76;
 
@@ -131,6 +133,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const [progressAnnotations, setProgressAnnotations] = useState<ProgressAnnotation[]>([]);
     const expoUrl = useStore(expoUrlAtom);
     const [qrModalOpen, setQrModalOpen] = useState(false);
+    const [mcpPanelOpen, setMcpPanelOpen] = useState(false);
+    const mcpServerTools = useMCPStore((state) => state.serverTools);
+    const mcpIsInitialized = useMCPStore((state) => state.isInitialized);
 
     useEffect(() => {
       if (expoUrl) {
@@ -632,7 +637,43 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                           a new line
                         </div>
                       ) : null}
-                      <SupabaseConnection />
+                      <div className="flex items-center gap-2">
+                        <Tooltip.Root>
+                          <Tooltip.Trigger asChild>
+                            <IconButton
+                              onClick={() => setMcpPanelOpen(true)}
+                              disabled={!mcpIsInitialized}
+                              className="transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <div className="relative">
+                                <div className="i-ph:plug text-lg"></div>
+                                {mcpIsInitialized &&
+                                  Object.values(mcpServerTools).filter((s) => s.status === 'available').length > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full border border-bolt-elements-background-depth-1"></span>
+                                  )}
+                              </div>
+                            </IconButton>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              className="bg-bolt-elements-background-depth-2 text-bolt-elements-textPrimary px-2 py-1 rounded text-sm"
+                              sideOffset={5}
+                            >
+                              MCP Integrations
+                              {mcpIsInitialized &&
+                                Object.values(mcpServerTools).filter((s) => s.status === 'available').length > 0 && (
+                                  <>
+                                    {' '}
+                                    ({Object.values(mcpServerTools).filter((s) => s.status === 'available').length}{' '}
+                                    available)
+                                  </>
+                                )}
+                              <Tooltip.Arrow className="fill-bolt-elements-background-depth-2" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                        </Tooltip.Root>
+                        <SupabaseConnection />
+                      </div>
                       <ExpoQrModal open={qrModalOpen} onClose={() => setQrModalOpen(false)} />
                     </div>
                   </div>
@@ -662,7 +703,12 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       </div>
     );
 
-    return <Tooltip.Provider delayDuration={200}>{baseChat}</Tooltip.Provider>;
+    return (
+      <Tooltip.Provider delayDuration={200}>
+        {baseChat}
+        <McpIntegrationPanel isOpen={mcpPanelOpen} onClose={() => setMcpPanelOpen(false)} />
+      </Tooltip.Provider>
+    );
   },
 );
 
