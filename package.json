@@ -179,9 +179,9 @@
     "@types/react-dom": "^18.3.7",
     "@types/react-window": "^1.8.8",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/browser": "^3.1.0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "crypto-browserify": "^3.12.1",
     "electron": "^35.7.5",
     "electron-builder": "^26.0.12",
     "eslint": "^9.38.0",
@@ -205,7 +205,6 @@
     "vite-plugin-optimize-css-modules": "^1.2.0",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^3.1.0",
-    "@vitest/browser": "^3.1.0",
     "wrangler": "^4.42.0"
   },
   "resolutions": {

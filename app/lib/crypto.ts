@@ -1,12 +1,24 @@
+let webCrypto: Crypto;
+
+if (typeof document === 'undefined') {
+  // Dynamically import Node.js crypto module for SSR
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: Node.js 'crypto' module is not directly typed as Web Crypto API, but its webcrypto property is.
+  webCrypto = await import('node:crypto').then((m) => m.webcrypto);
+} else {
+  // Use browser's crypto global
+  webCrypto = crypto;
+}
+
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 const IV_LENGTH = 16;
 
 export async function encrypt(key: string, data: string) {
-  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+  const iv = webCrypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const cryptoKey = await getKey(key);
 
-  const ciphertext = await crypto.subtle.encrypt(
+  const ciphertext = await webCrypto.subtle.encrypt(
     {
       name: 'AES-CBC',
       iv,
@@ -31,7 +43,7 @@ export async function decrypt(key: string, payload: string) {
 
   const cryptoKey = await getKey(key);
 
-  const plaintext = await crypto.subtle.decrypt(
+  const plaintext = await webCrypto.subtle.decrypt(
     {
       name: 'AES-CBC',
       iv,
@@ -44,7 +56,7 @@ export async function decrypt(key: string, payload: string) {
 }
 
 async function getKey(key: string) {
-  return await crypto.subtle.importKey('raw', encodeBase64(key), { name: 'AES-CBC' }, false, ['encrypt', 'decrypt']);
+  return await webCrypto.subtle.importKey('raw', encodeBase64(key), { name: 'AES-CBC' }, false, ['encrypt', 'decrypt']);
 }
 
 function decodeBase64(encoded: Uint8Array) {
