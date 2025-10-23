@@ -53,8 +53,8 @@ function checkOfficialBuild(): boolean {
 
   // Check if running in trusted CI environments
   const trustedCIProviders = [
-    process.env.GITHUB_ACTIONS === 'true' && process.env.GITHUB_REPOSITORY === 'Gerome-Elassaad/codinit-app',
-    process.env.GITLAB_CI === 'true' && process.env.CI_PROJECT_PATH === 'Gerome-Elassaad/codinit-app',
+    process.env.GITHUB_ACTIONS === 'true' && process.env.GITHUB_REPOSITORY === 'gerome-elassaad/codinit-app',
+    process.env.GITLAB_CI === 'true' && process.env.CI_PROJECT_PATH === 'gerome-elassaad/codinit-app',
     process.env.CLOUDFLARE_PAGES === 'true',
   ];
 

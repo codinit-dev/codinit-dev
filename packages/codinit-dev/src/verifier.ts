@@ -129,7 +129,7 @@ export function performVerification(metadata: BuildMetadata, config: Verificatio
     console.warn('\n⚠️  UNOFFICIAL BUILD NOTICE');
     console.warn('This build was not created through the official CI/CD pipeline.');
     console.warn('While it will function normally, users should prefer official releases');
-    console.warn('from https://github.com/Gerome-Elassaad/codinit-app/releases\n');
+    console.warn('from https://github.com/gerome-elassaad/codinit-app/releases\n');
   }
 }
 
