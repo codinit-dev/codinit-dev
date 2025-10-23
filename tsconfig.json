@@ -20,12 +20,13 @@
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"],
-      "#build/*": ["./build/*"],
-      "@templates/*": ["./templates/*"]
+      "~/*": ["./app/*"]
     },
+    "ignoreDeprecations": "6.0",
 
+    // vite takes care of building everything, not tsc
     "noEmit": true
   },
   "include": [
@@ -35,6 +36,5 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
-  ],
-  "exclude": ["node_modules", "templates/**/*"]
+  ]
 }

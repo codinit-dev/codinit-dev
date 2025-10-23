@@ -57,12 +57,7 @@ function CurrentDateTime() {
       <div className="h-4 w-4 i-ph:clock opacity-80" />
       <div className="flex gap-2">
         <span>{dateTime.toLocaleDateString()}</span>
-        <span>
-          {dateTime.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </span>
+        <span>{dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
       </div>
     </div>
   );
@@ -121,10 +116,7 @@ export const Menu = () => {
       event.stopPropagation();
 
       // Log the delete operation to help debugging
-      console.log('Attempting to delete chat:', {
-        id: item.id,
-        description: item.description,
-      });
+      console.log('Attempting to delete chat:', { id: item.id, description: item.description });
 
       deleteChat(item.id)
         .then(() => {

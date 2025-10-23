@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { checkConnection } from '~/lib/api/connection';
 
-const ACKNOWLEDGED_CONNECTION_ISSUE_KEY = 'codinit_acknowledged_connection_issue';
+const ACKNOWLEDGED_CONNECTION_ISSUE_KEY = 'bolt_acknowledged_connection_issue';
 
 type ConnectionIssueType = 'disconnected' | 'high-latency' | null;
 
@@ -57,10 +57,5 @@ export const useConnectionStatus = () => {
     checkStatus();
   };
 
-  return {
-    hasConnectionIssues,
-    currentIssue,
-    acknowledgeIssue,
-    resetAcknowledgment,
-  };
+  return { hasConnectionIssues, currentIssue, acknowledgeIssue, resetAcknowledgment };
 };

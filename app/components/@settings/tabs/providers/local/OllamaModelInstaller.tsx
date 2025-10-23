@@ -158,9 +158,7 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
         throw new Error('Failed to fetch installed models');
       }
 
-      const data = (await response.json()) as {
-        models: Array<{ name: string; digest: string; latest: string }>;
-      };
+      const data = (await response.json()) as { models: Array<{ name: string; digest: string; latest: string }> };
       const installedModels = data.models || [];
 
       // Update models with installed versions
@@ -389,8 +387,8 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
         <div className="flex items-center gap-3">
           <OllamaIcon className="w-8 h-8 text-purple-500" />
           <div>
-            <h3 className="text-lg font-semibold text-codinit-elements-textPrimary">Ollama Models</h3>
-            <p className="text-sm text-codinit-elements-textSecondary mt-1">Install and manage your Ollama models</p>
+            <h3 className="text-lg font-semibold text-bolt-elements-textPrimary">Ollama Models</h3>
+            <p className="text-sm text-bolt-elements-textSecondary mt-1">Install and manage your Ollama models</p>
           </div>
         </div>
         <motion.button
@@ -422,8 +420,8 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
               type="text"
               className={classNames(
                 'w-full px-4 py-3 rounded-xl',
-                'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
-                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                'bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor',
+                'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
                 'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
                 'transition-all duration-200',
               )}
@@ -436,7 +434,7 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
               }}
               disabled={isInstalling}
             />
-            <p className="text-sm text-codinit-elements-textSecondary px-1">
+            <p className="text-sm text-bolt-elements-textSecondary px-1">
               Browse models at{' '}
               <a
                 href="https://ollama.com/library"
@@ -490,7 +488,7 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
               'px-3 py-1 rounded-full text-xs font-medium transition-all duration-200',
               selectedTags.includes(tag)
                 ? 'bg-purple-500 text-white'
-                : 'bg-codinit-elements-background-depth-3 text-codinit-elements-textSecondary hover:bg-codinit-elements-background-depth-4',
+                : 'bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary hover:bg-bolt-elements-background-depth-4',
             )}
           >
             {tag}
@@ -504,8 +502,8 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
             key={model.name}
             className={classNames(
               'flex items-start gap-2 p-3 rounded-lg',
-              'bg-codinit-elements-background-depth-3',
-              'hover:bg-codinit-elements-background-depth-4',
+              'bg-bolt-elements-background-depth-3',
+              'hover:bg-bolt-elements-background-depth-4',
               'transition-all duration-200',
               'relative group',
             )}
@@ -514,14 +512,14 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
             <div className="flex-1 space-y-1.5">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-codinit-elements-textPrimary font-mono text-sm">{model.name}</p>
-                  <p className="text-xs text-codinit-elements-textSecondary mt-0.5">{model.desc}</p>
+                  <p className="text-bolt-elements-textPrimary font-mono text-sm">{model.name}</p>
+                  <p className="text-xs text-bolt-elements-textSecondary mt-0.5">{model.desc}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs text-codinit-elements-textTertiary">{model.size}</span>
+                  <span className="text-xs text-bolt-elements-textTertiary">{model.size}</span>
                   {model.installedVersion && (
                     <div className="mt-0.5 flex flex-col items-end gap-0.5">
-                      <span className="text-xs text-codinit-elements-textTertiary">v{model.installedVersion}</span>
+                      <span className="text-xs text-bolt-elements-textTertiary">v{model.installedVersion}</span>
                       {model.needsUpdate && model.latestVersion && (
                         <span className="text-xs text-purple-500">v{model.latestVersion} available</span>
                       )}
@@ -534,7 +532,7 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
                   {model.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-1.5 py-0.5 rounded-full text-[10px] bg-codinit-elements-background-depth-4 text-codinit-elements-textTertiary"
+                      className="px-1.5 py-0.5 rounded-full text-[10px] bg-bolt-elements-background-depth-4 text-bolt-elements-textTertiary"
                     >
                       {tag}
                     </span>
@@ -588,13 +586,13 @@ export default function OllamaModelInstaller({ onModelInstalled }: OllamaModelIn
       {installProgress && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-codinit-elements-textSecondary">{installProgress.status}</span>
+            <span className="text-bolt-elements-textSecondary">{installProgress.status}</span>
             <div className="flex items-center gap-4">
-              <span className="text-codinit-elements-textTertiary">
+              <span className="text-bolt-elements-textTertiary">
                 {installProgress.downloadedSize} / {installProgress.totalSize}
               </span>
-              <span className="text-codinit-elements-textTertiary">{installProgress.speed}</span>
-              <span className="text-codinit-elements-textSecondary">{Math.round(installProgress.progress)}%</span>
+              <span className="text-bolt-elements-textTertiary">{installProgress.speed}</span>
+              <span className="text-bolt-elements-textSecondary">{Math.round(installProgress.progress)}%</span>
             </div>
           </div>
           <Progress value={installProgress.progress} className="h-1" />

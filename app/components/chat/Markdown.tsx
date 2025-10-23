@@ -23,7 +23,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
   const components = useMemo(() => {
     return {
       div: ({ className, children, node, ...props }) => {
-        if (className?.includes('__codinitArtifact__')) {
+        if (className?.includes('__exampleArtifact__')) {
           const messageId = node?.properties.dataMessageId as string;
 
           if (!messageId) {
@@ -33,7 +33,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
           return <Artifact messageId={messageId} />;
         }
 
-        if (className?.includes('__codinitThought__')) {
+        if (className?.includes('__boltThought__')) {
           return <ThoughtBox title="Thought process">{children}</ThoughtBox>;
         }
 
@@ -78,50 +78,45 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
   );
 });
 
+/**
+ * Removes code fence markers (```) surrounding an artifact element while preserving the artifact content.
+ * This is necessary because artifacts should not be wrapped in code blocks when rendered for rendering action list.
+ *
+ * @param content - The markdown content to process
+ * @returns The processed content with code fence markers removed around artifacts
+ *
+ * @example
+ * // Removes code fences around artifact
+ * const input = "```xml\n<div class='__exampleArtifact__'></div>\n```";
+ * stripCodeFenceFromArtifact(input);
+ * // Returns: "\n<div class='__exampleArtifact__'></div>\n"
+ *
+ * @remarks
+ * - Only removes code fences that directly wrap an artifact (marked with __exampleArtifact__ class)
+ * - Handles code fences with optional language specifications (e.g. ```xml, ```typescript)
+ * - Preserves original content if no artifact is found
+ * - Safely handles edge cases like empty input or artifacts at start/end of content
+ */
 export const stripCodeFenceFromArtifact = (content: string) => {
-  if (!content || !content.includes('__codinitArtifact__')) {
+  if (!content || !content.includes('__exampleArtifact__')) {
     return content;
   }
 
   const lines = content.split('\n');
-  let i = 0;
+  const artifactLineIndex = lines.findIndex((line) => line.includes('__exampleArtifact__'));
 
-  while (i < lines.length) {
-    const line = lines[i];
+  // Return original content if artifact line not found
+  if (artifactLineIndex === -1) {
+    return content;
+  }
 
-    // Check if this is a code fence opening
-    if (line?.trim().match(/^```\w*$/)) {
-      const fenceStart = i;
-      let fenceEnd = -1;
-      let hasArtifact = false;
+  // Check previous line for code fence
+  if (artifactLineIndex > 0 && lines[artifactLineIndex - 1]?.trim().match(/^```\w*$/)) {
+    lines[artifactLineIndex - 1] = '';
+  }
 
-      // Find the closing fence and check for artifacts
-      for (let j = i + 1; j < lines.length; j++) {
-        if (lines[j]?.trim() === '```') {
-          fenceEnd = j;
-          break;
-        }
-
-        if (lines[j]?.includes('__codinitArtifact__')) {
-          hasArtifact = true;
-        }
-      }
-
-      // If we found a complete fence block containing an artifact, remove the fence markers
-      if (fenceEnd !== -1 && hasArtifact) {
-        // Replace the closing fence with empty line to preserve spacing
-        lines[fenceEnd] = '';
-
-        // Replace the opening fence with empty line to preserve spacing
-        lines[fenceStart] = '';
-
-        // Move past the fence block we just processed
-        i = fenceEnd + 1;
-        continue;
-      }
-    }
-
-    i++;
+  if (artifactLineIndex < lines.length - 1 && lines[artifactLineIndex + 1]?.trim().match(/^```$/)) {
+    lines[artifactLineIndex + 1] = '';
   }
 
   return lines.join('\n');

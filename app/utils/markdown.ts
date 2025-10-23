@@ -3,7 +3,7 @@ import remarkGfm from 'remark-gfm';
 import type { PluggableList, Plugin } from 'unified';
 import rehypeSanitize, { defaultSchema, type Options as RehypeSanitizeOptions } from 'rehype-sanitize';
 import { SKIP, visit } from 'unist-util-visit';
-import type { Node as UnistNode, Parent as UnistParent } from 'unist';
+import type { UnistNode, UnistParent } from 'node_modules/unist-util-visit/lib';
 
 export const allowedHTMLElements = [
   'a',
@@ -63,7 +63,7 @@ function remarkThinkRawContent() {
     visit(tree, (node: any) => {
       if (node.type === 'html' && node.value && node.value.startsWith('<think>')) {
         const cleanedContent = node.value.slice(7);
-        node.value = `<div class="__codinitThought__">${cleanedContent}`;
+        node.value = `<div class="__boltThought__">${cleanedContent}`;
 
         return;
       }
@@ -84,9 +84,9 @@ const rehypeSanitizeOptions: RehypeSanitizeOptions = {
     div: [
       ...(defaultSchema.attributes?.div ?? []),
       'data*',
-      ['className', '__codinitArtifact__', '__codinitThought__'],
+      ['className', '__exampleArtifact__', '__boltThought__'],
 
-      // ['className', '__codinitThought__']
+      // ['className', '__boltThought__']
     ],
   },
   strip: [],

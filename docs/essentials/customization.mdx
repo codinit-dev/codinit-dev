@@ -1,0 +1,588 @@
+---
+canonical_url: "https://docs.codinit.dev/essentials/customization"
+title: 'Customization & Settings'
+description: 'Customize CodinIT IDE, preferences, themes, and configuration to match your workflow'
+---
+
+## Overview
+
+CodinIT is highly customizable to match your development workflow and preferences. From themes and keybindings to AI behavior and editor settings, you can tailor every aspect of the IDE.
+
+## Accessing Settings
+
+<Tabs>
+  <Tab title="macOS" icon="/assets/frameworks/icons/apple.svg">
+    **Menu**: CodinIT → Preferences → Settings
+
+    **Keyboard**: `Cmd + ,`
+  </Tab>
+  <Tab title="Windows" icon="/assets/frameworks/icons/windows.svg">
+    **Menu**: File → Preferences → Settings
+
+    **Keyboard**: `Ctrl + ,`
+  </Tab>
+  <Tab title="Linux" icon="/assets/frameworks/icons/linux.svg">
+    **Menu**: File → Preferences → Settings
+
+    **Keyboard**: `Ctrl + ,`
+  </Tab>
+  <Tab title="Command Palette" icon="terminal">
+    Open Command Palette (`Cmd/Ctrl + Shift + P`) and type "Open Settings"
+  </Tab>
+</Tabs>
+
+## Theme Customization
+
+### Built-in Themes
+
+CodinIT includes carefully crafted themes optimized for extended coding sessions:
+
+<CardGroup cols={2}>
+  <Card title="Dark Themes" icon="moon">
+    - **CodinIT Dark** (Default)
+    - **Midnight Blue**
+    - **Dracula Pro**
+    - **Nord Dark**
+    - **Tokyo Night**
+  </Card>
+
+  <Card title="Light Themes" icon="sun">
+    - **CodinIT Light**
+    - **GitHub Light**
+    - **Solarized Light**
+    - **Catppuccin Latte**
+  </Card>
+
+  <Card title="High Contrast" icon="circle-half-stroke">
+    - **High Contrast Dark**
+    - **High Contrast Light**
+  </Card>
+
+  <Card title="Custom Themes" icon="palette">
+    - Import VSCode themes
+    - Create your own
+    - Share with community
+  </Card>
+</CardGroup>
+
+### Changing Your Theme
+
+1. Open Settings (`Cmd/Ctrl + ,`)
+2. Navigate to **Appearance → Color Theme**
+3. Preview and select your preferred theme
+4. Theme changes apply instantly
+
+<Tip>
+Use `Cmd/Ctrl + K + T` to quickly preview and switch between themes without opening settings.
+</Tip>
+
+### Custom Theme Creation
+
+Create your own color scheme:
+
+```json settings.json
+{
+  "workbench.colorCustomizations": {
+    "editor.background": "#1a1b26",
+    "editor.foreground": "#a9b1d6",
+    "activityBar.background": "#16161e",
+    "sideBar.background": "#1a1b26",
+    "statusBar.background": "#16161e"
+  },
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "keyword",
+        "settings": {
+          "foreground": "#bb9af7"
+        }
+      }
+    ]
+  }
+}
+```
+
+## Editor Settings
+
+### Font Configuration
+
+Customize your code font for optimal readability:
+
+```json settings.json
+{
+  "editor.fontFamily": "JetBrains Mono, Fira Code, Menlo, Monaco, monospace",
+  "editor.fontSize": 14,
+  "editor.lineHeight": 1.6,
+  "editor.fontLigatures": true,
+  "editor.fontWeight": "400"
+}
+```
+
+<Info>
+Font ligatures combine characters like `=>`, `!=`, `>=` into single glyphs for better readability.
+</Info>
+
+### Popular Developer Fonts
+
+- **JetBrains Mono** - Modern, developer-focused
+- **Fira Code** - Open-source with ligatures
+- **Cascadia Code** - Microsoft's font with ligatures
+- **Monaspace** - GitHub's font superfamily
+- **Victor Mono** - Cursive italics for code
+
+### Editor Behavior
+
+```json settings.json
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.wordWrap": "on",
+  "editor.minimap.enabled": true,
+  "editor.minimap.maxColumn": 120,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  }
+}
+```
+
+## AI Configuration
+
+### Default AI Provider
+
+Set your preferred AI provider globally:
+
+```json settings.json
+{
+  "codinit.ai.defaultProvider": "anthropic",
+  "codinit.ai.defaultModel": "claude-3-5-sonnet",
+  "codinit.ai.temperature": 0.7,
+  "codinit.ai.maxTokens": 4096
+}
+```
+
+### AI Behavior Settings
+
+<AccordionGroup>
+  <Accordion title="Auto-suggestions">
+    Configure when AI suggestions appear
+
+    ```json
+    {
+      "codinit.ai.inlineSuggestions": {
+        "enabled": true,
+        "delay": 300,
+        "triggerCharacters": [".", "(", "{", "["]
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Context Window">
+    Control how much code context AI can see
+
+    ```json
+    {
+      "codinit.ai.contextWindow": {
+        "includeOpenFiles": true,
+        "maxFiles": 10,
+        "includeGitChanges": true
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Custom Instructions">
+    Add project-specific AI instructions
+
+    ```json
+    {
+      "codinit.ai.customInstructions": [
+        "Always use TypeScript strict mode",
+        "Follow React best practices",
+        "Include error handling",
+        "Write comprehensive tests"
+      ]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Code Review">
+    Configure automated code review
+
+    ```json
+    {
+      "codinit.ai.codeReview": {
+        "enabled": true,
+        "onSave": false,
+        "onCommit": true,
+        "checkFor": ["security", "performance", "style"]
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Keybindings
+
+### Default Keybindings
+
+<Tabs>
+  <Tab title="macOS" icon="/assets/frameworks/icons/apple.svg">
+    | Action | Shortcut |
+    |--------|----------|
+    | Open AI Chat | `Cmd + K` |
+    | Inline AI Edit | `Cmd + I` |
+    | Command Palette | `Cmd + Shift + P` |
+    | Quick File Open | `Cmd + P` |
+    | Terminal Toggle | `` Cmd + ` `` |
+    | Multi-cursor | `Cmd + D` |
+    | Find in Files | `Cmd + Shift + F` |
+    | Go to Definition | `F12` |
+    | Format Document | `Shift + Alt + F` |
+  </Tab>
+
+  <Tab title="Windows/Linux" icon="/assets/frameworks/icons/windows.svg">
+    | Action | Shortcut |
+    |--------|----------|
+    | Open AI Chat | `Ctrl + K` |
+    | Inline AI Edit | `Ctrl + I` |
+    | Command Palette | `Ctrl + Shift + P` |
+    | Quick File Open | `Ctrl + P` |
+    | Terminal Toggle | `` Ctrl + ` `` |
+    | Multi-cursor | `Ctrl + D` |
+    | Find in Files | `Ctrl + Shift + F` |
+    | Go to Definition | `F12` |
+    | Format Document | `Shift + Alt + F` |
+  </Tab>
+</Tabs>
+
+### Custom Keybindings
+
+Create your own shortcuts:
+
+```json keybindings.json
+[
+  {
+    "key": "cmd+shift+r",
+    "command": "codinit.refactorSelection",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "cmd+shift+t",
+    "command": "codinit.generateTests",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "cmd+shift+d",
+    "command": "codinit.generateDocs",
+    "when": "editorTextFocus"
+  }
+]
+```
+
+## Workspace Settings
+
+### Project-Specific Configuration
+
+Create `.codinit/settings.json` in your project root:
+
+```json .codinit/settings.json
+{
+  "codinit.ai.provider": "openai",
+  "codinit.ai.model": "gpt-4-turbo",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "eslint.enable": true,
+  "prettier.enable": true
+}
+```
+
+<Warning>
+Workspace settings override user settings. This is perfect for team consistency.
+</Warning>
+
+### Recommended Extensions
+
+Configure suggested extensions for your project:
+
+```json .codinit/extensions.json
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "prisma.prisma"
+  ]
+}
+```
+
+## Language-Specific Settings
+
+### TypeScript/JavaScript
+
+```json settings.json
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.autoImports": true,
+  "javascript.suggest.autoImports": true
+}
+```
+
+### Python
+
+```json settings.json
+{
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.formatting.provider": "black"
+}
+```
+
+### Other Languages
+
+<Tabs>
+  <Tab title="Go" icon="code">
+    ```json
+    {
+      "[go]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": true
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Rust" icon="code">
+    ```json
+    {
+      "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Java" icon="code">
+    ```json
+    {
+      "[java]": {
+        "editor.defaultFormatter": "redhat.java",
+        "editor.formatOnSave": true
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Terminal Customization
+
+### Terminal Appearance
+
+```json settings.json
+{
+  "terminal.integrated.fontSize": 13,
+  "terminal.integrated.fontFamily": "JetBrains Mono, Menlo, Monaco, monospace",
+  "terminal.integrated.lineHeight": 1.4,
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.windows": "PowerShell"
+}
+```
+
+### Shell Integration
+
+```json settings.json
+{
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.showWelcome": false,
+  "terminal.integrated.env.osx": {
+    "FIG_NEW_SESSION": "1"
+  }
+}
+```
+
+## Git Integration
+
+### Git Configuration
+
+```json settings.json
+{
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.autoStash": true,
+  "git.showProgress": true,
+  "git.suggestSmartCommit": true,
+  "gitlens.codeLens.enabled": true,
+  "gitlens.currentLine.enabled": true
+}
+```
+
+## Performance Settings
+
+### Optimize for Large Projects
+
+```json settings.json
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/.DS_Store": true,
+    "**/dist": true,
+    "**/build": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.next": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/objects/**": true
+  },
+  "typescript.tsserver.maxTsServerMemory": 4096
+}
+```
+
+## Sync Settings Across Devices
+
+### Settings Sync
+
+Enable settings sync to use your configuration across multiple machines:
+
+1. Open Command Palette (`Cmd/Ctrl + Shift + P`)
+2. Type "Settings Sync: Turn On"
+3. Sign in with GitHub or Microsoft account
+4. Select what to sync:
+   - Settings
+   - Keybindings
+   - Extensions
+   - UI State
+   - Snippets
+
+<Tip>
+Settings sync is encrypted and stored securely in the cloud.
+</Tip>
+
+## Import/Export Settings
+
+### Export Your Configuration
+
+```bash
+# Export all settings
+codinit --export-settings ~/my-codinit-config.json
+
+# Export specific workspace settings
+codinit --export-workspace ./.codinit
+```
+
+### Import Configuration
+
+```bash
+# Import from file
+codinit --import-settings ~/my-codinit-config.json
+
+# Import from URL
+codinit --import-settings https://example.com/team-config.json
+```
+
+## Team Settings
+
+### Share Configuration with Your Team
+
+Create a shared configuration repository:
+
+```
+team-codinit-config/
+├── settings.json          # Shared editor settings
+├── keybindings.json       # Custom shortcuts
+├── extensions.json        # Required extensions
+├── ai-instructions.md     # AI coding guidelines
+└── README.md             # Setup instructions
+```
+
+Team members can clone and import:
+
+```bash
+git clone https://github.com/your-org/team-codinit-config
+codinit --import-settings ./team-codinit-config
+```
+
+## Troubleshooting Settings
+
+### Reset to Defaults
+
+If something goes wrong, reset settings:
+
+1. **Backup current settings** (optional)
+2. Open Command Palette
+3. Type "Reset Settings to Default"
+4. Confirm reset
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Settings not applying">
+    - Check for syntax errors in settings.json
+    - Reload window: `Cmd/Ctrl + Shift + P` → "Reload Window"
+    - Check for conflicting extensions
+  </Accordion>
+
+  <Accordion title="Keybindings not working">
+    - Check for conflicts in keybindings.json
+    - Ensure "when" conditions are correct
+    - Disable conflicting extensions temporarily
+  </Accordion>
+
+  <Accordion title="AI not using custom instructions">
+    - Verify settings.json syntax
+    - Check that instructions are in correct format
+    - Restart CodinIT
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="AI Chat & Commands" icon="robot" href="/essentials/ai-chat-commands">
+    Master AI-powered development
+  </Card>
+  <Card title="Select Your Model" icon="brain" href="/getting-started/select-your-model">
+    Choose the best AI provider
+  </Card>
+  <Card title="Integrations" icon="plug" href="/integrations/git">
+    Connect external services
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/troubleshooting">
+    Fix common issues
+  </Card>
+</CardGroup>

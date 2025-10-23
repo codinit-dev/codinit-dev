@@ -1,17 +1,16 @@
 import { WebContainer } from '@webcontainer/api';
 import { WORK_DIR_NAME } from '~/utils/constants';
 import { cleanStackTrace } from '~/utils/stacktrace';
-import type { ActionAlert } from '~/types/actions';
 
 interface WebContainerContext {
   loaded: boolean;
 }
 
-export const webcontainerContext: WebContainerContext = import.meta.hot?.data?.webcontainerContext ?? {
-  loaded: true,
+export const webcontainerContext: WebContainerContext = import.meta.hot?.data.webcontainerContext ?? {
+  loaded: false,
 };
 
-if (import.meta.hot && import.meta.hot.data) {
+if (import.meta.hot) {
   import.meta.hot.data.webcontainerContext = webcontainerContext;
 }
 
@@ -19,15 +18,9 @@ export let webcontainer: Promise<WebContainer> = new Promise(() => {
   // noop for ssr
 });
 
-let _onWebContainerPreviewErrorCallback: ((alert: ActionAlert) => void) | undefined;
-
-export function onWebContainerPreviewError(callback: (alert: ActionAlert) => void) {
-  _onWebContainerPreviewErrorCallback = callback;
-}
-
 if (!import.meta.env.SSR) {
   webcontainer =
-    import.meta.hot?.data?.webcontainer ??
+    import.meta.hot?.data.webcontainer ??
     Promise.resolve()
       .then(() => {
         return WebContainer.boot({
@@ -36,21 +29,20 @@ if (!import.meta.env.SSR) {
           forwardPreviewErrors: true, // Enable error forwarding from iframes
         });
       })
-      .then(async (wc) => {
+      .then(async (webcontainer) => {
         webcontainerContext.loaded = true;
 
+        const { workbenchStore } = await import('~/lib/stores/workbench');
+
         // Listen for preview errors
-        wc.on('preview-message', (message) => {
+        webcontainer.on('preview-message', (message) => {
           console.log('WebContainer preview message:', message);
 
           // Handle both uncaught exceptions and unhandled promise rejections
-          if (
-            (message.type === 'PREVIEW_UNCAUGHT_EXCEPTION' || message.type === 'PREVIEW_UNHANDLED_REJECTION') &&
-            _onWebContainerPreviewErrorCallback
-          ) {
+          if (message.type === 'PREVIEW_UNCAUGHT_EXCEPTION' || message.type === 'PREVIEW_UNHANDLED_REJECTION') {
             const isPromise = message.type === 'PREVIEW_UNHANDLED_REJECTION';
             const title = isPromise ? 'Unhandled Promise Rejection' : 'Uncaught Exception';
-            _onWebContainerPreviewErrorCallback({
+            workbenchStore.actionAlert.set({
               type: 'preview',
               title,
               description: 'message' in message ? message.message : 'Unknown error',
@@ -60,10 +52,10 @@ if (!import.meta.env.SSR) {
           }
         });
 
-        return wc;
+        return webcontainer;
       });
 
-  if (import.meta.hot && import.meta.hot.data) {
+  if (import.meta.hot) {
     import.meta.hot.data.webcontainer = webcontainer;
   }
 }

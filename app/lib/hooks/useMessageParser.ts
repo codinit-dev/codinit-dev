@@ -1,12 +1,12 @@
 import type { Message } from 'ai';
 import { useCallback, useState } from 'react';
-import { EnhancedStreamingMessageParser } from '~/lib/runtime/enhanced-message-parser';
+import { StreamingMessageParser } from '~/lib/runtime/message-parser';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { createScopedLogger } from '~/utils/logger';
 
 const logger = createScopedLogger('useMessageParser');
 
-const messageParser = new EnhancedStreamingMessageParser({
+const messageParser = new StreamingMessageParser({
   callbacks: {
     onArtifactOpen: (data) => {
       logger.trace('onArtifactOpen', data);
@@ -22,10 +22,7 @@ const messageParser = new EnhancedStreamingMessageParser({
     onActionOpen: (data) => {
       logger.trace('onActionOpen', data.action);
 
-      /*
-       * File actions are streamed, so we add them immediately to show progress
-       * Shell actions are complete when created by enhanced parser, so we wait for close
-       */
+      // we only add shell actions when when the close tag got parsed because only then we have the content
       if (data.action.type === 'file') {
         workbenchStore.addAction(data);
       }
@@ -33,10 +30,6 @@ const messageParser = new EnhancedStreamingMessageParser({
     onActionClose: (data) => {
       logger.trace('onActionClose', data.action);
 
-      /*
-       * Add non-file actions (shell, build, start, etc.) when they close
-       * Enhanced parser creates complete shell actions, so they're ready to execute
-       */
       if (data.action.type !== 'file') {
         workbenchStore.addAction(data);
       }
@@ -56,53 +49,25 @@ const extractTextContent = (message: Message) =>
 
 export function useMessageParser() {
   const [parsedMessages, setParsedMessages] = useState<{ [key: number]: string }>({});
-  const [processedMessageIds, setProcessedMessageIds] = useState<Set<string>>(new Set());
-  const [lastMessageCount, setLastMessageCount] = useState(0);
-  const [parsingComplete, setParsingComplete] = useState<{ [messageId: string]: boolean }>({});
 
-  const parseMessages = useCallback(
-    (messages: Message[], isLoading: boolean) => {
-      // Reset only if message count decreased (indicates new chat session)
-      if (messages.length < lastMessageCount) {
-        messageParser.reset();
-        setParsedMessages({});
-        setProcessedMessageIds(new Set());
-        setLastMessageCount(messages.length);
-      } else {
-        setLastMessageCount(messages.length);
+  const parseMessages = useCallback((messages: Message[], isLoading: boolean) => {
+    let reset = false;
+
+    if (import.meta.env.DEV && !isLoading) {
+      reset = true;
+      messageParser.reset();
+    }
+
+    for (const [index, message] of messages.entries()) {
+      if (message.role === 'assistant' || message.role === 'user') {
+        const newParsedContent = messageParser.parse(message.id, extractTextContent(message));
+        setParsedMessages((prevParsed) => ({
+          ...prevParsed,
+          [index]: !reset ? (prevParsed[index] || '') + newParsedContent : newParsedContent,
+        }));
       }
+    }
+  }, []);
 
-      for (const [index, message] of messages.entries()) {
-        if (message.role === 'assistant' || message.role === 'user') {
-          const textContent = extractTextContent(message);
-
-          // Check if this is a new message or streaming update
-          const isNewMessage = !processedMessageIds.has(message.id);
-          const isStreamingUpdate = isLoading && index === messages.length - 1;
-
-          if (isNewMessage || isStreamingUpdate) {
-            const newParsedContent = messageParser.parse(message.id, textContent);
-
-            setParsedMessages((prevParsed) => ({
-              ...prevParsed,
-              [index]: isNewMessage ? newParsedContent : (prevParsed[index] || '') + newParsedContent,
-            }));
-
-            // Mark as processed if it's a complete message (not streaming)
-            if (!isLoading && isNewMessage) {
-              setProcessedMessageIds((prev) => new Set(prev).add(message.id));
-              setParsingComplete((prev) => ({ ...prev, [message.id]: true }));
-            }
-          }
-        }
-      }
-    },
-    [lastMessageCount, processedMessageIds],
-  );
-
-  return {
-    parsedMessages,
-    parseMessages,
-    isMessageParsed: (id: string) => parsingComplete[id] === true,
-  };
+  return { parsedMessages, parseMessages };
 }

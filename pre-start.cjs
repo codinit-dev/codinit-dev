@@ -16,7 +16,7 @@ let commitJson = {
 
 console.log(`
 ★═══════════════════════════════════════★
-           CodinIT.dev
+          C O D I N I T . D E V
          ⚡️  Welcome  ⚡️
 ★═══════════════════════════════════════★
 `);

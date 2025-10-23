@@ -224,9 +224,7 @@ export default function LocalProvidersTab() {
       }
 
       const updatedResponse = await fetch('http://127.0.0.1:11434/api/tags');
-      const updatedData = (await updatedResponse.json()) as {
-        models: OllamaModel[];
-      };
+      const updatedData = (await updatedResponse.json()) as { models: OllamaModel[] };
       const updatedModel = updatedData.models.find((m) => m.name === modelName);
 
       return updatedModel !== undefined;
@@ -239,10 +237,7 @@ export default function LocalProvidersTab() {
   const handleToggleCategory = useCallback(
     async (enabled: boolean) => {
       filteredProviders.forEach((provider) => {
-        updateProviderSettings(provider.name, {
-          ...provider.settings,
-          enabled,
-        });
+        updateProviderSettings(provider.name, { ...provider.settings, enabled });
       });
       toast(enabled ? 'All local providers enabled' : 'All local providers disabled');
     },
@@ -256,14 +251,10 @@ export default function LocalProvidersTab() {
     });
 
     if (enabled) {
-      logStore.logProvider(`Provider ${provider.name} enabled`, {
-        provider: provider.name,
-      });
+      logStore.logProvider(`Provider ${provider.name} enabled`, { provider: provider.name });
       toast(`${provider.name} enabled`);
     } else {
-      logStore.logProvider(`Provider ${provider.name} disabled`, {
-        provider: provider.name,
-      });
+      logStore.logProvider(`Provider ${provider.name} disabled`, { provider: provider.name });
       toast(`${provider.name} disabled`);
     }
   };
@@ -312,7 +303,7 @@ export default function LocalProvidersTab() {
 
   // Update model details display
   const ModelDetails = ({ model }: { model: OllamaModel }) => (
-    <div className="flex items-center gap-3 text-xs text-codinit-elements-textSecondary">
+    <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
       <div className="flex items-center gap-1">
         <div className="i-ph:code text-purple-500" />
         <span>{model.digest.substring(0, 7)}</span>
@@ -388,8 +379,8 @@ export default function LocalProvidersTab() {
   return (
     <div
       className={classNames(
-        'rounded-lg bg-codinit-elements-background text-codinit-elements-textPrimary shadow-sm p-4',
-        'hover:bg-codinit-elements-background-depth-2',
+        'rounded-lg bg-bolt-elements-background text-bolt-elements-textPrimary shadow-sm p-4',
+        'hover:bg-bolt-elements-background-depth-2',
         'transition-all duration-200',
       )}
       role="region"
@@ -402,7 +393,7 @@ export default function LocalProvidersTab() {
         transition={{ duration: 0.3 }}
       >
         {/* Header section */}
-        <div className="flex items-center justify-between gap-4 border-b border-codinit-elements-borderColor pb-4">
+        <div className="flex items-center justify-between gap-4 border-b border-bolt-elements-borderColor pb-4">
           <div className="flex items-center gap-3">
             <motion.div
               className={classNames(
@@ -415,16 +406,14 @@ export default function LocalProvidersTab() {
             </motion.div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold text-codinit-elements-textPrimary">Local AI Models</h2>
+                <h2 className="text-lg font-semibold text-bolt-elements-textPrimary">Local AI Models</h2>
               </div>
-              <p className="text-sm text-codinit-elements-textSecondary">
-                Configure and manage your local AI providers
-              </p>
+              <p className="text-sm text-bolt-elements-textSecondary">Configure and manage your local AI providers</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-codinit-elements-textSecondary">Enable All</span>
+            <span className="text-sm text-bolt-elements-textSecondary">Enable All</span>
             <Switch
               checked={categoryEnabled}
               onCheckedChange={handleToggleCategory}
@@ -440,8 +429,8 @@ export default function LocalProvidersTab() {
             <motion.div
               key={provider.name}
               className={classNames(
-                'bg-codinit-elements-background-depth-2 rounded-xl',
-                'hover:bg-codinit-elements-background-depth-3',
+                'bg-bolt-elements-background-depth-2 rounded-xl',
+                'hover:bg-bolt-elements-background-depth-3',
                 'transition-all duration-200 p-5',
                 'relative overflow-hidden group',
               )}
@@ -455,8 +444,8 @@ export default function LocalProvidersTab() {
                   <motion.div
                     className={classNames(
                       'w-12 h-12 flex items-center justify-center rounded-xl',
-                      'bg-codinit-elements-background-depth-3',
-                      provider.settings.enabled ? 'text-purple-500' : 'text-codinit-elements-textSecondary',
+                      'bg-bolt-elements-background-depth-3',
+                      provider.settings.enabled ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
                     )}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                   >
@@ -467,10 +456,10 @@ export default function LocalProvidersTab() {
                   </motion.div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-md font-semibold text-codinit-elements-textPrimary">{provider.name}</h3>
+                      <h3 className="text-md font-semibold text-bolt-elements-textPrimary">{provider.name}</h3>
                       <span className="px-2 py-0.5 text-xs rounded-full bg-green-500/10 text-green-500">Local</span>
                     </div>
-                    <p className="text-sm text-codinit-elements-textSecondary mt-1">
+                    <p className="text-sm text-bolt-elements-textSecondary mt-1">
                       {PROVIDER_DESCRIPTIONS[provider.name as ProviderName]}
                     </p>
                   </div>
@@ -492,7 +481,7 @@ export default function LocalProvidersTab() {
                     className="mt-4"
                   >
                     <div className="flex flex-col gap-2">
-                      <label className="text-sm text-codinit-elements-textSecondary">API Endpoint</label>
+                      <label className="text-sm text-bolt-elements-textSecondary">API Endpoint</label>
                       {editingProvider === provider.name ? (
                         <input
                           type="text"
@@ -500,8 +489,8 @@ export default function LocalProvidersTab() {
                           placeholder="Enter Ollama base URL"
                           className={classNames(
                             'w-full px-3 py-2 rounded-lg text-sm',
-                            'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-                            'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                            'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+                            'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
                             'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
                             'transition-all duration-200',
                           )}
@@ -520,12 +509,12 @@ export default function LocalProvidersTab() {
                           onClick={() => setEditingProvider(provider.name)}
                           className={classNames(
                             'w-full px-3 py-2 rounded-lg text-sm cursor-pointer',
-                            'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-                            'hover:border-purple-500/30 hover:bg-codinit-elements-background-depth-4',
+                            'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+                            'hover:border-purple-500/30 hover:bg-bolt-elements-background-depth-4',
                             'transition-all duration-200',
                           )}
                         >
-                          <div className="flex items-center gap-2 text-codinit-elements-textSecondary">
+                          <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
                             <div className="i-ph:link text-sm" />
                             <span>{provider.settings.baseUrl || OLLAMA_API_URL}</span>
                           </div>
@@ -542,15 +531,15 @@ export default function LocalProvidersTab() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="i-ph:cube-duotone text-purple-500" />
-                      <h4 className="text-sm font-medium text-codinit-elements-textPrimary">Installed Models</h4>
+                      <h4 className="text-sm font-medium text-bolt-elements-textPrimary">Installed Models</h4>
                     </div>
                     {isLoadingModels ? (
                       <div className="flex items-center gap-2">
                         <div className="i-ph:spinner-gap-bold animate-spin w-4 h-4" />
-                        <span className="text-sm text-codinit-elements-textSecondary">Loading models...</span>
+                        <span className="text-sm text-bolt-elements-textSecondary">Loading models...</span>
                       </div>
                     ) : (
-                      <span className="text-sm text-codinit-elements-textSecondary">
+                      <span className="text-sm text-bolt-elements-textSecondary">
                         {ollamaModels.length} models available
                       </span>
                     )}
@@ -562,15 +551,15 @@ export default function LocalProvidersTab() {
                         {Array.from({ length: 3 }).map((_, i) => (
                           <div
                             key={i}
-                            className="h-20 w-full bg-codinit-elements-background-depth-3 rounded-lg animate-pulse"
+                            className="h-20 w-full bg-bolt-elements-background-depth-3 rounded-lg animate-pulse"
                           />
                         ))}
                       </div>
                     ) : ollamaModels.length === 0 ? (
-                      <div className="text-center py-8 text-codinit-elements-textSecondary">
+                      <div className="text-center py-8 text-bolt-elements-textSecondary">
                         <div className="i-ph:cube-transparent text-4xl mx-auto mb-2" />
                         <p>No models installed yet</p>
-                        <p className="text-sm text-codinit-elements-textTertiary px-1">
+                        <p className="text-sm text-bolt-elements-textTertiary px-1">
                           Browse models at{' '}
                           <a
                             href="https://ollama.com/library"
@@ -590,8 +579,8 @@ export default function LocalProvidersTab() {
                           key={model.name}
                           className={classNames(
                             'p-4 rounded-xl',
-                            'bg-codinit-elements-background-depth-3',
-                            'hover:bg-codinit-elements-background-depth-4',
+                            'bg-bolt-elements-background-depth-3',
+                            'hover:bg-bolt-elements-background-depth-4',
                             'transition-all duration-200',
                           )}
                           whileHover={{ scale: 1.01 }}
@@ -599,7 +588,7 @@ export default function LocalProvidersTab() {
                           <div className="flex items-center justify-between">
                             <div className="space-y-2">
                               <div className="flex items-center gap-2">
-                                <h5 className="text-sm font-medium text-codinit-elements-textPrimary">{model.name}</h5>
+                                <h5 className="text-sm font-medium text-bolt-elements-textPrimary">{model.name}</h5>
                                 <ModelStatusBadge status={model.status} />
                               </div>
                               <ModelDetails model={model} />
@@ -620,7 +609,7 @@ export default function LocalProvidersTab() {
                                 value={Math.round((model.progress.current / model.progress.total) * 100)}
                                 className="h-1"
                               />
-                              <div className="flex justify-between mt-1 text-xs text-codinit-elements-textSecondary">
+                              <div className="flex justify-between mt-1 text-xs text-bolt-elements-textSecondary">
                                 <span>{model.progress.status}</span>
                                 <span>{Math.round((model.progress.current / model.progress.total) * 100)}%</span>
                               </div>
@@ -639,8 +628,8 @@ export default function LocalProvidersTab() {
           ))}
 
         {/* Other Providers Section */}
-        <div className="border-t border-codinit-elements-borderColor pt-6 mt-8">
-          <h3 className="text-lg font-semibold text-codinit-elements-textPrimary mb-4">Other Local Providers</h3>
+        <div className="border-t border-bolt-elements-borderColor pt-6 mt-8">
+          <h3 className="text-lg font-semibold text-bolt-elements-textPrimary mb-4">Other Local Providers</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredProviders
               .filter((provider) => provider.name !== 'Ollama')
@@ -648,8 +637,8 @@ export default function LocalProvidersTab() {
                 <motion.div
                   key={provider.name}
                   className={classNames(
-                    'bg-codinit-elements-background-depth-2 rounded-xl',
-                    'hover:bg-codinit-elements-background-depth-3',
+                    'bg-bolt-elements-background-depth-2 rounded-xl',
+                    'hover:bg-bolt-elements-background-depth-3',
                     'transition-all duration-200 p-5',
                     'relative overflow-hidden group',
                   )}
@@ -664,8 +653,8 @@ export default function LocalProvidersTab() {
                       <motion.div
                         className={classNames(
                           'w-12 h-12 flex items-center justify-center rounded-xl',
-                          'bg-codinit-elements-background-depth-3',
-                          provider.settings.enabled ? 'text-purple-500' : 'text-codinit-elements-textSecondary',
+                          'bg-bolt-elements-background-depth-3',
+                          provider.settings.enabled ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
                         )}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
@@ -676,7 +665,7 @@ export default function LocalProvidersTab() {
                       </motion.div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-md font-semibold text-codinit-elements-textPrimary">{provider.name}</h3>
+                          <h3 className="text-md font-semibold text-bolt-elements-textPrimary">{provider.name}</h3>
                           <div className="flex gap-1">
                             <span className="px-2 py-0.5 text-xs rounded-full bg-green-500/10 text-green-500">
                               Local
@@ -688,7 +677,7 @@ export default function LocalProvidersTab() {
                             )}
                           </div>
                         </div>
-                        <p className="text-sm text-codinit-elements-textSecondary mt-1">
+                        <p className="text-sm text-bolt-elements-textSecondary mt-1">
                           {PROVIDER_DESCRIPTIONS[provider.name as ProviderName]}
                         </p>
                       </div>
@@ -710,7 +699,7 @@ export default function LocalProvidersTab() {
                         className="mt-4"
                       >
                         <div className="flex flex-col gap-2">
-                          <label className="text-sm text-codinit-elements-textSecondary">API Endpoint</label>
+                          <label className="text-sm text-bolt-elements-textSecondary">API Endpoint</label>
                           {editingProvider === provider.name ? (
                             <input
                               type="text"
@@ -718,8 +707,8 @@ export default function LocalProvidersTab() {
                               placeholder={`Enter ${provider.name} base URL`}
                               className={classNames(
                                 'w-full px-3 py-2 rounded-lg text-sm',
-                                'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-                                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                                'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+                                'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
                                 'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
                                 'transition-all duration-200',
                               )}
@@ -738,12 +727,12 @@ export default function LocalProvidersTab() {
                               onClick={() => setEditingProvider(provider.name)}
                               className={classNames(
                                 'w-full px-3 py-2 rounded-lg text-sm cursor-pointer',
-                                'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-                                'hover:border-purple-500/30 hover:bg-codinit-elements-background-depth-4',
+                                'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+                                'hover:border-purple-500/30 hover:bg-bolt-elements-background-depth-4',
                                 'transition-all duration-200',
                               )}
                             >
-                              <div className="flex items-center gap-2 text-codinit-elements-textSecondary">
+                              <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
                                 <div className="i-ph:link text-sm" />
                                 <span>{provider.settings.baseUrl || 'Click to set base URL'}</span>
                               </div>
@@ -769,16 +758,8 @@ function ModelStatusBadge({ status }: { status?: string }) {
   }
 
   const statusConfig = {
-    updating: {
-      bg: 'bg-yellow-500/10',
-      text: 'text-yellow-500',
-      label: 'Updating',
-    },
-    updated: {
-      bg: 'bg-green-500/10',
-      text: 'text-green-500',
-      label: 'Updated',
-    },
+    updating: { bg: 'bg-yellow-500/10', text: 'text-yellow-500', label: 'Updating' },
+    updated: { bg: 'bg-green-500/10', text: 'text-green-500', label: 'Updated' },
     error: { bg: 'bg-red-500/10', text: 'text-red-500', label: 'Error' },
   };
 

@@ -7,7 +7,7 @@ import {
   createFilesContext,
   extractCurrentContext,
   extractPropertiesFromMessage,
-  simplifyCodinitActions,
+  simplifyExampleActions,
 } from './utils';
 import { createScopedLogger } from '~/utils/logger';
 import { LLMManager } from '~/lib/modules/llm/manager';
@@ -41,9 +41,9 @@ export async function selectContext(props: {
     } else if (message.role == 'assistant') {
       let content = message.content;
 
-      content = simplifyCodinitActions(content);
+      content = simplifyExampleActions(content);
 
-      content = content.replace(/<div class=\\"__codinitThought__\\">.*?<\/div>/s, '');
+      content = content.replace(/<div class=\\"__boltThought__\\">.*?<\/div>/s, '');
       content = content.replace(/<think>.*?<\/think>/s, '');
 
       return { ...message, content };
@@ -230,7 +230,7 @@ export async function selectContext(props: {
   logger.info(`Total files: ${totalFiles}`);
 
   if (totalFiles == 0) {
-    throw new Error(`codinit failed to select files`);
+    throw new Error(`Example failed to select files`);
   }
 
   return filteredFiles;

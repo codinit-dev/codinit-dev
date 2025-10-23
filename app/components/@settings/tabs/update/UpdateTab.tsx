@@ -79,10 +79,7 @@ const UpdateProgressDisplay = ({ progress }: { progress: UpdateProgress }) => (
                       {filesOfType.map((file, index) => {
                         const fileName = file.split(': ')[1];
                         return (
-                          <div
-                            key={index}
-                            className="text-sm text-codinit-elements-textSecondary flex items-center gap-2"
-                          >
+                          <div key={index} className="text-sm text-bolt-elements-textSecondary flex items-center gap-2">
                             <div
                               className={classNames('w-4 h-4', {
                                 'i-ph:pencil-simple': type === 'Modified',
@@ -297,8 +294,8 @@ const UpdateTab = () => {
       >
         <div className="i-ph:arrow-circle-up text-xl text-purple-500" />
         <div>
-          <h3 className="text-lg font-medium text-codinit-elements-textPrimary">Updates</h3>
-          <p className="text-sm text-codinit-elements-textSecondary">Check for and manage application updates</p>
+          <h3 className="text-lg font-medium text-bolt-elements-textPrimary">Updates</h3>
+          <p className="text-sm text-bolt-elements-textSecondary">Check for and manage application updates</p>
         </div>
       </motion.div>
 
@@ -311,24 +308,19 @@ const UpdateTab = () => {
       >
         <div className="flex items-center gap-3 mb-6">
           <div className="i-ph:gear text-purple-500 w-5 h-5" />
-          <h3 className="text-lg font-medium text-codinit-elements-textPrimary">Update Settings</h3>
+          <h3 className="text-lg font-medium text-bolt-elements-textPrimary">Update Settings</h3>
         </div>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-sm text-codinit-elements-textPrimary">Automatic Updates</span>
-              <p className="text-xs text-codinit-elements-textSecondary">
+              <span className="text-sm text-bolt-elements-textPrimary">Automatic Updates</span>
+              <p className="text-xs text-bolt-elements-textSecondary">
                 Automatically check and apply updates when available
               </p>
             </div>
             <button
-              onClick={() =>
-                setUpdateSettings((prev) => ({
-                  ...prev,
-                  autoUpdate: !prev.autoUpdate,
-                }))
-              }
+              onClick={() => setUpdateSettings((prev) => ({ ...prev, autoUpdate: !prev.autoUpdate }))}
               className={classNames(
                 'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
                 updateSettings.autoUpdate ? 'bg-purple-500' : 'bg-gray-200 dark:bg-gray-700',
@@ -345,18 +337,11 @@ const UpdateTab = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-sm text-codinit-elements-textPrimary">In-App Notifications</span>
-              <p className="text-xs text-codinit-elements-textSecondary">
-                Show notifications when updates are available
-              </p>
+              <span className="text-sm text-bolt-elements-textPrimary">In-App Notifications</span>
+              <p className="text-xs text-bolt-elements-textSecondary">Show notifications when updates are available</p>
             </div>
             <button
-              onClick={() =>
-                setUpdateSettings((prev) => ({
-                  ...prev,
-                  notifyInApp: !prev.notifyInApp,
-                }))
-              }
+              onClick={() => setUpdateSettings((prev) => ({ ...prev, notifyInApp: !prev.notifyInApp }))}
               className={classNames(
                 'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
                 updateSettings.notifyInApp ? 'bg-purple-500' : 'bg-gray-200 dark:bg-gray-700',
@@ -373,22 +358,17 @@ const UpdateTab = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-sm text-codinit-elements-textPrimary">Check Interval</span>
-              <p className="text-xs text-codinit-elements-textSecondary">How often to check for updates</p>
+              <span className="text-sm text-bolt-elements-textPrimary">Check Interval</span>
+              <p className="text-xs text-bolt-elements-textSecondary">How often to check for updates</p>
             </div>
             <select
               value={updateSettings.checkInterval}
-              onChange={(e) =>
-                setUpdateSettings((prev) => ({
-                  ...prev,
-                  checkInterval: Number(e.target.value),
-                }))
-              }
+              onChange={(e) => setUpdateSettings((prev) => ({ ...prev, checkInterval: Number(e.target.value) }))}
               className={classNames(
                 'px-3 py-2 rounded-lg text-sm',
                 'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                 'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-                'text-codinit-elements-textPrimary',
+                'text-bolt-elements-textPrimary',
                 'hover:bg-[#E5E5E5] dark:hover:bg-[#2A2A2A]',
                 'transition-colors duration-200',
               )}
@@ -412,7 +392,7 @@ const UpdateTab = () => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="i-ph:arrows-clockwise text-purple-500 w-5 h-5" />
-            <h3 className="text-lg font-medium text-codinit-elements-textPrimary">Update Status</h3>
+            <h3 className="text-lg font-medium text-bolt-elements-textPrimary">Update Status</h3>
           </div>
           <div className="flex items-center gap-2">
             {updateProgress?.details?.updateReady && !updateSettings.autoUpdate && (
@@ -439,7 +419,7 @@ const UpdateTab = () => {
                 'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                 'hover:bg-purple-500/10 hover:text-purple-500',
                 'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
-                'text-codinit-elements-textPrimary',
+                'text-bolt-elements-textPrimary',
                 'transition-colors duration-200',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
               )}
@@ -449,11 +429,7 @@ const UpdateTab = () => {
                 <div className="flex items-center gap-2">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     className="i-ph:arrows-clockwise w-4 h-4"
                   />
                   Checking...
@@ -475,11 +451,11 @@ const UpdateTab = () => {
 
         {/* Show update source information */}
         {updateProgress?.details?.currentCommit && updateProgress?.details?.remoteCommit && (
-          <div className="mt-4 text-sm text-codinit-elements-textSecondary">
+          <div className="mt-4 text-sm text-bolt-elements-textSecondary">
             <div className="flex items-center justify-between">
               <div>
                 <p>
-                  Updates are fetched from: <span className="font-mono">Gerome-Elassaad/codinit-app</span> (
+                  Updates are fetched from: <span className="font-mono">gerome-elassaad/codinit-app</span> (
                   {isLatestBranch ? 'main' : 'stable'} branch)
                 </p>
                 <p className="mt-1">
@@ -498,7 +474,7 @@ const UpdateTab = () => {
                     'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                     'hover:bg-purple-500/10 hover:text-purple-500',
                     'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
-                    'text-codinit-elements-textPrimary',
+                    'text-bolt-elements-textPrimary',
                     'transition-colors duration-200',
                     'w-fit',
                   )}
@@ -545,7 +521,7 @@ const UpdateTab = () => {
                 'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                 'hover:bg-purple-500/10 hover:text-purple-500',
                 'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
-                'text-codinit-elements-textPrimary',
+                'text-bolt-elements-textPrimary',
                 'transition-colors duration-200',
                 'w-fit',
               )}
@@ -576,8 +552,8 @@ const UpdateTab = () => {
           <DialogTitle>Update Available</DialogTitle>
           <DialogDescription>
             <div className="mt-4">
-              <p className="text-sm text-codinit-elements-textSecondary mb-4">
-                A new version is available from <span className="font-mono">Gerome-Elassaad/codinit-app</span> (
+              <p className="text-sm text-bolt-elements-textSecondary mb-4">
+                A new version is available from <span className="font-mono">gerome-elassaad/codinit-app</span> (
                 {isLatestBranch ? 'main' : 'stable'} branch)
               </p>
 
@@ -592,7 +568,7 @@ const UpdateTab = () => {
                       'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                       'hover:bg-purple-500/10 hover:text-purple-500',
                       'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
-                      'text-codinit-elements-textPrimary',
+                      'text-bolt-elements-textPrimary',
                       'transition-colors duration-200',
                       'w-fit',
                     )}
@@ -608,7 +584,7 @@ const UpdateTab = () => {
                   <p className="font-medium mb-2">Commit Messages:</p>
                   <div className="bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-lg p-3 space-y-2">
                     {updateProgress.details.commitMessages.map((msg, index) => (
-                      <div key={index} className="text-sm text-codinit-elements-textSecondary flex items-start gap-2">
+                      <div key={index} className="text-sm text-bolt-elements-textSecondary flex items-start gap-2">
                         <div className="i-ph:git-commit text-purple-500 w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>{msg}</span>
                       </div>
@@ -618,7 +594,7 @@ const UpdateTab = () => {
               )}
 
               {updateProgress?.details?.totalSize && (
-                <div className="flex items-center gap-4 text-sm text-codinit-elements-textSecondary">
+                <div className="flex items-center gap-4 text-sm text-bolt-elements-textSecondary">
                   <div className="flex items-center gap-2">
                     <div className="i-ph:file text-purple-500 w-4 h-4" />
                     Total size: {updateProgress.details.totalSize}

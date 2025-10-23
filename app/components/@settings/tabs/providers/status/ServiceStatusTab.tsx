@@ -273,12 +273,7 @@ const ServiceStatusTab = () => {
       url: string,
       headers?: Record<string, string>,
       testModel?: string,
-    ): Promise<{
-      ok: boolean;
-      status: number | string;
-      message?: string;
-      responseTime: number;
-    }> => {
+    ): Promise<{ ok: boolean; status: number | string; message?: string; responseTime: number }> => {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -704,29 +699,29 @@ const ServiceStatusTab = () => {
             <div
               className={classNames(
                 'w-8 h-8 flex items-center justify-center rounded-lg',
-                'bg-codinit-elements-background-depth-3',
+                'bg-bolt-elements-background-depth-3',
                 'text-purple-500',
               )}
             >
               <TbActivityHeartbeat className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-md font-medium text-codinit-elements-textPrimary">Service Status</h4>
-              <p className="text-sm text-codinit-elements-textSecondary">
+              <h4 className="text-md font-medium text-bolt-elements-textPrimary">Service Status</h4>
+              <p className="text-sm text-bolt-elements-textSecondary">
                 Monitor and test the operational status of cloud LLM providers
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-codinit-elements-textSecondary">
+            <span className="text-sm text-bolt-elements-textSecondary">
               Last updated: {lastRefresh.toLocaleTimeString()}
             </span>
             <button
               onClick={() => fetchAllStatuses()}
               className={classNames(
                 'px-3 py-1.5 rounded-lg text-sm',
-                'bg-codinit-elements-background-depth-3 hover:bg-codinit-elements-background-depth-4',
-                'text-codinit-elements-textPrimary',
+                'bg-bolt-elements-background-depth-3 hover:bg-bolt-elements-background-depth-4',
+                'text-bolt-elements-textPrimary',
                 'transition-all duration-200',
                 'flex items-center gap-2',
                 loading ? 'opacity-50 cursor-not-allowed' : '',
@@ -740,16 +735,16 @@ const ServiceStatusTab = () => {
         </div>
 
         {/* API Key Test Section */}
-        <div className="p-4 bg-codinit-elements-background-depth-2 rounded-lg">
-          <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Test API Key</h5>
+        <div className="p-4 bg-bolt-elements-background-depth-2 rounded-lg">
+          <h5 className="text-sm font-medium text-bolt-elements-textPrimary mb-2">Test API Key</h5>
           <div className="flex gap-2">
             <select
               value={testProvider}
               onChange={(e) => setTestProvider(e.target.value as ProviderName)}
               className={classNames(
                 'flex-1 px-3 py-1.5 rounded-lg text-sm max-w-[200px]',
-                'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-                'text-codinit-elements-textPrimary',
+                'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+                'text-bolt-elements-textPrimary',
                 'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
               )}
             >
@@ -767,8 +762,8 @@ const ServiceStatusTab = () => {
               placeholder="Enter API key to test"
               className={classNames(
                 'flex-1 px-3 py-1.5 rounded-lg text-sm',
-                'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+                'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
                 'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
               )}
             />
@@ -803,15 +798,15 @@ const ServiceStatusTab = () => {
 
         {/* Status Grid */}
         {loading && serviceStatuses.length === 0 ? (
-          <div className="text-center py-8 text-codinit-elements-textSecondary">Loading service statuses...</div>
+          <div className="text-center py-8 text-bolt-elements-textSecondary">Loading service statuses...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {serviceStatuses.map((service, index) => (
               <motion.div
                 key={service.provider}
                 className={classNames(
-                  'bg-codinit-elements-background-depth-2',
-                  'hover:bg-codinit-elements-background-depth-3',
+                  'bg-bolt-elements-background-depth-2',
+                  'hover:bg-bolt-elements-background-depth-3',
                   'transition-all duration-200',
                   'relative overflow-hidden rounded-lg',
                 )}
@@ -830,7 +825,7 @@ const ServiceStatusTab = () => {
                         <div
                           className={classNames(
                             'w-8 h-8 flex items-center justify-center rounded-lg',
-                            'bg-codinit-elements-background-depth-3',
+                            'bg-bolt-elements-background-depth-3',
                             getStatusColor(service.status),
                           )}
                         >
@@ -840,19 +835,18 @@ const ServiceStatusTab = () => {
                         </div>
                       )}
                       <div>
-                        <h4 className="text-sm font-medium text-codinit-elements-textPrimary">{service.provider}</h4>
+                        <h4 className="text-sm font-medium text-bolt-elements-textPrimary">{service.provider}</h4>
                         <div className="space-y-1">
-                          <p className="text-xs text-codinit-elements-textSecondary">
+                          <p className="text-xs text-bolt-elements-textSecondary">
                             Last checked: {new Date(service.lastChecked).toLocaleTimeString()}
                           </p>
                           {service.responseTime && (
-                            <p className="text-xs text-codinit-elements-textTertiary">
-                              Response time: {Math.round(service.responseTime)}
-                              ms
+                            <p className="text-xs text-bolt-elements-textTertiary">
+                              Response time: {Math.round(service.responseTime)}ms
                             </p>
                           )}
                           {service.message && (
-                            <p className="text-xs text-codinit-elements-textTertiary">{service.message}</p>
+                            <p className="text-xs text-bolt-elements-textTertiary">{service.message}</p>
                           )}
                         </div>
                       </div>
@@ -863,9 +857,9 @@ const ServiceStatusTab = () => {
                     </div>
                   </div>
                   {service.incidents && service.incidents.length > 0 && (
-                    <div className="mt-2 border-t border-codinit-elements-borderColor pt-2">
-                      <p className="text-xs font-medium text-codinit-elements-textSecondary mb-1">Recent Incidents:</p>
-                      <ul className="text-xs text-codinit-elements-textTertiary space-y-1">
+                    <div className="mt-2 border-t border-bolt-elements-borderColor pt-2">
+                      <p className="text-xs font-medium text-bolt-elements-textSecondary mb-1">Recent Incidents:</p>
+                      <ul className="text-xs text-bolt-elements-textTertiary space-y-1">
                         {service.incidents.map((incident, i) => (
                           <li key={i}>{incident}</li>
                         ))}

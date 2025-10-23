@@ -3,18 +3,19 @@ import type { Template } from '~/types/template';
 
 export const WORK_DIR_NAME = 'project';
 export const WORK_DIR = `/home/${WORK_DIR_NAME}`;
-export const MODIFICATIONS_TAG_NAME = 'codinit_file_modifications';
+export const MODIFICATIONS_TAG_NAME = 'bolt_file_modifications';
 export const MODEL_REGEX = /^\[Model: (.*?)\]\n\n/;
 export const PROVIDER_REGEX = /\[Provider: (.*?)\]\n\n/;
 export const DEFAULT_MODEL = 'claude-3-5-sonnet-latest';
 export const PROMPT_COOKIE_KEY = 'cachedPrompt';
+
 export const TOOL_EXECUTION_APPROVAL = {
-  APPROVE: 'Yes, approved.',
-  REJECT: 'No, rejected.',
-} as const;
-export const TOOL_NO_EXECUTE_FUNCTION = 'Error: No execute function found on tool';
-export const TOOL_EXECUTION_DENIED = 'Error: User denied access to tool execution';
-export const TOOL_EXECUTION_ERROR = 'Error: An error occured while calling tool';
+  APPROVE: 'tool_execution_approved',
+  REJECT: 'tool_execution_rejected',
+};
+export const TOOL_EXECUTION_DENIED = 'tool_execution_denied';
+export const TOOL_EXECUTION_ERROR = 'tool_execution_error';
+export const TOOL_NO_EXECUTE_FUNCTION = 'tool_no_execute_function';
 
 const llmManager = LLMManager.getInstance(import.meta.env);
 
@@ -29,75 +30,63 @@ PROVIDER_LIST.forEach((provider) => {
   };
 });
 
-/**
- * Starter Templates
- *
- * GitHub repository paths support two formats:
- * 1. Basic: "owner/repo" - Fetches from repository root
- * 2. Subdirectory: "owner/repo/path/to/subdirectory" - Fetches specific subdirectory
- *
- * Templates use well-known public repositories with verified starter templates:
- * - vercel/next.js (Next.js official examples)
- * - shadcn-ui/next-shadcn (shadcn/ui templates)
- * - expo/examples (Expo official examples)
- * - sveltejs/kit (SvelteKit template)
- * - vitejs/awesome-vite (Vite templates)
- */
+// starter Templates
+
 export const STARTER_TEMPLATES: Template[] = [
   {
     name: 'Next.js App Router',
     label: 'Next.js App Router',
     description: 'Next.js starter template using the App Router for building modern React applications',
-    githubRepo: 'https://github.com/codinit-dev/nextjs.git',
-    icon: 'i-codinit:nextjs',
+    githubRepo: 'codinit-dev/nextjs.git',
+    icon: 'i-bolt:nextjs',
   },
   {
     name: 'Expo',
     label: 'Expo',
     description: 'Expo starter template for building cross-platform mobile apps with native code access',
-    githubRepo: 'https://github.com/codinit-dev/expo.git',
-    icon: 'i-codinit:expo',
+    githubRepo: 'codinit-dev/expo.git',
+    icon: 'i-bolt:expo',
   },
   {
     name: 'shadcn/ui Vite React',
     label: 'Vite + React + shadcn/ui',
     description: 'Vite React starter with shadcn/ui components for fast development',
-    githubRepo: 'https://github.com/codinit-dev/vite-shadcn.git',
-    icon: 'i-codinit:react',
+    githubRepo: 'codinit-dev/vite-shadcn.git',
+    icon: 'i-bolt:react',
   },
   {
     name: 'Astro',
     label: 'Astro',
     description: 'Astro starter template for building fast, content-focused websites',
-    githubRepo: 'https://github.com/codinit-dev/astro.git',
-    icon: 'i-codinit:astro',
+    githubRepo: 'codinit-dev/astro.git',
+    icon: 'i-bolt:astro',
   },
   {
     name: 'Typescript',
     label: 'Typescript',
     description: 'Typescript starter template for building fast, efficient web applications',
-    githubRepo: 'https://github.com/codinit-dev/typescript.git',
-    icon: 'i-codinit:typescript',
+    githubRepo: 'codinit-dev/typescript.git',
+    icon: 'i-bolt:typescript',
   },
   {
     name: 'Vite React TS',
     label: 'Vite + React + TypeScript',
     description: 'Vite React TypeScript starter for fast development experience',
-    githubRepo: 'https://github.com/simerlec/vite-react-ts-starter.git',
-    icon: 'i-codinit:vite',
+    githubRepo: 'codinit-dev/vite-react-ts-starter',
+    icon: 'i-bolt:vite',
   },
   {
     name: 'Angular',
     label: 'Angular',
     description: 'Modern Angular starter with standalone components and TypeScript',
-    githubRepo: 'https://github.com/codinit-dev/angular.git',
-    icon: 'i-codinit:angular',
+    githubRepo: 'codinit-dev/angular.git',
+    icon: 'i-bolt:angular',
   },
   {
     name: 'Qwik',
     label: 'Qwik',
     description: 'Modern Qwik starter with standalone components and TypeScript',
-    githubRepo: 'https://github.com/codinit-dev/qwik.git',
-    icon: 'i-codinit:qwik',
+    githubRepo: 'codinit-dev/qwik.git',
+    icon: 'i-bolt:qwik',
   },
 ];

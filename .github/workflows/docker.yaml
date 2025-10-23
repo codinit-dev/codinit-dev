@@ -59,6 +59,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           
       - name: Check manifest
-        run: |
-          IMAGE_NAME_LOWER=$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
-          docker buildx imagetools inspect ${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}:${{ steps.meta.outputs.version }}
+        run: docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}

@@ -2,22 +2,9 @@ import ignore from 'ignore';
 import type { ProviderInfo } from '~/types/model';
 import type { Template } from '~/types/template';
 import { STARTER_TEMPLATES } from './constants';
-import { detectProjectCommands, createCommandActionsString } from './projectCommands';
 
 const starterTemplateSelectionPrompt = (templates: Template[]) => `
-You are an experienced developer who helps people choose the best starter template for their projects.
-
-CRITICAL DEFAULT RULE:
-- When the user does NOT specify a framework (e.g., "build a todo app", "create a website", "make an app"), ALWAYS default to "Vite React"
-- This is the standard, go-to template for most web development projects
-- Only deviate from "Vite React" when the user explicitly mentions another framework
-
-IMPORTANT RULES:
-- Vite React is the DEFAULT for any web application, website, or app request
-- Only choose shadcn templates if the user explicitly asks for shadcn or mentions "shadcn"
-- Only choose Next.js if the user explicitly mentions "Next.js" or "Next"
-- Only choose mobile templates (Expo) if the user explicitly mentions "mobile", "iOS", "Android", or "app" in a mobile context
-- Only choose other frameworks (Vue, Angular, Svelte) if explicitly mentioned
+You are an experienced developer who helps people choose the best starter template for their projects, Vite is preferred.
 
 Available templates:
 <template>
@@ -49,26 +36,8 @@ Examples:
 User: I need to build a todo app
 Response:
 <selection>
-  <templateName>Vite React</templateName>
-  <title>Todo Application</title>
-</selection>
-</example>
-
-<example>
-User: Create a blog website
-Response:
-<selection>
-  <templateName>Vite React</templateName>
-  <title>Blog Website</title>
-</selection>
-</example>
-
-<example>
-User: Build a dashboard with Next.js
-Response:
-<selection>
-  <templateName>Next.JS</templateName>
-  <title>Dashboard Application</title>
+  <templateName>react-basic-starter</templateName>
+  <title>Simple React todo application</title>
 </selection>
 </example>
 
@@ -77,28 +46,19 @@ User: Write a script to generate numbers from 1 to 100
 Response:
 <selection>
   <templateName>blank</templateName>
-  <title>Number Generation Script</title>
-</selection>
-</example>
-
-<example>
-User: Create a mobile app for tracking habits
-Response:
-<selection>
-  <templateName>Expo App</templateName>
-  <title>Habit Tracker Mobile App</title>
+  <title>script to generate numbers from 1 to 100</title>
 </selection>
 </example>
 
 Instructions:
 1. For trivial tasks and simple scripts, always recommend the blank template
-2. For web apps/websites without a specified framework, ALWAYS use "Vite React" (the DEFAULT)
-3. Only choose other frameworks when explicitly mentioned by the user
-4. Follow the exact XML format
-5. Consider both technical requirements and tags
+2. For more complex projects, recommend templates from the provided list
+3. Follow the exact XML format
+4. Consider both technical requirements and tags
+5. If no perfect match exists, recommend the closest option
 
 Important: Provide only the selection tags in your response, no additional text.
-MOST IMPORTANT: YOU DONT HAVE TIME TO THINK JUST START RESPONDING BASED ON HUNCH
+MOST IMPORTANT: YOU DONT HAVE TIME TO THINK JUST START RESPONDING BASED ON HUNCH 
 `;
 
 const templates: Template[] = STARTER_TEMPLATES.filter((t) => !t.name.includes('shadcn'));
@@ -169,170 +129,15 @@ const getGitHubRepoContent = async (repoName: string): Promise<{ name: string; p
   }
 };
 
-const getLocalTemplateContent = async (
-  templatePath: string,
-): Promise<{ name: string; path: string; content: string }[]> => {
-  try {
-    // Fetch from local template API endpoint
-    const response = await fetch(`/api/local-template?template=${encodeURIComponent(templatePath)}`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const files = (await response.json()) as { name: string; path: string; content: string }[];
-
-    return files;
-  } catch (error) {
-    console.error('Error fetching local template:', error);
-    throw error;
-  }
-};
-
 export async function getTemplates(templateName: string, title?: string) {
-  // Check if templateName is a GitHub repo path (e.g., "owner/repo/subdirectory")
-  if (templateName.includes('/')) {
-    console.log(`Fetching template from GitHub path: ${templateName}`);
-
-    try {
-      // Fetch directly from GitHub using the full repo path
-      const files = await getGitHubRepoContent(templateName);
-
-      let filteredFiles = files;
-
-      // Ignoring common unwanted files
-      filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.git') == false);
-      filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.codinit') == false);
-
-      // Check for ignore file in .codinit folder
-      const templateIgnoreFile = files.find((x) => x.path.startsWith('.codinit') && x.name == 'ignore');
-
-      const filesToImport = {
-        files: filteredFiles,
-        ignoreFile: [] as typeof filteredFiles,
-      };
-
-      if (templateIgnoreFile) {
-        const ignorepatterns = templateIgnoreFile.content.split('\n').map((x) => x.trim());
-        const ig = ignore().add(ignorepatterns);
-        const ignoredFiles = filteredFiles.filter((x) => ig.ignores(x.path));
-
-        filesToImport.files = filteredFiles;
-        filesToImport.ignoreFile = ignoredFiles;
-      }
-
-      // Detect project commands from the imported files
-      const commands = await detectProjectCommands(filesToImport.files);
-      const commandsString = createCommandActionsString(commands);
-
-      const assistantMessage = `
-codinit is initializing your project with the required files from GitHub template.
-<codinitArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
-${filesToImport.files
-  .map(
-    (file) =>
-      `<codinitAction type="file" filePath="${file.path}">
-${file.content}
-</codinitAction>`,
-  )
-  .join('\n')}
-</codinitArtifact>
-${
-  commandsString
-    ? `
-
-<codinitArtifact id="project-setup" title="Project Setup">
-${commandsString}
-</codinitArtifact>`
-    : ''
-}`;
-      let userMessage = ``;
-      const templatePromptFile = files.filter((x) => x.path.startsWith('.codinit')).find((x) => x.name == 'prompt');
-
-      if (templatePromptFile) {
-        userMessage = `
-TEMPLATE INSTRUCTIONS:
-${templatePromptFile.content}
-
----
-`;
-      }
-
-      if (filesToImport.ignoreFile.length > 0) {
-        userMessage =
-          userMessage +
-          `
-STRICT FILE ACCESS RULES - READ CAREFULLY:
-
-The following files are READ-ONLY and must never be modified:
-${filesToImport.ignoreFile.map((file) => `- ${file.path}`).join('\n')}
-
-Permitted actions:
-✓ Import these files as dependencies
-✓ Read from these files
-✓ Reference these files
-
-Strictly forbidden actions:
-❌ Modify any content within these files
-❌ Delete these files
-❌ Rename these files
-❌ Move these files
-❌ Create new versions of these files
-❌ Suggest changes to these files
-
-Any attempt to modify these protected files will result in immediate termination of the operation.
-
-If you need to make changes to functionality, create new files instead of modifying the protected ones listed above.
----
-`;
-      }
-
-      userMessage += `
----
-template import is done, and you can now use the imported files,
-edit only the files that need to be changed, and you can create new files as needed.
-NO NOT EDIT/WRITE ANY FILES THAT ALREADY EXIST IN THE PROJECT AND DOES NOT NEED TO BE MODIFIED
----
-Now that the Template is imported please continue with my original request
-`;
-
-      // Only add install reminder if no commands were detected
-      if (!commands.setupCommand && !commands.startCommand) {
-        userMessage += `
-
-IMPORTANT: Remember to install the dependencies and run the appropriate commands for this project.
-`;
-      }
-
-      return {
-        assistantMessage,
-        userMessage,
-      };
-    } catch (error) {
-      console.error('Error fetching template from GitHub:', error);
-      throw error;
-    }
-  }
-
-  // Regular template lookup from STARTER_TEMPLATES
   const template = STARTER_TEMPLATES.find((t) => t.name == templateName);
 
   if (!template) {
     return null;
   }
 
-  // Determine the source and fetch accordingly
-  let files: { name: string; path: string; content: string }[];
-
-  if (template.source === 'local' && template.localPath) {
-    // Fetch from local templates directory
-    files = await getLocalTemplateContent(template.localPath);
-  } else if (template.githubRepo) {
-    // Fetch from GitHub (fallback)
-    files = await getGitHubRepoContent(template.githubRepo);
-  } else {
-    throw new Error(`Template ${templateName} has no valid source configured`);
-  }
+  const githubRepo = template.githubRepo;
+  const files = await getGitHubRepoContent(githubRepo);
 
   let filteredFiles = files;
 
@@ -353,11 +158,11 @@ IMPORTANT: Remember to install the dependencies and run the appropriate commands
      */
   }
 
-  // exclude    .codinit
-  filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.codinit') == false);
+  // exclude    .bolt
+  filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.bolt') == false);
 
-  // check for ignore file in .codinit folder
-  const templateIgnoreFile = files.find((x) => x.path.startsWith('.codinit') && x.name == 'ignore');
+  // check for ignore file in .bolt folder
+  const templateIgnoreFile = files.find((x) => x.path.startsWith('.bolt') && x.name == 'ignore');
 
   const filesToImport = {
     files: filteredFiles,
@@ -376,33 +181,21 @@ IMPORTANT: Remember to install the dependencies and run the appropriate commands
     filesToImport.ignoreFile = ignoredFiles;
   }
 
-  // Detect project commands from the imported files
-  const commands = await detectProjectCommands(filesToImport.files);
-  const commandsString = createCommandActionsString(commands);
-
   const assistantMessage = `
-codinit is initializing your project with the required files using the ${template.name} template.
-<codinitArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
+Example is initializing your project with the required files using the ${template.name} template.
+<exampleArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
 ${filesToImport.files
   .map(
     (file) =>
-      `<codinitAction type="file" filePath="${file.path}">
+      `<exampleAction type="file" filePath="${file.path}">
 ${file.content}
-</codinitAction>`,
+</exampleAction>`,
   )
   .join('\n')}
-</codinitArtifact>
-${
-  commandsString
-    ? `
-
-<codinitArtifact id="project-setup" title="Project Setup">
-${commandsString}
-</codinitArtifact>`
-    : ''
-}`;
+</exampleArtifact>
+`;
   let userMessage = ``;
-  const templatePromptFile = files.filter((x) => x.path.startsWith('.codinit')).find((x) => x.name == 'prompt');
+  const templatePromptFile = files.filter((x) => x.path.startsWith('.bolt')).find((x) => x.name == 'prompt');
 
   if (templatePromptFile) {
     userMessage = `
@@ -449,15 +242,9 @@ edit only the files that need to be changed, and you can create new files as nee
 NO NOT EDIT/WRITE ANY FILES THAT ALREADY EXIST IN THE PROJECT AND DOES NOT NEED TO BE MODIFIED
 ---
 Now that the Template is imported please continue with my original request
-`;
 
-  // Only add install reminder if no commands were detected
-  if (!commands.setupCommand && !commands.startCommand) {
-    userMessage += `
-
-IMPORTANT: Remember to install the dependencies and run the appropriate commands for this project.
+IMPORTANT: Dont Forget to install the dependencies before running the app by using \`npm install && npm run dev\`
 `;
-  }
 
   return {
     assistantMessage,

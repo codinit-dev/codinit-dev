@@ -55,20 +55,14 @@ export async function newShellProcess(webcontainer: WebContainer, terminal: ITer
 
 export type ExecutionResult = { output: string; exitCode: number } | undefined;
 
-export class CodinitShell {
+export class ExampleShell {
   #initialized: (() => void) | undefined;
   #readyPromise: Promise<void>;
   #webcontainer: WebContainer | undefined;
   #terminal: ITerminal | undefined;
   #process: WebContainerProcess | undefined;
   executionState = atom<
-    | {
-        sessionId: string;
-        active: boolean;
-        executionPrms?: Promise<any>;
-        abort?: () => void;
-      }
-    | undefined
+    { sessionId: string; active: boolean; executionPrms?: Promise<any>; abort?: () => void } | undefined
   >();
   #outputStream: ReadableStreamDefaultReader<string> | undefined;
   #shellInputStream: WritableStreamDefaultWriter<string> | undefined;
@@ -88,7 +82,7 @@ export class CodinitShell {
     this.#terminal = terminal;
 
     // Use all three streams from tee: one for terminal, one for command execution, one for Expo URL detection
-    const { process, commandStream, expoUrlStream } = await this.newCodinitShellProcess(webcontainer, terminal);
+    const { process, commandStream, expoUrlStream } = await this.newExampleShellProcess(webcontainer, terminal);
     this.#process = process;
     this.#outputStream = commandStream.getReader();
 
@@ -99,7 +93,7 @@ export class CodinitShell {
     this.#initialized?.();
   }
 
-  async newCodinitShellProcess(webcontainer: WebContainer, terminal: ITerminal) {
+  async newExampleShellProcess(webcontainer: WebContainer, terminal: ITerminal) {
     const args: string[] = [];
     const process = await webcontainer.spawn('/bin/jsh', ['--osc', ...args], {
       terminal: {
@@ -143,12 +137,7 @@ export class CodinitShell {
     await jshReady.promise;
 
     // Return all streams for use in init
-    return {
-      process,
-      terminalStream: streamA,
-      commandStream: streamC,
-      expoUrlStream: streamD,
-    };
+    return { process, terminalStream: streamA, commandStream: streamC, expoUrlStream: streamD };
   }
 
   // Dedicated background watcher for Expo URL
@@ -182,10 +171,6 @@ export class CodinitShell {
     }
   }
 
-  get webcontainer() {
-    return this.#webcontainer;
-  }
-
   get terminal() {
     return this.#terminal;
   }
@@ -205,25 +190,23 @@ export class CodinitShell {
       state.abort();
     }
 
-    // Interrupt the current execution by writing directly to shell input
-    this.#shellInputStream?.write('\x03');
+    /*
+     * interrupt the current execution
+     *  this.#shellInputStream?.write('\x03');
+     */
+    this.terminal.input('\x03');
     await this.waitTillOscCode('prompt');
 
     if (state && state.executionPrms) {
       await state.executionPrms;
     }
 
-    // Start a new execution by writing directly to shell input
-    this.#shellInputStream?.write(command.trim() + '\n');
+    //start a new execution
+    this.terminal.input(command.trim() + '\n');
 
     //wait for the execution to finish
     const executionPromise = this.getCurrentExecutionResult();
-    this.executionState.set({
-      sessionId,
-      active: true,
-      executionPrms: executionPromise,
-      abort,
-    });
+    this.executionState.set({ sessionId, active: true, executionPrms: executionPromise, abort });
 
     const resp = await executionPromise;
     this.executionState.set({ sessionId, active: false });
@@ -360,6 +343,6 @@ export function cleanTerminalOutput(input: string): string {
     .replace(/\u0000/g, ''); // Remove null characters
 }
 
-export function newCodinitShellProcess() {
-  return new CodinitShell();
+export function newExampleShellProcess() {
+  return new ExampleShell();
 }

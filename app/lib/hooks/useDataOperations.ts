@@ -51,10 +51,7 @@ export function useDataOperations({
   const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false);
   const [progressMessage, setProgressMessage] = useState<string>('');
   const [progressPercent, setProgressPercent] = useState<number>(0);
-  const [lastOperation, setLastOperation] = useState<{
-    type: string;
-    data: any;
-  } | null>(null);
+  const [lastOperation, setLastOperation] = useState<{ type: string; data: any } | null>(null);
 
   /**
    * Show progress toast with percentage
@@ -108,7 +105,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'codinit-settings.json';
+      a.download = 'bolt-settings.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -203,7 +200,7 @@ export function useDataOperations({
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `codinit-settings-${categoryIds.join('-')}.json`;
+        a.download = `bolt-settings-${categoryIds.join('-')}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -329,7 +326,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'codinit-chats.json';
+      a.download = 'bolt-chats.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -440,7 +437,7 @@ export function useDataOperations({
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'codinit-selected-chats.json';
+        a.download = 'bolt-selected-chats.json';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -458,10 +455,7 @@ export function useDataOperations({
         });
 
         // Save operation for potential undo
-        setLastOperation({
-          type: 'export-selected-chats',
-          data: { chatIds, chats: filteredChats },
-        });
+        setLastOperation({ type: 'export-selected-chats', data: { chatIds, chats: filteredChats } });
       } catch (error) {
         console.error('Error exporting selected chats:', error);
 
@@ -515,10 +509,7 @@ export function useDataOperations({
 
         // Save current settings for potential undo
         const currentSettings = await ImportExportService.exportSettings();
-        setLastOperation({
-          type: 'import-settings',
-          data: { previous: currentSettings },
-        });
+        setLastOperation({ type: 'import-settings', data: { previous: currentSettings } });
 
         // Step 4: Import settings
         showProgress('Applying settings', 80);
@@ -636,10 +627,7 @@ export function useDataOperations({
         showProgress('Preparing database transaction', 70);
 
         const currentChats = await ImportExportService.exportAllChats(db);
-        setLastOperation({
-          type: 'import-chats',
-          data: { previous: currentChats },
-        });
+        setLastOperation({ type: 'import-chats', data: { previous: currentChats } });
 
         // Step 5: Import chats
         showProgress(`Importing ${validatedChats.length} chats`, 80);
@@ -734,10 +722,7 @@ export function useDataOperations({
         // Get current API keys from cookies for potential undo
         const apiKeysStr = document.cookie.split(';').find((row) => row.trim().startsWith('apiKeys='));
         const currentApiKeys = apiKeysStr ? JSON.parse(decodeURIComponent(apiKeysStr.split('=')[1])) : {};
-        setLastOperation({
-          type: 'import-api-keys',
-          data: { previous: currentApiKeys },
-        });
+        setLastOperation({ type: 'import-api-keys', data: { previous: currentApiKeys } });
 
         // Step 4: Import API keys
         showProgress('Applying API keys', 80);
@@ -808,10 +793,7 @@ export function useDataOperations({
         showProgress('Backing up current settings', 25);
 
         const currentSettings = await ImportExportService.exportSettings();
-        setLastOperation({
-          type: 'reset-settings',
-          data: { previous: currentSettings },
-        });
+        setLastOperation({ type: 'reset-settings', data: { previous: currentSettings } });
 
         // Step 2: Reset settings
         showProgress('Resetting settings to defaults', 50);
@@ -886,10 +868,7 @@ export function useDataOperations({
       showProgress('Backing up current chats', 25);
 
       const currentChats = await ImportExportService.exportAllChats(db);
-      setLastOperation({
-        type: 'reset-chats',
-        data: { previous: currentChats },
-      });
+      setLastOperation({ type: 'reset-chats', data: { previous: currentChats } });
 
       // Step 2: Delete chats
       showProgress('Deleting chats from database', 50);
@@ -957,7 +936,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'codinit-api-keys-template.json';
+      a.download = 'bolt-api-keys-template.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1032,7 +1011,7 @@ export function useDataOperations({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'codinit-api-keys.json';
+      a.download = 'bolt-api-keys.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

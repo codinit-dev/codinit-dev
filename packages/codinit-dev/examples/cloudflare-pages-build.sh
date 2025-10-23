@@ -6,7 +6,7 @@
 set -e
 
 echo "Installing dependencies..."
-npm install -g pnpm@10.19.0
+npm install -g pnpm@9.15.9
 pnpm install
 
 echo "Building verification package..."

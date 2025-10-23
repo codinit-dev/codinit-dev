@@ -57,17 +57,17 @@ export class FilesStore {
    * Needs to be reset when the user sends another message and all changes have to be submitted
    * for the model to be aware of the changes.
    */
-  #modifiedFiles: Map<string, string> = import.meta.hot?.data?.modifiedFiles ?? new Map();
+  #modifiedFiles: Map<string, string> = import.meta.hot?.data.modifiedFiles ?? new Map();
 
   /**
    * Keeps track of deleted files and folders to prevent them from reappearing on reload
    */
-  #deletedPaths: Set<string> = import.meta.hot?.data?.deletedPaths ?? new Set();
+  #deletedPaths: Set<string> = import.meta.hot?.data.deletedPaths ?? new Set();
 
   /**
    * Map of files that matches the state of WebContainer.
    */
-  files: MapStore<FileMap> = import.meta.hot?.data?.files ?? map({});
+  files: MapStore<FileMap> = import.meta.hot?.data.files ?? map({});
 
   get filesCount() {
     return this.#size;
@@ -79,7 +79,7 @@ export class FilesStore {
     // Load deleted paths from localStorage if available
     try {
       if (typeof localStorage !== 'undefined') {
-        const deletedPathsJson = localStorage.getItem('codinit-deleted-paths');
+        const deletedPathsJson = localStorage.getItem('bolt-deleted-paths');
 
         if (deletedPathsJson) {
           const deletedPaths = JSON.parse(deletedPathsJson);
@@ -96,7 +96,7 @@ export class FilesStore {
     // Load locked files from localStorage
     this.#loadLockedFiles();
 
-    if (import.meta.hot && import.meta.hot.data) {
+    if (import.meta.hot) {
       // Persist our state across hot reloads
       import.meta.hot.data.files = this.files;
       import.meta.hot.data.modifiedFiles = this.#modifiedFiles;
@@ -597,11 +597,7 @@ export class FilesStore {
 
     // Set up file watcher
     webcontainer.internal.watchPaths(
-      {
-        include: [`${WORK_DIR}/**`],
-        exclude: ['**/node_modules', '.git'],
-        includeContent: true,
-      },
+      { include: [`${WORK_DIR}/**`], exclude: ['**/node_modules', '.git'], includeContent: true },
       bufferWatchEvents(100, this.#processEventBuffer.bind(this)),
     );
 
@@ -959,7 +955,7 @@ export class FilesStore {
   #persistDeletedPaths() {
     try {
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('codinit-deleted-paths', JSON.stringify([...this.#deletedPaths]));
+        localStorage.setItem('bolt-deleted-paths', JSON.stringify([...this.#deletedPaths]));
       }
     } catch (error) {
       logger.error('Failed to persist deleted paths to localStorage', error);

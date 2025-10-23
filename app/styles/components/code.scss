@@ -1,9 +1,9 @@
 .actions .shiki {
-  background-color: var(--codinit-elements-actions-code-background) !important;
+  background-color: var(--bolt-elements-actions-code-background) !important;
 }
 
 .shiki {
   &:not(:has(.actions), .actions *) {
-    background-color: var(--codinit-elements-messages-code-background) !important;
+    background-color: var(--bolt-elements-messages-code-background) !important;
   }
 }

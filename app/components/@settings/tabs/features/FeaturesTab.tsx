@@ -33,8 +33,8 @@ const FeatureCard = memo(
       layoutId={feature.id}
       className={classNames(
         'relative group cursor-pointer',
-        'bg-codinit-elements-background-depth-2',
-        'hover:bg-codinit-elements-background-depth-3',
+        'bg-bolt-elements-background-depth-2',
+        'hover:bg-bolt-elements-background-depth-3',
         'transition-colors duration-200',
         'rounded-lg overflow-hidden',
       )}
@@ -45,9 +45,9 @@ const FeatureCard = memo(
       <div className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={classNames(feature.icon, 'w-5 h-5 text-codinit-elements-textSecondary')} />
+            <div className={classNames(feature.icon, 'w-5 h-5 text-bolt-elements-textSecondary')} />
             <div className="flex items-center gap-2">
-              <h4 className="font-medium text-codinit-elements-textPrimary">{feature.title}</h4>
+              <h4 className="font-medium text-bolt-elements-textPrimary">{feature.title}</h4>
               {feature.beta && (
                 <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/10 text-blue-500 font-medium">Beta</span>
               )}
@@ -60,8 +60,8 @@ const FeatureCard = memo(
           </div>
           <Switch checked={feature.enabled} onCheckedChange={(checked) => onToggle(feature.id, checked)} />
         </div>
-        <p className="mt-2 text-sm text-codinit-elements-textSecondary">{feature.description}</p>
-        {feature.tooltip && <p className="mt-1 text-xs text-codinit-elements-textTertiary">{feature.tooltip}</p>}
+        <p className="mt-2 text-sm text-bolt-elements-textSecondary">{feature.description}</p>
+        {feature.tooltip && <p className="mt-1 text-xs text-bolt-elements-textTertiary">{feature.tooltip}</p>}
       </div>
     </motion.div>
   ),
@@ -91,8 +91,8 @@ const FeatureSection = memo(
       <div className="flex items-center gap-3">
         <div className={classNames(icon, 'text-xl text-purple-500')} />
         <div>
-          <h3 className="text-lg font-medium text-codinit-elements-textPrimary">{title}</h3>
-          <p className="text-sm text-codinit-elements-textSecondary">{description}</p>
+          <h3 className="text-lg font-medium text-bolt-elements-textPrimary">{title}</h3>
+          <p className="text-sm text-bolt-elements-textSecondary">{description}</p>
         </div>
       </div>
 
@@ -238,8 +238,8 @@ export default function FeaturesTab() {
       <motion.div
         layout
         className={classNames(
-          'bg-codinit-elements-background-depth-2',
-          'hover:bg-codinit-elements-background-depth-3',
+          'bg-bolt-elements-background-depth-2',
+          'hover:bg-bolt-elements-background-depth-3',
           'transition-all duration-200',
           'rounded-lg p-4',
           'group',
@@ -252,7 +252,7 @@ export default function FeaturesTab() {
           <div
             className={classNames(
               'p-2 rounded-lg text-xl',
-              'bg-codinit-elements-background-depth-3 group-hover:bg-codinit-elements-background-depth-4',
+              'bg-bolt-elements-background-depth-3 group-hover:bg-bolt-elements-background-depth-4',
               'transition-colors duration-200',
               'text-purple-500',
             )}
@@ -260,10 +260,10 @@ export default function FeaturesTab() {
             <div className="i-ph:book" />
           </div>
           <div className="flex-1">
-            <h4 className="text-sm font-medium text-codinit-elements-textPrimary group-hover:text-purple-500 transition-colors">
+            <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
               Prompt Library
             </h4>
-            <p className="text-xs text-codinit-elements-textSecondary mt-0.5">
+            <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
               Choose a prompt from the library to use as the system prompt
             </p>
           </div>
@@ -275,8 +275,8 @@ export default function FeaturesTab() {
             }}
             className={classNames(
               'p-2 rounded-lg text-sm min-w-[200px]',
-              'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-              'text-codinit-elements-textPrimary',
+              'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+              'text-bolt-elements-textPrimary',
               'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
               'group-hover:border-purple-500/30',
               'transition-all duration-200',

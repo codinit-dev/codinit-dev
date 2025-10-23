@@ -1,6 +1,10 @@
+/*
+ * @ts-nocheck
+ * Preventing TS checks with files presented in the video for a better presentation.
+ */
 import { useStore } from '@nanostores/react';
 import type { Message } from 'ai';
-import { useChat } from '@ai-sdk/react';
+import { useChat } from 'ai/react';
 import { useAnimate } from 'framer-motion';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { cssTransition, toast, ToastContainer } from 'react-toastify';
@@ -9,7 +13,6 @@ import { description, useChatHistory } from '~/lib/persistence';
 import { chatStore } from '~/lib/stores/chat';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, PROMPT_COOKIE_KEY, PROVIDER_LIST } from '~/utils/constants';
-import { getActiveConfig } from '~/lib/stores/tokenConfig';
 import { cubicEasingFn } from '~/utils/easings';
 import { createScopedLogger, renderLogger } from '~/utils/logger';
 import { BaseChat } from './BaseChat';
@@ -19,15 +22,11 @@ import { useSettings } from '~/lib/hooks/useSettings';
 import type { ProviderInfo } from '~/types/model';
 import { useSearchParams } from '@remix-run/react';
 import { createSampler } from '~/utils/sampler';
-import { initFromTemplate } from '~/lib/services/projectInit';
+import { getTemplates, selectStarterTemplate } from '~/utils/selectStarterTemplate';
 import { logStore } from '~/lib/stores/logs';
 import { streamingState } from '~/lib/stores/streaming';
 import { filesToArtifacts } from '~/utils/fileUtils';
 import { supabaseConnection } from '~/lib/stores/supabase';
-import type { ElementInfo } from '~/components/workbench/Inspector';
-import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
-import { useMCPStore } from '~/lib/stores/mcp';
-import type { LlmErrorAlertType } from '~/types/actions';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -36,45 +35,14 @@ const toastAnimation = cssTransition({
 
 const logger = createScopedLogger('Chat');
 
-async function retryWithTimeout<T>(
-  fn: () => Promise<T>,
-  options: { retries: number; timeout: number; context: string },
-): Promise<T | null> {
-  for (let attempt = 1; attempt <= options.retries; attempt++) {
-    try {
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout')), options.timeout),
-      );
-      return await Promise.race([fn(), timeoutPromise]);
-    } catch (error) {
-      if (attempt === options.retries) {
-        console.error(`${options.context} failed after ${options.retries} attempts:`, error);
-        return null;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
-    }
-  }
-  return null;
-}
-
 export function Chat() {
   renderLogger.trace('Chat');
 
-  const { ready, initialMessages, storeMessageHistory, importChat, exportChat, inMemoryMode } = useChatHistory();
+  const { ready, initialMessages, storeMessageHistory, importChat, exportChat } = useChatHistory();
   const title = useStore(description);
   useEffect(() => {
     workbenchStore.setReloadedMessages(initialMessages.map((m) => m.id));
   }, [initialMessages]);
-
-  useEffect(() => {
-    if (inMemoryMode) {
-      toast.warning("Chat history unavailable - your work won't be saved", {
-        autoClose: false,
-        closeButton: true,
-      });
-    }
-  }, [inMemoryMode]);
 
   return (
     <>
@@ -96,18 +64,15 @@ export function Chat() {
           );
         }}
         icon={({ type }) => {
+          /**
+           * @todo Handle more types if we need them. This may require extra color palettes.
+           */
           switch (type) {
             case 'success': {
-              return <div className="i-ph:check-bold text-codinit-elements-icon-success text-2xl" />;
+              return <div className="i-ph:check-bold text-bolt-elements-icon-success text-2xl" />;
             }
             case 'error': {
-              return <div className="i-ph:warning-circle-bold text-codinit-elements-icon-error text-2xl" />;
-            }
-            case 'warning': {
-              return <div className="i-ph:warning-bold text-orange-500 text-2xl" />;
-            }
-            case 'info': {
-              return <div className="i-ph:info-bold text-blue-500 text-2xl" />;
+              return <div className="i-ph:warning-circle-bold text-bolt-elements-icon-error text-2xl" />;
             }
           }
 
@@ -140,78 +105,6 @@ const processSampledMessages = createSampler(
   50,
 );
 
-/**
- * Detects GitHub starters repo URL in the prompt
- * Returns the template path if found (e.g., "codinit-dev/starters/my-template")
- */
-function detectGitHubStartersRepo(message: string): string | null {
-  /*
-   * Match patterns like:
-   * - https://github.com/codinit-dev/starters/tree/main/template-name
-   * - https://github.com/codinit-dev/starters/blob/main/template-name
-   * - github.com/codinit-dev/starters/template-name
-   */
-  const githubUrlPattern = /github\.com\/codinit-dev\/starters(?:\/(?:tree|blob)\/[^/]+)?\/([^\s/?#]+)/i;
-  const match = message.match(githubUrlPattern);
-
-  if (match && match[1]) {
-    // Return the full GitHub repo path with template subdirectory
-    return `codinit-dev/starters/${match[1]}`;
-  }
-
-  return null;
-}
-
-/**
- * Detects if the user's prompt mentions a specific starter template
- * Returns the template name if found, otherwise null
- */
-function detectTemplateFromPrompt(message: string): string | null {
-  const lowerMessage = message.toLowerCase();
-
-  // Template name mappings for common variations
-  const templateMappings: Record<string, string> = {
-    expo: 'Expo App',
-    astro: 'Astro Shadcn',
-    'next.js': 'Next.JS',
-    nextjs: 'Next.JS',
-    'next js': 'Next.JS',
-    'vite shadcn': 'Vite Shadcn',
-    shadcn: 'Vite Shadcn',
-    qwik: 'Qwik Typescript',
-    remix: 'Remix Shadcn',
-    slidev: 'Slidev',
-    svelte: 'Sveltekit',
-    sveltekit: 'Sveltekit',
-    vanilla: 'Vanilla Vite',
-    'vanilla vite': 'Vanilla Vite',
-    vue: 'Vue',
-    angular: 'Angular',
-    typescript: 'TypeScript',
-
-    /*
-     * solidjs: 'SolidJS', // Template not available yet
-     * solid: 'SolidJS', // Template not available yet
-     */
-  };
-
-  // Check for direct template name matches
-  for (const [keyword, templateName] of Object.entries(templateMappings)) {
-    if (lowerMessage.includes(keyword)) {
-      logger.info(`Detected template "${templateName}" from prompt keyword "${keyword}"`);
-      return templateName;
-    }
-  }
-
-  // Check if message explicitly mentions "react" or "vite react" but not shadcn
-  if ((lowerMessage.includes('react') || lowerMessage.includes('vite')) && !lowerMessage.includes('shadcn')) {
-    logger.info('Detected React/Vite in prompt, using default Vite React template');
-    return 'Vite React';
-  }
-
-  return null;
-}
-
 interface ChatProps {
   initialMessages: Message[];
   storeMessageHistory: (messages: Message[]) => Promise<void>;
@@ -230,17 +123,16 @@ export const ChatImpl = memo(
     const [imageDataList, setImageDataList] = useState<string[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [fakeLoading, setFakeLoading] = useState(false);
-    const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const files = useStore(workbenchStore.files);
     const actionAlert = useStore(workbenchStore.alert);
     const deployAlert = useStore(workbenchStore.deployAlert);
-    const supabaseConn = useStore(supabaseConnection);
+    const supabaseConn = useStore(supabaseConnection); // Add this line to get Supabase connection
     const selectedProject = supabaseConn.stats?.projects?.find(
       (project) => project.id === supabaseConn.selectedProjectId,
     );
     const supabaseAlert = useStore(workbenchStore.supabaseAlert);
     const { activeProviders, promptId, autoSelectTemplate, contextOptimizationEnabled } = useSettings();
-    const [llmErrorAlert, setLlmErrorAlert] = useState<LlmErrorAlertType | undefined>(undefined);
+
     const [model, setModel] = useState(() => {
       const savedModel = Cookies.get('selectedModel');
       return savedModel || DEFAULT_MODEL;
@@ -249,12 +141,12 @@ export const ChatImpl = memo(
       const savedProvider = Cookies.get('selectedProvider');
       return (PROVIDER_LIST.find((p) => p.name === savedProvider) || DEFAULT_PROVIDER) as ProviderInfo;
     });
+
     const { showChat } = useStore(chatStore);
+
     const [animationScope, animate] = useAnimate();
+
     const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
-    const [chatMode, setChatMode] = useState<'discuss' | 'build'>('build');
-    const [selectedElement, setSelectedElement] = useState<ElementInfo | null>(null);
-    const mcpSettings = useMCPStore((state) => state.settings);
 
     const {
       messages,
@@ -269,7 +161,6 @@ export const ChatImpl = memo(
       error,
       data: chatData,
       setData,
-      addToolResult,
     } = useChat({
       api: '/api/chat',
       body: {
@@ -277,7 +168,6 @@ export const ChatImpl = memo(
         files,
         promptId,
         contextOptimization: contextOptimizationEnabled,
-        chatMode,
         supabase: {
           isConnected: supabaseConn.isConnected,
           hasSelectedProject: !!selectedProject,
@@ -286,13 +176,18 @@ export const ChatImpl = memo(
             anonKey: supabaseConn?.credentials?.anonKey,
           },
         },
-        maxLLMSteps: mcpSettings.maxLLMSteps,
-        tokenConfig: getActiveConfig(),
       },
       sendExtraMessageFields: true,
-      onError: (e: Error) => {
-        setFakeLoading(false);
-        handleError(e, 'chat');
+      onError: (e) => {
+        logger.error('Request failed\n\n', e, error);
+        logStore.logError('Chat request failed', e, {
+          component: 'Chat',
+          action: 'request',
+          error: e.message,
+        });
+        toast.error(
+          'There was an error processing your request: ' + (e.message ? e.message : 'No details were returned'),
+        );
       },
       onFinish: (message, response) => {
         const usage = response.usage;
@@ -325,7 +220,12 @@ export const ChatImpl = memo(
         runAnimation();
         append({
           role: 'user',
-          content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
+          content: [
+            {
+              type: 'text',
+              text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
+            },
+          ] as any, // Type assertion to bypass compiler check
         });
       }
     }, [model, provider, searchParams]);
@@ -337,8 +237,7 @@ export const ChatImpl = memo(
 
     useEffect(() => {
       chatStore.setKey('started', initialMessages.length > 0);
-      setChatStarted(initialMessages.length > 0);
-    }, [initialMessages.length]);
+    }, []);
 
     useEffect(() => {
       processSampledMessages({
@@ -371,82 +270,6 @@ export const ChatImpl = memo(
       });
     };
 
-    const handleError = useCallback(
-      (error: unknown, context: 'chat' | 'template' | 'llmcall' = 'chat') => {
-        logger.error(`${context} request failed`, error);
-
-        stop();
-        setFakeLoading(false);
-
-        let errorInfo = {
-          message: 'An unexpected error occurred',
-          isRetryable: true,
-          statusCode: 500,
-          provider: provider.name,
-          type: 'unknown' as const,
-          retryDelay: 0,
-        };
-
-        if (error instanceof Error && error.message) {
-          try {
-            const parsed = JSON.parse(error.message);
-
-            if (parsed.error || parsed.message) {
-              errorInfo = { ...errorInfo, ...parsed };
-            } else {
-              errorInfo.message = error.message;
-            }
-          } catch {
-            errorInfo.message = error.message;
-          }
-        } else if (typeof error === 'string') {
-          errorInfo.message = error;
-        }
-
-        let errorType: LlmErrorAlertType['errorType'] = 'unknown';
-        let title = 'Request Failed';
-
-        if (errorInfo.statusCode === 401 || errorInfo.message.toLowerCase().includes('api key')) {
-          errorType = 'authentication';
-          title = 'Authentication Error';
-        } else if (errorInfo.statusCode === 429 || errorInfo.message.toLowerCase().includes('rate limit')) {
-          errorType = 'rate_limit';
-          title = 'Rate Limit Exceeded';
-        } else if (errorInfo.message.toLowerCase().includes('quota')) {
-          errorType = 'quota';
-          title = 'Quota Exceeded';
-        } else if (errorInfo.statusCode >= 500) {
-          errorType = 'network';
-          title = 'Server Error';
-        }
-
-        logStore.logError(`${context} request failed`, error, {
-          component: 'Chat',
-          action: 'request',
-          error: errorInfo.message,
-          context,
-          retryable: errorInfo.isRetryable,
-          errorType,
-          provider: provider.name,
-        });
-
-        // Create API error alert
-        setLlmErrorAlert({
-          type: 'error',
-          title,
-          description: errorInfo.message,
-          provider: provider.name,
-          errorType,
-        });
-        setData([]);
-      },
-      [provider.name, stop],
-    );
-
-    const clearApiErrorAlert = useCallback(() => {
-      setLlmErrorAlert(undefined);
-    }, []);
-
     useEffect(() => {
       const textarea = textareaRef.current;
 
@@ -465,77 +288,14 @@ export const ChatImpl = memo(
         return;
       }
 
-      try {
-        // Add timeout to prevent indefinite hanging
-        await Promise.race([
-          Promise.all([
-            animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }),
-            animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }),
-          ]),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Animation timeout')), 1000)),
-        ]);
-      } catch (error) {
-        console.warn('Animation failed or timed out:', error);
+      await Promise.all([
+        animate('#examples', { opacity: 0, display: 'none' }, { duration: 0.1 }),
+        animate('#intro', { opacity: 0, flex: 1 }, { duration: 0.2, ease: cubicEasingFn }),
+      ]);
 
-        // Continue anyway - don't block chat
-      }
-
-      // Always set chatStarted, even if animation failed
       chatStore.setKey('started', true);
+
       setChatStarted(true);
-    };
-
-    // Helper function to create message parts array from text and images
-    const createMessageParts = (text: string, images: string[] = []): Array<TextUIPart | FileUIPart> => {
-      // Create an array of properly typed message parts
-      const parts: Array<TextUIPart | FileUIPart> = [
-        {
-          type: 'text',
-          text,
-        },
-      ];
-
-      // Add image parts if any
-      images.forEach((imageData) => {
-        // Extract correct MIME type from the data URL
-        const mimeType = imageData.split(';')[0].split(':')[1] || 'image/jpeg';
-
-        // Create file part according to AI SDK format
-        parts.push({
-          type: 'file',
-          mimeType,
-          data: imageData.replace(/^data:image\/[^;]+;base64,/, ''),
-        });
-      });
-
-      return parts;
-    };
-
-    // Helper function to convert File[] to Attachment[] for AI SDK
-    const filesToAttachments = async (files: File[]): Promise<Attachment[] | undefined> => {
-      if (files.length === 0) {
-        return undefined;
-      }
-
-      const attachments = await Promise.all(
-        files.map(
-          (file) =>
-            new Promise<Attachment>((resolve) => {
-              const reader = new FileReader();
-
-              reader.onloadend = () => {
-                resolve({
-                  name: file.name,
-                  contentType: file.type,
-                  url: reader.result as string,
-                });
-              };
-              reader.readAsDataURL(file);
-            }),
-        ),
-      );
-
-      return attachments;
     };
 
     const sendMessage = async (_event: React.UIEvent, messageInput?: string) => {
@@ -550,162 +310,105 @@ export const ChatImpl = memo(
         return;
       }
 
-      let finalMessageContent = messageContent;
-
-      if (selectedElement) {
-        console.log('Selected Element:', selectedElement);
-
-        const elementInfo = `<div class=\"__codinitSelectedElement__\" data-element='${JSON.stringify(selectedElement)}'>${JSON.stringify(`${selectedElement.displayText}`)}</div>`;
-        finalMessageContent = messageContent + elementInfo;
-      }
+      // If no locked items, proceed normally with the original message
+      const finalMessageContent = messageContent;
 
       runAnimation();
 
       if (!chatStarted) {
         setFakeLoading(true);
 
-        // Check if user mentions GitHub starters repo first
-        const githubStartersPath = detectGitHubStartersRepo(finalMessageContent);
+        if (autoSelectTemplate) {
+          const { template, title } = await selectStarterTemplate({
+            message: finalMessageContent,
+            model,
+            provider,
+          });
 
-        if (githubStartersPath) {
-          // User mentioned a specific template from the GitHub starters repo
-          logger.info(`Detected GitHub starters repo: ${githubStartersPath}`);
+          if (template !== 'blank') {
+            const temResp = await getTemplates(template, title).catch((e) => {
+              if (e.message.includes('rate limit')) {
+                toast.warning('Rate limit exceeded. Skipping starter template\n Continuing with blank template');
+              } else {
+                toast.warning('Failed to import starter template\n Continuing with blank template');
+              }
 
-          const initResult = await retryWithTimeout(
-            () =>
-              initFromTemplate({
-                message: finalMessageContent,
-                model,
-                provider,
-                autoSelectTemplate,
-                githubRepoPath: githubStartersPath,
-              }),
-            { retries: 2, timeout: 8000, context: 'GitHub template loading' },
-          );
-
-          if (initResult) {
-            setMessages([...initResult.messages]);
-          } else {
-            toast.warning(`Failed to load template from ${githubStartersPath} - starting with blank project`, {
-              autoClose: 5000,
+              return null;
             });
-          }
 
-          setFakeLoading(false);
+            if (temResp) {
+              const { assistantMessage, userMessage } = temResp;
+              setMessages([
+                {
+                  id: `1-${new Date().getTime()}`,
+                  role: 'user',
+                  content: [
+                    {
+                      type: 'text',
+                      text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`,
+                    },
+                    ...imageDataList.map((imageData) => ({
+                      type: 'image',
+                      image: imageData,
+                    })),
+                  ] as any,
+                },
+                {
+                  id: `2-${new Date().getTime()}`,
+                  role: 'assistant',
+                  content: assistantMessage,
+                },
+                {
+                  id: `3-${new Date().getTime()}`,
+                  role: 'user',
+                  content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userMessage}`,
+                  annotations: ['hidden'],
+                },
+              ]);
+              reload();
+              setInput('');
+              Cookies.remove(PROMPT_COOKIE_KEY);
 
-          return;
-        }
+              setUploadedFiles([]);
+              setImageDataList([]);
 
-        // Prioritize: manually selected > detected from prompt > default 'Vite React'
-        const detectedTemplate = detectTemplateFromPrompt(finalMessageContent);
-        const templateToUse = selectedTemplate || detectedTemplate || 'Vite React';
-        const templateSource = selectedTemplate
-          ? '(manually selected)'
-          : detectedTemplate
-            ? '(detected from prompt)'
-            : '(default)';
+              resetEnhancer();
 
-        logger.info(`Loading template: ${templateToUse} ${templateSource}`);
+              textareaRef.current?.blur();
+              setFakeLoading(false);
 
-        const initResult = await retryWithTimeout(
-          () =>
-            initFromTemplate({
-              message: finalMessageContent,
-              model,
-              provider,
-              autoSelectTemplate,
-              forceTemplate: templateToUse,
-            }),
-          { retries: 2, timeout: 8000, context: 'Template loading' },
-        );
-
-        if (initResult) {
-          // Template loaded - now set messages and reload
-          const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
-
-          setMessages(initResult.messages);
-
-          // Wait for React effects to parse messages and add actions to queue
-          await new Promise((resolve) => setTimeout(resolve, 150));
-
-          // Wait for all template actions with timeout
-          try {
-            await Promise.race([
-              workbenchStore.waitForExecutionQueue(),
-              new Promise((_, reject) => setTimeout(() => reject(new Error('Queue timeout')), 5000)),
-            ]);
-          } catch (error) {
-            console.warn('Execution queue timed out, proceeding anyway:', error);
-          }
-
-          try {
-            reload(attachments ? { experimental_attachments: attachments } : undefined);
-          } catch (error) {
-            console.error('Reload failed:', error);
-            toast.error('Failed to start AI response - please send another message');
-          }
-
-          setInput('');
-          Cookies.remove(PROMPT_COOKIE_KEY);
-          setUploadedFiles([]);
-          setImageDataList([]);
-          resetEnhancer();
-          textareaRef.current?.blur();
-          setFakeLoading(false);
-
-          // Ensure navigation happens
-          setTimeout(async () => {
-            try {
-              await storeMessageHistory(messages);
-            } catch (error) {
-              console.error('Direct storeMessageHistory call failed:', error);
+              return;
             }
-          }, 200);
-
-          return;
+          }
         }
 
-        // Fallback if template loading fails - proceed with normal flow
-        toast.warning('Template loading failed - starting with blank project', {
-          autoClose: 4000,
-        });
-
-        const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
-        const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
-
+        // If autoSelectTemplate is disabled or template selection failed, proceed with normal message
         setMessages([
           {
             id: `${new Date().getTime()}`,
             role: 'user',
-            content: userMessageText,
-            parts: createMessageParts(userMessageText, imageDataList),
-            experimental_attachments: attachments,
+            content: [
+              {
+                type: 'text',
+                text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`,
+              },
+              ...imageDataList.map((imageData) => ({
+                type: 'image',
+                image: imageData,
+              })),
+            ] as any,
           },
         ]);
-
-        try {
-          reload(attachments ? { experimental_attachments: attachments } : undefined);
-        } catch (error) {
-          console.error('Reload failed:', error);
-          toast.error('Failed to start AI response - please try again');
-        }
-
+        reload();
         setFakeLoading(false);
-
-        // Ensure navigation happens
-        setTimeout(async () => {
-          try {
-            await storeMessageHistory(messages);
-          } catch (error) {
-            console.error('Direct storeMessageHistory call failed:', error);
-          }
-        }, 200);
-
         setInput('');
         Cookies.remove(PROMPT_COOKIE_KEY);
+
         setUploadedFiles([]);
         setImageDataList([]);
+
         resetEnhancer();
+
         textareaRef.current?.blur();
 
         return;
@@ -721,35 +424,35 @@ export const ChatImpl = memo(
 
       if (modifiedFiles !== undefined) {
         const userUpdateArtifact = filesToArtifacts(modifiedFiles, `${Date.now()}`);
-        const messageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userUpdateArtifact}${finalMessageContent}`;
-
-        const attachmentOptions =
-          uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;
-
-        append(
-          {
-            role: 'user',
-            content: messageText,
-            parts: createMessageParts(messageText, imageDataList),
-          },
-          attachmentOptions,
-        );
+        append({
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userUpdateArtifact}${finalMessageContent}`,
+            },
+            ...imageDataList.map((imageData) => ({
+              type: 'image',
+              image: imageData,
+            })),
+          ] as any,
+        });
 
         workbenchStore.resetAllFileModifications();
       } else {
-        const messageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
-
-        const attachmentOptions =
-          uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;
-
-        append(
-          {
-            role: 'user',
-            content: messageText,
-            parts: createMessageParts(messageText, imageDataList),
-          },
-          attachmentOptions,
-        );
+        append({
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`,
+            },
+            ...imageDataList.map((imageData) => ({
+              type: 'image',
+              image: imageData,
+            })),
+          ] as any,
+        });
       }
 
       setInput('');
@@ -801,20 +504,6 @@ export const ChatImpl = memo(
       Cookies.set('selectedProvider', newProvider.name, { expires: 30 });
     };
 
-    const handleTemplateSelection = useCallback(
-      (templateName: string) => {
-        setSelectedTemplate(templateName);
-
-        const defaultMessage = `Start a new project with ${templateName}`;
-        setInput(defaultMessage);
-
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-        }
-      },
-      [setInput],
-    );
-
     return (
       <BaseChat
         ref={animationScope}
@@ -849,7 +538,7 @@ export const ChatImpl = memo(
 
           return {
             ...message,
-            content: parsedMessages[i] || message.content,
+            content: parsedMessages[i] || '',
           };
         })}
         enhancePrompt={() => {
@@ -874,17 +563,7 @@ export const ChatImpl = memo(
         clearSupabaseAlert={() => workbenchStore.clearSupabaseAlert()}
         deployAlert={deployAlert}
         clearDeployAlert={() => workbenchStore.clearDeployAlert()}
-        llmErrorAlert={llmErrorAlert}
-        clearLlmErrorAlert={clearApiErrorAlert}
         data={chatData}
-        chatMode={chatMode}
-        setChatMode={setChatMode}
-        append={append}
-        selectedElement={selectedElement}
-        setSelectedElement={setSelectedElement}
-        addToolResult={addToolResult}
-        onSelectTemplate={handleTemplateSelection}
-        selectedTemplate={selectedTemplate}
       />
     );
   },

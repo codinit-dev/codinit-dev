@@ -1,25 +1,25 @@
 import type { WebContainer, WebContainerProcess } from '@webcontainer/api';
 import { atom, type WritableAtom } from 'nanostores';
 import type { ITerminal } from '~/types/terminal';
-import { newCodinitShellProcess, newShellProcess } from '~/utils/shell';
+import { newExampleShellProcess, newShellProcess } from '~/utils/shell';
 import { coloredText } from '~/utils/terminal';
 
 export class TerminalStore {
   #webcontainer: Promise<WebContainer>;
   #terminals: Array<{ terminal: ITerminal; process: WebContainerProcess }> = [];
-  #codinitTerminal = newCodinitShellProcess();
+  #boltTerminal = newExampleShellProcess();
 
-  showTerminal: WritableAtom<boolean> = import.meta.hot?.data?.showTerminal ?? atom(true);
+  showTerminal: WritableAtom<boolean> = import.meta.hot?.data.showTerminal ?? atom(true);
 
   constructor(webcontainerPromise: Promise<WebContainer>) {
     this.#webcontainer = webcontainerPromise;
 
-    if (import.meta.hot && import.meta.hot.data) {
+    if (import.meta.hot) {
       import.meta.hot.data.showTerminal = this.showTerminal;
     }
   }
-  get codinitTerminal() {
-    return this.#codinitTerminal;
+  get boltTerminal() {
+    return this.#boltTerminal;
   }
 
   toggleTerminal(value?: boolean) {
@@ -28,9 +28,9 @@ export class TerminalStore {
   async attachCodinitTerminal(terminal: ITerminal) {
     try {
       const wc = await this.#webcontainer;
-      await this.#codinitTerminal.init(wc, terminal);
+      await this.#boltTerminal.init(wc, terminal);
     } catch (error: any) {
-      terminal.write(coloredText.red('Failed to spawn codinit shell\n\n') + error.message);
+      terminal.write(coloredText.red('Failed to spawn bolt shell\n\n') + error.message);
       return;
     }
   }
@@ -48,21 +48,6 @@ export class TerminalStore {
   onTerminalResize(cols: number, rows: number) {
     for (const { process } of this.#terminals) {
       process.resize({ cols, rows });
-    }
-  }
-
-  async detachTerminal(terminal: ITerminal) {
-    const terminalIndex = this.#terminals.findIndex((t) => t.terminal === terminal);
-
-    if (terminalIndex !== -1) {
-      const { process } = this.#terminals[terminalIndex];
-
-      try {
-        process.kill();
-      } catch (error) {
-        console.warn('Failed to kill terminal process:', error);
-      }
-      this.#terminals.splice(terminalIndex, 1);
     }
   }
 }

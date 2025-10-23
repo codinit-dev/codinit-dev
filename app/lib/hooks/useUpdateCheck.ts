@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { checkForUpdates, acknowledgeUpdate } from '~/lib/api/updates';
 
-const LAST_ACKNOWLEDGED_VERSION_KEY = 'codinit_last_acknowledged_version';
+const LAST_ACKNOWLEDGED_VERSION_KEY = 'bolt_last_acknowledged_version';
 
 export const useUpdateCheck = () => {
   const [hasUpdate, setHasUpdate] = useState(false);
@@ -54,9 +54,5 @@ export const useUpdateCheck = () => {
     }
   };
 
-  return {
-    hasUpdate,
-    currentVersion,
-    acknowledgeUpdate: handleAcknowledgeUpdate,
-  };
+  return { hasUpdate, currentVersion, acknowledgeUpdate: handleAcknowledgeUpdate };
 };

@@ -70,12 +70,12 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   return (
     <div className="flex">
       <div className="relative" ref={dropdownRef}>
-        <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden mr-2 text-sm">
+        <div className="flex border border-bolt-elements-borderColor rounded-md overflow-hidden mr-2 text-sm">
           <Button
             active
             disabled={isDeploying || !activePreview || isStreaming}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="px-4 hover:bg-codinit-elements-item-backgroundActive flex items-center gap-2"
+            className="px-4 hover:bg-bolt-elements-item-backgroundActive flex items-center gap-2"
           >
             {isDeploying ? `Deploying to ${deployingTo}...` : 'Deploy'}
             <div
@@ -85,7 +85,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
         </div>
 
         {isDropdownOpen && (
-          <div className="absolute right-2 flex flex-col gap-1 z-50 p-1 mt-1 min-w-[13.5rem] bg-codinit-elements-background-depth-2 rounded-md shadow-lg bg-codinit-elements-backgroundDefault border border-codinit-elements-borderColor">
+          <div className="absolute right-2 flex flex-col gap-1 z-50 p-1 mt-1 min-w-[13.5rem] bg-bolt-elements-background-depth-2 rounded-md shadow-lg bg-bolt-elements-backgroundDefault border border-bolt-elements-borderColor">
             <Button
               active
               onClick={() => {
@@ -93,7 +93,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
                 setIsDropdownOpen(false);
               }}
               disabled={isDeploying || !activePreview || !netlifyConn.user}
-              className="flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+              className="flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative"
             >
               <img
                 className="w-5 h-5"
@@ -114,7 +114,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
                 setIsDropdownOpen(false);
               }}
               disabled={isDeploying || !activePreview || !vercelConn.user}
-              className="flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+              className="flex items-center w-full px-4 py-2 text-sm text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive gap-2 rounded-md group relative"
             >
               <img
                 className="w-5 h-5 bg-black p-1 rounded"
@@ -130,7 +130,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             <Button
               active={false}
               disabled
-              className="flex items-center w-full rounded-md px-4 py-2 text-sm text-codinit-elements-textTertiary gap-2"
+              className="flex items-center w-full rounded-md px-4 py-2 text-sm text-bolt-elements-textTertiary gap-2"
             >
               <span className="sr-only">Coming Soon</span>
               <img
@@ -146,7 +146,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           </div>
         )}
       </div>
-      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden">
+      <div className="flex border border-bolt-elements-borderColor rounded-md overflow-hidden">
         <Button
           active={showChat}
           disabled={!canHideChat || isSmallViewport} // expand button is disabled on mobile as it's not needed
@@ -156,9 +156,9 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             }
           }}
         >
-          <div className="i-codinit:chat text-sm" />
+          <div className="i-bolt:chat text-sm" />
         </Button>
-        <div className="w-[1px] bg-codinit-elements-borderColor" />
+        <div className="w-[1px] bg-bolt-elements-borderColor" />
         <Button
           active={showWorkbench}
           onClick={() => {
@@ -190,10 +190,10 @@ function Button({ active = false, disabled = false, children, onClick, className
       className={classNames(
         'flex items-center p-1.5',
         {
-          'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
+          'bg-bolt-elements-item-backgroundDefault hover:bg-bolt-elements-item-backgroundActive text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary':
             !active,
-          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
-          'bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
+          'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent': active && !disabled,
+          'bg-bolt-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
             disabled,
         },
         className,

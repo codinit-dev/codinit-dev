@@ -1,10 +1,10 @@
 services:
   app-prod:
-    image: codinit-ai:production
+    image: bolt-ai:production
     build:
       context: .
       dockerfile: Dockerfile
-      target: codinit-ai-production
+      target: bolt-ai-production
     ports:
       - '5173:5173'
     env_file: '.env.local'
@@ -34,9 +34,9 @@ services:
       - production
 
   app-dev:
-    image: codinit-ai:development
+    image: bolt-ai:development
     build:
-      target: codinit-ai-development
+      target: bolt-ai-development
     env_file: '.env.local'
     environment:
       - NODE_ENV=development
@@ -74,7 +74,7 @@ services:
     profiles: ['development', 'default']
 
   app-prebuild:
-    image: ghcr.io/gerome-elassaad/codinit-app:sha-1d07e59
+    image: ghcr.io/gerome-elassaad/codinit-app:latest
     ports:
       - '5173:5173'
     environment:

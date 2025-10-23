@@ -64,7 +64,8 @@ keys.forEach((key) => console.log(`${key}:`, app.getPath(key)));
 console.log('start whenReady');
 
 declare global {
-  var ELECTRON_API: typeof electron;
+  // eslint-disable-next-line no-var, @typescript-eslint/naming-convention
+  var __electron__: typeof electron;
 }
 
 (async () => {
@@ -76,7 +77,7 @@ declare global {
 
   const serverBuild = await loadServerBuild();
 
-  protocol.handle('http', async (req): Promise<Response> => {
+  protocol.handle('http', async (req) => {
     console.log('Handling request for:', req.url);
 
     if (isDev) {
@@ -146,7 +147,7 @@ declare global {
       return new Response(`Error handling request to ${req.url}: ${error.stack ?? error.message}`, {
         status: 500,
         headers: { 'content-type': 'text/plain' },
-      }) as Response;
+      });
     }
   });
 
@@ -159,7 +160,7 @@ declare global {
         }
 
         const listen = await viteServer.listen();
-        global.ELECTRON_API = electron;
+        global.__electron__ = electron;
         viteServer.printUrls();
 
         return `http://localhost:${listen.config.server.port}`;
