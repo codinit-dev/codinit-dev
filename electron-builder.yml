@@ -56,8 +56,8 @@ npmRebuild: false
 
 publish:
   provider: github
-  owner: Derek-X-Wang
-  repo: bolt.local
+  owner: Gerome-Elassaad
+  repo: codinit-app
   private: true
   releaseType: release
 
