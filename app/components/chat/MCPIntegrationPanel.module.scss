@@ -5,8 +5,8 @@
   height: 100vh;
   width: 100%;
   max-width: 500px;
-  background: var(--codinit-elements-bg-depth-1);
-  border-left: 1px solid var(--codinit-elements-borderColor);
+  background: var(--bolt-elements-bg-depth-1);
+  border-left: 1px solid var(--bolt-elements-borderColor);
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -23,7 +23,7 @@
 
 .header {
   flex-shrink: 0;
-  border-bottom: 1px solid var(--codinit-elements-borderColor);
+  border-bottom: 1px solid var(--bolt-elements-borderColor);
 
   .titleBar {
     display: flex;
@@ -34,7 +34,7 @@
     h2 {
       font-size: 1.125rem;
       font-weight: 600;
-      color: var(--codinit-elements-textPrimary);
+      color: var(--bolt-elements-textPrimary);
       margin: 0;
     }
   }
@@ -58,17 +58,17 @@
       cursor: pointer;
       transition: all 0.15s ease;
       background: transparent;
-      color: var(--codinit-elements-textSecondary);
+      color: var(--bolt-elements-textSecondary);
 
       &:hover {
-        color: var(--codinit-elements-textPrimary);
-        background: var(--codinit-elements-bg-depth-2);
+        color: var(--bolt-elements-textPrimary);
+        background: var(--bolt-elements-bg-depth-2);
       }
 
       &.active {
-        background: var(--codinit-elements-button-primary-background);
-        color: var(--codinit-elements-button-primary-text);
-        border: 1px solid var(--codinit-elements-borderColorActive);
+        background: var(--bolt-elements-button-primary-background);
+        color: var(--bolt-elements-button-primary-text);
+        border: 1px solid var(--bolt-elements-borderColorActive);
       }
 
       i {
@@ -84,15 +84,15 @@
   padding: 1.5rem;
 
   .description {
-    background: var(--codinit-elements-bg-depth-2);
+    background: var(--bolt-elements-bg-depth-2);
     border-radius: 0.5rem;
     padding: 1rem;
-    border: 1px solid var(--codinit-elements-borderColor);
+    border: 1px solid var(--bolt-elements-borderColor);
     margin-bottom: 1.5rem;
 
     p {
       font-size: 0.875rem;
-      color: var(--codinit-elements-textSecondary);
+      color: var(--bolt-elements-textSecondary);
       margin: 0;
       line-height: 1.5;
     }
@@ -113,14 +113,14 @@
       border-radius: 0.5rem;
       font-size: 0.875rem;
       font-weight: 500;
-      background: var(--codinit-elements-bg-depth-2);
-      color: var(--codinit-elements-textPrimary);
-      border: 1px solid var(--codinit-elements-borderColor);
+      background: var(--bolt-elements-bg-depth-2);
+      color: var(--bolt-elements-textPrimary);
+      border: 1px solid var(--bolt-elements-borderColor);
       cursor: pointer;
       transition: all 0.2s ease;
 
       &:hover:not(:disabled) {
-        background: var(--codinit-elements-bg-depth-3);
+        background: var(--bolt-elements-bg-depth-3);
       }
 
       &:disabled {
@@ -135,23 +135,23 @@
   }
 
   .error {
-    background: var(--codinit-elements-button-danger-background);
-    border: 1px solid var(--codinit-elements-button-danger-text);
+    background: var(--bolt-elements-button-danger-background);
+    border: 1px solid var(--bolt-elements-button-danger-text);
     border-radius: 0.5rem;
     padding: 0.75rem;
     margin-bottom: 1.5rem;
 
     p {
       font-size: 0.875rem;
-      color: var(--codinit-elements-button-danger-text);
+      color: var(--bolt-elements-button-danger-text);
       margin: 0;
     }
   }
 
   .serverList {
-    background: var(--codinit-elements-bg-depth-2);
+    background: var(--bolt-elements-bg-depth-2);
     border-radius: 0.75rem;
-    border: 1px solid var(--codinit-elements-borderColor);
+    border: 1px solid var(--bolt-elements-borderColor);
     overflow: hidden;
   }
 
@@ -167,7 +167,7 @@
       width: 4rem;
       height: 4rem;
       border-radius: 50%;
-      background: var(--codinit-elements-bg-depth-2);
+      background: var(--bolt-elements-bg-depth-2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -175,20 +175,20 @@
 
       i {
         font-size: 2rem;
-        color: var(--codinit-elements-textTertiary);
+        color: var(--bolt-elements-textTertiary);
       }
     }
 
     h3 {
       font-size: 0.875rem;
       font-weight: 500;
-      color: var(--codinit-elements-textPrimary);
+      color: var(--bolt-elements-textPrimary);
       margin: 0 0 0.5rem;
     }
 
     p {
       font-size: 0.75rem;
-      color: var(--codinit-elements-textSecondary);
+      color: var(--bolt-elements-textSecondary);
       max-width: 20rem;
       margin: 0;
       line-height: 1.5;
@@ -197,7 +197,7 @@
 }
 
 .serverItem {
-  border-bottom: 1px solid var(--codinit-elements-borderColor);
+  border-bottom: 1px solid var(--bolt-elements-borderColor);
 
   &:last-child {
     border-bottom: none;
@@ -211,7 +211,7 @@
     transition: background 0.15s ease;
 
     &:hover {
-      background: var(--codinit-elements-bg-depth-3);
+      background: var(--bolt-elements-bg-depth-3);
     }
 
     .serverIcon {
@@ -219,14 +219,14 @@
       width: 2.5rem;
       height: 2.5rem;
       border-radius: 0.5rem;
-      background: var(--codinit-elements-bg-depth-3);
+      background: var(--bolt-elements-bg-depth-3);
       display: flex;
       align-items: center;
       justify-content: center;
 
       i {
         font-size: 1.25rem;
-        color: var(--codinit-elements-textSecondary);
+        color: var(--bolt-elements-textSecondary);
       }
     }
 
@@ -237,13 +237,13 @@
       h3 {
         font-size: 0.875rem;
         font-weight: 500;
-        color: var(--codinit-elements-textPrimary);
+        color: var(--bolt-elements-textPrimary);
         margin: 0 0 0.25rem;
       }
 
       .description {
         font-size: 0.75rem;
-        color: var(--codinit-elements-textTertiary);
+        color: var(--bolt-elements-textTertiary);
         margin: 0;
         white-space: nowrap;
         overflow: hidden;
@@ -255,7 +255,7 @@
 
       .errorMessage {
         font-size: 0.75rem;
-        color: var(--codinit-elements-button-danger-text);
+        color: var(--bolt-elements-button-danger-text);
         margin: 0.25rem 0 0;
       }
 
@@ -264,7 +264,7 @@
         align-items: center;
         gap: 0.25rem;
         font-size: 0.75rem;
-        color: var(--codinit-elements-button-primary-text);
+        color: var(--bolt-elements-button-primary-text);
         background: none;
         border: none;
         padding: 0;
@@ -273,7 +273,7 @@
         transition: color 0.15s ease;
 
         &:hover {
-          color: var(--codinit-elements-borderColorActive);
+          color: var(--bolt-elements-borderColorActive);
         }
 
         i {
@@ -298,8 +298,8 @@
       transition: all 0.15s ease;
 
       &.available {
-        background: var(--codinit-elements-borderColorActive);
-        color: var(--codinit-elements-button-primary-text);
+        background: var(--bolt-elements-borderColorActive);
+        color: var(--bolt-elements-button-primary-text);
 
         &:hover {
           opacity: 0.9;
@@ -307,8 +307,8 @@
       }
 
       &.unavailable {
-        background: var(--codinit-elements-bg-depth-3);
-        color: var(--codinit-elements-textTertiary);
+        background: var(--bolt-elements-bg-depth-3);
+        color: var(--bolt-elements-textTertiary);
         cursor: not-allowed;
       }
     }
@@ -321,8 +321,8 @@
       font-size: 0.75rem;
       padding: 0.5rem;
       border-radius: 0.375rem;
-      background: var(--codinit-elements-bg-depth-3);
-      border: 1px solid var(--codinit-elements-borderColor);
+      background: var(--bolt-elements-bg-depth-3);
+      border: 1px solid var(--bolt-elements-borderColor);
       margin-bottom: 0.5rem;
 
       &:last-child {
@@ -331,12 +331,12 @@
 
       .toolName {
         font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-        color: var(--codinit-elements-textPrimary);
+        color: var(--bolt-elements-textPrimary);
         margin: 0 0 0.25rem;
       }
 
       .toolDescription {
-        color: var(--codinit-elements-textSecondary);
+        color: var(--bolt-elements-textSecondary);
         margin: 0;
         line-height: 1.4;
       }

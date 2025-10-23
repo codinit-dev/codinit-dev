@@ -119,7 +119,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
                 </div>
                 <div>
                   <DialogTitle>Configure {template.name}</DialogTitle>
-                  <p className="text-xs text-codinit-elements-textSecondary mt-0.5">{template.description}</p>
+                  <p className="text-xs text-bolt-elements-textSecondary mt-0.5">{template.description}</p>
                 </div>
               </div>
               <DialogClose asChild>
@@ -130,7 +130,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
             <div className="space-y-4">
               {/* Server Name */}
               <div>
-                <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+                <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
                   Server Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -138,14 +138,14 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
                   value={serverName}
                   onChange={(e) => setServerName(e.target.value)}
                   placeholder={`e.g., ${template.name.toLowerCase()}`}
-                  className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+                  className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
                 />
               </div>
 
               {/* Template Fields */}
               {template.requiredFields.map((field) => (
                 <div key={field.key}>
-                  <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+                  <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
                     {field.label} {field.required && <span className="text-red-500">*</span>}
                   </label>
                   <input
@@ -153,7 +153,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
                     value={fieldValues[field.key] || ''}
                     onChange={(e) => handleFieldChange(field.key, e.target.value)}
                     placeholder={field.placeholder}
-                    className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+                    className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
                   />
                 </div>
               ))}
@@ -166,7 +166,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
               )}
 
               {/* Info Message */}
-              <div className="p-3 rounded-lg text-xs bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor text-codinit-elements-textSecondary">
+              <div className="p-3 rounded-lg text-xs bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor text-bolt-elements-textSecondary">
                 <i className="i-ph:info inline-block mr-1" />
                 Your credentials are stored locally and never sent to our servers.
               </div>
@@ -177,7 +177,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
               <button
                 onClick={handleClose}
                 disabled={isSaving}
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-3 transition-all disabled:opacity-50"
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary hover:bg-bolt-elements-background-depth-3 transition-all disabled:opacity-50"
               >
                 Cancel
               </button>

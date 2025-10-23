@@ -223,13 +223,13 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
       <div className="space-y-3">
         {/* Search */}
         <div className="relative">
-          <i className="i-ph:magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-codinit-elements-textTertiary" />
+          <i className="i-ph:magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search integrations..."
-            className="w-full pl-9 pr-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+            className="w-full pl-9 pr-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
           />
         </div>
 
@@ -241,7 +241,7 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
               'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
               selectedCategory === null
                 ? 'bg-accent-500 text-white'
-                : 'bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                : 'bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary',
             )}
           >
             All
@@ -254,7 +254,7 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
                 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                 selectedCategory === category
                   ? 'bg-accent-500 text-white'
-                  : 'bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                  : 'bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary',
               )}
             >
               {getCategoryLabel(category)}
@@ -270,7 +270,7 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
             <button
               key={template.id}
               onClick={() => onSelectTemplate(template)}
-              className="flex items-center gap-3 p-3 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-left transition-all hover:border-accent-500/50 hover:bg-codinit-elements-background-depth-2"
+              className="flex items-center gap-3 p-3 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-left transition-all hover:border-accent-500/50 hover:bg-bolt-elements-background-depth-2"
             >
               <div
                 className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
@@ -280,22 +280,22 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
               </div>
 
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-codinit-elements-textPrimary mb-0.5">{template.name}</h3>
-                <p className="text-xs text-codinit-elements-textSecondary line-clamp-1">{template.description}</p>
+                <h3 className="text-sm font-medium text-bolt-elements-textPrimary mb-0.5">{template.name}</h3>
+                <p className="text-xs text-bolt-elements-textSecondary line-clamp-1">{template.description}</p>
               </div>
 
               <div className="flex-shrink-0">
-                <i className="i-ph:arrow-right text-codinit-elements-textTertiary" />
+                <i className="i-ph:arrow-right text-bolt-elements-textTertiary" />
               </div>
             </button>
           ))
         ) : (
           <div className="text-center py-8">
-            <div className="w-12 h-12 rounded-full bg-codinit-elements-background-depth-1 flex items-center justify-center mx-auto mb-3">
-              <i className="i-ph:magnifying-glass text-2xl text-codinit-elements-textTertiary" />
+            <div className="w-12 h-12 rounded-full bg-bolt-elements-background-depth-1 flex items-center justify-center mx-auto mb-3">
+              <i className="i-ph:magnifying-glass text-2xl text-bolt-elements-textTertiary" />
             </div>
-            <p className="text-sm text-codinit-elements-textSecondary">No integrations found</p>
-            <p className="text-xs text-codinit-elements-textTertiary mt-1">Try adjusting your search or filters</p>
+            <p className="text-sm text-bolt-elements-textSecondary">No integrations found</p>
+            <p className="text-xs text-bolt-elements-textTertiary mt-1">Try adjusting your search or filters</p>
           </div>
         )}
       </div>

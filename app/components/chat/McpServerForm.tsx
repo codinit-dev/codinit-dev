@@ -136,20 +136,20 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
     <div className="space-y-4">
       {/* Server Name */}
       <div>
-        <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">Server Name</label>
+        <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">Server Name</label>
         <input
           type="text"
           value={serverName}
           onChange={(e) => setServerName(e.target.value)}
           placeholder="e.g., my-mcp-server"
-          className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+          className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
           disabled={!!initialData}
         />
       </div>
 
       {/* Server Type */}
       <div>
-        <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">Server Type</label>
+        <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">Server Type</label>
         <div className="flex gap-2">
           <button
             onClick={() => setServerType('stdio')}
@@ -157,7 +157,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               'flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all',
               serverType === 'stdio'
                 ? 'bg-accent-500 text-white'
-                : 'bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                : 'bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary',
             )}
           >
             STDIO
@@ -168,7 +168,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               'flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all',
               serverType === 'sse'
                 ? 'bg-accent-500 text-white'
-                : 'bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                : 'bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary',
             )}
           >
             SSE
@@ -179,7 +179,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               'flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all',
               serverType === 'streamable-http'
                 ? 'bg-accent-500 text-white'
-                : 'bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                : 'bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary',
             )}
           >
             HTTP
@@ -191,7 +191,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
       {serverType === 'stdio' && (
         <>
           <div>
-            <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+            <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
               Command <span className="text-red-500">*</span>
             </label>
             <input
@@ -199,12 +199,12 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               value={stdioCommand}
               onChange={(e) => setStdioCommand(e.target.value)}
               placeholder="e.g., npx"
-              className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+              className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+            <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
               Arguments (space-separated)
             </label>
             <input
@@ -212,12 +212,12 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               value={stdioArgs}
               onChange={(e) => setStdioArgs(e.target.value)}
               placeholder="e.g., -y @modelcontextprotocol/server-filesystem"
-              className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+              className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+            <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
               Working Directory (optional)
             </label>
             <input
@@ -225,12 +225,12 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               value={stdioCwd}
               onChange={(e) => setStdioCwd(e.target.value)}
               placeholder="e.g., /path/to/directory"
-              className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+              className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+            <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
               Environment Variables (JSON, optional)
             </label>
             <textarea
@@ -238,7 +238,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               onChange={(e) => setStdioEnv(e.target.value)}
               placeholder='{"KEY": "value"}'
               rows={3}
-              className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50 font-mono"
+              className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50 font-mono"
             />
           </div>
         </>
@@ -248,7 +248,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
       {(serverType === 'sse' || serverType === 'streamable-http') && (
         <>
           <div>
-            <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+            <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
               URL <span className="text-red-500">*</span>
             </label>
             <input
@@ -256,12 +256,12 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="e.g., https://api.example.com/mcp"
-              className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+              className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
+            <label className="block text-sm font-medium text-bolt-elements-textPrimary mb-1.5">
               Headers (JSON, optional)
             </label>
             <textarea
@@ -269,7 +269,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
               onChange={(e) => setHeaders(e.target.value)}
               placeholder='{"Authorization": "Bearer token"}'
               rows={3}
-              className="w-full px-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50 font-mono"
+              className="w-full px-3 py-2 bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor rounded-lg text-sm text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50 font-mono"
             />
           </div>
         </>
@@ -294,7 +294,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
         <button
           onClick={onCancel}
           disabled={isSaving}
-          className="px-4 py-2 rounded-lg text-sm font-medium bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-3 transition-all disabled:opacity-50"
+          className="px-4 py-2 rounded-lg text-sm font-medium bg-bolt-elements-background-depth-1 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary hover:bg-bolt-elements-background-depth-3 transition-all disabled:opacity-50"
         >
           Cancel
         </button>
@@ -303,7 +303,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
           <button
             onClick={handleTest}
             disabled={isTesting || isSaving}
-            className="px-4 py-2 rounded-lg text-sm font-medium bg-codinit-elements-background-depth-3 text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-4 transition-all disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-bolt-elements-background-depth-3 text-bolt-elements-textPrimary hover:bg-bolt-elements-background-depth-4 transition-all disabled:opacity-50 flex items-center gap-2"
           >
             {isTesting && <i className="i-svg-spinners:90-ring-with-bg animate-spin" />}
             Test Connection

@@ -79,7 +79,7 @@ export const McpServerCard = memo(({ serverName, server, onDelete, onEdit }: MCP
           {onEdit && (
             <button
               onClick={() => onEdit(serverName)}
-              className="p-2 rounded-lg text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-1 transition-all"
+              className="p-2 rounded-lg text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary hover:bg-bolt-elements-background-depth-1 transition-all"
               title="Edit server"
             >
               <i className="i-ph:pencil-simple text-base" />
@@ -89,7 +89,7 @@ export const McpServerCard = memo(({ serverName, server, onDelete, onEdit }: MCP
           {onDelete && (
             <button
               onClick={() => onDelete(serverName)}
-              className="p-2 rounded-lg text-codinit-elements-textSecondary hover:text-red-500 hover:bg-red-500/10 transition-all"
+              className="p-2 rounded-lg text-bolt-elements-textSecondary hover:text-red-500 hover:bg-red-500/10 transition-all"
               title="Delete server"
             >
               <i className="i-ph:trash text-base" />
