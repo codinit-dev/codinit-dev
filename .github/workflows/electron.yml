@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: ''
+        description: 'Tag for the release (e.g., v1.0.0). Leave empty if not applicable.'
         required: false
   push:
     branches:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest] # Use unsigned macOS builds for now
-        node-version: [20.15.1]
+        node-version: [18.18.0]
       fail-fast: false
 
     steps:
@@ -37,14 +37,14 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 10.19.0
+          version: 9.14.4
           run_install: false
 
       - name: Get pnpm store directory
         id: get-pnpm-store-path
         shell: bash
         run: |
-          echo "store_path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+          echo "store_path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
       - name: Setup pnpm cache
         uses: actions/cache@v3

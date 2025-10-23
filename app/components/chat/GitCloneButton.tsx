@@ -1,7 +1,7 @@
 import ignore from 'ignore';
 import { useGit } from '~/lib/hooks/useGit';
 import type { Message } from 'ai';
-import { detectProjectCommands, createCommandsMessage, escapeCodinitTags } from '~/utils/projectCommands';
+import { detectProjectCommands, createCommandsMessage, escapeExampleTags } from '~/utils/projectCommands';
 import { generateId } from '~/utils/fileUtils';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -122,16 +122,16 @@ ${skippedFiles.map((f) => `- ${f}`).join('\n')}`
     : ''
 }
 
-<codinitArtifact id="imported-files" title="Git Cloned Files" type="bundled">
+<exampleArtifact id="imported-files" title="Git Cloned Files" type="bundled">
 ${fileContents
   .map(
     (file) =>
-      `<codinitAction type="file" filePath="${file.path}">
-${escapeCodinitTags(file.content)}
-</codinitAction>`,
+      `<exampleAction type="file" filePath="${file.path}">
+${escapeExampleTags(file.content)}
+</exampleAction>`,
   )
   .join('\n')}
-</codinitArtifact>`,
+</exampleArtifact>`,
           id: generateId(),
           createdAt: new Date(),
         };
@@ -160,10 +160,10 @@ ${escapeCodinitTags(file.content)}
         variant="default"
         size="lg"
         className={classNames(
-          'gap-2 bg-codinit-elements-background-depth-1',
-          'text-codinit-elements-textPrimary',
-          'hover:bg-codinit-elements-background-depth-2',
-          'border border-codinit-elements-borderColor',
+          'gap-2 bg-bolt-elements-background-depth-1',
+          'text-bolt-elements-textPrimary',
+          'hover:bg-bolt-elements-background-depth-2',
+          'border border-bolt-elements-borderColor',
           'h-10 px-4 py-2 min-w-[120px] justify-center',
           'transition-all duration-200 ease-in-out',
           className,

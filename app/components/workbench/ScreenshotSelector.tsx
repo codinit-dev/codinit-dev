@@ -10,14 +10,8 @@ interface ScreenshotSelectorProps {
 export const ScreenshotSelector = memo(
   ({ isSelectionMode, setIsSelectionMode, containerRef }: ScreenshotSelectorProps) => {
     const [isCapturing, setIsCapturing] = useState(false);
-    const [selectionStart, setSelectionStart] = useState<{
-      x: number;
-      y: number;
-    } | null>(null);
-    const [selectionEnd, setSelectionEnd] = useState<{
-      x: number;
-      y: number;
-    } | null>(null);
+    const [selectionStart, setSelectionStart] = useState<{ x: number; y: number } | null>(null);
+    const [selectionEnd, setSelectionEnd] = useState<{ x: number; y: number } | null>(null);
     const mediaStreamRef = useRef<MediaStream | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -189,16 +183,14 @@ export const ScreenshotSelector = memo(
 
           if (textarea) {
             // Get the setters from the BaseChat component
-            const setUploadedFiles = (window as any).__codinit_SET_UPLOADED_FILES__;
-            const setImageDataList = (window as any).__codinit_SET_IMAGE_DATA_LIST__;
-            const uploadedFiles = (window as any).__codinit_UPLOADED_FILES__ || [];
-            const imageDataList = (window as any).__codinit_IMAGE_DATA_LIST__ || [];
+            const setUploadedFiles = (window as any).__BOLT_SET_UPLOADED_FILES__;
+            const setImageDataList = (window as any).__BOLT_SET_IMAGE_DATA_LIST__;
+            const uploadedFiles = (window as any).__BOLT_UPLOADED_FILES__ || [];
+            const imageDataList = (window as any).__BOLT_IMAGE_DATA_LIST__ || [];
 
             if (setUploadedFiles && setImageDataList) {
               // Update the files and image data
-              const file = new File([blob], 'screenshot.png', {
-                type: 'image/png',
-              });
+              const file = new File([blob], 'screenshot.png', { type: 'image/png' });
               setUploadedFiles([...uploadedFiles, file]);
               setImageDataList([...imageDataList, base64Image]);
               toast.success('Screenshot captured and added to chat');

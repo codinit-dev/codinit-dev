@@ -1,0 +1,622 @@
+---
+canonical_url: "https://docs.codinit.dev/integrations/git"
+title: "Git Integration"
+description: "Seamlessly connect and manage Git repositories from GitHub and GitLab for collaborative development and automated deployments"
+---
+
+
+<Card title="Connect Repository" icon="github" horizontal href="#github-setup">
+  Connect your Git repositories to enable version control and collaborative features.
+</Card>
+
+CodinIT provides comprehensive Git integration with GitHub and GitLab, enabling seamless repository management, collaborative development, and automated deployment workflows. Import repositories, manage branches, and push changes directly from your workspace.
+
+## Supported Platforms
+
+<Columns cols={2}>
+  <Card title="GitHub" icon="github" href="#github">
+    Complete GitHub integration with repository management, branches, and API access.
+  </Card>
+  <Card title="GitLab" icon="gitlab" href="#gitlab">
+    Full GitLab support with project management, merge requests, and CI/CD integration.
+  </Card>
+  <Card title="Repository Cloning" icon="download" href="#cloning">
+    Clone and import existing repositories directly into your workspace.
+  </Card>
+  <Card title="Push to Repository" icon="upload" href="#pushing">
+    Push workspace changes back to remote repositories on GitHub and GitLab.
+  </Card>
+</Columns>
+
+### Git Workflow Features
+
+<CardGroup cols={3}>
+  <Card title="Repository Import" icon="folder-plus">
+    Import existing Git repositories with full history and branch structure.
+  </Card>
+  <Card title="Branch Management" icon="git-branch">
+    Create, switch, and manage branches for different features and environments.
+  </Card>
+  <Card title="Collaborative Development" icon="users">
+    Real-time collaboration with team members through connected repositories.
+  </Card>
+  <Card title="Automated Deployments" icon="rocket">
+    Trigger deployments automatically when pushing to specific branches.
+  </Card>
+  <Card title="Template Repositories" icon="file-template">
+    Start new projects from curated template repositories.
+  </Card>
+  <Card title="Commit Integration" icon="git-commit">
+    Track and manage commits with detailed history and authorship.
+  </Card>
+</CardGroup>
+
+## GitHub Integration
+
+### Overview
+
+GitHub is the world's largest development platform. CodinIT's GitHub integration provides complete access to repositories, branches, user management, and API functionality for seamless development workflows.
+
+<Card title="Get GitHub Token" icon="key" horizontal href="https://github.com/settings/personal-access-tokens">
+  Create a personal access token with repository permissions to enable GitHub integration.
+</Card>
+
+### Features
+
+<Expandable title="Repository Management">
+  <CardGroup cols={2}>
+    <Card title="Repository Access" icon="folder">
+      Access all your repositories, including private and organization repositories.
+    </Card>
+    <Card title="Branch Operations" icon="code-branch">
+      View, create, and switch between branches across all repositories.
+    </Card>
+    <Card title="Repository Statistics" icon="bar-chart">
+      View repository metrics, activity, and contribution statistics.
+    </Card>
+    <Card title="Organization Support" icon="building">
+      Full support for GitHub organizations and team repositories.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+<Expandable title="Development Workflow">
+  <CardGroup cols={2}>
+    <Card title="Repository Cloning" icon="download" horizontal>
+      Clone repositories directly into your CodinIT workspace with full Git history.
+    </Card>
+    <Card title="Push Changes" icon="upload" horizontal>
+      Push workspace changes back to GitHub repositories with automatic commit creation.
+    </Card>
+    <Card title="Pull Request Integration" icon="code-pull-request" iconType="regular" color="#f7f7f7" horizontal>
+      Create and manage pull requests directly from your workspace.
+    </Card>
+    <Card title="Issue Tracking" icon="circle-info" horizontal>
+      Link commits and changes to GitHub issues for better project tracking.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+### Setup Instructions
+
+<Steps>
+  <Step title="Create GitHub Personal Access Token">
+    Visit [GitHub Settings \> Personal access tokens](https://github.com/settings/personal-access-tokens) and click **"Generate new token"**.
+  </Step>
+  <Step title="Configure Token Permissions">
+    Enable the following permissions:
+
+    - **repo**: Full control of private repositories
+    - **workflow**: Update GitHub Action workflows
+    - **user**: Read user profile information
+  </Step>
+  <Step title="Connect GitHub Account in CodinIT">
+    Navigate to **Settings \> Git \> GitHub** and enter your personal access token.
+  </Step>
+  <Step title="Authorize Repository Access">
+    Grant CodinIT permission to access your repositories when prompted.
+  </Step>
+  <Step title="Start Using Git Features">
+    Import repositories, clone projects, or push changes to GitHub.
+  </Step>
+</Steps>
+
+### Configuration Options
+
+<ParamField type="string" required>
+  Your GitHub personal access token. Get this from [GitHub Personal Access Tokens](https://github.com/settings/personal-access-tokens).
+</ParamField>
+
+<ParamField type="string">
+  Your GitHub username. Automatically detected from token if not provided.
+</ParamField>
+
+## GitLab Integration
+
+### Overview
+
+GitLab provides a complete DevOps platform with source code management, CI/CD, and project management. CodinIT's GitLab integration offers full API access for repository operations and project management.
+
+<Card title="Get GitLab Token" icon="key" horizontal href="https://gitlab.com/-/profile/personal_access_tokens">
+  Create a personal access token with API and repository permissions.
+</Card>
+
+### Features
+
+<Expandable title="Project Management">
+  <CardGroup cols={2}>
+    <Card title="Project Access" icon="folder">
+      Access all your GitLab projects with full API permissions.
+    </Card>
+    <Card title="Group Support" icon="users">
+      Full support for GitLab groups and subgroup project management.
+    </Card>
+    <Card title="Merge Request Integration" icon="git-merge">
+      Create and manage merge requests directly from your workspace.
+    </Card>
+    <Card title="CI/CD Integration" icon="cog">
+      Trigger CI/CD pipelines and monitor build status.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+<Expandable title="Repository Operations">
+  <CardGroup cols={2}>
+    <Card title="Repository Cloning" icon="download">
+      Clone GitLab repositories with full branch and history support.
+    </Card>
+    <Card title="Push Operations" icon="upload">
+      Push changes back to GitLab repositories with automatic commit creation.
+    </Card>
+    <Card title="Branch Management" icon="git-branch">
+      Create feature branches and manage branch protection rules.
+    </Card>
+    <Card title="File History" icon="history">
+      Track file changes and view detailed commit history.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+### Setup Instructions
+
+<Steps>
+  <Step title="Create GitLab Personal Access Token">
+    Go to [GitLab Personal Access Tokens](https://gitlab.com/-/profile/personal_access_tokens) and create a new token.
+  </Step>
+  <Step title="Configure Token Scopes">
+    Enable the following scopes:
+
+    - **api**: Full API access to your projects
+    - **write_repository**: Push access to repositories
+    - **read_user**: Read your user profile information
+  </Step>
+  <Step title="Connect GitLab Account in CodinIT">
+    Navigate to **Settings \> Git \> GitLab** and enter your access token.
+  </Step>
+  <Step title="Configure GitLab Instance (Optional)">
+    Specify your GitLab instance URL if using GitLab self-hosted.
+  </Step>
+  <Step title="Start Using Git Features">
+    Import projects, clone repositories, or push changes to GitLab.
+  </Step>
+</Steps>
+
+### Configuration Options
+
+<ParamField type="string" required>
+  Your GitLab personal access token. Get this from [GitLab Personal Access Tokens](https://gitlab.com/-/profile/personal_access_tokens).
+</ParamField>
+
+<ParamField type="string">
+  Your GitLab username. Automatically detected from token if not provided.
+</ParamField>
+
+<ParamField type="string">
+  Your GitLab instance URL. Defaults to `https://gitlab.com` for GitLab.com.
+</ParamField>
+
+## Repository Operations
+
+### Cloning Repositories
+
+<CodeGroup>
+
+```bash Clone from GitHub
+# Clone a public repository
+https://github.com/username/repository-name
+
+# Clone a private repository (requires authentication)
+https://github.com/username/private-repository-name
+
+# Clone specific branch
+https://github.com/username/repository-name --branch feature-branch
+```
+
+
+```bash Clone from GitLab
+# Clone a public project
+https://gitlab.com/username/project-name
+
+# Clone a private project (requires authentication)
+https://gitlab.com/username/private-project-name
+
+# Clone from self-hosted GitLab
+https://gitlab.company.com/username/project-name
+```
+
+</CodeGroup>
+
+### Repository Cloning Features
+
+<Expandable title="Smart URL Handling">
+  - **SSH to HTTPS conversion**: Automatically converts SSH URLs to HTTPS for browser compatibility
+  - **Git suffix removal**: Handles URLs with or without `.git` suffix
+  - **Branch specification**: Clone specific branches for targeted development
+  - **CORS proxy integration**: Uses built-in proxy for cross-origin Git operations
+</Expandable>
+
+<Expandable title="Authentication Methods">
+  - **Token-based authentication**: Uses personal access tokens for secure access
+  - **Automatic credential storage**: Stores credentials securely for future operations
+  - **Multi-platform support**: Works with both GitHub and GitLab authentication
+  - **Session persistence**: Maintains authentication across browser sessions
+</Expandable>
+
+### Pushing to Repositories
+
+<CodeGroup>
+
+```bash Push to GitHub
+# Push current workspace to new GitHub repository
+codinit-workspace -> github.com/username/new-repository
+
+# Push to existing repository
+workspace-changes -> github.com/username/existing-repository
+
+# Push to specific branch
+feature-branch -> github.com/username/repository-name:feature-branch
+```
+
+
+```bash Push to GitLab
+# Push current workspace to new GitLab project
+codinit-workspace -> gitlab.com/username/new-project
+
+# Push to existing project
+workspace-changes -> gitlab.com/username/existing-project
+
+# Push to development branch
+dev-branch -> gitlab.com/username/project-name:development
+```
+
+</CodeGroup>
+
+## Template Integration
+
+### Starter Templates
+
+CodinIT includes curated starter templates from GitHub repositories to help you quickly start new projects with best practices and modern tooling.
+
+<CardGroup cols={3}>
+  <Card title="React + TypeScript" icon="react">
+    Modern React application with TypeScript, ESLint, and testing setup.
+  </Card>
+  <Card title="Next.js + shadcn/ui">
+    Full-stack Next.js application with shadcn/ui components and styling.
+  </Card>
+  <Card title="Vue.js + Vite" icon="vue">
+    Fast Vue.js development setup with Vite, TypeScript, and modern tooling.
+  </Card>
+  <Card title="SvelteKit" icon="svelte">
+    Full-stack SvelteKit application with optimal performance and developer experience.
+  </Card>
+  <Card title="Astro + Tailwind" icon="astro">
+    Static site generator with Astro, Tailwind CSS, and component islands.
+  </Card>
+  <Card title="Node.js API" icon="nodejs">
+    REST API server with Express, TypeScript, and comprehensive testing setup.
+  </Card>
+</CardGroup>
+
+### Using Templates
+
+<Steps>
+  <Step title="Browse Available Templates">
+    Navigate to **File \> New Project** to see all available starter templates.
+  </Step>
+  <Step title="Preview Template Contents">
+    Review the template structure, dependencies, and configuration before importing.
+  </Step>
+  <Step title="Customize Template Settings">
+    Modify template variables like project name, author, and configuration options.
+  </Step>
+  <Step title="Import Template">
+    Import the template into your workspace and start development immediately.
+  </Step>
+  <Step title="Initialize Git Repository (Optional)">
+    Initialize a new Git repository or connect to an existing remote repository.
+  </Step>
+</Steps>
+
+## Branch Management
+
+### Working with Branches
+
+<CodeGroup>
+
+```bash Create New Branch
+# Create and switch to a new feature branch
+git checkout -b feature/new-component
+
+# Create branch for bug fix
+git checkout -b bugfix/navigation-issue
+
+# Create branch for experimental changes
+git checkout -b experiment/new-architecture
+```
+
+
+```bash Switch Between Branches
+# Switch to existing branch
+git checkout feature/user-authentication
+
+# Switch back to main branch
+git checkout main
+
+# View all available branches
+git branch -a
+```
+
+</CodeGroup>
+
+### Branch Protection
+
+<Expandable title="GitHub Branch Protection">
+  - **Required status checks**: Ensure CI/CD checks pass before merging
+  - **Required pull request reviews**: Require code review before merging
+  - **Required conversation resolution**: Ensure all comments are resolved
+  - **Restrict pushes**: Limit who can push directly to protected branches
+</Expandable>
+
+<Expandable title="GitLab Branch Protection">
+  - **Merge request approvals**: Require minimum number of approvals
+  - **Status checks**: Enforce pipeline status before merging
+  - **Code owner approvals**: Require approval from code owners
+  - **Push restrictions**: Control who can push to protected branches
+</Expandable>
+
+## Collaborative Development
+
+### Team Workflows
+
+<CardGroup cols={2}>
+  <Card title="Pull Request Workflow" icon="git-pull-request">
+    Create pull requests for code review and collaborative development.
+  </Card>
+  <Card title="Code Review Process" icon="eye">
+    Review code changes, provide feedback, and approve contributions.
+  </Card>
+  <Card title="Issue Integration" icon="issue">
+    Link commits and pull requests to GitHub/GitLab issues for tracking.
+  </Card>
+  <Card title="Release Management" icon="tag">
+    Create releases, manage versions, and track deployment history.
+  </Card>
+</CardGroup>
+
+### Integration with Deployment Platforms
+
+<CodeGroup>
+
+```bash Automated Deployment Workflow
+# Trigger deployment on push to main
+1. Push changes to main branch
+2. GitHub/GitLab webhook triggers deployment
+3. Netlify/Vercel starts automated build
+4. Deploy to production with preview URL
+5. Monitor deployment status in real-time
+```
+
+
+```bash Branch-based Deployment
+# Deploy different branches to different environments
+main -> production deployment
+staging -> staging environment
+feature/* -> preview deployments
+```
+
+</CodeGroup>
+
+## Advanced Git Features
+
+### Repository Statistics
+
+<Expandable title="GitHub Insights">
+  - **Repository activity**: View commit frequency and contributor activity
+  - **Code frequency**: Track additions and deletions over time
+  - **Contributors**: See who has contributed to the repository
+  - **Traffic analytics**: Monitor repository views and clones
+</Expandable>
+
+<Expandable title="GitLab Analytics">
+  - **Project statistics**: Detailed project metrics and trends
+  - **CI/CD analytics**: Pipeline success rates and build times
+  - **Code quality reports**: Coverage and security scanning results
+  - **Value stream analytics**: Track development cycle times
+</Expandable>
+
+### Git Operations in Terminal
+
+<CodeGroup>
+
+```bash Common Git Commands
+# Initialize new repository
+git init
+
+# Clone existing repository
+git clone https://github.com/username/repository.git
+
+# Stage changes
+git add .
+
+# Commit changes
+git commit -m "Add new feature"
+
+# Push to remote
+git push origin main
+
+# Pull latest changes
+git pull origin main
+
+# View commit history
+git log --oneline
+```
+
+</CodeGroup>
+
+## Best Practices
+
+### 🔐 Security Considerations
+
+<Warning>
+  Never commit sensitive information like API keys, passwords, or tokens to Git repositories.
+</Warning>
+
+<CardGroup cols={2}>
+  <Card title="Token Management" icon="key">
+    Use personal access tokens instead of passwords for Git authentication.
+  </Card>
+  <Card title="Repository Permissions" icon="shield">
+    Configure appropriate repository permissions and branch protection rules.
+  </Card>
+  <Card title="Secret Scanning" icon="search">
+    Enable GitHub/GitLab secret scanning to detect accidentally committed secrets.
+  </Card>
+  <Card title="Access Control" icon="users">
+    Regularly audit repository access and remove inactive collaborators.
+  </Card>
+</CardGroup>
+
+### Workflow Optimization
+
+<Steps>
+  <Step title="Establish Branch Strategy">
+    Define clear branching conventions (Git Flow, GitHub Flow, or custom strategy).
+  </Step>
+  <Step title="Set Up Branch Protection">
+    Protect main/production branches with required status checks and reviews.
+  </Step>
+  <Step title="Configure CI/CD">
+    Set up automated testing and deployment for all branches.
+  </Step>
+  <Step title="Use Meaningful Commit Messages">
+    Write clear, descriptive commit messages that explain the purpose of changes.
+  </Step>
+  <Step title="Regular Maintenance">
+    Clean up merged branches, update dependencies, and archive old repositories.
+  </Step>
+</Steps>
+
+### 📝 Commit Conventions
+
+<Tip>
+  Use conventional commit messages to automate versioning and changelog generation.
+</Tip>
+
+<CodeGroup>
+
+```bash Conventional Commits
+# Feature commits
+feat: add user authentication system
+feat: implement dark mode toggle
+
+# Bug fixes
+fix: resolve navigation menu overflow
+fix: correct API endpoint response format
+
+# Documentation
+docs: update installation instructions
+docs: add API reference documentation
+
+# Refactoring
+refactor: optimize database queries
+refactor: improve component structure
+
+# Performance improvements
+perf: reduce bundle size by 40%
+perf: optimize image loading
+
+# Chore/maintenance
+chore: update dependencies
+chore: configure ESLint rules
+```
+
+</CodeGroup>
+
+## Troubleshooting
+
+### Common Git Issues
+
+<AccordionGroup>
+  <Accordion title="Authentication Errors">
+    **Problem**: Git operations fail with authentication errors.
+
+    **Solutions**:
+
+    - Verify your personal access token is valid and not expired
+    - Check token permissions for the target repository
+    - Ensure token has appropriate scopes for the operation
+    - Try regenerating the token if issues persist
+  </Accordion>
+  <Accordion title="Repository Access Issues">
+    **Problem**: Cannot access private repositories or perform operations.
+
+    **Solutions**:
+
+    - Verify repository permissions and access level
+    - Check if the repository exists and is spelled correctly
+    - Ensure your token has the required permissions
+    - Contact repository administrator for access if needed
+  </Accordion>
+  <Accordion title="Push/Pull Errors">
+    **Problem**: Push or pull operations fail with merge conflicts or errors.
+
+    **Solutions**:
+
+    - Pull latest changes before pushing to avoid conflicts
+    - Resolve any merge conflicts locally before pushing
+    - Check branch permissions and protection rules
+    - Verify remote repository URL is correct
+  </Accordion>
+  <Accordion title="Large Repository Issues">
+    **Problem**: Repository cloning or operations fail with large repositories.
+
+    **Solutions**:
+
+    - Clone specific branches instead of entire repository
+    - Use shallow clone for faster initial cloning
+    - Check repository size and consider using Git LFS for large files
+    - Contact repository maintainer for access optimization
+  </Accordion>
+</AccordionGroup>
+
+### Getting Help
+
+<Steps>
+  <Step title="Check Git Status">
+    Run `git status` to check current repository state and any issues.
+  </Step>
+  <Step title="Review Documentation">
+    Check GitHub/GitLab documentation for platform-specific guidance.
+  </Step>
+  <Step title="Test with Official Tools">
+    Verify operations work with official GitHub/GitLab tools before troubleshooting CodinIT.
+  </Step>
+  <Step title="Contact Support">
+    Provide repository URLs, error messages, and steps to reproduce the issue.
+  </Step>
+</Steps>
+
+<Note>
+  **Ready to collaborate?** Connect your GitHub or GitLab account to start importing repositories, managing branches, and collaborating with your team.
+</Note>

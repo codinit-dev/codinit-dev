@@ -24,6 +24,7 @@ export default class GoogleProvider extends BaseProvider {
       provider: 'Google',
       maxTokenAllowed: 2000000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/google.svg',
     },
 
     // Gemini 1.5 Flash: 1M context, 8K output limit, fast and cost-effective
@@ -33,6 +34,7 @@ export default class GoogleProvider extends BaseProvider {
       provider: 'Google',
       maxTokenAllowed: 1000000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/google.svg',
     },
   ];
 

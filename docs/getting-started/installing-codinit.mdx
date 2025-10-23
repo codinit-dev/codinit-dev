@@ -1,0 +1,254 @@
+---
+canonical_url: "https://docs.codinit.dev/getting-started/installing-codinit"
+title: "Installing CodinIT"
+description: "Get CodinIT up and running in your favorite IDE with these simple installation steps"
+---
+
+<Note>
+**Ready to get started?** Installation takes less than 2 minutes! Choose your preferred platform below and follow the simple steps.
+</Note>
+
+## Before You Begin
+
+Clone the CodinIT repository from GitHub to your local machine:
+
+### Local Version (Web Containers)
+
+```bash
+git clone https://github.com/Gerome-Elassaad/codinit-app.git
+cd codinit-app
+```
+
+### Web Version (E2B)
+
+```bash
+git clone https://github.com/Gerome-Elassaad/codingit.git
+cd codingit
+```
+
+## Install dependencies
+
+Install all required dependencies using your preferred package manager:
+
+```bash
+# Using npm
+npm install
+
+# Or using pnpm
+pnpm install
+
+# Or using yarn
+yarn install
+```
+
+## Configure environment
+
+Set up your environment variables by creating a `.env.local` file and add your AI provider API keys:
+
+```bash
+# Copy the example environment file
+cp .env.example .env.local
+
+# Edit .env.local and add your API keys
+# OPENAI_API_KEY=your_openai_key
+# ANTHROPIC_API_KEY=your_anthropic_key
+# etc.
+```
+
+## Run the development server
+
+Start the application in development mode and open it in your IDE:
+
+```bash
+# Start the dev server
+pnpm run dev
+
+# The app will be available at:
+# http://localhost:5173 (Web Containers Dev Server)
+# https://localhost:3000 (E2B Dev Server)
+
+    ### What Works in JetBrains
+
+    <AccordionGroup>
+      <Accordion title="✅ All Core Features" defaultOpen>
+        - Diff editing and file modifications
+        - Multiple API providers (Anthropic, OpenAI, local models)
+        - MCP servers and custom tools
+        - Codinit rules and workflows
+        - @ mentions for files, folders, and problems
+        - Drag & drop support
+      </Accordion>
+
+      <Accordion title="📋 Terminal Integration Difference">
+        **JetBrains shows terminal output differently than VS Code:**
+        - VS Code: Output streams directly to chat
+        - JetBrains: Output appears in collapsible "Command Output" sections
+        
+        Commands execute successfully in both—just expand the section to see results in JetBrains.
+      </Accordion>
+    </AccordionGroup>
+
+    <Accordion title="Troubleshooting">
+
+    **Plugin Installation Issues**
+
+    If you can't find Codinit in the marketplace:
+    - Make sure you're searching in the **Marketplace** tab (not Installed)
+    - Try searching for "Codinit AI" or just "Codinit"
+    - Check that your IDE version is compatible (2023.1 or later recommended)
+
+    If installation fails:
+    - Restart your IDE and try again
+    - Check your internet connection
+    - Try installing from disk as an alternative
+
+    **Plugin Not Appearing**
+
+    If you don't see the Codinit tool window after installation:
+    - Restart your IDE completely (File → Exit and reopen)
+    - Check **View** → **Tool Windows** → **Codinit**
+    - Verify the plugin is enabled in **Settings** → **Plugins** → **Installed** tab
+    - Look for the Codinit icon in your IDE's tool window bar (usually on the right side)
+
+    **Common Issues**
+
+    Plugin appears to be installed but doesn't work:
+    - Ensure you've restarted your IDE after installation
+    - Check if there are any error messages in the IDE's event log
+    - Try disabling and re-enabling the plugin in Settings
+
+    Performance or compatibility issues:
+    - Make sure you're using a supported JetBrains IDE version
+    - Check for IDE updates that might improve compatibility
+    - Consider allocating more memory to your IDE if needed
+
+    Need help? Join our [Discord community](https://discord.gg/codinit).
+
+    </Accordion>
+  </Tab>
+  
+  <Tab title="VSCodium/Windsurf" icon="terminal">
+    <Note>
+    These editors use the **Open VSX Registry** instead of the VS Code Marketplace, but the installation process is nearly identical.
+    </Note>
+
+    <Steps>
+      <Step title="Open Extensions">
+        Launch your editor (VSCodium, Windsurf, etc.) and open Extensions view:
+        - Press `Ctrl/Cmd + Shift + X`
+      </Step>
+
+      <Step title="Search for Codinit">
+        Type **"Codinit"** in the marketplace search bar
+      </Step>
+
+      <Step title="Install by Author">
+        Select **"Codinit" by saoudrizwan** and click **Install**
+      </Step>
+
+      <Step title="Reload if Needed">
+        Reload your editor if prompted to complete installation
+      </Step>
+    </Steps>
+
+    <Check>
+    **Installation Complete!** Look for the Codinit icon in your Activity Bar or use the Command Palette.
+    </Check>
+
+    <Accordion title="Troubleshooting">
+
+    **Plugin Installation Issues**
+
+    If you can't find Codinit in the marketplace:
+    - Make sure you're searching in the **Marketplace** tab (not Installed)
+    - Try searching for "Codinit AI" or just "Codinit"
+    - Check that your editor version is compatible
+
+    If installation fails:
+    - Restart your editor and try again
+    - Check your internet connection
+    - Try installing from disk as an alternative
+
+    **Plugin Not Appearing**
+
+    If you don't see the Codinit tool window after installation:
+    - Restart your editor completely (File → Exit and reopen)
+    - Check **View** → **Command Palette** → "Codinit: Open In New Tab"
+    - Verify the plugin is enabled in **Extensions** view
+    - Look for the Codinit icon in your Activity Bar (usually on the left side)
+
+    **Common Issues**
+
+    Plugin appears to be installed but doesn't work:
+    - Ensure you've restarted your editor after installation
+    - Check if there are any error messages in the Developer Console
+    - Try disabling and re-enabling the extension
+
+    Performance or compatibility issues:
+    - Make sure you're using a supported editor version
+    - Check for editor updates that might improve compatibility
+    - Consider closing other resource-intensive extensions if needed
+
+    Need help? Join our [Discord community](https://discord.gg/codinit).
+
+    </Accordion>
+  </Tab>
+</Tabs>
+
+## Next Steps: Sign In & Start Building
+
+<Steps>
+  <Step title="Open Codinit">
+    Find and open Codinit in your editor:
+    - **VS Code/Cursor/VSCodium/Windsurf:** Click the Codinit icon in the Activity Bar
+    - **JetBrains:** Go to **View** → **Tool Windows** → **Codinit**
+  </Step>
+
+  <Step title="Sign In">
+    Click the **Sign Up** button in the Codinit interface
+    
+    <Info>
+    You'll be redirected to [codingit.vercel.app](https://codingit.vercel.app) to authenticate. After signing in, you'll automatically return to your editor.
+    </Info>
+  </Step>
+
+  <Step title="You're All Set!">
+    <Check>
+    **Congratulations!** You're all set to start using Codinit! 
+    
+    Codinit is now ready to help you build projects. 
+    </Check>
+  </Step>
+</Steps>
+
+## Tips for Success
+
+<CardGroup cols={2}>
+  <Card title="Ask Questions" icon="circle-question">
+    Don't know something? Ask in Plan Mode! Codinit can explain concepts, debug errors, and guide you through tasks.
+  </Card>
+  
+  <Card title="Use Screenshots" icon="image">
+    Some models understand screenshots of what you're working on or errors you encounter.
+  </Card>
+  
+  <Card title="Share Error Messages" icon="triangle-exclamation">
+    Use @problems to share error messages for quick solutions and debugging help.
+  </Card>
+  
+  <Card title="Speak Naturally" icon="comments">
+    Use your own words—no need for technical jargon. Codinit will translate your ideas into code.
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Join Our Discord" icon="discord" href="https://discord.gg/codinit">
+    Connect with our team and community for support, tips, and discussions.
+  </Card>
+  
+  <Card title="Next Steps" icon="book-open" href="/getting-started/select-your-model">
+    Continue to model selection and start building your first project.
+  </Card>
+</CardGroup>

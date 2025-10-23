@@ -1,34 +1,22 @@
-import { useStore } from '@nanostores/react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import type React from 'react';
-import { useEffect, useId, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useStore } from '@nanostores/react';
 import { logStore } from '~/lib/stores/logs';
+import { classNames } from '~/utils/classNames';
 import {
-  fetchVercelStats,
+  vercelConnection,
   isConnecting,
   isFetchingStats,
   updateVercelConnection,
-  vercelConnection,
+  fetchVercelStats,
 } from '~/lib/stores/vercel';
-import type { VercelUser } from '~/types/vercel';
-import { classNames } from '~/utils/classNames';
-
-interface VercelUserResponse {
-  user?: {
-    username?: string;
-    email?: string;
-  };
-  username?: string;
-  email?: string;
-}
 
 export default function VercelConnection() {
   const connection = useStore(vercelConnection);
   const connecting = useStore(isConnecting);
   const fetchingStats = useStore(isFetchingStats);
   const [isProjectsExpanded, setIsProjectsExpanded] = useState(false);
-  const tokenInputId = useId();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -55,9 +43,9 @@ export default function VercelConnection() {
         throw new Error('Invalid token or unauthorized');
       }
 
-      const userData = (await response.json()) as VercelUserResponse;
+      const userData = (await response.json()) as any;
       updateVercelConnection({
-        user: (userData.user || userData) as unknown as VercelUser, // Handle both possible structures
+        user: userData.user || userData, // Handle both possible structures
         token: connection.token,
       });
 
@@ -96,45 +84,36 @@ export default function VercelConnection() {
               width="24"
               crossOrigin="anonymous"
               src={`https://cdn.simpleicons.org/vercel/black`}
-              alt="Vercel"
             />
-            <h3 className="text-base font-medium text-codinit-elements-textPrimary">Vercel Connection</h3>
+            <h3 className="text-base font-medium text-bolt-elements-textPrimary">Vercel Connection</h3>
           </div>
         </div>
 
         {!connection.user ? (
           <div className="space-y-4">
             <div>
-              <label htmlFor={tokenInputId} className="block text-sm text-codinit-elements-textSecondary mb-2">
-                Personal Access Token
-              </label>
+              <label className="block text-sm text-bolt-elements-textSecondary mb-2">Personal Access Token</label>
               <input
-                id={tokenInputId}
                 type="password"
                 value={connection.token}
-                onChange={(e) =>
-                  updateVercelConnection({
-                    ...connection,
-                    token: e.target.value,
-                  })
-                }
+                onChange={(e) => updateVercelConnection({ ...connection, token: e.target.value })}
                 disabled={connecting}
                 placeholder="Enter your Vercel personal access token"
                 className={classNames(
                   'w-full px-3 py-2 rounded-lg text-sm',
                   'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
                   'border border-[#E5E5E5] dark:border-[#333333]',
-                  'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
-                  'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
+                  'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
+                  'focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive',
                   'disabled:opacity-50',
                 )}
               />
-              <div className="mt-2 text-sm text-codinit-elements-textSecondary">
+              <div className="mt-2 text-sm text-bolt-elements-textSecondary">
                 <a
                   href="https://vercel.com/account/tokens"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-codinit-elements-borderColorActive hover:underline inline-flex items-center gap-1"
+                  className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
                 >
                   Get your token
                   <div className="i-ph:arrow-square-out w-4 h-4" />
@@ -143,7 +122,6 @@ export default function VercelConnection() {
             </div>
 
             <button
-              type="button"
               onClick={handleConnect}
               disabled={connecting || !connection.token}
               className={classNames(
@@ -172,7 +150,6 @@ export default function VercelConnection() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
-                  type="button"
                   onClick={handleDisconnect}
                   className={classNames(
                     'px-4 py-2 rounded-lg text-sm flex items-center gap-2',
@@ -183,7 +160,7 @@ export default function VercelConnection() {
                   <div className="i-ph:plug w-4 h-4" />
                   Disconnect
                 </button>
-                <span className="text-sm text-codinit-elements-textSecondary flex items-center gap-1">
+                <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
                   <div className="i-ph:check-circle w-4 h-4 text-green-500" />
                   Connected to Vercel
                 </span>
@@ -199,29 +176,28 @@ export default function VercelConnection() {
                 referrerPolicy="no-referrer"
                 crossOrigin="anonymous"
                 alt="User Avatar"
-                className="w-12 h-12 rounded-full border-2 border-codinit-elements-borderColorActive"
+                className="w-12 h-12 rounded-full border-2 border-bolt-elements-borderColorActive"
               />
               <div>
-                <h4 className="text-sm font-medium text-codinit-elements-textPrimary">
+                <h4 className="text-sm font-medium text-bolt-elements-textPrimary">
                   {connection.user?.username || connection.user?.user?.username || 'Vercel User'}
                 </h4>
-                <p className="text-sm text-codinit-elements-textSecondary">
+                <p className="text-sm text-bolt-elements-textSecondary">
                   {connection.user?.email || connection.user?.user?.email || 'No email available'}
                 </p>
               </div>
             </div>
 
             {fetchingStats ? (
-              <div className="flex items-center gap-2 text-sm text-codinit-elements-textSecondary">
+              <div className="flex items-center gap-2 text-sm text-bolt-elements-textSecondary">
                 <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
                 Fetching Vercel projects...
               </div>
             ) : (
               <div>
                 <button
-                  type="button"
                   onClick={() => setIsProjectsExpanded(!isProjectsExpanded)}
-                  className="w-full bg-transparent text-left text-sm font-medium text-codinit-elements-textPrimary mb-3 flex items-center gap-2"
+                  className="w-full bg-transparent text-left text-sm font-medium text-bolt-elements-textPrimary mb-3 flex items-center gap-2"
                 >
                   <div className="i-ph:buildings w-4 h-4" />
                   Your Projects ({connection.stats?.totalProjects || 0})
@@ -240,22 +216,22 @@ export default function VercelConnection() {
                         href={`https://vercel.com/dashboard/${project.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-4 rounded-lg border border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive transition-colors"
+                        className="block p-4 rounded-lg border border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive transition-colors"
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <h5 className="text-sm font-medium text-codinit-elements-textPrimary flex items-center gap-2">
-                              <div className="i-ph:globe w-4 h-4 text-codinit-elements-borderColorActive" />
+                            <h5 className="text-sm font-medium text-bolt-elements-textPrimary flex items-center gap-2">
+                              <div className="i-ph:globe w-4 h-4 text-bolt-elements-borderColorActive" />
                               {project.name}
                             </h5>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-codinit-elements-textSecondary">
+                            <div className="flex items-center gap-2 mt-2 text-xs text-bolt-elements-textSecondary">
                               {project.targets?.production?.alias && project.targets.production.alias.length > 0 ? (
                                 <>
                                   <a
                                     href={`https://${project.targets.production.alias.find((a: string) => a.endsWith('.vercel.app') && !a.includes('-projects.vercel.app')) || project.targets.production.alias[0]}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="hover:text-codinit-elements-borderColorActive"
+                                    className="hover:text-bolt-elements-borderColorActive"
                                   >
                                     {project.targets.production.alias.find(
                                       (a: string) => a.endsWith('.vercel.app') && !a.includes('-projects.vercel.app'),
@@ -273,7 +249,7 @@ export default function VercelConnection() {
                                     href={`https://${project.latestDeployments[0].url}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="hover:text-codinit-elements-borderColorActive"
+                                    className="hover:text-bolt-elements-borderColorActive"
                                   >
                                     {project.latestDeployments[0].url}
                                   </a>
@@ -287,7 +263,7 @@ export default function VercelConnection() {
                             </div>
                           </div>
                           {project.framework && (
-                            <div className="text-xs text-codinit-elements-textSecondary px-2 py-1 rounded-md bg-[#F0F0F0] dark:bg-[#252525]">
+                            <div className="text-xs text-bolt-elements-textSecondary px-2 py-1 rounded-md bg-[#F0F0F0] dark:bg-[#252525]">
                               <span className="flex items-center gap-1">
                                 <div className="i-ph:code w-3 h-3" />
                                 {project.framework}
@@ -299,7 +275,7 @@ export default function VercelConnection() {
                     ))}
                   </div>
                 ) : isProjectsExpanded ? (
-                  <div className="text-sm text-codinit-elements-textSecondary flex items-center gap-2">
+                  <div className="text-sm text-bolt-elements-textSecondary flex items-center gap-2">
                     <div className="i-ph:info w-4 h-4" />
                     No projects found in your Vercel account
                   </div>

@@ -88,10 +88,7 @@ const CloudProvidersTab = () => {
     (enabled: boolean) => {
       // Update all providers
       filteredProviders.forEach((provider) => {
-        settings.updateProviderSettings(provider.name, {
-          ...provider.settings,
-          enabled,
-        });
+        settings.updateProviderSettings(provider.name, { ...provider.settings, enabled });
       });
 
       setCategoryEnabled(enabled);
@@ -103,20 +100,13 @@ const CloudProvidersTab = () => {
   const handleToggleProvider = useCallback(
     (provider: IProviderConfig, enabled: boolean) => {
       // Update the provider settings in the store
-      settings.updateProviderSettings(provider.name, {
-        ...provider.settings,
-        enabled,
-      });
+      settings.updateProviderSettings(provider.name, { ...provider.settings, enabled });
 
       if (enabled) {
-        logStore.logProvider(`Provider ${provider.name} enabled`, {
-          provider: provider.name,
-        });
+        logStore.logProvider(`Provider ${provider.name} enabled`, { provider: provider.name });
         toast.success(`${provider.name} enabled`);
       } else {
-        logStore.logProvider(`Provider ${provider.name} disabled`, {
-          provider: provider.name,
-        });
+        logStore.logProvider(`Provider ${provider.name} disabled`, { provider: provider.name });
         toast.success(`${provider.name} disabled`);
       }
     },
@@ -128,10 +118,7 @@ const CloudProvidersTab = () => {
       const newBaseUrl: string | undefined = baseUrl.trim() || undefined;
 
       // Update the provider settings in the store
-      settings.updateProviderSettings(provider.name, {
-        ...provider.settings,
-        baseUrl: newBaseUrl,
-      });
+      settings.updateProviderSettings(provider.name, { ...provider.settings, baseUrl: newBaseUrl });
 
       logStore.logProvider(`Base URL updated for ${provider.name}`, {
         provider: provider.name,
@@ -156,22 +143,20 @@ const CloudProvidersTab = () => {
             <div
               className={classNames(
                 'w-8 h-8 flex items-center justify-center rounded-lg',
-                'bg-codinit-elements-background-depth-3',
+                'bg-bolt-elements-background-depth-3',
                 'text-purple-500',
               )}
             >
               <TbCloudComputing className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-md font-medium text-codinit-elements-textPrimary">Cloud Providers</h4>
-              <p className="text-sm text-codinit-elements-textSecondary">
-                Connect to cloud-based AI models and services
-              </p>
+              <h4 className="text-md font-medium text-bolt-elements-textPrimary">Cloud Providers</h4>
+              <p className="text-sm text-bolt-elements-textSecondary">Connect to cloud-based AI models and services</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-codinit-elements-textSecondary">Enable All Cloud</span>
+            <span className="text-sm text-bolt-elements-textSecondary">Enable All Cloud</span>
             <Switch checked={categoryEnabled} onCheckedChange={handleToggleCategory} />
           </div>
         </div>
@@ -181,9 +166,9 @@ const CloudProvidersTab = () => {
             <motion.div
               key={provider.name}
               className={classNames(
-                'rounded-lg border bg-codinit-elements-background text-codinit-elements-textPrimary shadow-sm',
-                'bg-codinit-elements-background-depth-2',
-                'hover:bg-codinit-elements-background-depth-3',
+                'rounded-lg border bg-bolt-elements-background text-bolt-elements-textPrimary shadow-sm',
+                'bg-bolt-elements-background-depth-2',
+                'hover:bg-bolt-elements-background-depth-3',
                 'transition-all duration-200',
                 'relative overflow-hidden group',
                 'flex flex-col',
@@ -209,9 +194,9 @@ const CloudProvidersTab = () => {
                 <motion.div
                   className={classNames(
                     'w-10 h-10 flex items-center justify-center rounded-xl',
-                    'bg-codinit-elements-background-depth-3 group-hover:bg-codinit-elements-background-depth-4',
+                    'bg-bolt-elements-background-depth-3 group-hover:bg-bolt-elements-background-depth-4',
                     'transition-all duration-200',
-                    provider.settings.enabled ? 'text-purple-500' : 'text-codinit-elements-textSecondary',
+                    provider.settings.enabled ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
                   )}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -227,10 +212,10 @@ const CloudProvidersTab = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <div>
-                      <h4 className="text-sm font-medium text-codinit-elements-textPrimary group-hover:text-purple-500 transition-colors">
+                      <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
                         {provider.name}
                       </h4>
-                      <p className="text-xs text-codinit-elements-textSecondary mt-0.5">
+                      <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
                         {PROVIDER_DESCRIPTIONS[provider.name as keyof typeof PROVIDER_DESCRIPTIONS] ||
                           (URL_CONFIGURABLE_PROVIDERS.includes(provider.name)
                             ? 'Configure custom endpoint for this provider'
@@ -258,8 +243,8 @@ const CloudProvidersTab = () => {
                             placeholder={`Enter ${provider.name} base URL`}
                             className={classNames(
                               'flex-1 px-3 py-1.5 rounded-lg text-sm',
-                              'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-                              'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
+                              'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
+                              'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
                               'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
                               'transition-all duration-200',
                             )}
@@ -278,7 +263,7 @@ const CloudProvidersTab = () => {
                             className="flex-1 px-3 py-1.5 rounded-lg text-sm cursor-pointer group/url"
                             onClick={() => setEditingProvider(provider.name)}
                           >
-                            <div className="flex items-center gap-2 text-codinit-elements-textSecondary">
+                            <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
                               <div className="i-ph:link text-sm" />
                               <span className="group-hover/url:text-purple-500 transition-colors">
                                 {provider.settings.baseUrl || 'Click to set base URL'}

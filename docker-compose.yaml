@@ -74,7 +74,7 @@ services:
     profiles: ['development', 'default']
 
   app-prebuild:
-    image: ghcr.io/gerome-elassaad/codinit-app:sha-1d07e59
+    image: ghcr.io/gerome-elassaad/codinit-app:latest
     ports:
       - '5173:5173'
     environment:

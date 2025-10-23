@@ -1,0 +1,102 @@
+---
+canonical_url: "https://docs.codinit.dev/running-models-locally/lm-studio"
+title: "LM Studio"
+description: "A quick guide to setting up LM Studio for local AI model execution with CodinIT."
+---
+
+## Setting Up LM Studio with CodinIT
+
+Run AI models locally using LM Studio with CodinIT.
+
+### Prerequisites
+
+-   Windows, macOS, or Linux computer with AVX2 support
+
+
+### Setup Steps
+
+#### 1. Install LM Studio
+
+-   Visit [lmstudio.ai](https://lmstudio.ai)
+-   Download and install for your operating system
+
+<Frame>
+	<img src="/assets/images/lmstudio.png" alt="LM Studio download page" />
+</Frame>
+
+#### 2. Launch LM Studio
+
+-   Open the installed application
+-   You'll see four tabs on the left: **Chat**, **Developer** (where you will start the server), **My Models** (where your downloaded models are stored), **Discover** (add new models)
+
+<Frame>
+	<img
+		src="/assets/images/lmstudio2.png"
+		alt="LM Studio interface overview"
+	/>
+</Frame>
+
+#### 3. Download a Model
+
+-   Browse the "Discover" page
+-   Select and download your preferred model
+-   Wait for download to complete
+
+<Frame>
+	<img
+		src="/assets/gifs/lm-studio-download-model.gif"
+		alt="Downloading a model in LM Studio"
+	/>
+</Frame>
+
+#### 4. Start the Server
+
+-   Navigate to the "Developer" tab
+-   Toggle the server switch to "Running"
+-   Note: The server will run at `http://localhost:1234`
+
+<Frame>
+	<img
+		src="/assets/gifs/lm-studio-starting-server.gif"
+		alt="Starting the LM Studio server"
+	/>
+</Frame>
+
+### Recommended Model and Settings
+
+For the best experience with CodinIT, use **Qwen3 Coder 30B A3B Instruct**. This model delivers strong coding performance and reliable tool use.
+
+#### Critical Settings
+
+After loading your model in the Developer tab, configure these settings:
+
+1. **Context Length**: Set to 262,144 (the model's maximum)
+2. **KV Cache Quantization**: Leave unchecked (critical for consistent performance)
+3. **Flash Attention**: Enable if available (improves performance)
+
+#### Quantization Guide
+
+Choose quantization based on your RAM:
+
+- **32GB RAM**: Use 4-bit quantization (~17GB download)
+- **64GB RAM**: Use 8-bit quantization (~32GB download) for better quality
+- **128GB+ RAM**: Consider full precision or larger models
+
+#### Model Format
+
+- **Mac (Apple Silicon)**: Use MLX format for optimized performance
+- **Windows/Linux**: Use GGUF format
+
+### Important Notes
+
+-   Start LM Studio before using with CodinIT
+-   Keep LM Studio running in background
+-   First model download may take several minutes depending on size
+-   Models are stored locally after download
+
+### Troubleshooting
+
+1. If CodinIT can't connect to LM Studio:
+2. Verify LM Studio server is running (check Developer tab)
+3. Ensure a model is loaded
+4. Check your system meets hardware requirements

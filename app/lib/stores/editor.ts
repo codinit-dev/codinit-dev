@@ -12,8 +12,8 @@ const logger = createScopedLogger('EditorStore');
 export class EditorStore {
   #filesStore: FilesStore;
 
-  selectedFile: SelectedFile = import.meta.hot?.data?.selectedFile ?? atom<string | undefined>();
-  documents: MapStore<EditorDocuments> = import.meta.hot?.data?.documents ?? map({});
+  selectedFile: SelectedFile = import.meta.hot?.data.selectedFile ?? atom<string | undefined>();
+  documents: MapStore<EditorDocuments> = import.meta.hot?.data.documents ?? map({});
 
   currentDocument = computed([this.documents, this.selectedFile], (documents, selectedFile) => {
     if (!selectedFile) {
@@ -26,7 +26,7 @@ export class EditorStore {
   constructor(filesStore: FilesStore) {
     this.#filesStore = filesStore;
 
-    if (import.meta.hot && import.meta.hot.data) {
+    if (import.meta.hot) {
       import.meta.hot.data.documents = this.documents;
       import.meta.hot.data.selectedFile = this.selectedFile;
     }

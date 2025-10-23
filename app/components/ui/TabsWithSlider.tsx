@@ -51,10 +51,7 @@ export function TabsWithSlider({
   sliderClassName,
 }: TabsWithSliderProps) {
   // State for slider dimensions
-  const [sliderDimensions, setSliderDimensions] = useState({
-    width: 0,
-    left: 0,
-  });
+  const [sliderDimensions, setSliderDimensions] = useState({ width: 0, left: 0 });
 
   // Refs for tab elements
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
@@ -88,7 +85,7 @@ export function TabsWithSlider({
             tab.id === activeTab
               ? classNames('text-white shadow-sm shadow-purple-500/20', activeTabClassName)
               : classNames(
-                  'bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark hover:bg-codinit-elements-background-depth-3 dark:hover:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark',
+                  'bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark hover:bg-bolt-elements-background-depth-3 dark:hover:bg-bolt-elements-background-depth-4 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark',
                   tabClassName,
                 ),
           )}

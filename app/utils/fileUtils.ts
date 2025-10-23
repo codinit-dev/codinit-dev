@@ -42,18 +42,80 @@ export const shouldIncludeFile = (path: string): boolean => {
   return !ig.ignores(path);
 };
 
+const readPackageJson = async (files: File[]): Promise<{ scripts?: Record<string, string> } | null> => {
+  const packageJsonFile = files.find((f) => f.webkitRelativePath.endsWith('package.json'));
+
+  if (!packageJsonFile) {
+    return null;
+  }
+
+  try {
+    const content = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsText(packageJsonFile);
+    });
+
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error reading package.json:', error);
+    return null;
+  }
+};
+
+export const detectProjectType = async (
+  files: File[],
+): Promise<{ type: string; setupCommand: string; followupMessage: string }> => {
+  const hasFile = (name: string) => files.some((f) => f.webkitRelativePath.endsWith(name));
+
+  if (hasFile('package.json')) {
+    const packageJson = await readPackageJson(files);
+    const scripts = packageJson?.scripts || {};
+
+    // Check for preferred commands in priority order
+    const preferredCommands = ['dev', 'start', 'preview'];
+    const availableCommand = preferredCommands.find((cmd) => scripts[cmd]);
+
+    if (availableCommand) {
+      return {
+        type: 'Node.js',
+        setupCommand: `npm install && npm run ${availableCommand}`,
+        followupMessage: `Found "${availableCommand}" script in package.json. Running "npm run ${availableCommand}" after installation.`,
+      };
+    }
+
+    return {
+      type: 'Node.js',
+      setupCommand: 'npm install',
+      followupMessage:
+        'Would you like me to inspect package.json to determine the available scripts for running this project?',
+    };
+  }
+
+  if (hasFile('index.html')) {
+    return {
+      type: 'Static',
+      setupCommand: 'npx --yes serve',
+      followupMessage: '',
+    };
+  }
+
+  return { type: '', setupCommand: '', followupMessage: '' };
+};
+
 export const filesToArtifacts = (files: { [path: string]: { content: string } }, id: string): string => {
   return `
-<codinitArtifact id="${id}" title="User Updated Files">
+<exampleArtifact id="${id}" title="User Updated Files">
 ${Object.keys(files)
   .map(
     (filePath) => `
-<codinitAction type="file" filePath="${filePath}">
+<exampleAction type="file" filePath="${filePath}">
 ${files[filePath].content}
-</codinitAction>
+</exampleAction>
 `,
   )
   .join('\n')}
-</codinitArtifact>
+</exampleArtifact>
   `;
 };

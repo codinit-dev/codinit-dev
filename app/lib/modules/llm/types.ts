@@ -5,12 +5,9 @@ export interface ModelInfo {
   name: string;
   label: string;
   provider: string;
-
-  /** Maximum context window size (input tokens) - how many tokens the model can process */
   maxTokenAllowed: number;
-
-  /** Maximum completion/output tokens - how many tokens the model can generate. If not specified, falls back to provider defaults */
   maxCompletionTokens?: number;
+  icon?: string;
 }
 
 export interface ProviderInfo {

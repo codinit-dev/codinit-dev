@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import type { GitHubUserResponse } from '~/types/GitHub';
-import { Button } from '~/components/ui/Button';
 
 interface GitHubAuthDialogProps {
   isOpen: boolean;
@@ -174,12 +173,12 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
 
               <div className="border-t border-[#E5E5E5] dark:border-[#333333] p-3 flex justify-end">
                 <Dialog.Close asChild>
-                  <Button
+                  <button
                     onClick={onClose}
                     className="px-4 py-1.5 bg-transparent bg-[#F5F5F5] hover:bg-[#E5E5E5] dark:bg-[#252525] dark:hover:bg-[#333333] rounded-lg text-[#111111] dark:text-white transition-colors text-sm"
                   >
                     Close
-                  </Button>
+                  </button>
                 </Dialog.Close>
               </div>
             </Dialog.Content>

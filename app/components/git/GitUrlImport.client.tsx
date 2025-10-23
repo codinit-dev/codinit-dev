@@ -1,13 +1,40 @@
 import { useSearchParams } from '@remix-run/react';
+import { generateId, type Message } from 'ai';
+import ignore from 'ignore';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import { ClientOnly } from 'remix-utils/client-only';
 import { BaseChat } from '~/components/chat/BaseChat';
 import { Chat } from '~/components/chat/Chat.client';
-import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { useGit } from '~/lib/hooks/useGit';
 import { useChatHistory } from '~/lib/persistence';
-import { initFromGitRepo } from '~/lib/services/projectInit';
+import { createCommandsMessage, detectProjectCommands, escapeExampleTags } from '~/utils/projectCommands';
+import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
+import { ImportErrorModal } from '~/components/ui/ImportErrorModal';
+
+const IGNORE_PATTERNS = [
+  'node_modules/**',
+  '.git/**',
+  '.github/**',
+  '.vscode/**',
+  '**/*.jpg',
+  '**/*.jpeg',
+  '**/*.png',
+  'dist/**',
+  'build/**',
+  '.next/**',
+  'coverage/**',
+  '.cache/**',
+  '.vscode/**',
+  '.idea/**',
+  '**/*.log',
+  '**/.DS_Store',
+  '**/npm-debug.log*',
+  '**/yarn-debug.log*',
+  '**/yarn-error.log*',
+
+  // Include this so npm install runs much faster '**/*lock.json',
+  '**/*lock.yaml',
+];
 
 export function GitUrlImport() {
   const [searchParams] = useSearchParams();
@@ -15,184 +42,158 @@ export function GitUrlImport() {
   const { ready: gitReady, gitClone } = useGit();
   const [imported, setImported] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState(0);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorTitle, setErrorTitle] = useState<string>('Import Failed');
 
-  const importRepo = async (repoUrl?: string, subdir?: string) => {
-    console.group('importRepo');
-    console.log('repoUrl:', repoUrl);
-    console.log('subdir:', subdir);
-    console.log('retryCount:', retryCount);
-
-    if (!gitReady || !historyReady) {
-      throw new Error('System not ready. Please wait...');
+  const importRepo = async (repoUrl?: string) => {
+    if (!gitReady && !historyReady) {
+      return;
     }
 
     if (repoUrl) {
-      try {
-        setError(null);
+      const ig = ignore().add(IGNORE_PATTERNS);
 
-        const startTime = performance.now();
-        const { workdir, data } = await gitClone(repoUrl, retryCount, subdir);
-        const cloneTime = performance.now() - startTime;
-        console.log(`Git clone completed in ${cloneTime}ms`);
-        console.log('File count:', Object.keys(data).length);
+      try {
+        const { workdir, data } = await gitClone(repoUrl);
 
         if (importChat) {
-          const { messages } = await initFromGitRepo({
-            repoUrl,
-            workdir,
-            fileData: Object.fromEntries(
-              Object.entries(data).map(([path, file]) => [
-                path,
-                { data: file.data, encoding: file.encoding || 'utf8' },
-              ]),
-            ),
-          });
+          const filePaths = Object.keys(data).filter((filePath) => !ig.ignores(filePath));
+          const textDecoder = new TextDecoder('utf-8');
 
-          await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
-          console.log('Import successful');
+          const fileContents = filePaths
+            .map((filePath) => {
+              const { data: content, encoding } = data[filePath];
+              return {
+                path: filePath,
+                content:
+                  encoding === 'utf8' ? content : content instanceof Uint8Array ? textDecoder.decode(content) : '',
+              };
+            })
+            .filter((f) => f.content);
 
-          /*
-           * Show workbench after files are imported and messages are processed
-           * Wait for the action runner to process messages and write files to WebContainer
-           */
-          const { workbenchStore } = await import('~/lib/stores/workbench');
+          const commands = await detectProjectCommands(fileContents);
+          const commandsMessage = createCommandsMessage(commands);
 
-          /*
-           * Poll the workbench store to check if files have been written
-           * The action runner processes the codinitArtifact actions asynchronously
-           * Wait up to 10 seconds for files to appear
-           */
-          const startTime = Date.now();
-          const maxWaitTime = 10000;
-          const expectedFileCount = Object.keys(data).length;
+          const filesMessage: Message = {
+            role: 'assistant',
+            content: `Cloning the repo ${repoUrl} into ${workdir}
+<exampleArtifact id="imported-files" title="Git Cloned Files"  type="bundled">
+${fileContents
+  .map(
+    (file) =>
+      `<exampleAction type="file" filePath="${file.path}">
+${escapeExampleTags(file.content)}
+</exampleAction>`,
+  )
+  .join('\n')}
+</exampleArtifact>`,
+            id: generateId(),
+            createdAt: new Date(),
+          };
 
-          console.log(`Waiting for ${expectedFileCount} files to be written to WebContainer...`);
+          const messages = [filesMessage];
 
-          let lastCount = 0;
-
-          while (workbenchStore.filesCount < expectedFileCount && Date.now() - startTime < maxWaitTime) {
-            await new Promise((resolve) => setTimeout(resolve, 200));
-
-            const currentCount = workbenchStore.filesCount;
-
-            if (currentCount !== lastCount) {
-              console.log(`Files loaded: ${currentCount}/${expectedFileCount}`);
-              lastCount = currentCount;
-            }
+          if (commandsMessage) {
+            messages.push({
+              role: 'user',
+              id: generateId(),
+              content: 'Setup the codebase and Start the application',
+            });
+            messages.push(commandsMessage);
           }
 
-          const finalCount = workbenchStore.filesCount;
-          console.log(`Final file count: ${finalCount}/${expectedFileCount} (took ${Date.now() - startTime}ms)`);
-
-          workbenchStore.setShowWorkbench(true);
-
-          setLoading(false); // Success!
+          await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
         }
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-        console.error('Import failed:', error);
-        setError(errorMsg);
+        console.error('Error during import:', error);
         setLoading(false);
 
-        // Don't auto-redirect, show error UI instead
-        if (retryCount < 3 && errorMsg.includes('not initialized')) {
-          toast.warning(`Retrying import (${retryCount + 1}/3)...`);
-          setRetryCount(retryCount + 1);
-          setTimeout(() => setImported(false), 1000); // Trigger retry
+        // Determine error type and set appropriate message
+        const errorMsg = error instanceof Error ? error.message : String(error);
+
+        if (errorMsg.toLowerCase().includes('network') || errorMsg.toLowerCase().includes('fetch')) {
+          setErrorTitle('Network Error');
+          setErrorMessage('Failed to clone repository. Check your internet connection.');
+        } else if (errorMsg.toLowerCase().includes('not found') || errorMsg.toLowerCase().includes('404')) {
+          setErrorTitle('Repository Not Found');
+          setErrorMessage('Repository not found or is private.');
+        } else if (errorMsg.toLowerCase().includes('cors') || errorMsg.toLowerCase().includes('proxy')) {
+          setErrorTitle('Access Error');
+          setErrorMessage('Unable to access repository. It may be private or have restricted access.');
+        } else if (!repoUrl || !repoUrl.includes('github.com')) {
+          setErrorTitle('Invalid URL');
+          setErrorMessage('Invalid GitHub URL. Please use format: https://github.com/user/repo');
         } else {
-          toast.error(`Failed to import: ${errorMsg}`);
+          setErrorTitle('Import Failed');
+          setErrorMessage('Failed to clone repository. Please try again.');
         }
-      } finally {
-        console.groupEnd();
+
+        return;
       }
     }
   };
 
   useEffect(() => {
-    console.group('GitUrlImport Effect');
-    console.log('historyReady:', historyReady);
-    console.log('gitReady:', gitReady);
-    console.log('imported:', imported);
-    console.log('searchParams:', Object.fromEntries(searchParams.entries()));
-    console.groupEnd();
-
-    if (!historyReady || !gitReady) {
-      // Show "Initializing..." message instead of "Cloning..."
-      setLoading(true);
-      return;
-    }
-
-    // Allow re-import if it previously failed
-    if (imported) {
+    if (!historyReady || !gitReady || imported) {
       return;
     }
 
     const url = searchParams.get('url');
-    const subdir = searchParams.get('subdir');
 
     if (!url) {
       window.location.href = '/';
       return;
     }
 
-    // Mark as imported BEFORE attempting to prevent race conditions
+    importRepo(url).catch((error) => {
+      console.error('Error importing repo:', error);
+      setLoading(false);
+
+      // Set error state instead of immediate redirect
+      const errorMsg = error instanceof Error ? error.message : String(error);
+
+      if (errorMsg.toLowerCase().includes('network') || errorMsg.toLowerCase().includes('fetch')) {
+        setErrorTitle('Network Error');
+        setErrorMessage('Failed to clone repository. Check your internet connection.');
+      } else if (errorMsg.toLowerCase().includes('not found') || errorMsg.toLowerCase().includes('404')) {
+        setErrorTitle('Repository Not Found');
+        setErrorMessage('Repository not found or is private.');
+      } else if (errorMsg.toLowerCase().includes('cors') || errorMsg.toLowerCase().includes('proxy')) {
+        setErrorTitle('Access Error');
+        setErrorMessage('Unable to access repository. It may be private or have restricted access.');
+      } else {
+        setErrorTitle('Import Failed');
+        setErrorMessage('Failed to import repository. Please try again.');
+      }
+    });
     setImported(true);
+  }, [searchParams, historyReady, gitReady, imported]);
 
-    importRepo(url, subdir || undefined)
-      .then(() => {
-        setLoading(false); // CRITICAL: Remove loading overlay on success
-      })
-      .catch((error) => {
-        console.error('Error importing repo:', error);
-        setLoading(false);
-        setImported(false); // Allow retry
+  const handleRetry = () => {
+    setErrorMessage(null);
+    setImported(false);
+    setLoading(true);
+  };
 
-        // Don't auto-redirect if error UI is shown
-        if (!error) {
-          window.location.href = '/';
-        }
-      });
-  }, [searchParams, historyReady, gitReady]); // Removed 'imported' from deps
+  const handleGoBack = () => {
+    window.location.href = '/';
+  };
 
   return (
     <ClientOnly fallback={<BaseChat />}>
       {() => (
         <>
           <Chat />
-          {loading && (
-            <LoadingOverlay
-              message={
-                !historyReady || !gitReady ? 'Initializing system...' : 'Please wait while we clone the repository...'
-              }
+          {loading && <LoadingOverlay message="Please wait while we clone the repository..." />}
+          {errorMessage && (
+            <ImportErrorModal
+              isOpen={true}
+              type="error"
+              title={errorTitle}
+              message={errorMessage}
+              onRetry={handleRetry}
+              onClose={handleGoBack}
             />
-          )}
-          {error && !loading && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-              <div className="bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor rounded-lg p-6 max-w-md mx-4 shadow-xl">
-                <h3 className="text-xl font-semibold text-codinit-elements-textPrimary mb-3">Import Failed</h3>
-                <p className="text-codinit-elements-textSecondary mb-4">{error}</p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => {
-                      setError(null);
-                      setImported(false);
-                      setRetryCount(0);
-                    }}
-                    className="flex-1 px-4 py-2 bg-codinit-elements-button-primary-background hover:bg-codinit-elements-button-primary-backgroundHover text-codinit-elements-button-primary-text rounded-md transition-colors"
-                  >
-                    Retry Import
-                  </button>
-                  <button
-                    onClick={() => (window.location.href = '/')}
-                    className="flex-1 px-4 py-2 bg-codinit-elements-background-depth-1 hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary rounded-md transition-colors border border-codinit-elements-borderColor"
-                  >
-                    Go Home
-                  </button>
-                </div>
-              </div>
-            </div>
           )}
         </>
       )}

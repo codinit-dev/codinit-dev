@@ -45,9 +45,7 @@ export function useNetlifyDeploy() {
       const deployArtifact = workbenchStore.artifacts.get()[deploymentId];
 
       // Notify that build is starting
-      deployArtifact.runner.handleDeployAction('building', 'running', {
-        source: 'netlify',
-      });
+      deployArtifact.runner.handleDeployAction('building', 'running', { source: 'netlify' });
 
       // Set up build action
       const actionId = 'build-' + Date.now();
@@ -77,9 +75,7 @@ export function useNetlifyDeploy() {
       }
 
       // Notify that build succeeded and deployment is starting
-      deployArtifact.runner.handleDeployAction('deploying', 'running', {
-        source: 'netlify',
-      });
+      deployArtifact.runner.handleDeployAction('deploying', 'running', { source: 'netlify' });
 
       // Get the build files
       const container = await webcontainer;
@@ -118,9 +114,7 @@ export function useNetlifyDeploy() {
 
       async function getAllFiles(dirPath: string): Promise<Record<string, string>> {
         const files: Record<string, string> = {};
-        const entries = await container.fs.readdir(dirPath, {
-          withFileTypes: true,
-        });
+        const entries = await container.fs.readdir(dirPath, { withFileTypes: true });
 
         for (const entry of entries) {
           const fullPath = path.join(dirPath, entry.name);

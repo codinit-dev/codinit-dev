@@ -42,33 +42,28 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-[#F5F5F5] dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
-              <div className="i-ph:plug-fill text-codinit-elements-textTertiary" />
+              <div className="i-ph:plug-fill text-bolt-elements-textTertiary" />
             </div>
             <div>
-              <h3 className="text-lg font-medium text-codinit-elements-textPrimary">Connection Settings</h3>
-              <p className="text-sm text-codinit-elements-textSecondary">Configure your GitHub connection</p>
+              <h3 className="text-lg font-medium text-bolt-elements-textPrimary">Connection Settings</h3>
+              <p className="text-sm text-bolt-elements-textSecondary">Configure your GitHub connection</p>
             </div>
           </div>
         </div>
 
         <form onSubmit={onSave} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-codinit-elements-textSecondary mb-2">
+            <label htmlFor="username" className="block text-sm font-medium text-bolt-elements-textSecondary mb-2">
               GitHub Username
             </label>
             <input
               id="username"
               type="text"
               value={authState.username}
-              onChange={(e) =>
-                setAuthState((prev: GitHubAuthState) => ({
-                  ...prev,
-                  username: e.target.value,
-                }))
-              }
+              onChange={(e) => setAuthState((prev: GitHubAuthState) => ({ ...prev, username: e.target.value }))}
               className={classNames(
                 'w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#1A1A1A] border rounded-lg',
-                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary text-base',
+                'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary text-base',
                 'border-[#E5E5E5] dark:border-[#1A1A1A]',
                 'focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500',
                 'transition-all duration-200',
@@ -79,7 +74,7 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label htmlFor="token" className="block text-sm font-medium text-codinit-elements-textSecondary">
+              <label htmlFor="token" className="block text-sm font-medium text-bolt-elements-textSecondary">
                 Personal Access Token
               </label>
               <a
@@ -119,7 +114,7 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
               }
               className={classNames(
                 'w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#1A1A1A] border rounded-lg',
-                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary text-base',
+                'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary text-base',
                 'border-[#E5E5E5] dark:border-[#1A1A1A]',
                 'focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500',
                 'transition-all duration-200',
@@ -161,7 +156,7 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
                       'inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
                       'bg-[#F5F5F5] hover:bg-red-500/10 hover:text-red-500',
                       'dark:bg-[#1A1A1A] dark:hover:bg-red-500/20 dark:hover:text-red-500',
-                      'text-codinit-elements-textPrimary',
+                      'text-bolt-elements-textPrimary',
                     )}
                   >
                     <div className="i-ph:plug-fill" />
@@ -175,7 +170,7 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
               )}
             </div>
             {authState.rateLimits && (
-              <div className="flex items-center gap-2 text-sm text-codinit-elements-textTertiary">
+              <div className="flex items-center gap-2 text-sm text-bolt-elements-textTertiary">
                 <div className="i-ph:clock-countdown opacity-60" />
                 <span>Rate limit resets at {authState.rateLimits.reset.toLocaleTimeString()}</span>
               </div>

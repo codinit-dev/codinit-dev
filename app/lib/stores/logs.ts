@@ -84,7 +84,7 @@ class LogStore {
       return;
     }
 
-    const savedReadLogs = localStorage.getItem('codinit_read_logs');
+    const savedReadLogs = localStorage.getItem('bolt_read_logs');
 
     if (savedReadLogs) {
       try {
@@ -106,7 +106,7 @@ class LogStore {
       return;
     }
 
-    localStorage.setItem('codinit_read_logs', JSON.stringify(Array.from(this._readLogs)));
+    localStorage.setItem('bolt_read_logs', JSON.stringify(Array.from(this._readLogs)));
   }
 
   private _generateId(): string {
@@ -426,10 +426,7 @@ class LogStore {
   }
 
   logSuccess(message: string, details: LogDetails) {
-    return this._addLog(message, 'info', 'system', {
-      ...details,
-      success: true,
-    });
+    return this._addLog(message, 'info', 'system', { ...details, success: true });
   }
 
   logApiRequest(

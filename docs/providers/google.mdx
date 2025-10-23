@@ -1,0 +1,310 @@
+---
+canonical_url: "https://docs.codinit.dev/providers/google"
+title: "Google"
+description: "Configure Gemini models with massive 2M token context windows for handling large codebases"
+---
+
+Google's Gemini models offer unparalleled context handling capabilities with up to 2 million token context windows.
+
+**Website:** [https://ai.dev/](https://ai.dev/)
+
+
+<Card
+  title="Get Google AI API Key"
+  icon="key"
+  href="https://aistudio.google.com/app/apikey"
+  horizontal
+>
+  Create your API key at Google AI Studio to start using Gemini models.
+</Card>
+
+
+### Primary Models
+
+<ParamField name="gemini-2.5-pro" type="chat">
+  Google's most capable model with massive context window, perfect for analyzing large codebases and complex projects.
+  - **Context Window**: 2M tokens
+  - **Output Limit**: 8k tokens
+  - **Use Case**: Large codebase analysis, comprehensive refactoring, architecture planning
+</ParamField>
+
+<ParamField name="gemini-2.5-flash" type="chat">
+  Fast and efficient model with excellent performance for everyday coding tasks while maintaining large context support.
+  - **Context Window**: 1M tokens
+  - **Output Limit**: 8k tokens
+  - **Use Case**: Quick code analysis, interactive coding, medium-sized projects
+</ParamField>
+
+
+### Step 1: Get API Key
+
+<Steps>
+<Step title="Visit Google AI Studio">
+  Go to [Google AI Studio](https://aistudio.google.com) and sign in with your Google account.
+</Step>
+
+<Step title="Create API Key">
+  Click **"Create API key"** in the left sidebar or navigate to **Settings > API keys**.
+</Step>
+
+<Step title="Generate Key">
+  Click **"Create API key"** and select an existing Google Cloud project or create a new one.
+</Step>
+
+<Step title="Copy and Store Key">
+  <Warning>
+    Copy the API key immediately as it won't be shown again. Store it securely - never commit it to version control.
+  </Warning>
+</Step>
+</Steps>
+
+### Step 2: Configure in CodinIT
+
+<Steps>
+<Step title="Open Settings">
+  Navigate to **Settings > AI Providers** in CodinIT.
+</Step>
+
+<Step title="Add Google Provider">
+  Click **"Add Provider"** and select **Google** from the list.
+</Step>
+
+<Step title="Enter API Key">
+  Paste your Google AI API key in the **API Key** field.
+
+  ```bash
+  GOOGLE_GENERATIVE_AI_API_KEY=your-google-api-key-here
+  ```
+</Step>
+
+<Step title="Test Connection">
+  Click **"Test Connection"** to verify your API key is working correctly.
+</Step>
+
+<Step title="Set Default Model">
+  Choose your preferred default model (we recommend **gemini-1.5-pro** for most development tasks).
+</Step>
+</Steps>
+
+## Configuration Options
+
+<ParamField name="GOOGLE_GENERATIVE_AI_API_KEY" type="string" required>
+  Your Google Generative AI API key. Get this from [Google AI Studio](https://aistudio.google.com/app/apikey).
+</ParamField>
+
+<ParamField name="GOOGLE_BASE_URL" type="string">
+  Custom base URL for Google-compatible APIs. Defaults to Google's official endpoint.
+</ParamField>
+
+### Provider Settings
+
+<Expandable title="Available Models">
+  <ResponseField name="gemini-1.5-pro" type="string">
+    Most capable Gemini model with 2M token context for large projects
+  </ResponseField>
+
+  <ResponseField name="gemini-1.5-flash" type="string">
+    Fast and efficient model with 1M token context for everyday tasks
+  </ResponseField>
+</Expandable>
+
+## Usage Examples
+
+<CodeGroup>
+```javascript Analyze Complex React Application
+// Ask: Analyze this entire React application and suggest architectural improvements
+
+// With 2M context, Gemini can process:
+// - Multiple component files
+// - Complex state management
+// - API integration patterns
+// - Styling and theming systems
+// - Configuration files
+// - Package dependencies
+// - All at once for comprehensive analysis
+```
+</CodeGroup>
+
+### Multi-File Refactoring
+
+<CodeGroup>
+```typescript Large-Scale Refactoring
+// Ask: Refactor this React class component to functional components with hooks
+// across multiple related files
+
+// Gemini 1.5 Pro can:
+// - Understand relationships between files
+// - Maintain consistent patterns
+// - Update imports and exports
+// - Ensure type safety
+// - Suggest testing strategies
+```
+</CodeGroup>
+
+### Model Pricing (per 1,000 tokens)
+
+| Model | Input | Output |
+|-------|-------|--------|
+| Gemini 1.5 Pro | $1.25 | $5.00 |
+| Gemini 1.5 Flash | $0.075 | $0.30 |
+
+<Note>
+  Free tier includes generous quotas. Check [Google AI pricing](https://ai.google.dev/pricing) for the latest rates and free tier details.
+</Note>
+
+## Best Practices
+
+<Steps>
+<Step title="Use Gemini 1.5 Pro for Large Projects">
+  Choose **gemini-1.5-pro** when you need to:
+  - Analyze entire codebases at once
+  - Understand complex multi-file relationships
+  - Plan large refactoring projects
+  - Review comprehensive documentation
+  - Make architectural decisions
+</Step>
+
+<Step title="Use Gemini 1.5 Flash for Speed">
+  Choose **gemini-1.5-flash** when you need:
+  - Quick responses for interactive coding
+  - Cost-effective large context analysis
+  - Good performance with smaller projects
+  - Balance between speed and context length
+</Step>
+
+<Step title="Optimize Context Usage">
+  <Tip>
+    With 2M token context, you can include entire project files, documentation, and examples without worrying about limits.
+  </Tip>
+</Step>
+</Steps>
+
+### Context Management Strategies
+
+<CardGroup cols={2}>
+  <Card title="Include Relevant Files" icon="files">
+    Provide all related files, dependencies, and configuration that might be relevant to the task.
+  </Card>
+  <Card title="Add Documentation" icon="book">
+    Include README files, API documentation, and comments for better understanding.
+  </Card>
+  <Card title="Specify Relationships" icon="git-branch">
+    Explain how different files and components relate to each other in your prompts.
+  </Card>
+  <Card title="Use Clear Instructions" icon="target">
+    Provide specific guidance on what you want to achieve with the large context.
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+<Accordion title="API Key Issues">
+  **Error**: "API key not valid" or "permission denied"
+
+  **Solutions**:
+  - Verify your API key is correct and active
+  - Ensure you're using a Google AI Studio key (not other Google services)
+  - Check if your Google Cloud project is active
+  - Try generating a new API key
+</Accordion>
+
+<Accordion title="Quota Exceeded">
+  **Error**: "quota exceeded" or "rate limit"
+
+  **Solutions**:
+  - Check your usage in Google AI Studio dashboard
+  - Wait for quota reset or upgrade to paid tier
+  - Optimize your prompts to be more efficient
+  - Use the free tier more strategically
+</Accordion>
+
+<Accordion title="Model Context Limits">
+  **Error**: "context too large" (rare but possible)
+
+  **Solutions**:
+  - Even with 2M context, extremely large inputs might need reduction
+  - Remove unnecessary files or focus on most relevant code
+  - Break analysis into smaller, focused tasks
+  - Use Gemini 1.5 Pro for maximum context capacity
+</Accordion>
+
+<Accordion title="Connection Errors">
+  **Error**: "connection failed" or "service unavailable"
+
+  **Solutions**:
+  - Check Google's service status
+  - Verify your internet connection
+  - Try again with exponential backoff
+  - Switch to a different model temporarily
+</Accordion>
+</AccordionGroup>
+
+### Getting Help
+
+<Steps>
+<Step title="Check Google AI Status">
+  Visit [Google AI service status](https://status.cloud.google.com) for any ongoing issues.
+</Step>
+
+<Step title="Review Quotas">
+  Check your usage and quotas in [Google AI Studio](https://aistudio.google.com/app/apikey).
+</Step>
+
+<Step title="Consult Documentation">
+  Visit [Google AI documentation](https://ai.google.dev/docs) for detailed guides.
+</Step>
+</Steps>
+
+## Advanced Configuration
+
+<CodeGroup>
+```json Provider Settings
+{
+  "google": {
+    "models": {
+      "default": "gemini-1.5-pro",
+      "large_context": "gemini-1.5-pro",
+      "fast": "gemini-1.5-flash"
+    },
+    "temperature": 0.1,
+    "maxTokens": 8000
+  }
+}
+```
+
+```bash Environment Variables
+# Advanced configuration options
+GOOGLE_CLOUD_PROJECT_ID=your-project-id
+GOOGLE_CLOUD_LOCATION=us-central1
+```
+</CodeGroup>
+
+### Enterprise Features
+
+<AccordionGroup>
+<Accordion title="Google Cloud Integration">
+  - Enterprise-grade security and compliance
+  - Dedicated support and SLA guarantees
+  - Advanced usage analytics and monitoring
+  - Custom model fine-tuning capabilities
+</Accordion>
+
+<Accordion title="Vertex AI">
+  - Access to additional Google models
+  - Enhanced security and privacy controls
+  - Integration with Google Cloud ecosystem
+  - Advanced deployment and scaling options
+</Accordion>
+
+<Accordion title="Custom Model Training">
+  - Fine-tune Gemini models on your data
+  - Create domain-specific model variants
+  - Advanced model evaluation and testing
+  - Production deployment support
+</Accordion>
+</AccordionGroup>
+
+<Note>
+  **Perfect for large projects!** Google's massive context windows make Gemini models ideal for comprehensive codebase analysis and large-scale development tasks.
+</Note>

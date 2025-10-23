@@ -43,7 +43,7 @@ export function useGit() {
   }, []);
 
   const gitClone = useCallback(
-    async (url: string, retryCount = 0, subdir?: string) => {
+    async (url: string, retryCount = 0) => {
       if (!webcontainer || !fs || !ready) {
         throw new Error('Webcontainer not initialized. Please try again later.');
       }
@@ -51,19 +51,9 @@ export function useGit() {
       fileData.current = {};
 
       /*
-       * Normalize the URL for GitHub compatibility
-       * GitHub's smart HTTP protocol requires URLs WITHOUT .git suffix
-       * isomorphic-git will append /info/refs?service=git-upload-pack automatically
+       * Skip Git initialization for now - let isomorphic-git handle it
+       * This avoids potential issues with our manual initialization
        */
-      let normalizedUrl = url;
-
-      // Remove .git suffix if present - it causes GitHub to redirect incorrectly
-      normalizedUrl = url.replace(/\.git$/, '');
-
-      // Convert SSH URLs to HTTPS for GitHub
-      if (normalizedUrl.startsWith('git@github.com:')) {
-        normalizedUrl = normalizedUrl.replace('git@github.com:', 'https://github.com/');
-      }
 
       const headers: {
         [x: string]: string;
@@ -71,7 +61,7 @@ export function useGit() {
         'User-Agent': 'codinit.dev',
       };
 
-      const auth = lookupSavedPassword(normalizedUrl);
+      const auth = lookupSavedPassword(url);
 
       if (auth) {
         headers.Authorization = `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`;
@@ -88,7 +78,7 @@ export function useGit() {
           fs,
           http,
           dir: webcontainer.workdir,
-          url: normalizedUrl,
+          url,
           depth: 1,
           singleBranch: true,
           corsProxy: '/api/git-proxy',
@@ -131,21 +121,8 @@ export function useGit() {
 
         const data: Record<string, { data: any; encoding?: string }> = {};
 
-        // If a subdirectory is specified, filter files to only include those in the subdirectory
-        if (subdir) {
-          const subdirPrefix = subdir + '/';
-
-          for (const [key, value] of Object.entries(fileData.current)) {
-            if (key.startsWith(subdirPrefix)) {
-              // Remove the subdirectory prefix from the path
-              const newPath = key.substring(subdirPrefix.length);
-              data[newPath] = value;
-            }
-          }
-        } else {
-          for (const [key, value] of Object.entries(fileData.current)) {
-            data[key] = value;
-          }
+        for (const [key, value] of Object.entries(fileData.current)) {
+          data[key] = value;
         }
 
         return { workdir: webcontainer.workdir, data };
@@ -159,10 +136,6 @@ export function useGit() {
         if (errorMessage.includes('Authentication failed')) {
           toast.error(`Authentication failed. Please check your GitHub credentials and try again.`);
           throw error;
-        } else if (errorMessage.includes('smart') && errorMessage.includes('HTTP')) {
-          // Handle the "smart" HTTP protocol error - this usually means we're hitting a web page instead of git service
-          toast.error(`Invalid Git URL. Make sure you're using a valid repository URL (without .git suffix).`);
-          throw new Error(`Invalid Git URL. The URL should point to a Git repository, not a web page.`);
         } else if (
           errorMessage.includes('ENOTFOUND') ||
           errorMessage.includes('ETIMEDOUT') ||
@@ -172,7 +145,7 @@ export function useGit() {
 
           // Retry for network errors, up to 3 times
           if (retryCount < 3) {
-            return gitClone(url, retryCount + 1, subdir);
+            return gitClone(url, retryCount + 1);
           }
 
           throw new Error(
@@ -243,10 +216,7 @@ const getFs = (
       const relativePath = pathUtils.relative(webcontainer.workdir, path);
 
       try {
-        const result = await webcontainer.fs.mkdir(relativePath, {
-          ...options,
-          recursive: true,
-        });
+        const result = await webcontainer.fs.mkdir(relativePath, { ...options, recursive: true });
 
         return result;
       } catch (error) {
@@ -268,9 +238,7 @@ const getFs = (
       const relativePath = pathUtils.relative(webcontainer.workdir, path);
 
       try {
-        const result = await webcontainer.fs.rm(relativePath, {
-          ...(options || {}),
-        });
+        const result = await webcontainer.fs.rm(relativePath, { ...(options || {}) });
 
         return result;
       } catch (error) {
@@ -281,10 +249,7 @@ const getFs = (
       const relativePath = pathUtils.relative(webcontainer.workdir, path);
 
       try {
-        const result = await webcontainer.fs.rm(relativePath, {
-          recursive: true,
-          ...options,
-        });
+        const result = await webcontainer.fs.rm(relativePath, { recursive: true, ...options });
 
         return result;
       } catch (error) {
@@ -333,9 +298,7 @@ const getFs = (
           };
         }
 
-        const resp = await webcontainer.fs.readdir(dirPath, {
-          withFileTypes: true,
-        });
+        const resp = await webcontainer.fs.readdir(dirPath, { withFileTypes: true });
         const fileInfo = resp.find((x) => x.name === fileName);
 
         if (!fileInfo) {

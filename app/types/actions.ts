@@ -1,6 +1,6 @@
 import type { Change } from 'diff';
 
-export type ActionType = 'file' | 'shell' | 'start' | 'build' | 'supabase';
+export type ActionType = 'file' | 'shell' | 'supabase';
 
 export interface BaseAction {
   content: string;
@@ -30,9 +30,9 @@ export interface SupabaseAction extends BaseAction {
   projectId?: string;
 }
 
-export type CodinitAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
+export type ExampleAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
 
-export type CodinitActionData = CodinitAction | BaseAction;
+export type ExampleActionData = ExampleAction | BaseAction;
 
 export interface ActionAlert {
   type: string;
@@ -59,16 +59,7 @@ export interface DeployAlert {
   stage?: 'building' | 'deploying' | 'complete';
   buildStatus?: 'pending' | 'running' | 'complete' | 'failed';
   deployStatus?: 'pending' | 'running' | 'complete' | 'failed';
-  source?: 'vercel' | 'netlify' | 'github' | 'gitlab';
-}
-
-export interface LlmErrorAlertType {
-  type: 'error' | 'warning';
-  title: string;
-  description: string;
-  content?: string;
-  provider?: string;
-  errorType?: 'authentication' | 'rate_limit' | 'quota' | 'network' | 'unknown';
+  source?: 'vercel' | 'netlify' | 'github';
 }
 
 export interface FileHistory {

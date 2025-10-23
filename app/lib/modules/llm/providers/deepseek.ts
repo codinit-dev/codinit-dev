@@ -20,6 +20,7 @@ export default class DeepseekProvider extends BaseProvider {
       provider: 'Deepseek',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/deepseek.svg',
     },
     {
       name: 'deepseek-chat',
@@ -27,6 +28,7 @@ export default class DeepseekProvider extends BaseProvider {
       provider: 'Deepseek',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/deepseek.svg',
     },
     {
       name: 'deepseek-reasoner',
@@ -34,6 +36,7 @@ export default class DeepseekProvider extends BaseProvider {
       provider: 'Deepseek',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/deepseek.svg',
     },
   ];
 

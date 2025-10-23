@@ -1,19 +1,16 @@
-import type { ActionFunctionArgs } from '@remix-run/cloudflare';
+import { type ActionFunctionArgs } from '@remix-run/cloudflare';
 import { createDataStream, generateId } from 'ai';
 import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS, type FileMap } from '~/lib/.server/llm/constants';
-import { createSummary } from '~/lib/.server/llm/create-summary';
-import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
-import { StreamRecoveryManager } from '~/lib/.server/llm/stream-recovery';
+import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
-import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
-import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
-import { MCPService } from '~/lib/services/mcpService';
-import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
-import type { DesignScheme } from '~/types/design-scheme';
 import type { IProviderSetting } from '~/types/model';
-import { WORK_DIR } from '~/utils/constants';
 import { createScopedLogger } from '~/utils/logger';
+import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
+import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
+import { WORK_DIR } from '~/utils/constants';
+import { createSummary } from '~/lib/.server/llm/create-summary';
+import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -40,40 +37,20 @@ function parseCookies(cookieHeader: string): Record<string, string> {
 }
 
 async function chatAction({ context, request }: ActionFunctionArgs) {
-  const streamRecovery = new StreamRecoveryManager({
-    timeout: 45000,
-    maxRetries: 2,
-    onTimeout: () => {
-      logger.warn('Stream timeout - attempting recovery');
-    },
-  });
-
-  const { messages, files, promptId, contextOptimization, supabase, chatMode, designScheme, maxLLMSteps, tokenConfig } =
-    await request.json<{
-      messages: Messages;
-      files: FileMap;
-      promptId?: string;
-      contextOptimization: boolean;
-      chatMode: 'discuss' | 'build';
-      designScheme?: DesignScheme;
-      supabase?: {
-        isConnected: boolean;
-        hasSelectedProject: boolean;
-        credentials?: {
-          anonKey?: string;
-          supabaseUrl?: string;
-        };
+  const { messages, files, promptId, contextOptimization, supabase } = await request.json<{
+    messages: Messages;
+    files: any;
+    promptId?: string;
+    contextOptimization: boolean;
+    supabase?: {
+      isConnected: boolean;
+      hasSelectedProject: boolean;
+      credentials?: {
+        anonKey?: string;
+        supabaseUrl?: string;
       };
-      maxLLMSteps: number;
-      tokenConfig?: {
-        maxTokens?: number;
-        temperature?: number;
-        topP?: number;
-        topK?: number;
-        frequencyPenalty?: number;
-        presencePenalty?: number;
-      };
-    }>();
+    };
+  }>();
 
   const cookieHeader = request.headers.get('Cookie');
   const apiKeys = JSON.parse(parseCookies(cookieHeader || '').apiKeys || '{}');
@@ -92,25 +69,20 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
   let progressCounter: number = 1;
 
   try {
-    const mcpService = MCPService.getInstance();
     const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
 
-    let lastChunk: string | undefined;
+    let lastChunk: string | undefined = undefined;
 
     const dataStream = createDataStream({
       async execute(dataStream) {
-        streamRecovery.startMonitoring();
-
         const filePaths = getFilePaths(files || {});
-        let filteredFiles: FileMap | undefined;
-        let summary: string | undefined;
+        let filteredFiles: FileMap | undefined = undefined;
+        let summary: string | undefined = undefined;
         let messageSliceId = 0;
 
-        const processedMessages = await mcpService.processToolInvocations(messages, dataStream);
-
-        if (processedMessages.length > 3) {
-          messageSliceId = processedMessages.length - 3;
+        if (messages.length > 3) {
+          messageSliceId = messages.length - 3;
         }
 
         if (filePaths.length > 0 && contextOptimization) {
@@ -124,10 +96,10 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           } satisfies ProgressAnnotation);
 
           // Create a summary of the chat
-          console.log(`Messages count: ${processedMessages.length}`);
+          console.log(`Messages count: ${messages.length}`);
 
           summary = await createSummary({
-            messages: [...processedMessages],
+            messages: [...messages],
             env: context.cloudflare?.env,
             apiKeys,
             providerSettings,
@@ -153,7 +125,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           dataStream.writeMessageAnnotation({
             type: 'chatSummary',
             summary,
-            chatId: processedMessages.slice(-1)?.[0]?.id,
+            chatId: messages.slice(-1)?.[0]?.id,
           } as ContextAnnotation);
 
           // Update context buffer
@@ -167,9 +139,9 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           } satisfies ProgressAnnotation);
 
           // Select context files
-          console.log(`Messages count: ${processedMessages.length}`);
+          console.log(`Messages count: ${messages.length}`);
           filteredFiles = await selectContext({
-            messages: [...processedMessages],
+            messages: [...messages],
             env: context.cloudflare?.env,
             apiKeys,
             files,
@@ -217,23 +189,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
         const options: StreamingOptions = {
           supabaseConnection: supabase,
-          toolChoice: 'auto',
-          tools: mcpService.toolsWithoutExecute,
-          maxSteps: maxLLMSteps,
-
-          // Add token configuration parameters if provided
-          ...(tokenConfig?.temperature !== undefined && { temperature: tokenConfig.temperature }),
-          ...(tokenConfig?.topP !== undefined && { topP: tokenConfig.topP }),
-          ...(tokenConfig?.topK !== undefined && { topK: tokenConfig.topK }),
-          ...(tokenConfig?.frequencyPenalty !== undefined && { frequencyPenalty: tokenConfig.frequencyPenalty }),
-          ...(tokenConfig?.presencePenalty !== undefined && { presencePenalty: tokenConfig.presencePenalty }),
-          ...(tokenConfig?.maxTokens !== undefined && { maxTokens: tokenConfig.maxTokens }),
-          onStepFinish: ({ toolCalls }) => {
-            // add tool call annotations for frontend processing
-            toolCalls.forEach((toolCall) => {
-              mcpService.processToolCall(toolCall, dataStream);
-            });
-          },
+          toolChoice: 'none',
           onFinish: async ({ text: content, finishReason, usage }) => {
             logger.debug('usage', JSON.stringify(usage));
 
@@ -273,17 +229,17 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
             logger.info(`Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`);
 
-            const lastUserMessage = processedMessages.filter((x) => x.role === 'user').slice(-1)[0];
+            const lastUserMessage = messages.filter((x) => x.role == 'user').slice(-1)[0];
             const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
-            processedMessages.push({ id: generateId(), role: 'assistant', content });
-            processedMessages.push({
+            messages.push({ id: generateId(), role: 'assistant', content });
+            messages.push({
               id: generateId(),
               role: 'user',
               content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
             });
 
             const result = await streamText({
-              messages: [...processedMessages],
+              messages,
               env: context.cloudflare?.env,
               options,
               apiKeys,
@@ -292,8 +248,6 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               promptId,
               contextOptimization,
               contextFiles: filteredFiles,
-              chatMode,
-              designScheme,
               summary,
               messageSliceId,
             });
@@ -303,7 +257,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             (async () => {
               for await (const part of result.fullStream) {
                 if (part.type === 'error') {
-                  const error: unknown = part.error;
+                  const error: any = part.error;
                   logger.error(`${error}`);
 
                   return;
@@ -324,7 +278,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         } satisfies ProgressAnnotation);
 
         const result = await streamText({
-          messages: [...processedMessages],
+          messages,
           env: context.cloudflare?.env,
           options,
           apiKeys,
@@ -333,69 +287,23 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           promptId,
           contextOptimization,
           contextFiles: filteredFiles,
-          chatMode,
-          designScheme,
           summary,
           messageSliceId,
         });
 
         (async () => {
           for await (const part of result.fullStream) {
-            streamRecovery.updateActivity();
-
             if (part.type === 'error') {
-              const error: unknown = part.error;
-              logger.error('Streaming error:', error);
-              streamRecovery.stop();
-
-              // Enhanced error handling for common streaming issues
-              if (error instanceof Error && error.message?.includes('Invalid JSON response')) {
-                logger.error('Invalid JSON response detected - likely malformed API response');
-              } else if (error instanceof Error && error.message?.includes('token')) {
-                logger.error('Token-related error detected - possible token limit exceeded');
-              }
+              const error: any = part.error;
+              logger.error(`${error}`);
 
               return;
             }
           }
-          streamRecovery.stop();
         })();
         result.mergeIntoDataStream(dataStream);
       },
-      onError: (error: unknown) => {
-        // Provide more specific error messages for common issues
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-        if (errorMessage.includes('model') && errorMessage.includes('not found')) {
-          return 'Custom error: Invalid model selected. Please check that the model name is correct and available.';
-        }
-
-        if (errorMessage.includes('Invalid JSON response')) {
-          return 'Custom error: The AI service returned an invalid response. This may be due to an invalid model name, API rate limiting, or server issues. Try selecting a different model or check your API key.';
-        }
-
-        if (
-          errorMessage.includes('API key') ||
-          errorMessage.includes('unauthorized') ||
-          errorMessage.includes('authentication')
-        ) {
-          return 'Custom error: Invalid or missing API key. Please check your API key configuration.';
-        }
-
-        if (errorMessage.includes('token') && errorMessage.includes('limit')) {
-          return 'Custom error: Token limit exceeded. The conversation is too long for the selected model. Try using a model with larger context window or start a new conversation.';
-        }
-
-        if (errorMessage.includes('rate limit') || errorMessage.includes('429')) {
-          return 'Custom error: API rate limit exceeded. Please wait a moment before trying again.';
-        }
-
-        if (errorMessage.includes('network') || errorMessage.includes('timeout')) {
-          return 'Custom error: Network error. Please check your internet connection and try again.';
-        }
-
-        return `Custom error: ${errorMessage}`;
-      },
+      onError: (error: any) => `Custom error: ${error.message}`,
     }).pipeThrough(
       new TransformStream({
         transform: (chunk, controller) => {
@@ -405,7 +313,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
           if (typeof chunk === 'string') {
             if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
-              controller.enqueue(encoder.encode(`0: "<div class=\\"__codinitThought__\\">"\n`));
+              controller.enqueue(encoder.encode(`0: "<div class=\\"__boltThought__\\">"\n`));
             }
 
             if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
@@ -443,44 +351,19 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         'Text-Encoding': 'chunked',
       },
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error(error);
 
-    const errorResponse = {
-      error: true,
-      message: error instanceof Error ? error.message : 'An unexpected error occurred',
-      statusCode:
-        typeof error === 'object' && error !== null && 'statusCode' in error && typeof error.statusCode === 'number'
-          ? error.statusCode
-          : 500,
-      isRetryable:
-        typeof error === 'object' && error !== null && 'isRetryable' in error ? error.isRetryable !== false : true, // Default to retryable unless explicitly false
-      provider:
-        typeof error === 'object' && error !== null && 'provider' in error && typeof error.provider === 'string'
-          ? error.provider
-          : 'unknown',
-    };
-
-    if (error instanceof Error && error.message?.includes('API key')) {
-      return new Response(
-        JSON.stringify({
-          ...errorResponse,
-          message: 'Invalid or missing API key',
-          statusCode: 401,
-          isRetryable: false,
-        }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-          statusText: 'Unauthorized',
-        },
-      );
+    if (error.message?.includes('API key')) {
+      throw new Response('Invalid or missing API key', {
+        status: 401,
+        statusText: 'Unauthorized',
+      });
     }
 
-    return new Response(JSON.stringify(errorResponse), {
-      status: errorResponse.statusCode,
-      headers: { 'Content-Type': 'application/json' },
-      statusText: 'Error',
+    throw new Response(null, {
+      status: 500,
+      statusText: 'Internal Server Error',
     });
   }
 }

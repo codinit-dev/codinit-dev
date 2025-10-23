@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import React, { Suspense, useState } from 'react';
-import { Button } from '~/components/ui/Button';
 import { classNames } from '~/utils/classNames';
 import ConnectionDiagnostics from './ConnectionDiagnostics';
+import { Button } from '~/components/ui/Button';
 import VercelConnection from './VercelConnection';
 
 // Use React.lazy for dynamic imports
@@ -11,8 +11,8 @@ const NetlifyConnection = React.lazy(() => import('./NetlifyConnection'));
 
 // Loading fallback component
 const LoadingFallback = () => (
-  <div className="p-4 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 rounded-lg border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor">
-    <div className="flex items-center justify-center gap-2 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
+  <div className="p-4 bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 rounded-lg border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor">
+    <div className="flex items-center justify-center gap-2 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
       <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
       <span>Loading connection...</span>
     </div>
@@ -33,15 +33,15 @@ export default function ConnectionsTab() {
         transition={{ delay: 0.1 }}
       >
         <div className="flex items-center gap-2">
-          <div className="i-ph:plugs-connected w-5 h-5 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
-          <h2 className="text-lg font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+          <div className="i-ph:plugs-connected w-5 h-5 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+          <h2 className="text-lg font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
             Connection Settings
           </h2>
         </div>
         <Button
           onClick={() => setShowDiagnostics(!showDiagnostics)}
           variant="outline"
-          className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary transition-colors"
+          className="flex items-center gap-2 hover:bg-bolt-elements-item-backgroundActive/10 hover:text-bolt-elements-textPrimary dark:hover:bg-bolt-elements-item-backgroundActive/10 dark:hover:text-bolt-elements-textPrimary transition-colors"
         >
           {showDiagnostics ? (
             <>
@@ -56,7 +56,7 @@ export default function ConnectionsTab() {
           )}
         </Button>
       </motion.div>
-      <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
+      <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
         Manage your external service connections and integrations
       </p>
 
@@ -65,31 +65,30 @@ export default function ConnectionsTab() {
 
       {/* Environment Variables Info - Collapsible */}
       <motion.div
-        className="bg-codinit-elements-background dark:bg-codinit-elements-background rounded-lg border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+        className="bg-bolt-elements-background dark:bg-bolt-elements-background rounded-lg border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
         <div className="p-6">
           <button
-            type="button"
             onClick={() => setIsEnvVarsExpanded(!isEnvVarsExpanded)}
             className={classNames(
               'w-full bg-transparent flex items-center justify-between',
-              'hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary',
-              'dark:hover:bg-codinit-elements-item-backgroundActive/10 dark:hover:text-codinit-elements-textPrimary',
+              'hover:bg-bolt-elements-item-backgroundActive/10 hover:text-bolt-elements-textPrimary',
+              'dark:hover:bg-bolt-elements-item-backgroundActive/10 dark:hover:text-bolt-elements-textPrimary',
               'rounded-md p-2 -m-2 transition-colors',
             )}
           >
             <div className="flex items-center gap-2">
-              <div className="i-ph:info w-5 h-5 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
-              <h3 className="text-base font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+              <div className="i-ph:info w-5 h-5 text-bolt-elements-item-contentAccent dark:text-bolt-elements-item-contentAccent" />
+              <h3 className="text-base font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
                 Environment Variables
               </h3>
             </div>
             <div
               className={classNames(
-                'i-ph:caret-down w-4 h-4 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary transition-transform',
+                'i-ph:caret-down w-4 h-4 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary transition-transform',
                 isEnvVarsExpanded ? 'rotate-180' : '',
               )}
             />
@@ -97,41 +96,41 @@ export default function ConnectionsTab() {
 
           {isEnvVarsExpanded && (
             <div className="mt-4">
-              <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mb-2">
+              <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary mb-2">
                 You can configure connections using environment variables in your{' '}
-                <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+                <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 rounded">
                   .env.local
                 </code>{' '}
                 file:
               </p>
-              <div className="bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 p-3 rounded-md text-xs font-mono overflow-x-auto">
-                <div className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
+              <div className="bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 p-3 rounded-md text-xs font-mono overflow-x-auto">
+                <div className="text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
                   # GitHub Authentication
                 </div>
-                <div className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+                <div className="text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
                   VITE_GITHUB_ACCESS_TOKEN=your_token_here
                 </div>
-                <div className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
+                <div className="text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
                   # Optional: Specify token type (defaults to 'classic' if not specified)
                 </div>
-                <div className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+                <div className="text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
                   VITE_GITHUB_TOKEN_TYPE=classic|fine-grained
                 </div>
-                <div className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mt-2">
+                <div className="text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary mt-2">
                   # Netlify Authentication
                 </div>
-                <div className="text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+                <div className="text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
                   VITE_NETLIFY_ACCESS_TOKEN=your_token_here
                 </div>
               </div>
-              <div className="mt-3 text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary space-y-1">
+              <div className="mt-3 text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary space-y-1">
                 <p>
                   <span className="font-medium">Token types:</span>
                 </p>
                 <ul className="list-disc list-inside pl-2 space-y-1">
                   <li>
                     <span className="font-medium">classic</span> - Personal Access Token with{' '}
-                    <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+                    <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 rounded">
                       repo, read:org, read:user
                     </code>{' '}
                     scopes
@@ -163,9 +162,9 @@ export default function ConnectionsTab() {
       </div>
 
       {/* Additional help text */}
-      <div className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 p-4 rounded-lg">
+      <div className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 p-4 rounded-lg">
         <p className="flex items-center gap-1 mb-2">
-          <span className="i-ph:lightbulb w-4 h-4 text-codinit-elements-icon-success dark:text-codinit-elements-icon-success" />
+          <span className="i-ph:lightbulb w-4 h-4 text-bolt-elements-icon-success dark:text-bolt-elements-icon-success" />
           <span className="font-medium">Troubleshooting Tip:</span>
         </p>
         <p className="mb-2">

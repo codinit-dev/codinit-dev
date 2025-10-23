@@ -2,10 +2,7 @@ import type { TabType, TabVisibilityConfig } from '~/components/@settings/core/t
 import { DEFAULT_TAB_CONFIG } from '~/components/@settings/core/constants';
 
 export const getVisibleTabs = (
-  tabConfiguration: {
-    userTabs: TabVisibilityConfig[];
-    developerTabs?: TabVisibilityConfig[];
-  },
+  tabConfiguration: { userTabs: TabVisibilityConfig[]; developerTabs?: TabVisibilityConfig[] },
   isDeveloperMode: boolean,
   notificationsEnabled: boolean,
 ): TabVisibilityConfig[] => {

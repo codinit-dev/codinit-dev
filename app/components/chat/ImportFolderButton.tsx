@@ -27,9 +27,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
 
     if (filteredFiles.length === 0) {
       const error = new Error('No valid files found');
-      logStore.logError('File import failed - no valid files', error, {
-        folderName: 'Unknown Folder',
-      });
+      logStore.logError('File import failed - no valid files', error, { folderName: 'Unknown Folder' });
       toast.error('No files found in the selected folder');
 
       return;
@@ -68,9 +66,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
 
       if (textFiles.length === 0) {
         const error = new Error('No text files found');
-        logStore.logError('File import failed - no text files', error, {
-          folderName,
-        });
+        logStore.logError('File import failed - no text files', error, { folderName });
         toast.error('No text files found in the selected folder');
 
         return;
@@ -113,8 +109,10 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         type="file"
         id="folder-import"
         className="hidden"
-        {...({ webkitdirectory: '', directory: '' } as React.InputHTMLAttributes<HTMLInputElement>)}
+        webkitdirectory=""
+        directory=""
         onChange={handleFileChange}
+        {...({} as any)}
       />
       <Button
         onClick={() => {
@@ -125,10 +123,10 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
         variant="default"
         size="lg"
         className={classNames(
-          'gap-2 bg-codinit-elements-background-depth-1',
-          'text-codinit-elements-textPrimary',
-          'hover:bg-codinit-elements-background-depth-2',
-          'border border-codinit-elements-borderColor',
+          'gap-2 bg-bolt-elements-background-depth-1',
+          'text-bolt-elements-textPrimary',
+          'hover:bg-bolt-elements-background-depth-2',
+          'border border-bolt-elements-borderColor',
           'h-10 px-4 py-2 min-w-[120px] justify-center',
           'transition-all duration-200 ease-in-out',
           className,

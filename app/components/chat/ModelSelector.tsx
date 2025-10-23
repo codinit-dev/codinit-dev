@@ -177,17 +177,13 @@ export const ModelSelector = ({
 
   useEffect(() => {
     if (focusedModelIndex >= 0 && modelOptionsRef.current[focusedModelIndex]) {
-      modelOptionsRef.current[focusedModelIndex]?.scrollIntoView({
-        block: 'nearest',
-      });
+      modelOptionsRef.current[focusedModelIndex]?.scrollIntoView({ block: 'nearest' });
     }
   }, [focusedModelIndex]);
 
   useEffect(() => {
     if (focusedProviderIndex >= 0 && providerOptionsRef.current[focusedProviderIndex]) {
-      providerOptionsRef.current[focusedProviderIndex]?.scrollIntoView({
-        block: 'nearest',
-      });
+      providerOptionsRef.current[focusedProviderIndex]?.scrollIntoView({ block: 'nearest' });
     }
   }, [focusedProviderIndex]);
 
@@ -210,7 +206,7 @@ export const ModelSelector = ({
 
   if (providerList.length === 0) {
     return (
-      <div className="mb-2 p-4 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-prompt-background text-codinit-elements-textPrimary">
+      <div className="mb-2 p-4 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-prompt-background text-bolt-elements-textPrimary">
         <p className="text-center">
           No providers are currently enabled. Please enable at least one provider in the settings to start using the
           chat.
@@ -222,18 +218,14 @@ export const ModelSelector = ({
   return (
     <div className="flex gap-2 flex-col sm:flex-row">
       {/* Provider Combobox */}
-      <div className="relative flex w-full z-50" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
+      <div className="relative flex w-full" onKeyDown={handleProviderKeyDown} ref={providerDropdownRef}>
         <div
           className={classNames(
-            'w-full px-3 py-2 rounded-lg cursor-pointer',
-            'bg-codinit-elements-background-depth-1/30 backdrop-blur-sm',
-            'border border-codinit-elements-borderColor/40',
-            'text-codinit-elements-textPrimary',
-            'transition-all duration-200 ease-in-out',
-            'hover:border-codinit-elements-borderColor/70 hover:bg-codinit-elements-background-depth-1/50',
-            isProviderDropdownOpen
-              ? 'ring-2 ring-accent-500/30 border-accent-500/50 shadow-lg shadow-accent-500/5'
-              : 'shadow-sm',
+            'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
+            'bg-bolt-elements-prompt-background text-bolt-elements-textPrimary',
+            'focus-within:outline-none focus-within:ring-2 focus-within:ring-bolt-elements-focus',
+            'transition-all cursor-pointer',
+            isProviderDropdownOpen ? 'ring-2 ring-bolt-elements-focus' : undefined,
           )}
           onClick={() => setIsProviderDropdownOpen(!isProviderDropdownOpen)}
           onKeyDown={(e) => {
@@ -250,14 +242,12 @@ export const ModelSelector = ({
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 truncate">
-              {provider?.icon && (
-                <img src={provider.icon} alt={provider.name} className="w-4 h-4 flex-shrink-0 rounded" />
-              )}
-              <span className="truncate font-medium text-xs">{provider?.name || 'Select provider'}</span>
+              {provider?.icon && <img src={provider.icon} alt={provider.name} className="w-5 h-5" />}
+              {provider?.name || 'Select provider'}
             </div>
             <div
               className={classNames(
-                'i-ph:caret-down w-3.5 h-3.5 text-codinit-elements-textSecondary transition-transform duration-200',
+                'i-ph:caret-down w-4 h-4 text-bolt-elements-textSecondary opacity-75',
                 isProviderDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
@@ -266,51 +256,53 @@ export const ModelSelector = ({
 
         {isProviderDropdownOpen && (
           <div
-            className="absolute top-full z-[100] w-full mt-1 py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
+            className="absolute z-20 w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
             role="listbox"
             id="provider-listbox"
           >
-            <div className="px-2 pb-1.5">
+            <div className="px-2 pb-2">
               <div className="relative">
-                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary text-xs" />
-                </div>
                 <input
                   ref={providerSearchInputRef}
                   type="text"
                   value={providerSearchQuery}
                   onChange={(e) => setProviderSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder="Search providers..."
                   className={classNames(
-                    'w-full pl-7 pr-2 py-1.5 rounded-md text-xs',
-                    'bg-codinit-elements-background-depth-1/50 border border-codinit-elements-borderColor/40',
-                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary/60',
-                    'focus:outline-none focus:ring-1 focus:ring-accent-500/30 focus:border-accent-500/50',
-                    'transition-all duration-150',
+                    'w-full pl-2 py-1.5 rounded-md text-sm',
+                    'bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor',
+                    'text-bolt-elements-textPrimary placeholder:text-bolt-elements-textTertiary',
+                    'focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus',
+                    'transition-all',
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
                   aria-label="Search providers"
                 />
+                <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
+                  <span className="i-ph:magnifying-glass text-bolt-elements-textTertiary" />
+                </div>
               </div>
             </div>
 
             <div
               className={classNames(
-                'max-h-48 overflow-y-auto px-0.5',
+                'max-h-60 overflow-y-auto',
                 'sm:scrollbar-none',
-                '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5',
-                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
-                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColor',
+                '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
+                '[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-bolt-elements-borderColorHover',
                 '[&::-webkit-scrollbar-thumb]:rounded-full',
-                '[&::-webkit-scrollbar-track]:bg-transparent',
+                '[&::-webkit-scrollbar-track]:bg-bolt-elements-background-depth-2',
                 '[&::-webkit-scrollbar-track]:rounded-full',
+                'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
+                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor/50',
+                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-bolt-elements-borderColor',
+                'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
               {filteredProviders.length === 0 ? (
-                <div className="px-3 py-2 text-xs text-codinit-elements-textTertiary/70 text-center">
-                  No providers found
-                </div>
+                <div className="px-3 py-2 text-sm text-bolt-elements-textTertiary">No providers found</div>
               ) : (
                 filteredProviders.map((providerOption, index) => (
                   <div
@@ -319,13 +311,14 @@ export const ModelSelector = ({
                     role="option"
                     aria-selected={provider?.name === providerOption.name}
                     className={classNames(
-                      'px-2.5 py-1.5 mx-1 mb-0.5 text-xs cursor-pointer rounded-md',
-                      'transition-all duration-150 ease-in-out',
+                      'px-3 py-2 text-sm cursor-pointer',
+                      'hover:bg-bolt-elements-background-depth-3',
+                      'text-bolt-elements-textPrimary',
                       'outline-none',
-                      provider?.name === providerOption.name
-                        ? 'bg-accent-500/10 text-accent-500 font-medium'
-                        : 'text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-3/50',
-                      focusedProviderIndex === index ? 'ring-1 ring-inset ring-accent-500/30' : undefined,
+                      provider?.name === providerOption.name || focusedProviderIndex === index
+                        ? 'bg-bolt-elements-background-depth-2'
+                        : undefined,
+                      focusedProviderIndex === index ? 'ring-1 ring-inset ring-bolt-elements-focus' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -347,13 +340,9 @@ export const ModelSelector = ({
                   >
                     <div className="flex items-center gap-2">
                       {providerOption.icon && (
-                        <img
-                          src={providerOption.icon}
-                          alt={providerOption.name}
-                          className="w-3.5 h-3.5 flex-shrink-0 rounded"
-                        />
+                        <img src={providerOption.icon} alt={providerOption.name} className="w-5 h-5" />
                       )}
-                      <span className="truncate">{providerOption.name}</span>
+                      {providerOption.name}
                     </div>
                   </div>
                 ))
@@ -364,18 +353,14 @@ export const ModelSelector = ({
       </div>
 
       {/* Model Combobox */}
-      <div className="relative flex w-full min-w-[70%] z-50" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
+      <div className="relative flex w-full min-w-[70%]" onKeyDown={handleModelKeyDown} ref={modelDropdownRef}>
         <div
           className={classNames(
-            'w-full px-3 py-2 rounded-lg cursor-pointer',
-            'bg-codinit-elements-background-depth-1/30 backdrop-blur-sm',
-            'border border-codinit-elements-borderColor/40',
-            'text-codinit-elements-textPrimary',
-            'transition-all duration-200 ease-in-out',
-            'hover:border-codinit-elements-borderColor/70 hover:bg-codinit-elements-background-depth-1/50',
-            isModelDropdownOpen
-              ? 'ring-2 ring-accent-500/30 border-accent-500/50 shadow-lg shadow-accent-500/5'
-              : 'shadow-sm',
+            'w-full p-2 rounded-lg border border-bolt-elements-borderColor',
+            'bg-bolt-elements-prompt-background text-bolt-elements-textPrimary',
+            'focus-within:outline-none focus-within:ring-2 focus-within:ring-bolt-elements-focus',
+            'transition-all cursor-pointer',
+            isModelDropdownOpen ? 'ring-2 ring-bolt-elements-focus' : undefined,
           )}
           onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}
           onKeyDown={(e) => {
@@ -391,12 +376,19 @@ export const ModelSelector = ({
           tabIndex={0}
         >
           <div className="flex items-center justify-between">
-            <div className="truncate font-medium text-xs">
+            <div className="flex items-center gap-2 truncate">
+              {modelList.find((m) => m.name === model)?.icon && (
+                <img
+                  src={modelList.find((m) => m.name === model)?.icon}
+                  alt={modelList.find((m) => m.name === model)?.label}
+                  className="w-5 h-5"
+                />
+              )}
               {modelList.find((m) => m.name === model)?.label || 'Select model'}
             </div>
             <div
               className={classNames(
-                'i-ph:caret-down w-3.5 h-3.5 text-codinit-elements-textSecondary transition-transform duration-200',
+                'i-ph:caret-down w-4 h-4 text-bolt-elements-textSecondary opacity-75',
                 isModelDropdownOpen ? 'rotate-180' : undefined,
               )}
             />
@@ -405,71 +397,71 @@ export const ModelSelector = ({
 
         {isModelDropdownOpen && (
           <div
-            className="absolute top-full z-[100] w-full mt-1 py-1.5 rounded-lg border border-codinit-elements-borderColor/50 bg-codinit-elements-background-depth-2 backdrop-blur-xl shadow-2xl shadow-black/20"
+            className="absolute z-10 w-full mt-1 py-1 rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 shadow-lg"
             role="listbox"
             id="model-listbox"
           >
-            <div className="px-2 pb-1.5">
+            <div className="px-2 pb-2">
               <div className="relative">
-                <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary text-xs" />
-                </div>
                 <input
                   ref={modelSearchInputRef}
                   type="text"
                   value={modelSearchQuery}
                   onChange={(e) => setModelSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder="Search models..."
                   className={classNames(
-                    'w-full pl-7 pr-2 py-1.5 rounded-md text-xs',
-                    'bg-codinit-elements-background-depth-1/50 border border-codinit-elements-borderColor/40',
-                    'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary/60',
-                    'focus:outline-none focus:ring-1 focus:ring-accent-500/30 focus:border-accent-500/50',
-                    'transition-all duration-150',
+                    'w-full pl-2 py-1.5 rounded-md text-sm',
+                    'bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor',
+                    'text-bolt-elements-textPrimary placeholder:text-bolt-elements-textTertiary',
+                    'focus:outline-none focus:ring-2 focus:ring-bolt-elements-focus',
+                    'transition-all',
                   )}
                   onClick={(e) => e.stopPropagation()}
                   role="searchbox"
                   aria-label="Search models"
                 />
+                <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
+                  <span className="i-ph:magnifying-glass text-bolt-elements-textTertiary" />
+                </div>
               </div>
             </div>
 
             <div
               className={classNames(
-                'max-h-48 overflow-y-auto px-0.5',
+                'max-h-60 overflow-y-auto',
                 'sm:scrollbar-none',
-                '[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5',
-                '[&::-webkit-scrollbar-thumb]:bg-codinit-elements-borderColor/50',
-                '[&::-webkit-scrollbar-thumb]:hover:bg-codinit-elements-borderColor',
+                '[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:h-2',
+                '[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor',
+                '[&::-webkit-scrollbar-thumb]:hover:bg-bolt-elements-borderColorHover',
                 '[&::-webkit-scrollbar-thumb]:rounded-full',
-                '[&::-webkit-scrollbar-track]:bg-transparent',
+                '[&::-webkit-scrollbar-track]:bg-bolt-elements-background-depth-2',
                 '[&::-webkit-scrollbar-track]:rounded-full',
+                'sm:[&::-webkit-scrollbar]:w-1.5 sm:[&::-webkit-scrollbar]:h-1.5',
+                'sm:hover:[&::-webkit-scrollbar-thumb]:bg-bolt-elements-borderColor/50',
+                'sm:hover:[&::-webkit-scrollbar-thumb:hover]:bg-bolt-elements-borderColor',
+                'sm:[&::-webkit-scrollbar-track]:bg-transparent',
               )}
             >
               {modelLoading === 'all' || modelLoading === provider?.name ? (
-                <div className="px-3 py-2 text-xs text-codinit-elements-textTertiary/70 text-center flex items-center justify-center gap-2">
-                  <div className="i-svg-spinners:90-ring-with-bg text-accent-500 text-sm animate-spin"></div>
-                  <span>Loading...</span>
-                </div>
+                <div className="px-3 py-2 text-sm text-bolt-elements-textTertiary">Loading...</div>
               ) : filteredModels.length === 0 ? (
-                <div className="px-3 py-2 text-xs text-codinit-elements-textTertiary/70 text-center">
-                  No models found
-                </div>
+                <div className="px-3 py-2 text-sm text-bolt-elements-textTertiary">No models found</div>
               ) : (
                 filteredModels.map((modelOption, index) => (
                   <div
                     ref={(el) => (modelOptionsRef.current[index] = el)}
-                    key={index}
+                    key={index} // Consider using modelOption.name if unique
                     role="option"
                     aria-selected={model === modelOption.name}
                     className={classNames(
-                      'px-2.5 py-1.5 mx-1 mb-0.5 text-xs cursor-pointer rounded-md',
-                      'transition-all duration-150 ease-in-out',
+                      'px-3 py-2 text-sm cursor-pointer',
+                      'hover:bg-bolt-elements-background-depth-3',
+                      'text-bolt-elements-textPrimary',
                       'outline-none',
-                      model === modelOption.name
-                        ? 'bg-accent-500/10 text-accent-500 font-medium'
-                        : 'text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-3/50',
-                      focusedModelIndex === index ? 'ring-1 ring-inset ring-accent-500/30' : undefined,
+                      model === modelOption.name || focusedModelIndex === index
+                        ? 'bg-bolt-elements-background-depth-2'
+                        : undefined,
+                      focusedModelIndex === index ? 'ring-1 ring-inset ring-bolt-elements-focus' : undefined,
                     )}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -479,7 +471,10 @@ export const ModelSelector = ({
                     }}
                     tabIndex={focusedModelIndex === index ? 0 : -1}
                   >
-                    {modelOption.label}
+                    <div className="flex items-center gap-2">
+                      {modelOption.icon && <img src={modelOption.icon} alt={modelOption.label} className="w-5 h-5" />}
+                      {modelOption.label}
+                    </div>
                   </div>
                 ))
               )}

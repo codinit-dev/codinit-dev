@@ -37,6 +37,7 @@ export default class OpenRouterProvider extends BaseProvider {
       label: 'Claude 3.5 Sonnet',
       provider: 'OpenRouter',
       maxTokenAllowed: 200000,
+      icon: '/thirdparty/logos/openrouter.svg',
     },
 
     // GPT-4o via OpenRouter: 128k context
@@ -45,6 +46,7 @@ export default class OpenRouterProvider extends BaseProvider {
       label: 'GPT-4o',
       provider: 'OpenRouter',
       maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/openrouter.svg',
     },
   ];
 
@@ -77,6 +79,7 @@ export default class OpenRouterProvider extends BaseProvider {
             label: `${m.name} - in:$${(m.pricing.prompt * 1_000_000).toFixed(2)} out:$${(m.pricing.completion * 1_000_000).toFixed(2)} - context ${finalContext >= 1000000 ? Math.floor(finalContext / 1000000) + 'M' : Math.floor(finalContext / 1000) + 'k'}`,
             provider: this.name,
             maxTokenAllowed: finalContext,
+            icon: '/thirdparty/logos/openrouter.svg',
           };
         });
     } catch (error) {

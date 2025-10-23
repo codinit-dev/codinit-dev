@@ -14,8 +14,8 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
   const isPreview = source === 'preview';
   const title = isPreview ? 'Preview Error' : 'Terminal Error';
   const message = isPreview
-    ? 'We encountered an error while running the preview. Would you like codinit to analyze and help resolve this issue?'
-    : 'We encountered an error while running terminal commands. Would you like codinit to analyze and help resolve this issue?';
+    ? 'We encountered an error while running the preview. Would you like Example to analyze and help resolve this issue?'
+    : 'We encountered an error while running terminal commands. Would you like Example to analyze and help resolve this issue?';
 
   return (
     <AnimatePresence>
@@ -24,7 +24,7 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
-        className={`rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 p-4 mb-2`}
+        className={`rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 p-4 mb-2`}
       >
         <div className="flex items-start">
           {/* Icon */}
@@ -34,7 +34,7 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
             animate={{ scale: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <div className={`i-ph:warning-duotone text-xl text-codinit-elements-button-danger-text`}></div>
+            <div className={`i-ph:warning-duotone text-xl text-bolt-elements-button-danger-text`}></div>
           </motion.div>
           {/* Content */}
           <div className="ml-3 flex-1">
@@ -42,7 +42,7 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className={`text-sm font-medium text-codinit-elements-textPrimary`}
+              className={`text-sm font-medium text-bolt-elements-textPrimary`}
             >
               {title}
             </motion.h3>
@@ -50,11 +50,11 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className={`mt-2 text-sm text-codinit-elements-textSecondary`}
+              className={`mt-2 text-sm text-bolt-elements-textSecondary`}
             >
               <p>{message}</p>
               {description && (
-                <div className="text-xs text-codinit-elements-textSecondary p-2 bg-codinit-elements-background-depth-3 rounded mt-4 mb-4">
+                <div className="text-xs text-bolt-elements-textSecondary p-2 bg-bolt-elements-background-depth-3 rounded mt-4 mb-4">
                   Error: {description}
                 </div>
               )}
@@ -76,24 +76,24 @@ export default function ChatAlert({ alert, clearAlert, postMessage }: Props) {
                   }
                   className={classNames(
                     `px-2 py-1.5 rounded-md text-sm font-medium`,
-                    'bg-codinit-elements-button-primary-background',
-                    'hover:bg-codinit-elements-button-primary-backgroundHover',
-                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-danger-background',
-                    'text-codinit-elements-button-primary-text',
+                    'bg-bolt-elements-button-primary-background',
+                    'hover:bg-bolt-elements-button-primary-backgroundHover',
+                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bolt-elements-button-danger-background',
+                    'text-bolt-elements-button-primary-text',
                     'flex items-center gap-1.5',
                   )}
                 >
                   <div className="i-ph:chat-circle-duotone"></div>
-                  Ask CodinIT
+                  Ask Example
                 </button>
                 <button
                   onClick={clearAlert}
                   className={classNames(
                     `px-2 py-1.5 rounded-md text-sm font-medium`,
-                    'bg-codinit-elements-button-secondary-background',
-                    'hover:bg-codinit-elements-button-secondary-backgroundHover',
-                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-secondary-background',
-                    'text-codinit-elements-button-secondary-text',
+                    'bg-bolt-elements-button-secondary-background',
+                    'hover:bg-bolt-elements-button-secondary-backgroundHover',
+                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bolt-elements-button-secondary-background',
+                    'text-bolt-elements-button-secondary-text',
                   )}
                 >
                   Dismiss

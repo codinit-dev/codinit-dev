@@ -1,0 +1,88 @@
+---
+canonical_url: "https://docs.codinit.dev/integrations/vercel"
+title: Vercel
+description: Learn how to integrate vercel to deploy your apps directly from your desktop
+---
+
+### Overview
+
+Vercel is the optimal platform for deploying Next.js applications and modern React frameworks. CodinIT provides full Vercel integration for seamless deployments with edge computing capabilities.
+
+<Card
+  title="Get Vercel API Token"
+  icon="key"
+  href="https://vercel.com/account/tokens"
+  horizontal
+>
+  Create your Vercel API token to enable automated deployments.
+</Card>
+
+### Features
+
+<Expandable title="Framework Optimization">
+  <CardGroup cols={2}>
+    <Card title="Next.js Optimized" icon="nextjs">
+      Built-in optimizations for Next.js applications including ISR and SSR support.
+    </Card>
+    <Card title="React SPAs" icon="react">
+      Optimized deployments for React single-page applications.
+    </Card>
+    <Card title="Edge Functions" icon="cpu">
+      Deploy serverless functions at the edge for optimal performance.
+    </Card>
+    <Card title="Static Generation" icon="bolt">
+      Automatic static generation for improved loading speeds.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+<Expandable title="Deployment Features">
+  <CardGroup cols={2}>
+    <Card title="Instant Deployments" icon="zap">
+      Deploy changes instantly with Vercel's global edge network.
+    </Card>
+    <Card title="Preview Deployments" icon="eye">
+      Preview every push to a branch with shareable URLs for review.
+    </Card>
+    <Card title="Environment Variables" icon="settings">
+      Securely manage environment variables across different environments.
+    </Card>
+    <Card title="Custom Domains" icon="link">
+      Connect custom domains with automatic SSL and global CDN.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+### Setup Instructions
+
+<Steps>
+  <Step title="Connect Vercel Account">
+    Visit [Vercel Dashboard](https://vercel.com/dashboard) and ensure you're logged in.
+  </Step>
+
+  <Step title="Create API Token">
+    Go to **Settings > Tokens** and click **"Create Token"**.
+  </Step>
+
+  <Step title="Configure in CodinIT">
+    Navigate to **Settings > Deployments** and add your Vercel token.
+  </Step>
+
+  <Step title="Connect Repository (Optional)">
+    Import your GitHub/GitLab repository for automatic deployments.
+  </Step>
+
+  <Step title="Deploy Application">
+    Click **"Deploy to Vercel"** to launch your application on the edge.
+  </Step>
+</Steps>
+
+### Configuration Options
+
+<ParamField name="VERCEL_ACCESS_TOKEN" type="string" required>
+  Your Vercel access token. Get this from [Vercel Tokens](https://vercel.com/account/tokens).
+</ParamField>
+
+<ParamField name="VERCEL_TEAM_ID" type="string">
+  Team ID for organization deployments. Leave empty for personal projects.
+</ParamField>

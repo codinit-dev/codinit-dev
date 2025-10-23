@@ -45,9 +45,7 @@ export function useVercelDeploy() {
       const deployArtifact = workbenchStore.artifacts.get()[deploymentId];
 
       // Notify that build is starting
-      deployArtifact.runner.handleDeployAction('building', 'running', {
-        source: 'vercel',
-      });
+      deployArtifact.runner.handleDeployAction('building', 'running', { source: 'vercel' });
 
       const actionId = 'build-' + Date.now();
       const actionData: ActionCallbackData = {
@@ -76,9 +74,7 @@ export function useVercelDeploy() {
       }
 
       // Notify that build succeeded and deployment is starting
-      deployArtifact.runner.handleDeployAction('deploying', 'running', {
-        source: 'vercel',
-      });
+      deployArtifact.runner.handleDeployAction('deploying', 'running', { source: 'vercel' });
 
       // Get the build files
       const container = await webcontainer;
@@ -117,9 +113,7 @@ export function useVercelDeploy() {
       // Get all files recursively
       async function getAllFiles(dirPath: string): Promise<Record<string, string>> {
         const files: Record<string, string> = {};
-        const entries = await container.fs.readdir(dirPath, {
-          withFileTypes: true,
-        });
+        const entries = await container.fs.readdir(dirPath, { withFileTypes: true });
 
         for (const entry of entries) {
           const fullPath = path.join(dirPath, entry.name);

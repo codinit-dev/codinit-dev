@@ -341,10 +341,7 @@ function newEditorState(
             return;
           }
 
-          onScrollRef.current?.({
-            left: view.scrollDOM.scrollLeft,
-            top: view.scrollDOM.scrollTop,
-          });
+          onScrollRef.current?.({ left: view.scrollDOM.scrollLeft, top: view.scrollDOM.scrollTop });
         }, debounceScroll),
         keydown: (event, view) => {
           if (view.state.readOnly) {

@@ -1,0 +1,88 @@
+---
+canonical_url: "https://docs.codinit.dev/integrations/netlify"
+title: Netlify
+description: Learn how to integrate vercel to deploy your apps directly from your desktop
+---
+
+### Overview
+
+Netlify provides a powerful platform for deploying modern web applications with continuous deployment, global CDN, and serverless functions. CodinIT's Netlify integration offers complete deployment automation and management.
+
+<Card
+  title="Get Netlify API Token"
+  icon="key"
+  href="https://app.netlify.com/user/applications"
+  horizontal
+>
+  Create your personal access token to enable Netlify deployments.
+</Card>
+
+### Features
+
+<Expandable title="Site Management">
+  <CardGroup cols={2}>
+    <Card title="Automatic Site Creation" icon="plus">
+      Creates new sites automatically with generated names or custom names you specify.
+    </Card>
+    <Card title="Site Configuration" icon="settings">
+      Configure build settings, environment variables, and deployment options.
+    </Card>
+    <Card title="Custom Domains" icon="link">
+      Connect your custom domains with automatic SSL certificate provisioning.
+    </Card>
+    <Card title="Build Optimization" icon="zap">
+      Optimize builds with asset compression, caching, and performance monitoring.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+<Expandable title="Deployment Capabilities">
+  <CardGroup cols={2}>
+    <Card title="Continuous Deployment" icon="git-branch">
+      Automatic deployments triggered by Git pushes to connected repositories.
+    </Card>
+    <Card title="Manual Deployments" icon="hand">
+      Deploy directly from your CodinIT workspace with a single click.
+    </Card>
+    <Card title="Draft Deployments" icon="eye">
+      Preview changes in draft mode before publishing to production.
+    </Card>
+    <Card title="Branch Deploys" icon="git-merge">
+      Deploy feature branches for testing and collaboration.
+    </Card>
+  </CardGroup>
+</Expandable>
+
+### Setup Instructions
+
+<Steps>
+  <Step title="Create Netlify Account">
+    Visit [Netlify](https://netlify.com) and create your account if you haven't already.
+  </Step>
+
+  <Step title="Generate Personal Access Token">
+    Go to **User Settings > Applications** and click **"Generate new token"**.
+  </Step>
+
+  <Step title="Configure in CodinIT">
+    Navigate to **Settings > Deployments** and add your Netlify token.
+  </Step>
+
+  <Step title="Connect Git Repository (Optional)">
+    Link your GitHub/GitLab repository for automatic deployments.
+  </Step>
+
+  <Step title="Deploy Your Site">
+    Click **"Deploy to Netlify"** to publish your application instantly.
+  </Step>
+</Steps>
+
+### Configuration Options
+
+<ParamField name="NETLIFY_ACCESS_TOKEN" type="string" required>
+  Your Netlify personal access token. Get this from [Netlify Applications](https://app.netlify.com/user/applications).
+</ParamField>
+
+<ParamField name="NETLIFY_SITE_NAME" type="string">
+  Custom site name for new deployments. If not provided, a unique name will be generated.
+</ParamField>

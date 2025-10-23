@@ -1,17 +1,7 @@
-import type { ActionFunctionArgs } from '@remix-run/cloudflare';
+import { type ActionFunctionArgs } from '@remix-run/cloudflare';
 import { createScopedLogger } from '~/utils/logger';
 
 const logger = createScopedLogger('api.supabase.query');
-
-interface QueryRequest {
-  projectId: string;
-  query: string;
-}
-
-interface ErrorData {
-  message?: string;
-  error?: string;
-}
 
 export async function action({ request }: ActionFunctionArgs) {
   if (request.method !== 'POST') {
@@ -25,7 +15,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    const { projectId, query } = (await request.json()) as QueryRequest;
+    const { projectId, query } = (await request.json()) as any;
     logger.debug('Executing query:', { projectId, query });
 
     const response = await fetch(`https://api.supabase.com/v1/projects/${projectId}/database/query`, {
@@ -39,10 +29,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      let errorData: ErrorData;
+      let errorData;
 
       try {
-        errorData = JSON.parse(errorText) as ErrorData;
+        errorData = JSON.parse(errorText);
       } catch (e) {
         console.log(e);
         errorData = { message: errorText };

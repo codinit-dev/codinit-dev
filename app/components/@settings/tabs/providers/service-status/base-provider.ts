@@ -11,12 +11,7 @@ export abstract class BaseProviderChecker {
     url: string,
     headers?: Record<string, string>,
     testModel?: string,
-  ): Promise<{
-    ok: boolean;
-    status: number | string;
-    message?: string;
-    responseTime: number;
-  }> {
+  ): Promise<{ ok: boolean; status: number | string; message?: string; responseTime: number }> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);

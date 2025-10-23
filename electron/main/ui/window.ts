@@ -9,17 +9,12 @@ export function createWindow(rendererURL: string) {
   const bounds = store.get('bounds');
   console.log('restored bounds:', bounds);
 
-  const iconPath = process.platform === 'linux'
-    ? path.join(app.getAppPath(), 'assets', 'icons', 'icon.png')
-    : undefined;
-
   const win = new BrowserWindow({
     ...{
       width: 1200,
       height: 800,
       ...bounds,
     },
-    icon: iconPath,
     vibrancy: 'under-window',
     visualEffectState: 'active',
     webPreferences: {

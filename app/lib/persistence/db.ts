@@ -14,12 +14,12 @@ const logger = createScopedLogger('ChatHistory');
 // this is used at the top level and never rejects
 export async function openDatabase(): Promise<IDBDatabase | undefined> {
   if (typeof indexedDB === 'undefined') {
-    logger.debug('indexedDB is not available in this environment (expected during SSR).');
+    console.error('indexedDB is not available in this environment.');
     return undefined;
   }
 
   return new Promise((resolve) => {
-    const request = indexedDB.open('codinitHistory', 2);
+    const request = indexedDB.open('boltHistory', 2);
 
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;

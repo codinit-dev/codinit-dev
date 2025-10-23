@@ -158,50 +158,15 @@ const NotificationsTab = () => {
     return details.message ? <p className="text-sm text-gray-600 dark:text-gray-400">{details.message}</p> : null;
   };
 
-  const filterOptions: {
-    id: FilterType;
-    label: string;
-    icon: string;
-    color: string;
-  }[] = [
-    {
-      id: 'all',
-      label: 'All Notifications',
-      icon: 'i-ph:bell',
-      color: '#9333ea',
-    },
+  const filterOptions: { id: FilterType; label: string; icon: string; color: string }[] = [
+    { id: 'all', label: 'All Notifications', icon: 'i-ph:bell', color: '#9333ea' },
     { id: 'system', label: 'System', icon: 'i-ph:gear', color: '#6b7280' },
-    {
-      id: 'update',
-      label: 'Updates',
-      icon: 'i-ph:arrow-circle-up',
-      color: '#9333ea',
-    },
-    {
-      id: 'error',
-      label: 'Errors',
-      icon: 'i-ph:warning-circle',
-      color: '#ef4444',
-    },
-    {
-      id: 'warning',
-      label: 'Warnings',
-      icon: 'i-ph:warning',
-      color: '#f59e0b',
-    },
+    { id: 'update', label: 'Updates', icon: 'i-ph:arrow-circle-up', color: '#9333ea' },
+    { id: 'error', label: 'Errors', icon: 'i-ph:warning-circle', color: '#ef4444' },
+    { id: 'warning', label: 'Warnings', icon: 'i-ph:warning', color: '#f59e0b' },
     { id: 'info', label: 'Information', icon: 'i-ph:info', color: '#3b82f6' },
-    {
-      id: 'provider',
-      label: 'Providers',
-      icon: 'i-ph:robot',
-      color: '#10b981',
-    },
-    {
-      id: 'network',
-      label: 'Network',
-      icon: 'i-ph:wifi-high',
-      color: '#6366f1',
-    },
+    { id: 'provider', label: 'Providers', icon: 'i-ph:robot', color: '#10b981' },
+    { id: 'network', label: 'Network', icon: 'i-ph:wifi-high', color: '#6366f1' },
   ];
 
   return (
@@ -222,9 +187,7 @@ const NotificationsTab = () => {
             >
               <span
                 className={classNames('text-lg', filterOptions.find((opt) => opt.id === filter)?.icon || 'i-ph:funnel')}
-                style={{
-                  color: filterOptions.find((opt) => opt.id === filter)?.color,
-                }}
+                style={{ color: filterOptions.find((opt) => opt.id === filter)?.color }}
               />
               {filterOptions.find((opt) => opt.id === filter)?.label || 'Filter Notifications'}
               <span className="i-ph:caret-down text-lg text-gray-500 dark:text-gray-400" />
@@ -322,9 +285,7 @@ const NotificationsTab = () => {
                     </div>
                   </div>
                   <time className="shrink-0 text-xs text-gray-500 dark:text-gray-400">
-                    {formatDistanceToNow(new Date(log.timestamp), {
-                      addSuffix: true,
-                    })}
+                    {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })}
                   </time>
                 </div>
               </motion.div>

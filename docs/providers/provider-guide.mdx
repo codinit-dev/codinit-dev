@@ -1,0 +1,140 @@
+---
+canonical_url: "https://docs.codinit.dev/providers/provider-guide"
+title: "Cloud Providers"
+description: "Connect CodinIT with 19+ AI providers for intelligent code generation and development assistance"
+---
+
+## Supported Providers
+
+<CardGroup cols={2}>
+  <Card title="Anthropic" icon="/assets/ai-icons/anthropic.svg" href="/providers/anthropic">
+    Claude models with advanced reasoning capabilities
+  </Card>
+  <Card title="OpenAI" icon="/assets/ai-icons/openai.svg" href="/providers/openai">
+    GPT-4 and GPT-3.5 models for versatile AI assistance
+  </Card>
+  <Card title="Google" icon="/assets/ai-icons/google.svg" href="/providers/google">
+    Gemini models with multimodal capabilities
+  </Card>
+  <Card title="Mistral AI" icon="/assets/ai-icons/mistral.svg" href="/providers/mistral-ai">
+    Open-source and commercial Mistral models
+  </Card>
+</CardGroup>
+
+### Specialized Providers
+
+<CardGroup cols={2}>
+  <Card title="Groq" icon="/assets/ai-icons/groq.svg" href="/providers/groq">
+    Ultra-fast inference with LPU technology
+  </Card>
+  <Card title="DeepSeek" icon="/assets/ai-icons/deepseek.svg" href="/providers/deepseek">
+    Advanced reasoning models for complex tasks
+  </Card>
+  <Card title="Fireworks" icon="/assets/ai-icons/fireworks.svg" href="/providers/fireworks">
+    Fast and cost-effective model serving
+  </Card>
+  <Card title="OpenRouter" icon="/assets/ai-icons/openrouter.svg" href="/providers/openrouter">
+    Access multiple models through a unified API
+  </Card>
+  <Card title="XAI Grok" icon="/assets/ai-icons/xai.svg" href="/providers/xai-grok">
+    X.AI's Grok models with real-time knowledge
+  </Card>
+</CardGroup>
+
+### AWS Integration
+
+<CardGroup cols={1}>
+  <Card title="AWS Bedrock" icon="/assets/ai-icons/bedrock.svg" href="/providers/aws-bedrock">
+    AWS Bedrock
+  </Card>
+</CardGroup>
+
+### Local Models
+
+<CardGroup cols={2}>
+  <Card title="Ollama" icon="/assets/ai-icons/ollama.svg" href="/providers/ollama">
+    Run open-source models locally with Ollama
+  </Card>
+  <Card title="LM Studio" icon="/assets/ai-icons/lmstudio.svg" href="/running-models-locally/lm-studio">
+    Desktop app for running models locally
+  </Card>
+</CardGroup>
+
+## Choosing the Right Provider
+
+Consider these factors when selecting an AI provider:
+
+<AccordionGroup>
+  <Accordion title="Performance & Speed">
+    - **Fastest inference**: Groq, Fireworks
+    - **Best reasoning**: Anthropic Claude, DeepSeek
+    - **Balanced performance**: OpenAI GPT-4, Google Gemini
+  </Accordion>
+
+  <Accordion title="Cost Considerations">
+    - **Free/Low-cost**: Local models (Ollama), OpenRouter
+    - **Pay-per-use**: Most cloud providers
+    - **Enterprise**: AWS Bedrock, Anthropic
+  </Accordion>
+
+  <Accordion title="Privacy & Security">
+    - **Highest privacy**: Local models (Ollama, LM Studio)
+    - **Enterprise-grade**: AWS Bedrock
+    - **SOC 2 compliant**: Anthropic, OpenAI, Google
+  </Accordion>
+
+  <Accordion title="Model Capabilities">
+    - **Code generation**: All providers support coding tasks
+    - **Multimodal**: Google Gemini, GPT-4 Vision
+    - **Long context**: Claude (200K), Gemini (1M+)
+    - **Function calling**: OpenAI, Anthropic, Google
+  </Accordion>
+</AccordionGroup>
+
+## Quick Start
+
+<Steps>
+  <Step title="Choose Your Provider">
+    Select a provider from the list above based on your needs
+  </Step>
+  <Step title="Get API Credentials">
+    Sign up for the provider and obtain your API key
+  </Step>
+  <Step title="Configure in CodinIT">
+    Add your credentials in CodinIT's settings under AI Providers
+  </Step>
+  <Step title="Select Your Model">
+    Choose the specific model you want to use for your project
+  </Step>
+</Steps>
+
+## Configuration Tips
+
+<Tip>
+  **Multi-Provider Setup**: You can configure multiple providers simultaneously and switch between them based on your task requirements.
+</Tip>
+
+<Info>
+  **API Key Security**: Your API keys are stored locally and never sent to CodinIT servers. They are only used to communicate directly with your chosen AI provider.
+</Info>
+
+<Warning>
+  **Rate Limits**: Each provider has different rate limits. Check your provider's documentation for details.
+</Warning>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Model Configuration" icon="sliders" href="/model-config/context-windows">
+    Learn about context windows and model parameters
+  </Card>
+  <Card title="Compare Models" icon="chart-line" href="/model-config/model-comparison">
+    Compare different models and their capabilities
+  </Card>
+  <Card title="Run Models Locally" icon="server" href="/running-models-locally/local-model-setup">
+    Set up local models for complete privacy
+  </Card>
+  <Card title="Prompt Engineering" icon="message" href="/prompting/prompt-engineering-guide">
+    Optimize your prompts for better results
+  </Card>
+</CardGroup>

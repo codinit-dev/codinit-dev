@@ -1,5 +1,5 @@
 appId: com.codinit.dev
-productName: CodinIT.dev
+productName: CodinIT.dev Local
 directories:
   buildResources: build
   output: dist
@@ -33,6 +33,7 @@ win:
   icon: assets/icons/icon.ico
   target:
     - nsis
+  signDlls: false
   artifactName: ${name}-${version}-${os}-${arch}.${ext}
 
 linux:
@@ -57,7 +58,7 @@ publish:
   provider: github
   owner: Gerome-Elassaad
   repo: codinit-app
-  private: false
+  private: true
   releaseType: release
 
 electronDownload:

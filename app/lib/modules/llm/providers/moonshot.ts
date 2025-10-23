@@ -14,32 +14,83 @@ export default class MoonshotProvider extends BaseProvider {
   };
 
   staticModels: ModelInfo[] = [
-    { name: 'moonshot-v1-8k', label: 'Moonshot v1 8K', provider: 'Moonshot', maxTokenAllowed: 8000 },
-    { name: 'moonshot-v1-32k', label: 'Moonshot v1 32K', provider: 'Moonshot', maxTokenAllowed: 32000 },
-    { name: 'moonshot-v1-128k', label: 'Moonshot v1 128K', provider: 'Moonshot', maxTokenAllowed: 128000 },
-    { name: 'moonshot-v1-auto', label: 'Moonshot v1 Auto', provider: 'Moonshot', maxTokenAllowed: 128000 },
+    {
+      name: 'moonshot-v1-8k',
+      label: 'Moonshot v1 8K',
+      provider: 'Moonshot',
+      maxTokenAllowed: 8000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
+    {
+      name: 'moonshot-v1-32k',
+      label: 'Moonshot v1 32K',
+      provider: 'Moonshot',
+      maxTokenAllowed: 32000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
+    {
+      name: 'moonshot-v1-128k',
+      label: 'Moonshot v1 128K',
+      provider: 'Moonshot',
+      maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
+    {
+      name: 'moonshot-v1-auto',
+      label: 'Moonshot v1 Auto',
+      provider: 'Moonshot',
+      maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
     {
       name: 'moonshot-v1-8k-vision-preview',
       label: 'Moonshot v1 8K Vision',
       provider: 'Moonshot',
       maxTokenAllowed: 8000,
+      icon: '/thirdparty/logos/moonshot.svg',
     },
     {
       name: 'moonshot-v1-32k-vision-preview',
       label: 'Moonshot v1 32K Vision',
       provider: 'Moonshot',
       maxTokenAllowed: 32000,
+      icon: '/thirdparty/logos/moonshot.svg',
     },
     {
       name: 'moonshot-v1-128k-vision-preview',
       label: 'Moonshot v1 128K Vision',
       provider: 'Moonshot',
       maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/moonshot.svg',
     },
-    { name: 'kimi-latest', label: 'Kimi Latest', provider: 'Moonshot', maxTokenAllowed: 128000 },
-    { name: 'kimi-k2-0711-preview', label: 'Kimi K2 Preview', provider: 'Moonshot', maxTokenAllowed: 128000 },
-    { name: 'kimi-k2-turbo-preview', label: 'Kimi K2 Turbo', provider: 'Moonshot', maxTokenAllowed: 128000 },
-    { name: 'kimi-thinking-preview', label: 'Kimi Thinking', provider: 'Moonshot', maxTokenAllowed: 128000 },
+    {
+      name: 'kimi-latest',
+      label: 'Kimi Latest',
+      provider: 'Moonshot',
+      maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
+    {
+      name: 'kimi-k2-0711-preview',
+      label: 'Kimi K2 Preview',
+      provider: 'Moonshot',
+      maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
+    {
+      name: 'kimi-k2-turbo-preview',
+      label: 'Kimi K2 Turbo',
+      provider: 'Moonshot',
+      maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
+    {
+      name: 'kimi-thinking-preview',
+      label: 'Kimi Thinking',
+      provider: 'Moonshot',
+      maxTokenAllowed: 128000,
+      icon: '/thirdparty/logos/moonshot.svg',
+    },
   ];
 
   getModelInstance(options: {

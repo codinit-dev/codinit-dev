@@ -42,16 +42,7 @@ site
 # commit file ignore
 app/commit.json
 changelogUI.md
-
-# build verification (generated files)
-app/utils/build-info.ts
-build-metadata.json
 docs/instructions/Roadmap.md
 .cursorrules
 *.md
-CLAUDE.md
 .qodo
-settings.local.json
-.roo
-.claude
-openapi.json

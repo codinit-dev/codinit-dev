@@ -22,8 +22,8 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "~/*": ["./app/*"],
-      "#build/*": ["./build/*"],
-      "@templates/*": ["./templates/*"]
+      "~/docs*": ["./docs/*"],
+      "#build/*": ["./build/*"]
     },
 
     "noEmit": true

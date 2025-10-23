@@ -97,6 +97,7 @@ export default class OllamaProvider extends BaseProvider {
       label: `${model.name} (${model.details.parameter_size})`,
       provider: this.name,
       maxTokenAllowed: 8000,
+      icon: '/thirdparty/logos/ollama.svg',
     }));
   }
 

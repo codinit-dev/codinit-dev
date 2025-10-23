@@ -511,11 +511,7 @@ export default function GitHubConnection() {
       console.error('Failed to connect to GitHub:', error);
 
       // Reset connection state on failure
-      setConnection({
-        user: null,
-        token: connection.token,
-        tokenType: connection.tokenType,
-      });
+      setConnection({ user: null, token: connection.token, tokenType: connection.tokenType });
 
       toast.error(`Failed to connect to GitHub: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
@@ -539,7 +535,7 @@ export default function GitHubConnection() {
 
   return (
     <motion.div
-      className="bg-codinit-elements-background dark:bg-codinit-elements-background border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg"
+      className="bg-bolt-elements-background dark:bg-bolt-elements-background border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor rounded-lg"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
@@ -548,25 +544,25 @@ export default function GitHubConnection() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <GithubLogo />
-            <h3 className="text-base font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+            <h3 className="text-base font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
               GitHub Connection
             </h3>
           </div>
         </div>
 
         {!connection.user && (
-          <div className="text-xs text-codinit-elements-textSecondary bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 p-3 rounded-lg mb-4">
+          <div className="text-xs text-bolt-elements-textSecondary bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 p-3 rounded-lg mb-4">
             <p className="flex items-center gap-1 mb-1">
-              <span className="i-ph:lightbulb w-3.5 h-3.5 text-codinit-elements-icon-success dark:text-codinit-elements-icon-success" />
+              <span className="i-ph:lightbulb w-3.5 h-3.5 text-bolt-elements-icon-success dark:text-bolt-elements-icon-success" />
               <span className="font-medium">Tip:</span> You can also set the{' '}
-              <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+              <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 rounded">
                 VITE_GITHUB_ACCESS_TOKEN
               </code>{' '}
               environment variable to connect automatically.
             </p>
             <p>
               For fine-grained tokens, also set{' '}
-              <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+              <code className="px-1 py-0.5 bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 rounded">
                 VITE_GITHUB_TOKEN_TYPE=fine-grained
               </code>
             </p>
@@ -574,7 +570,7 @@ export default function GitHubConnection() {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mb-2">
+            <label className="block text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary mb-2">
               Token Type
             </label>
             <select
@@ -587,10 +583,10 @@ export default function GitHubConnection() {
               disabled={isConnecting || !!connection.user}
               className={classNames(
                 'w-full px-3 py-2 rounded-lg text-sm',
-                'bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1',
-                'border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor',
-                'text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary',
-                'focus:outline-none focus:ring-1 focus:ring-codinit-elements-item-contentAccent dark:focus:ring-codinit-elements-item-contentAccent',
+                'bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1',
+                'border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor',
+                'text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary',
+                'focus:outline-none focus:ring-1 focus:ring-bolt-elements-item-contentAccent dark:focus:ring-bolt-elements-item-contentAccent',
                 'disabled:opacity-50',
               )}
             >
@@ -600,7 +596,7 @@ export default function GitHubConnection() {
           </div>
 
           <div>
-            <label className="block text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mb-2">
+            <label className="block text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary mb-2">
               {connection.tokenType === 'classic' ? 'Personal Access Token' : 'Fine-grained Token'}
             </label>
             <input
@@ -615,17 +611,17 @@ export default function GitHubConnection() {
                 'w-full px-3 py-2 rounded-lg text-sm',
                 'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
                 'border border-[#E5E5E5] dark:border-[#333333]',
-                'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
-                'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
+                'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
+                'focus:outline-none focus:ring-1 focus:ring-bolt-elements-borderColorActive',
                 'disabled:opacity-50',
               )}
             />
-            <div className="mt-2 text-sm text-codinit-elements-textSecondary">
+            <div className="mt-2 text-sm text-bolt-elements-textSecondary">
               <a
                 href={`https://github.com/settings/tokens${connection.tokenType === 'fine-grained' ? '/beta' : '/new'}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-codinit-elements-borderColorActive hover:underline inline-flex items-center gap-1"
+                className="text-bolt-elements-borderColorActive hover:underline inline-flex items-center gap-1"
               >
                 Get your token
                 <div className="i-ph:arrow-square-out w-4 h-4" />
@@ -681,7 +677,7 @@ export default function GitHubConnection() {
                     <div className="i-ph:plug w-4 h-4" />
                     Disconnect
                   </button>
-                  <span className="text-sm text-codinit-elements-textSecondary flex items-center gap-1">
+                  <span className="text-sm text-bolt-elements-textSecondary flex items-center gap-1">
                     <div className="i-ph:check-circle w-4 h-4 text-green-500" />
                     Connected to GitHub
                   </span>
@@ -690,7 +686,7 @@ export default function GitHubConnection() {
                   <Button
                     variant="outline"
                     onClick={() => window.open('https://github.com/dashboard', '_blank', 'noopener,noreferrer')}
-                    className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary transition-colors"
+                    className="flex items-center gap-2 hover:bg-bolt-elements-item-backgroundActive/10 hover:text-bolt-elements-textPrimary dark:hover:text-bolt-elements-textPrimary transition-colors"
                   >
                     <div className="i-ph:layout w-4 h-4" />
                     Dashboard
@@ -702,7 +698,7 @@ export default function GitHubConnection() {
                     }}
                     disabled={isFetchingStats}
                     variant="outline"
-                    className="flex items-center gap-2 hover:bg-codinit-elements-item-backgroundActive/10 hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary transition-colors"
+                    className="flex items-center gap-2 hover:bg-bolt-elements-item-backgroundActive/10 hover:text-bolt-elements-textPrimary dark:hover:text-bolt-elements-textPrimary transition-colors"
                   >
                     {isFetchingStats ? (
                       <>
@@ -723,18 +719,18 @@ export default function GitHubConnection() {
         </div>
 
         {connection.user && connection.stats && (
-          <div className="mt-6 border-t border-codinit-elements-borderColor dark:border-codinit-elements-borderColor pt-6">
-            <div className="flex items-center gap-4 p-4 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 rounded-lg mb-4">
+          <div className="mt-6 border-t border-bolt-elements-borderColor dark:border-bolt-elements-borderColor pt-6">
+            <div className="flex items-center gap-4 p-4 bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 rounded-lg mb-4">
               <img
                 src={connection.user.avatar_url}
                 alt={connection.user.login}
-                className="w-12 h-12 rounded-full border-2 border-codinit-elements-item-contentAccent dark:border-codinit-elements-item-contentAccent"
+                className="w-12 h-12 rounded-full border-2 border-bolt-elements-item-contentAccent dark:border-bolt-elements-item-contentAccent"
               />
               <div>
-                <h4 className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
+                <h4 className="text-sm font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary">
                   {connection.user.name || connection.user.login}
                 </h4>
-                <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
+                <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary">
                   {connection.user.login}
                 </p>
               </div>
@@ -742,14 +738,14 @@ export default function GitHubConnection() {
 
             <Collapsible open={isStatsExpanded} onOpenChange={setIsStatsExpanded}>
               <CollapsibleTrigger asChild>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-bolt-elements-background dark:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive/70 dark:hover:border-bolt-elements-borderColorActive/70 transition-all duration-200">
                   <div className="flex items-center gap-2">
-                    <div className="i-ph:chart-bar w-4 h-4 text-codinit-elements-item-contentAccent" />
-                    <span className="text-sm font-medium text-codinit-elements-textPrimary">GitHub Stats</span>
+                    <div className="i-ph:chart-bar w-4 h-4 text-bolt-elements-item-contentAccent" />
+                    <span className="text-sm font-medium text-bolt-elements-textPrimary">GitHub Stats</span>
                   </div>
                   <div
                     className={classNames(
-                      'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-codinit-elements-textSecondary',
+                      'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-bolt-elements-textSecondary',
                       isStatsExpanded ? 'rotate-180' : '',
                     )}
                   />
@@ -759,7 +755,7 @@ export default function GitHubConnection() {
                 <div className="space-y-4 mt-4">
                   {/* Languages Section */}
                   <div className="mb-6">
-                    <h4 className="text-sm font-medium text-codinit-elements-textPrimary mb-3">Top Languages</h4>
+                    <h4 className="text-sm font-medium text-bolt-elements-textPrimary mb-3">Top Languages</h4>
                     <div className="flex flex-wrap gap-2">
                       {Object.entries(connection.stats.languages)
                         .sort(([, a], [, b]) => b - a)
@@ -767,7 +763,7 @@ export default function GitHubConnection() {
                         .map(([language]) => (
                           <span
                             key={language}
-                            className="px-3 py-1 text-xs rounded-full bg-codinit-elements-sidebar-buttonBackgroundDefault text-codinit-elements-sidebar-buttonText"
+                            className="px-3 py-1 text-xs rounded-full bg-bolt-elements-sidebar-buttonBackgroundDefault text-bolt-elements-sidebar-buttonText"
                           >
                             {language}
                           </span>
@@ -797,10 +793,10 @@ export default function GitHubConnection() {
                     ].map((stat, index) => (
                       <div
                         key={index}
-                        className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                        className="flex flex-col p-3 rounded-lg bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor"
                       >
-                        <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
-                        <span className="text-lg font-medium text-codinit-elements-textPrimary">{stat.value}</span>
+                        <span className="text-xs text-bolt-elements-textSecondary">{stat.label}</span>
+                        <span className="text-lg font-medium text-bolt-elements-textPrimary">{stat.value}</span>
                       </div>
                     ))}
                   </div>
@@ -809,7 +805,7 @@ export default function GitHubConnection() {
                   <div className="mt-4">
                     <div className="space-y-4">
                       <div>
-                        <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Repository Stats</h5>
+                        <h5 className="text-sm font-medium text-bolt-elements-textPrimary mb-2">Repository Stats</h5>
                         <div className="grid grid-cols-2 gap-4">
                           {[
                             {
@@ -823,48 +819,44 @@ export default function GitHubConnection() {
                           ].map((stat, index) => (
                             <div
                               key={index}
-                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                              className="flex flex-col p-3 rounded-lg bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor"
                             >
-                              <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
-                              <span className="text-lg font-medium text-codinit-elements-textPrimary">
-                                {stat.value}
-                              </span>
+                              <span className="text-xs text-bolt-elements-textSecondary">{stat.label}</span>
+                              <span className="text-lg font-medium text-bolt-elements-textPrimary">{stat.value}</span>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       <div>
-                        <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">
-                          Contribution Stats
-                        </h5>
+                        <h5 className="text-sm font-medium text-bolt-elements-textPrimary mb-2">Contribution Stats</h5>
                         <div className="grid grid-cols-3 gap-4">
                           {[
                             {
                               label: 'Stars',
                               value: connection.stats.stars || 0,
                               icon: 'i-ph:star',
-                              iconColor: 'text-codinit-elements-icon-warning',
+                              iconColor: 'text-bolt-elements-icon-warning',
                             },
                             {
                               label: 'Forks',
                               value: connection.stats.forks || 0,
                               icon: 'i-ph:git-fork',
-                              iconColor: 'text-codinit-elements-icon-info',
+                              iconColor: 'text-bolt-elements-icon-info',
                             },
                             {
                               label: 'Followers',
                               value: connection.stats.followers || 0,
                               icon: 'i-ph:users',
-                              iconColor: 'text-codinit-elements-icon-success',
+                              iconColor: 'text-bolt-elements-icon-success',
                             },
                           ].map((stat, index) => (
                             <div
                               key={index}
-                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                              className="flex flex-col p-3 rounded-lg bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor"
                             >
-                              <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
-                              <span className="text-lg font-medium text-codinit-elements-textPrimary flex items-center gap-1">
+                              <span className="text-xs text-bolt-elements-textSecondary">{stat.label}</span>
+                              <span className="text-lg font-medium text-bolt-elements-textPrimary flex items-center gap-1">
                                 <div className={`${stat.icon} w-4 h-4 ${stat.iconColor}`} />
                                 {stat.value}
                               </span>
@@ -874,7 +866,7 @@ export default function GitHubConnection() {
                       </div>
 
                       <div>
-                        <h5 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Gists</h5>
+                        <h5 className="text-sm font-medium text-bolt-elements-textPrimary mb-2">Gists</h5>
                         <div className="grid grid-cols-2 gap-4">
                           {[
                             {
@@ -888,19 +880,17 @@ export default function GitHubConnection() {
                           ].map((stat, index) => (
                             <div
                               key={index}
-                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                              className="flex flex-col p-3 rounded-lg bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor"
                             >
-                              <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
-                              <span className="text-lg font-medium text-codinit-elements-textPrimary">
-                                {stat.value}
-                              </span>
+                              <span className="text-xs text-bolt-elements-textSecondary">{stat.label}</span>
+                              <span className="text-lg font-medium text-bolt-elements-textPrimary">{stat.value}</span>
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-codinit-elements-borderColor">
-                        <span className="text-xs text-codinit-elements-textSecondary">
+                      <div className="pt-2 border-t border-bolt-elements-borderColor">
+                        <span className="text-xs text-bolt-elements-textSecondary">
                           Last updated: {new Date(connection.stats.lastUpdated).toLocaleString()}
                         </span>
                       </div>
@@ -909,7 +899,7 @@ export default function GitHubConnection() {
 
                   {/* Repositories Section */}
                   <div className="space-y-4">
-                    <h4 className="text-sm font-medium text-codinit-elements-textPrimary">Recent Repositories</h4>
+                    <h4 className="text-sm font-medium text-bolt-elements-textPrimary">Recent Repositories</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {connection.stats.repos.map((repo) => (
                         <a
@@ -917,35 +907,35 @@ export default function GitHubConnection() {
                           href={repo.html_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group block p-4 rounded-lg bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive dark:hover:border-codinit-elements-borderColorActive transition-all duration-200"
+                          className="group block p-4 rounded-lg bg-bolt-elements-background-depth-1 dark:bg-bolt-elements-background-depth-1 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive dark:hover:border-bolt-elements-borderColorActive transition-all duration-200"
                         >
                           <div className="space-y-3">
                             <div className="flex items-start justify-between">
                               <div className="flex items-center gap-2">
-                                <div className="i-ph:git-branch w-4 h-4 text-codinit-elements-icon-tertiary" />
-                                <h5 className="text-sm font-medium text-codinit-elements-textPrimary group-hover:text-codinit-elements-item-contentAccent transition-colors">
+                                <div className="i-ph:git-branch w-4 h-4 text-bolt-elements-icon-tertiary" />
+                                <h5 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-bolt-elements-item-contentAccent transition-colors">
                                   {repo.name}
                                 </h5>
                               </div>
-                              <div className="flex items-center gap-3 text-xs text-codinit-elements-textSecondary">
+                              <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
                                 <span className="flex items-center gap-1" title="Stars">
-                                  <div className="i-ph:star w-3.5 h-3.5 text-codinit-elements-icon-warning" />
+                                  <div className="i-ph:star w-3.5 h-3.5 text-bolt-elements-icon-warning" />
                                   {repo.stargazers_count.toLocaleString()}
                                 </span>
                                 <span className="flex items-center gap-1" title="Forks">
-                                  <div className="i-ph:git-fork w-3.5 h-3.5 text-codinit-elements-icon-info" />
+                                  <div className="i-ph:git-fork w-3.5 h-3.5 text-bolt-elements-icon-info" />
                                   {repo.forks_count.toLocaleString()}
                                 </span>
                               </div>
                             </div>
 
                             {repo.description && (
-                              <p className="text-xs text-codinit-elements-textSecondary line-clamp-2">
+                              <p className="text-xs text-bolt-elements-textSecondary line-clamp-2">
                                 {repo.description}
                               </p>
                             )}
 
-                            <div className="flex items-center gap-3 text-xs text-codinit-elements-textSecondary">
+                            <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
                               <span className="flex items-center gap-1" title="Default Branch">
                                 <div className="i-ph:git-branch w-3.5 h-3.5" />
                                 {repo.default_branch}
@@ -958,7 +948,7 @@ export default function GitHubConnection() {
                                   day: 'numeric',
                                 })}
                               </span>
-                              <span className="flex items-center gap-1 ml-auto group-hover:text-codinit-elements-item-contentAccent transition-colors">
+                              <span className="flex items-center gap-1 ml-auto group-hover:text-bolt-elements-item-contentAccent transition-colors">
                                 <div className="i-ph:arrow-square-out w-3.5 h-3.5" />
                                 View
                               </span>
@@ -983,7 +973,7 @@ function LoadingSpinner() {
     <div className="flex items-center justify-center p-4">
       <div className="flex items-center gap-2">
         <div className="i-ph:spinner-gap-bold animate-spin w-4 h-4" />
-        <span className="text-codinit-elements-textSecondary">Loading...</span>
+        <span className="text-bolt-elements-textSecondary">Loading...</span>
       </div>
     </div>
   );
