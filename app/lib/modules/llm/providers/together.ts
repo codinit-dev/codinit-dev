@@ -24,6 +24,7 @@ export default class TogetherProvider extends BaseProvider {
       provider: 'Together',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/togetherai.svg',
     },
 
     // Mixtral 8x7B: 32k context, strong performance
@@ -33,6 +34,7 @@ export default class TogetherProvider extends BaseProvider {
       provider: 'Together',
       maxTokenAllowed: 32000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/togetherai.svg',
     },
   ];
 
@@ -71,6 +73,7 @@ export default class TogetherProvider extends BaseProvider {
       provider: this.name,
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/togetherai.svg',
     }));
   }
 

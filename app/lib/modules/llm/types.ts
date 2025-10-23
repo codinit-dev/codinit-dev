@@ -7,6 +7,7 @@ export interface ModelInfo {
   provider: string;
   maxTokenAllowed: number;
   maxCompletionTokens?: number;
+  icon?: string;
 }
 
 export interface ProviderInfo {

@@ -116,13 +116,49 @@ const getGitHubRepoContent = async (repoName: string): Promise<{ name: string; p
     const response = await fetch(`/api/github-template?repo=${encodeURIComponent(repoName)}`);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // Parse error response for specific error types
+      let errorMessage = 'NETWORK_ERROR';
+
+      try {
+        const errorData: any = await response.json();
+        const errorDetails = errorData.error || errorData.details || '';
+
+        // Check for specific error conditions
+        if (response.status === 404) {
+          errorMessage = 'REPO_NOT_FOUND';
+        } else if (response.status === 403) {
+          // Check if it's a rate limit error
+          if (errorDetails.toLowerCase().includes('rate limit')) {
+            errorMessage = 'RATE_LIMIT';
+          } else {
+            errorMessage = 'AUTH_REQUIRED';
+          }
+        } else if (response.status === 401) {
+          errorMessage = 'AUTH_REQUIRED';
+        } else if (response.status >= 500) {
+          errorMessage = 'GITHUB_API_ERROR';
+        }
+      } catch {
+        // If JSON parsing fails, use status-based error
+        if (response.status === 404) {
+          errorMessage = 'REPO_NOT_FOUND';
+        } else if (response.status === 403) {
+          errorMessage = 'RATE_LIMIT';
+        } else if (response.status === 401) {
+          errorMessage = 'AUTH_REQUIRED';
+        } else if (response.status >= 500) {
+          errorMessage = 'GITHUB_API_ERROR';
+        }
+      }
+
+      throw new Error(errorMessage);
     }
 
     // Our API will return the files in the format we need
-    const files = (await response.json()) as any;
+    const data = (await response.json()) as any;
 
-    return files;
+    // Handle new response format with files and failedFiles
+    return data.files || data;
   } catch (error) {
     console.error('Error fetching release contents:', error);
     throw error;
@@ -137,15 +173,19 @@ export async function getTemplates(templateName: string, title?: string) {
   }
 
   const githubRepo = template.githubRepo;
-  const files = await getGitHubRepoContent(githubRepo);
 
-  let filteredFiles = files;
+  // Fetch files from GitHub
+  const githubContent: any = await getGitHubRepoContent(githubRepo);
+  const files: Array<{ name: string; path: string; content: string }> = githubContent.files || githubContent;
+  const failedFiles = githubContent.failedFiles;
+
+  let filteredFiles: Array<{ name: string; path: string; content: string }> = files;
 
   /*
    * ignoring common unwanted files
    * exclude    .git
    */
-  filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.git') == false);
+  filteredFiles = filteredFiles.filter((x: { path: string }) => x.path.startsWith('.git') == false);
 
   /*
    * exclude    lock files
@@ -154,15 +194,17 @@ export async function getTemplates(templateName: string, title?: string) {
   {
     /*
      *const comminLockFiles = ['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml'];
-     *filteredFiles = filteredFiles.filter((x) => comminLockFiles.includes(x.name) == false);
+     *filteredFiles = filteredFiles.filter((x: { name: string }) => comminLockFiles.includes(x.name) == false);
      */
   }
 
   // exclude    .bolt
-  filteredFiles = filteredFiles.filter((x) => x.path.startsWith('.bolt') == false);
+  filteredFiles = filteredFiles.filter((x: { path: string }) => x.path.startsWith('.bolt') == false);
 
   // check for ignore file in .bolt folder
-  const templateIgnoreFile = files.find((x) => x.path.startsWith('.bolt') && x.name == 'ignore');
+  const templateIgnoreFile = files.find(
+    (x: { path: string; name: string }) => x.path.startsWith('.bolt') && x.name == 'ignore',
+  );
 
   const filesToImport = {
     files: filteredFiles,
@@ -171,11 +213,11 @@ export async function getTemplates(templateName: string, title?: string) {
 
   if (templateIgnoreFile) {
     // redacting files specified in ignore file
-    const ignorepatterns = templateIgnoreFile.content.split('\n').map((x) => x.trim());
+    const ignorepatterns = templateIgnoreFile.content.split('\n').map((x: string) => x.trim());
     const ig = ignore().add(ignorepatterns);
 
     // filteredFiles = filteredFiles.filter(x => !ig.ignores(x.path))
-    const ignoredFiles = filteredFiles.filter((x) => ig.ignores(x.path));
+    const ignoredFiles = filteredFiles.filter((x: { path: string }) => ig.ignores(x.path));
 
     filesToImport.files = filteredFiles;
     filesToImport.ignoreFile = ignoredFiles;
@@ -186,7 +228,7 @@ Example is initializing your project with the required files using the ${templat
 <exampleArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
 ${filesToImport.files
   .map(
-    (file) =>
+    (file: { path: string; content: string }) =>
       `<exampleAction type="file" filePath="${file.path}">
 ${file.content}
 </exampleAction>`,
@@ -195,7 +237,9 @@ ${file.content}
 </exampleArtifact>
 `;
   let userMessage = ``;
-  const templatePromptFile = files.filter((x) => x.path.startsWith('.bolt')).find((x) => x.name == 'prompt');
+  const templatePromptFile = files
+    .filter((x: { path: string }) => x.path.startsWith('.bolt'))
+    .find((x: { name: string }) => x.name == 'prompt');
 
   if (templatePromptFile) {
     userMessage = `
@@ -213,7 +257,7 @@ ${templatePromptFile.content}
 STRICT FILE ACCESS RULES - READ CAREFULLY:
 
 The following files are READ-ONLY and must never be modified:
-${filesToImport.ignoreFile.map((file) => `- ${file.path}`).join('\n')}
+${filesToImport.ignoreFile.map((file: { path: string }) => `- ${file.path}`).join('\n')}
 
 Permitted actions:
 ✓ Import these files as dependencies
@@ -239,7 +283,7 @@ If you need to make changes to functionality, create new files instead of modify
 ---
 template import is done, and you can now use the imported files,
 edit only the files that need to be changed, and you can create new files as needed.
-NO NOT EDIT/WRITE ANY FILES THAT ALREADY EXIST IN THE PROJECT AND DOES NOT NEED TO BE MODIFIED
+DO NOT EDIT/WRITE ANY FILES THAT ALREADY EXIST IN THE PROJECT AND DOES NOT NEED TO BE MODIFIED
 ---
 Now that the Template is imported please continue with my original request
 
@@ -249,5 +293,6 @@ IMPORTANT: Dont Forget to install the dependencies before running the app by usi
   return {
     assistantMessage,
     userMessage,
+    failedFiles,
   };
 }

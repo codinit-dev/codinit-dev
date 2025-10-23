@@ -9,7 +9,7 @@ import { useGit } from '~/lib/hooks/useGit';
 import { useChatHistory } from '~/lib/persistence';
 import { createCommandsMessage, detectProjectCommands, escapeExampleTags } from '~/utils/projectCommands';
 import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
-import { toast } from 'react-toastify';
+import { ImportErrorModal } from '~/components/ui/ImportErrorModal';
 
 const IGNORE_PATTERNS = [
   'node_modules/**',
@@ -42,6 +42,8 @@ export function GitUrlImport() {
   const { ready: gitReady, gitClone } = useGit();
   const [imported, setImported] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorTitle, setErrorTitle] = useState<string>('Import Failed');
 
   const importRepo = async (repoUrl?: string) => {
     if (!gitReady && !historyReady) {
@@ -104,9 +106,27 @@ ${escapeExampleTags(file.content)}
         }
       } catch (error) {
         console.error('Error during import:', error);
-        toast.error('Failed to import repository');
         setLoading(false);
-        window.location.href = '/';
+
+        // Determine error type and set appropriate message
+        const errorMsg = error instanceof Error ? error.message : String(error);
+
+        if (errorMsg.toLowerCase().includes('network') || errorMsg.toLowerCase().includes('fetch')) {
+          setErrorTitle('Network Error');
+          setErrorMessage('Failed to clone repository. Check your internet connection.');
+        } else if (errorMsg.toLowerCase().includes('not found') || errorMsg.toLowerCase().includes('404')) {
+          setErrorTitle('Repository Not Found');
+          setErrorMessage('Repository not found or is private.');
+        } else if (errorMsg.toLowerCase().includes('cors') || errorMsg.toLowerCase().includes('proxy')) {
+          setErrorTitle('Access Error');
+          setErrorMessage('Unable to access repository. It may be private or have restricted access.');
+        } else if (!repoUrl || !repoUrl.includes('github.com')) {
+          setErrorTitle('Invalid URL');
+          setErrorMessage('Invalid GitHub URL. Please use format: https://github.com/user/repo');
+        } else {
+          setErrorTitle('Import Failed');
+          setErrorMessage('Failed to clone repository. Please try again.');
+        }
 
         return;
       }
@@ -127,12 +147,37 @@ ${escapeExampleTags(file.content)}
 
     importRepo(url).catch((error) => {
       console.error('Error importing repo:', error);
-      toast.error('Failed to import repository');
       setLoading(false);
-      window.location.href = '/';
+
+      // Set error state instead of immediate redirect
+      const errorMsg = error instanceof Error ? error.message : String(error);
+
+      if (errorMsg.toLowerCase().includes('network') || errorMsg.toLowerCase().includes('fetch')) {
+        setErrorTitle('Network Error');
+        setErrorMessage('Failed to clone repository. Check your internet connection.');
+      } else if (errorMsg.toLowerCase().includes('not found') || errorMsg.toLowerCase().includes('404')) {
+        setErrorTitle('Repository Not Found');
+        setErrorMessage('Repository not found or is private.');
+      } else if (errorMsg.toLowerCase().includes('cors') || errorMsg.toLowerCase().includes('proxy')) {
+        setErrorTitle('Access Error');
+        setErrorMessage('Unable to access repository. It may be private or have restricted access.');
+      } else {
+        setErrorTitle('Import Failed');
+        setErrorMessage('Failed to import repository. Please try again.');
+      }
     });
     setImported(true);
   }, [searchParams, historyReady, gitReady, imported]);
+
+  const handleRetry = () => {
+    setErrorMessage(null);
+    setImported(false);
+    setLoading(true);
+  };
+
+  const handleGoBack = () => {
+    window.location.href = '/';
+  };
 
   return (
     <ClientOnly fallback={<BaseChat />}>
@@ -140,6 +185,16 @@ ${escapeExampleTags(file.content)}
         <>
           <Chat />
           {loading && <LoadingOverlay message="Please wait while we clone the repository..." />}
+          {errorMessage && (
+            <ImportErrorModal
+              isOpen={true}
+              type="error"
+              title={errorTitle}
+              message={errorMessage}
+              onRetry={handleRetry}
+              onClose={handleGoBack}
+            />
+          )}
         </>
       )}
     </ClientOnly>

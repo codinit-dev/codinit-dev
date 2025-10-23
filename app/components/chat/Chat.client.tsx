@@ -27,6 +27,7 @@ import { logStore } from '~/lib/stores/logs';
 import { streamingState } from '~/lib/stores/streaming';
 import { filesToArtifacts } from '~/utils/fileUtils';
 import { supabaseConnection } from '~/lib/stores/supabase';
+import { ImportErrorModal } from '~/components/ui/ImportErrorModal';
 
 const toastAnimation = cssTransition({
   enter: 'animated fadeInRight',
@@ -123,6 +124,14 @@ export const ChatImpl = memo(
     const [imageDataList, setImageDataList] = useState<string[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [fakeLoading, setFakeLoading] = useState(false);
+    const [importError, setImportError] = useState<{
+      type: 'warning' | 'error';
+      title: string;
+      message: string;
+      failedFiles?: string[];
+      onRetry?: () => void;
+      onContinue?: () => void;
+    } | null>(null);
     const files = useStore(workbenchStore.files);
     const actionAlert = useStore(workbenchStore.alert);
     const deployAlert = useStore(workbenchStore.deployAlert);
@@ -327,17 +336,67 @@ export const ChatImpl = memo(
 
           if (template !== 'blank') {
             const temResp = await getTemplates(template, title).catch((e) => {
-              if (e.message.includes('rate limit')) {
-                toast.warning('Rate limit exceeded. Skipping starter template\n Continuing with blank template');
+              // Check for specific error types from selectStarterTemplate.ts
+              if (e.message === 'RATE_LIMIT') {
+                setImportError({
+                  type: 'error',
+                  title: 'Rate Limit Exceeded',
+                  message: 'GitHub API rate limit exceeded. Please try again in a few minutes.',
+                });
+              } else if (e.message === 'REPO_NOT_FOUND') {
+                setImportError({
+                  type: 'error',
+                  title: 'Repository Not Found',
+                  message: 'Template repository not found. Using blank template instead.',
+                });
+              } else if (e.message === 'NETWORK_ERROR') {
+                setImportError({
+                  type: 'error',
+                  title: 'Network Error',
+                  message: 'Network error while fetching template. Please check your connection.',
+                });
               } else {
-                toast.warning('Failed to import starter template\n Continuing with blank template');
+                setImportError({
+                  type: 'error',
+                  title: 'Template Fetch Failed',
+                  message: 'Failed to fetch template. Please try again.',
+                });
               }
 
               return null;
             });
 
             if (temResp) {
-              const { assistantMessage, userMessage } = temResp;
+              const { assistantMessage, userMessage, failedFiles } = temResp;
+
+              // Check for failed files
+              if (failedFiles && failedFiles.length > 0) {
+                setImportError({
+                  type: 'warning',
+                  title: 'Template Partially Imported',
+                  message: `${failedFiles.length} file(s) failed to import due to network errors.`,
+                  failedFiles: failedFiles.map((f: { path: string }) => f.path),
+                  onRetry: async () => {
+                    const retryResp = await getTemplates(template, title);
+
+                    if (retryResp && (!retryResp.failedFiles || retryResp.failedFiles.length === 0)) {
+                      setImportError(null);
+
+                      // Continue with template
+                    } else if (retryResp && retryResp.failedFiles) {
+                      // Still have failures, update modal
+                      setImportError((prev) => ({
+                        ...prev!,
+                        failedFiles: retryResp.failedFiles.map((f: { path: string }) => f.path),
+                      }));
+                    }
+                  },
+                  onContinue: () => {
+                    setImportError(null);
+                  },
+                });
+              }
+
               setMessages([
                 {
                   id: `1-${new Date().getTime()}`,
@@ -365,10 +424,10 @@ export const ChatImpl = memo(
                   annotations: ['hidden'],
                 },
               ]);
+
               reload();
               setInput('');
               Cookies.remove(PROMPT_COOKIE_KEY);
-
               setUploadedFiles([]);
               setImageDataList([]);
 
@@ -505,66 +564,80 @@ export const ChatImpl = memo(
     };
 
     return (
-      <BaseChat
-        ref={animationScope}
-        textareaRef={textareaRef}
-        input={input}
-        showChat={showChat}
-        chatStarted={chatStarted}
-        isStreaming={isLoading || fakeLoading}
-        onStreamingChange={(streaming) => {
-          streamingState.set(streaming);
-        }}
-        enhancingPrompt={enhancingPrompt}
-        promptEnhanced={promptEnhanced}
-        sendMessage={sendMessage}
-        model={model}
-        setModel={handleModelChange}
-        provider={provider}
-        setProvider={handleProviderChange}
-        providerList={activeProviders}
-        handleInputChange={(e) => {
-          onTextareaChange(e);
-          debouncedCachePrompt(e);
-        }}
-        handleStop={abort}
-        description={description}
-        importChat={importChat}
-        exportChat={exportChat}
-        messages={messages.map((message, i) => {
-          if (message.role === 'user') {
-            return message;
-          }
+      <>
+        <BaseChat
+          ref={animationScope}
+          textareaRef={textareaRef}
+          input={input}
+          showChat={showChat}
+          chatStarted={chatStarted}
+          isStreaming={isLoading || fakeLoading}
+          onStreamingChange={(streaming) => {
+            streamingState.set(streaming);
+          }}
+          enhancingPrompt={enhancingPrompt}
+          promptEnhanced={promptEnhanced}
+          sendMessage={sendMessage}
+          model={model}
+          setModel={handleModelChange}
+          provider={provider}
+          setProvider={handleProviderChange}
+          providerList={activeProviders}
+          handleInputChange={(e) => {
+            onTextareaChange(e);
+            debouncedCachePrompt(e);
+          }}
+          handleStop={abort}
+          description={description}
+          importChat={importChat}
+          exportChat={exportChat}
+          messages={messages.map((message, i) => {
+            if (message.role === 'user') {
+              return message;
+            }
 
-          return {
-            ...message,
-            content: parsedMessages[i] || '',
-          };
-        })}
-        enhancePrompt={() => {
-          enhancePrompt(
-            input,
-            (input) => {
-              setInput(input);
-              scrollTextArea();
-            },
-            model,
-            provider,
-            apiKeys,
-          );
-        }}
-        uploadedFiles={uploadedFiles}
-        setUploadedFiles={setUploadedFiles}
-        imageDataList={imageDataList}
-        setImageDataList={setImageDataList}
-        actionAlert={actionAlert}
-        clearAlert={() => workbenchStore.clearAlert()}
-        supabaseAlert={supabaseAlert}
-        clearSupabaseAlert={() => workbenchStore.clearSupabaseAlert()}
-        deployAlert={deployAlert}
-        clearDeployAlert={() => workbenchStore.clearDeployAlert()}
-        data={chatData}
-      />
+            return {
+              ...message,
+              content: parsedMessages[i] || '',
+            };
+          })}
+          enhancePrompt={() => {
+            enhancePrompt(
+              input,
+              (input) => {
+                setInput(input);
+                scrollTextArea();
+              },
+              model,
+              provider,
+              apiKeys,
+            );
+          }}
+          uploadedFiles={uploadedFiles}
+          setUploadedFiles={setUploadedFiles}
+          imageDataList={imageDataList}
+          setImageDataList={setImageDataList}
+          actionAlert={actionAlert}
+          clearAlert={() => workbenchStore.clearAlert()}
+          supabaseAlert={supabaseAlert}
+          clearSupabaseAlert={() => workbenchStore.clearSupabaseAlert()}
+          deployAlert={deployAlert}
+          clearDeployAlert={() => workbenchStore.clearDeployAlert()}
+          data={chatData}
+        />
+        {importError && (
+          <ImportErrorModal
+            isOpen={Boolean(importError)}
+            type={importError.type}
+            title={importError.title}
+            message={importError.message}
+            failedFiles={importError.failedFiles}
+            onRetry={importError.onRetry}
+            onContinue={importError.onContinue}
+            onClose={() => setImportError(null)}
+          />
+        )}
+      </>
     );
   },
 );

@@ -1,6 +1,17 @@
 import { json } from '@remix-run/cloudflare';
 import JSZip from 'jszip';
 
+// Helper function to decode base64 content (works in both Node.js and browser)
+function decodeBase64Content(content: string): string {
+  // Check if Buffer is available (Node.js environment)
+  if (typeof Buffer !== 'undefined') {
+    return Buffer.from(content, 'base64').toString('utf-8');
+  }
+
+  // Fallback to atob for browser environments
+  return atob(content);
+}
+
 // Function to detect if we're running in Cloudflare
 function isCloudflareEnvironment(context: any): boolean {
   // Check if we're in production AND have Cloudflare Pages specific env vars
@@ -17,6 +28,7 @@ function isCloudflareEnvironment(context: any): boolean {
 // Cloudflare-compatible method using GitHub Contents API
 async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
   const baseUrl = 'https://api.github.com';
+  const failedFiles: Array<{ path: string; error: string }> = [];
 
   // Get repository info to find default branch
   const repoResponse = await fetch(`${baseUrl}/repos/${repo}`, {
@@ -80,32 +92,48 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
   for (let i = 0; i < files.length; i += batchSize) {
     const batch = files.slice(i, i + batchSize);
     const batchPromises = batch.map(async (file: any) => {
-      try {
-        const contentResponse = await fetch(`${baseUrl}/repos/${repo}/contents/${file.path}`, {
-          headers: {
-            Accept: 'application/vnd.github.v3+json',
-            'User-Agent': 'codinit.dev-app',
-            ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
-          },
-        });
+      // Try to fetch file with one immediate retry
+      let lastError: Error | null = null;
 
-        if (!contentResponse.ok) {
-          console.warn(`Failed to fetch ${file.path}: ${contentResponse.status}`);
-          return null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const contentResponse = await fetch(`${baseUrl}/repos/${repo}/contents/${file.path}`, {
+            headers: {
+              Accept: 'application/vnd.github.v3+json',
+              'User-Agent': 'codinit.dev-app',
+              ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+            },
+          });
+
+          if (!contentResponse.ok) {
+            throw new Error(`HTTP ${contentResponse.status}: ${contentResponse.statusText}`);
+          }
+
+          const contentData = (await contentResponse.json()) as any;
+          const content = decodeBase64Content(contentData.content.replace(/\s/g, ''));
+
+          return {
+            name: file.path.split('/').pop() || '',
+            path: file.path,
+            content,
+          };
+        } catch (error) {
+          lastError = error instanceof Error ? error : new Error(String(error));
+
+          if (attempt === 0) {
+            // First attempt failed, will retry immediately
+            continue;
+          }
         }
-
-        const contentData = (await contentResponse.json()) as any;
-        const content = atob(contentData.content.replace(/\s/g, ''));
-
-        return {
-          name: file.path.split('/').pop() || '',
-          path: file.path,
-          content,
-        };
-      } catch (error) {
-        console.warn(`Error fetching ${file.path}:`, error);
-        return null;
       }
+
+      // Both attempts failed
+      if (lastError) {
+        console.warn(`Failed to fetch ${file.path} after retry:`, lastError.message);
+        failedFiles.push({ path: file.path, error: lastError.message });
+      }
+
+      return null;
     });
 
     const batchResults = await Promise.all(batchPromises);
@@ -117,7 +145,10 @@ async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
     }
   }
 
-  return fileContents;
+  return {
+    files: fileContents,
+    failedFiles: failedFiles.length > 0 ? failedFiles : undefined,
+  };
 }
 
 // Your existing method for non-Cloudflare environments
@@ -205,7 +236,10 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string) {
 
     const results = await Promise.all(promises);
 
-    return results.filter(Boolean);
+    return {
+      files: results.filter(Boolean),
+      failedFiles: undefined,
+    };
   } catch (error) {
     console.error('Error in fetchRepoContentsZip:', error);
 
@@ -229,6 +263,7 @@ async function fetchRepoContentsZip(repo: string, githubToken?: string) {
  */
 async function fetchRepoContentsFromDefaultBranch(repo: string, githubToken?: string) {
   const baseUrl = 'https://api.github.com';
+  const failedFiles: Array<{ path: string; error: string }> = [];
 
   // Get repository info to find default branch
   const repoResponse = await fetch(`${baseUrl}/repos/${repo}`, {
@@ -292,32 +327,48 @@ async function fetchRepoContentsFromDefaultBranch(repo: string, githubToken?: st
   for (let i = 0; i < files.length; i += batchSize) {
     const batch = files.slice(i, i + batchSize);
     const batchPromises = batch.map(async (file: any) => {
-      try {
-        const contentResponse = await fetch(`${baseUrl}/repos/${repo}/contents/${file.path}`, {
-          headers: {
-            Accept: 'application/vnd.github.v3+json',
-            'User-Agent': 'bolt.diy-app',
-            ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
-          },
-        });
+      // Try to fetch file with one immediate retry
+      let lastError: Error | null = null;
 
-        if (!contentResponse.ok) {
-          console.warn(`Failed to fetch ${file.path}: ${contentResponse.status}`);
-          return null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          const contentResponse = await fetch(`${baseUrl}/repos/${repo}/contents/${file.path}`, {
+            headers: {
+              Accept: 'application/vnd.github.v3+json',
+              'User-Agent': 'codinit.dev-app',
+              ...(githubToken ? { Authorization: `Bearer ${githubToken}` } : {}),
+            },
+          });
+
+          if (!contentResponse.ok) {
+            throw new Error(`HTTP ${contentResponse.status}: ${contentResponse.statusText}`);
+          }
+
+          const contentData = (await contentResponse.json()) as any;
+          const content = decodeBase64Content(contentData.content.replace(/\s/g, ''));
+
+          return {
+            name: file.path.split('/').pop() || '',
+            path: file.path,
+            content,
+          };
+        } catch (error) {
+          lastError = error instanceof Error ? error : new Error(String(error));
+
+          if (attempt === 0) {
+            // First attempt failed, will retry immediately
+            continue;
+          }
         }
-
-        const contentData = (await contentResponse.json()) as any;
-        const content = atob(contentData.content.replace(/\s/g, ''));
-
-        return {
-          name: file.path.split('/').pop() || '',
-          path: file.path,
-          content,
-        };
-      } catch (error) {
-        console.warn(`Error fetching ${file.path}:`, error);
-        return null;
       }
+
+      // Both attempts failed
+      if (lastError) {
+        console.warn(`Failed to fetch ${file.path} after retry:`, lastError.message);
+        failedFiles.push({ path: file.path, error: lastError.message });
+      }
+
+      return null;
     });
 
     const batchResults = await Promise.all(batchPromises);
@@ -329,7 +380,10 @@ async function fetchRepoContentsFromDefaultBranch(repo: string, githubToken?: st
     }
   }
 
-  return fileContents;
+  return {
+    files: fileContents,
+    failedFiles: failedFiles.length > 0 ? failedFiles : undefined,
+  };
 }
 
 export async function loader({ request, context }: { request: Request; context: any }) {
@@ -354,9 +408,12 @@ export async function loader({ request, context }: { request: Request; context: 
     }
 
     // Filter out .git files for both methods
-    const filteredFiles = fileList.filter((file: any) => !file.path.startsWith('.git'));
+    const filteredFiles = fileList.files.filter((file: any) => !file.path.startsWith('.git'));
 
-    return json(filteredFiles);
+    return json({
+      files: filteredFiles,
+      failedFiles: fileList.failedFiles,
+    });
   } catch (error) {
     console.error('Error processing GitHub template:', error);
     console.error('Repository:', repo);

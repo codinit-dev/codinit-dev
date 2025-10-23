@@ -20,6 +20,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'open-mixtral-8x7b',
@@ -27,6 +28,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'open-mixtral-8x22b',
@@ -34,6 +36,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'open-codestral-mamba',
@@ -41,6 +44,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'open-mistral-nemo',
@@ -48,6 +52,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'ministral-8b-latest',
@@ -55,6 +60,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'mistral-small-latest',
@@ -62,6 +68,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'codestral-latest',
@@ -69,6 +76,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
     {
       name: 'mistral-large-latest',
@@ -76,6 +84,7 @@ export default class MistralProvider extends BaseProvider {
       provider: 'Mistral',
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
+      icon: '/thirdparty/logos/mistral.svg',
     },
   ];
 

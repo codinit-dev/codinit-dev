@@ -20,11 +20,11 @@
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"]
     },
-    "ignoreDeprecations": "6.0",
 
     // vite takes care of building everything, not tsc
     "noEmit": true
