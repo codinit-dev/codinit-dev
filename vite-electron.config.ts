@@ -27,8 +27,13 @@ export default defineConfig((config) => {
     },
     resolve: {
       alias: {
-        // Map crypto-browserify to node:crypto for SSR builds
-        ...(config.isSsrBuild ? { 'crypto-browserify': 'node:crypto' } : {}),
+        // Map crypto and crypto-browserify to node:crypto for SSR builds
+        ...(config.isSsrBuild
+          ? {
+              crypto: 'node:crypto',
+              'crypto-browserify': 'node:crypto',
+            }
+          : {}),
       },
     },
     plugins: [
