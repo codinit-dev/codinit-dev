@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { MAX_FILES, isBinaryFile, shouldIncludeFile } from '~/utils/fileUtils';
 import { createChatFromFolder } from '~/utils/folderImport';
 import { logStore } from '~/lib/stores/logs'; // Assuming logStore is imported from this location
-import { Button } from '~/components/ui/Button';
 
 interface ImportFolderButtonProps {
   importChat?: (description: string, messages: Message[]) => Promise<void>;
@@ -112,20 +111,25 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ importCh
         onChange={handleFileChange}
         {...({} as any)}
       />
-      <Button
+      <button
         onClick={() => {
           const input = document.getElementById('folder-import');
           input?.click();
         }}
         title="Import Folder"
         aria-label="Import Folder"
-        variant="outline"
-        size="icon"
-        className="rounded-full"
+        className="flex items-center gap-1.5 border border-bolt-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={isLoading}
       >
-        <span className={isLoading ? 'i-ph:spinner w-5 h-5 animate-spin' : 'i-ph:folder-open w-5 h-5'} />
-      </Button>
+        <span
+          className={
+            isLoading
+              ? 'w-4 h-4 block transition-theme i-ph:spinner animate-spin'
+              : 'w-4 h-4 block transition-theme i-ph:folder-open'
+          }
+        />
+        <span className="transition-theme">{isLoading ? 'Importing...' : 'Import Folder'}</span>
+      </button>
     </>
   );
 };
