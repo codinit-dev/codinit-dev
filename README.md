@@ -3,6 +3,12 @@
 </p>
 
 <p align="center">
+  <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens" aria-label="Featured on HuntScreens">
+  <img src="https://shot.huntscreens.com/badge.svg" alt="Featured on HuntScreens" width="240" height="60" loading="lazy" />
+</a>
+</p>
+
+<p align="center">
   <strong>⚡ CodinIT.dev — The AI-Powered Full-Stack Development Platform ⚡</strong><br/>
   Build, manage, and deploy intelligent applications directly from your browser or desktop.
 </p>
