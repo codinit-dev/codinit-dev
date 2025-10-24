@@ -1,7 +1,6 @@
 import type { Message } from 'ai';
 import { toast } from 'react-toastify';
 import { ImportFolderButton } from '~/components/chat/ImportFolderButton';
-import { Button } from '~/components/ui/Button';
 
 type ChatData = {
   messages?: Message[]; // Standard Example format
@@ -58,19 +57,18 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
       />
       <div className="flex flex-col items-center gap-4 max-w-2xl text-center">
         <div className="flex gap-2">
-          <Button
+          <button
             onClick={() => {
               const input = document.getElementById('chat-import');
               input?.click();
             }}
-            variant="outline"
-            size="icon"
             aria-label="Import Chat"
             title="Import Chat"
-            className="rounded-full"
+            className="flex items-center gap-1.5 border border-bolt-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900"
           >
-            <span className="i-ph:upload-simple w-5 h-5" />
-          </Button>
+            <span className="w-4 h-4 block transition-theme i-ph:upload-simple" />
+            <span className="transition-theme">Import Chat</span>
+          </button>
           <ImportFolderButton importChat={importChat} />
         </div>
       </div>
