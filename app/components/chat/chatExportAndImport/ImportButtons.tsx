@@ -67,6 +67,7 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
             size="icon"
             aria-label="Import Chat"
             title="Import Chat"
+            className="rounded-full"
           >
             <span className="i-ph:upload-simple w-5 h-5" />
           </Button>
