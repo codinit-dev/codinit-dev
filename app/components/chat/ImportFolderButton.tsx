@@ -7,11 +7,10 @@ import { logStore } from '~/lib/stores/logs'; // Assuming logStore is imported f
 import { Button } from '~/components/ui/Button';
 
 interface ImportFolderButtonProps {
-  className?: string;
   importChat?: (description: string, messages: Message[]) => Promise<void>;
 }
 
-export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ className, importChat }) => {
+export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ importChat }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,13 +118,12 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ classNam
           input?.click();
         }}
         title="Import Folder"
-        variant="default"
-        size="lg"
-        className={className}
+        aria-label="Import Folder"
+        variant="outline"
+        size="icon"
         disabled={isLoading}
       >
-        <span className="i-ph:folder-open w-5 h-5" />
-        {isLoading ? 'Importing...' : 'Import Folder'}
+        <span className={isLoading ? 'i-ph:spinner w-5 h-5 animate-spin' : 'i-ph:folder-open w-5 h-5'} />
       </Button>
     </>
   );
