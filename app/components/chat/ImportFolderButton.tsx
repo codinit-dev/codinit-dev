@@ -121,6 +121,7 @@ export const ImportFolderButton: React.FC<ImportFolderButtonProps> = ({ importCh
         aria-label="Import Folder"
         variant="outline"
         size="icon"
+        className="rounded-full"
         disabled={isLoading}
       >
         <span className={isLoading ? 'i-ph:spinner w-5 h-5 animate-spin' : 'i-ph:folder-open w-5 h-5'} />
