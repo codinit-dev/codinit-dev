@@ -185,6 +185,22 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     },
     requiredFields: [{ key: 'apiKey', label: 'API Key', placeholder: 'sk-...', type: 'password', required: true }],
   },
+  {
+    id: '21st-dev',
+    name: '21st.dev',
+    description: 'Use 21st.dev Magic MCP to build your next.js app components.',
+    icon: '/21st.jpeg',
+    iconColor: '#ffffff',
+    iconBgColor: '#0255fbff',
+    category: 'development',
+    config: {
+      type: 'streamable-http',
+      url: 'https://api.21st.dev/mcp',
+    },
+    requiredFields: [
+      { key: 'apiKey', label: 'API Key', placeholder: 'your-api-key', type: 'password', required: true },
+    ],
+  },
 ];
 
 interface MCPMarketplaceProps {

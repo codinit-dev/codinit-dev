@@ -1,11 +1,4 @@
-import type {
-  ActionType,
-  ExampleAction,
-  ExampleActionData,
-  FileAction,
-  ShellAction,
-  SupabaseAction,
-} from '~/types/actions';
+import type { ActionType, BoltAction, BoltActionData, FileAction, ShellAction, SupabaseAction } from '~/types/actions';
 import type { ExampleArtifactData } from '~/types/artifact';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
@@ -25,7 +18,7 @@ export interface ActionCallbackData {
   artifactId: string;
   messageId: string;
   actionId: string;
-  action: ExampleAction;
+  action: BoltAction;
 }
 
 export type ArtifactCallback = (data: ArtifactCallbackData) => void;
@@ -55,7 +48,7 @@ interface MessageState {
   insideArtifact: boolean;
   insideAction: boolean;
   currentArtifact?: ExampleArtifactData;
-  currentAction: ExampleActionData;
+  currentAction: BoltActionData;
   actionId: number;
 }
 
@@ -140,7 +133,7 @@ export class StreamingMessageParser {
                */
               actionId: String(state.actionId - 1),
 
-              action: currentAction as ExampleAction,
+              action: currentAction as BoltAction,
             });
 
             state.insideAction = false;
@@ -186,7 +179,7 @@ export class StreamingMessageParser {
                 artifactId: currentArtifact.id,
                 messageId,
                 actionId: String(state.actionId++),
-                action: state.currentAction as ExampleAction,
+                action: state.currentAction as BoltAction,
               });
 
               i = actionEndIndex + 1;

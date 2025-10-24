@@ -26,15 +26,17 @@ import useViewport from '~/lib/hooks';
 import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { usePreviewStore } from '~/lib/stores/previews';
+import type { ElementInfo } from './Inspector';
 
 interface WorkspaceProps {
   chatStarted?: boolean;
   isStreaming?: boolean;
-  actionRunner: ActionRunner;
+  actionRunner?: ActionRunner;
   metadata?: {
     gitUrl?: string;
   };
   updateChatMestaData?: (metadata: any) => void;
+  setSelectedElement?: (element: ElementInfo | null) => void;
 }
 
 const viewTransition = { ease: cubicEasingFn };

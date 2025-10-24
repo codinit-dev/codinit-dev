@@ -1,14 +1,7 @@
 import type { WebContainer } from '@webcontainer/api';
 import { path as nodePath } from '~/utils/path';
 import { atom, map, type MapStore } from 'nanostores';
-import type {
-  ActionAlert,
-  ExampleAction,
-  DeployAlert,
-  FileHistory,
-  SupabaseAction,
-  SupabaseAlert,
-} from '~/types/actions';
+import type { ActionAlert, BoltAction, DeployAlert, FileHistory, SupabaseAction, SupabaseAlert } from '~/types/actions';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 import type { ActionCallbackData } from './message-parser';
@@ -18,14 +11,14 @@ const logger = createScopedLogger('ActionRunner');
 
 export type ActionStatus = 'pending' | 'running' | 'complete' | 'aborted' | 'failed';
 
-export type BaseActionState = ExampleAction & {
+export type BaseActionState = BoltAction & {
   status: Exclude<ActionStatus, 'failed'>;
   abort: () => void;
   executed: boolean;
   abortSignal: AbortSignal;
 };
 
-export type FailedActionState = ExampleAction &
+export type FailedActionState = BoltAction &
   Omit<BaseActionState, 'status'> & {
     status: Extract<ActionStatus, 'failed'>;
     error: string;

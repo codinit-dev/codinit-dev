@@ -97,7 +97,12 @@ ${escapeExampleTags(file.content)}
             messages.push({
               role: 'user',
               id: generateId(),
-              content: 'Setup the codebase and Start the application',
+              content: [
+                {
+                  type: 'text',
+                  text: 'Setup the codebase and Start the application',
+                },
+              ] as any,
             });
             messages.push(commandsMessage);
           }

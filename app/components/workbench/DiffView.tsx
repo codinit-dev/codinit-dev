@@ -621,7 +621,7 @@ const InlineDiffComparison = memo(({ beforeCode, afterCode, filename, language }
 interface DiffViewProps {
   fileHistory: Record<string, FileHistory>;
   setFileHistory: React.Dispatch<React.SetStateAction<Record<string, FileHistory>>>;
-  actionRunner: ActionRunner;
+  actionRunner?: ActionRunner;
 }
 
 export const DiffView = memo(({ fileHistory, setFileHistory }: DiffViewProps) => {

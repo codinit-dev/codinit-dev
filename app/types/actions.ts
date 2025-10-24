@@ -30,15 +30,15 @@ export interface SupabaseAction extends BaseAction {
   projectId?: string;
 }
 
-export type ExampleAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
+export type BoltAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
 
-export type ExampleActionData = ExampleAction | BaseAction;
+export type BoltActionData = BoltAction | BaseAction;
 
 export interface ActionAlert {
   type: string;
   title: string;
   description: string;
-  content: string;
+  content?: string;
   source?: 'terminal' | 'preview'; // Add source to differentiate between terminal and preview errors
 }
 
@@ -59,7 +59,16 @@ export interface DeployAlert {
   stage?: 'building' | 'deploying' | 'complete';
   buildStatus?: 'pending' | 'running' | 'complete' | 'failed';
   deployStatus?: 'pending' | 'running' | 'complete' | 'failed';
-  source?: 'vercel' | 'netlify' | 'github';
+  source?: 'vercel' | 'netlify' | 'github' | 'gitlab';
+}
+
+export interface LlmErrorAlertType {
+  type: 'error' | 'warning';
+  title: string;
+  description: string;
+  content?: string;
+  provider?: string;
+  errorType?: 'authentication' | 'rate_limit' | 'quota' | 'network' | 'unknown';
 }
 
 export interface FileHistory {
