@@ -153,8 +153,8 @@ ${escapeExampleTags(file.content)}
     <>
       <button
         onClick={() => setIsDialogOpen(true)}
-        title="Github"
-        aria-label="Clone a Git Repo"
+        title="GitHub"
+        aria-label="GitHub"
         className="flex items-center gap-1.5 border border-bolt-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={!ready || loading}
       >
@@ -165,7 +165,7 @@ ${escapeExampleTags(file.content)}
               : 'w-4 h-4 block transition-theme i-ph:github-logo'
           }
         />
-        <span className="transition-theme">Clone a Git Repo</span>
+        <span className="transition-theme">GitHub</span>
       </button>
 
       <RepositorySelectionDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSelect={handleClone} />
