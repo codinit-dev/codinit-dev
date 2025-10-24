@@ -230,7 +230,8 @@ export async function selectContext(props: {
   logger.info(`Total files: ${totalFiles}`);
 
   if (totalFiles == 0) {
-    throw new Error(`Example failed to select files`);
+    logger.info('No files selected - returning empty context (this is valid for planning/documentation tasks)');
+    return {};
   }
 
   return filteredFiles;
