@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { RepositorySelectionDialog } from '~/components/@settings/tabs/connections/components/RepositorySelectionDialog';
-import { Button } from '~/components/ui/Button';
 import type { IChatMetadata } from '~/lib/persistence/db';
 
 const IGNORE_PATTERNS = [
@@ -152,16 +151,22 @@ ${escapeExampleTags(file.content)}
 
   return (
     <>
-      <Button
+      <button
         onClick={() => setIsDialogOpen(true)}
         title="Clone a Git Repo"
         aria-label="Clone a Git Repo"
-        variant="outline"
-        size="icon"
+        className="flex items-center gap-1.5 border border-bolt-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={!ready || loading}
       >
-        <span className={loading ? 'i-ph:spinner w-5 h-5 animate-spin' : 'i-ph:git-branch w-5 h-5'} />
-      </Button>
+        <span
+          className={
+            loading
+              ? 'w-4 h-4 block transition-theme i-ph:spinner animate-spin'
+              : 'w-4 h-4 block transition-theme i-bx:bxl-github'
+          }
+        />
+        <span className="transition-theme">Clone a Git Repo</span>
+      </button>
 
       <RepositorySelectionDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSelect={handleClone} />
 
