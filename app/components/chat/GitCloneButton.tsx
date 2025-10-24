@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { RepositorySelectionDialog } from '~/components/@settings/tabs/connections/components/RepositorySelectionDialog';
-import { classNames } from '~/utils/classNames';
 import { Button } from '~/components/ui/Button';
 import type { IChatMetadata } from '~/lib/persistence/db';
 
@@ -38,11 +37,10 @@ const MAX_FILE_SIZE = 100 * 1024; // 100KB limit per file
 const MAX_TOTAL_SIZE = 500 * 1024; // 500KB total limit
 
 interface GitCloneButtonProps {
-  className?: string;
   importChat?: (description: string, messages: Message[], metadata?: IChatMetadata) => Promise<void>;
 }
 
-export default function GitCloneButton({ importChat, className }: GitCloneButtonProps) {
+export default function GitCloneButton({ importChat }: GitCloneButtonProps) {
   const { ready, gitClone } = useGit();
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -157,22 +155,12 @@ ${escapeExampleTags(file.content)}
       <Button
         onClick={() => setIsDialogOpen(true)}
         title="Clone a Git Repo"
-        variant="default"
-        size="lg"
-        className={classNames(
-          'gap-3 bg-[#1f1f1f] dark:bg-[#1f1f1f]',
-          'text-white',
-          'hover:bg-[#2a2a2a] dark:hover:bg-[#2a2a2a]',
-          'border border-[rgba(255,255,255,0.1)]',
-          'h-12 px-6 py-3 min-w-[160px] justify-start',
-          'transition-all duration-200 ease-in-out',
-          'rounded-xl font-medium',
-          className,
-        )}
+        aria-label="Clone a Git Repo"
+        variant="outline"
+        size="icon"
         disabled={!ready || loading}
       >
-        <span className="i-ph:git-branch w-5 h-5" />
-        Clone a Git Repo
+        <span className={loading ? 'i-ph:spinner w-5 h-5 animate-spin' : 'i-ph:git-branch w-5 h-5'} />
       </Button>
 
       <RepositorySelectionDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} onSelect={handleClone} />
