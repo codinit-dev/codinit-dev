@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
 import { PROVIDER_LIST } from '~/utils/constants';
@@ -19,6 +19,7 @@ import { ColorSchemeDialog } from '~/components/chat/ColorSchemeDialog';
 import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
+import { McpIntegrationPanel } from './MCPIntegrationPanel';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -64,18 +65,21 @@ interface ChatBoxProps {
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
-  return (
-    <div
-      className={classNames(
-        'relative bg-bolt-elements-background-depth-2 backdrop-blur p-3 rounded-lg border border-bolt-elements-borderColor relative w-full max-w-chat mx-auto z-prompt',
+  const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
 
-        /*
-         * {
-         *   'sticky bottom-2': chatStarted,
-         * },
-         */
-      )}
-    >
+  return (
+    <>
+      <div
+        className={classNames(
+          'relative bg-bolt-elements-background-depth-2 backdrop-blur p-3 rounded-lg border border-bolt-elements-borderColor relative w-full max-w-chat mx-auto z-prompt',
+
+          /*
+           * {
+           *   'sticky bottom-2': chatStarted,
+           * },
+           */
+        )}
+      >
       <svg className={classNames(styles.PromptEffectContainer)}>
         <defs>
           <linearGradient
@@ -261,11 +265,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <div className="flex justify-between items-center text-sm p-4 pt-2">
           <div className="flex gap-1 items-center">
             <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
-            <McpTools
-              onOpenPanel={function (): void {
-                throw new Error('Function not implemented.');
-              }}
-            />
+            <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />
             <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
               <div className="i-ph:paperclip text-xl"></div>
             </IconButton>
@@ -333,6 +333,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           <ExpoQrModal open={props.qrModalOpen} onClose={() => props.setQrModalOpen(false)} />
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* MCP Integration Panel */}
+      <McpIntegrationPanel isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} />
+    </>
   );
 };
