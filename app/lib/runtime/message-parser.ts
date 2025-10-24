@@ -8,6 +8,12 @@ const ARTIFACT_TAG_CLOSE = '</exampleArtifact>';
 const ARTIFACT_ACTION_TAG_OPEN = '<exampleAction';
 const ARTIFACT_ACTION_TAG_CLOSE = '</exampleAction>';
 
+// Legacy bolt tags (for backward compatibility)
+const BOLT_ARTIFACT_TAG_OPEN = '<boltArtifact';
+const BOLT_ARTIFACT_TAG_CLOSE = '</boltArtifact>';
+const BOLT_ACTION_TAG_OPEN = '<boltAction';
+const BOLT_ACTION_TAG_CLOSE = '</boltAction>';
+
 const logger = createScopedLogger('MessageParser');
 
 export interface ArtifactCallbackData extends ExampleArtifactData {
@@ -101,7 +107,12 @@ export class StreamingMessageParser {
         }
 
         if (state.insideAction) {
-          const closeIndex = input.indexOf(ARTIFACT_ACTION_TAG_CLOSE, i);
+          let closeIndex = input.indexOf(ARTIFACT_ACTION_TAG_CLOSE, i);
+
+          // Also check for legacy bolt action close tag
+          if (closeIndex === -1) {
+            closeIndex = input.indexOf(BOLT_ACTION_TAG_CLOSE, i);
+          }
 
           const currentAction = state.currentAction;
 
@@ -139,7 +150,13 @@ export class StreamingMessageParser {
             state.insideAction = false;
             state.currentAction = { content: '' };
 
-            i = closeIndex + ARTIFACT_ACTION_TAG_CLOSE.length;
+            // Determine which tag was found to get the correct length
+            const closeTagLength =
+              input.indexOf(ARTIFACT_ACTION_TAG_CLOSE, i) === closeIndex
+                ? ARTIFACT_ACTION_TAG_CLOSE.length
+                : BOLT_ACTION_TAG_CLOSE.length;
+
+            i = closeIndex + closeTagLength;
           } else {
             if ('type' in currentAction && currentAction.type === 'file') {
               let content = input.slice(i);
@@ -164,8 +181,25 @@ export class StreamingMessageParser {
             break;
           }
         } else {
-          const actionOpenIndex = input.indexOf(ARTIFACT_ACTION_TAG_OPEN, i);
-          const artifactCloseIndex = input.indexOf(ARTIFACT_TAG_CLOSE, i);
+          let actionOpenIndex = input.indexOf(ARTIFACT_ACTION_TAG_OPEN, i);
+          let artifactCloseIndex = input.indexOf(ARTIFACT_TAG_CLOSE, i);
+
+          // Also check for legacy bolt tags
+          const boltActionOpenIndex = input.indexOf(BOLT_ACTION_TAG_OPEN, i);
+          const boltArtifactCloseIndex = input.indexOf(BOLT_ARTIFACT_TAG_CLOSE, i);
+
+          // Use the earliest action open tag found
+          if (boltActionOpenIndex !== -1 && (actionOpenIndex === -1 || boltActionOpenIndex < actionOpenIndex)) {
+            actionOpenIndex = boltActionOpenIndex;
+          }
+
+          // Use the earliest artifact close tag found
+          if (
+            boltArtifactCloseIndex !== -1 &&
+            (artifactCloseIndex === -1 || boltArtifactCloseIndex < artifactCloseIndex)
+          ) {
+            artifactCloseIndex = boltArtifactCloseIndex;
+          }
 
           if (actionOpenIndex !== -1 && (artifactCloseIndex === -1 || actionOpenIndex < artifactCloseIndex)) {
             const actionEndIndex = input.indexOf('>', actionOpenIndex);
@@ -192,7 +226,13 @@ export class StreamingMessageParser {
             state.insideArtifact = false;
             state.currentArtifact = undefined;
 
-            i = artifactCloseIndex + ARTIFACT_TAG_CLOSE.length;
+            // Determine which tag was found to get the correct length
+            const closeTagLength =
+              input.indexOf(ARTIFACT_TAG_CLOSE, i) === artifactCloseIndex
+                ? ARTIFACT_TAG_CLOSE.length
+                : BOLT_ARTIFACT_TAG_CLOSE.length;
+
+            i = artifactCloseIndex + closeTagLength;
           } else {
             break;
           }
@@ -201,10 +241,15 @@ export class StreamingMessageParser {
         let j = i;
         let potentialTag = '';
 
-        while (j < input.length && potentialTag.length < ARTIFACT_TAG_OPEN.length) {
+        const maxTagLength = Math.max(ARTIFACT_TAG_OPEN.length, BOLT_ARTIFACT_TAG_OPEN.length);
+
+        while (j < input.length && potentialTag.length < maxTagLength) {
           potentialTag += input[j];
 
-          if (potentialTag === ARTIFACT_TAG_OPEN) {
+          const isExampleTag = potentialTag === ARTIFACT_TAG_OPEN;
+          const isBoltTag = potentialTag === BOLT_ARTIFACT_TAG_OPEN;
+
+          if (isExampleTag || isBoltTag) {
             const nextChar = input[j + 1];
 
             if (nextChar && nextChar !== '>' && nextChar !== ' ') {
@@ -252,7 +297,7 @@ export class StreamingMessageParser {
             }
 
             break;
-          } else if (!ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
+          } else if (!ARTIFACT_TAG_OPEN.startsWith(potentialTag) && !BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
             output += input.slice(i, j + 1);
             i = j + 1;
             break;
@@ -261,7 +306,10 @@ export class StreamingMessageParser {
           j++;
         }
 
-        if (j === input.length && ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
+        if (
+          j === input.length &&
+          (ARTIFACT_TAG_OPEN.startsWith(potentialTag) || BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag))
+        ) {
           break;
         }
       } else {
