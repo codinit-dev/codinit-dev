@@ -20,8 +20,6 @@ import {
 import type { FileMap } from '~/lib/stores/files';
 import type { Snapshot } from './types';
 import { webcontainer } from '~/lib/webcontainer';
-import { detectProjectCommands, createCommandActionsString } from '~/utils/projectCommands';
-import type { ContextAnnotation } from '~/types/context';
 
 export interface ChatHistoryItem {
   id: string;
@@ -74,7 +72,6 @@ export function useChatHistory() {
              * const snapshot: Snapshot = snapshotStr ? JSON.parse(snapshotStr) : { chatIndex: 0, files: {} }; // Use snapshot from DB
              */
             const validSnapshot = snapshot || { chatIndex: '', files: {} }; // Ensure snapshot is not undefined
-            const summary = validSnapshot.summary;
 
             const rewindId = searchParams.get('rewindTo');
             let startingIdx = -1;
@@ -101,65 +98,12 @@ export function useChatHistory() {
             setArchivedMessages(archivedMessages);
 
             if (startingIdx > 0) {
-              const files = Object.entries(validSnapshot?.files || {})
-                .map(([key, value]) => {
-                  if (value?.type !== 'file') {
-                    return null;
-                  }
-
-                  return {
-                    content: value.content,
-                    path: key,
-                  };
-                })
-                .filter((x): x is { content: string; path: string } => !!x); // Type assertion
-              const projectCommands = await detectProjectCommands(files);
-
-              // Call the modified function to get only the command actions string
-              const commandActionsString = createCommandActionsString(projectCommands);
-
               filteredMessages = [
                 {
                   id: generateId(),
                   role: 'user',
-                  content: `Restore project from snapshot`, // Removed newline
+                  content: `Restore project from snapshot`,
                   annotations: ['no-store', 'hidden'],
-                },
-                {
-                  id: storedMessages.messages[snapshotIndex].id,
-                  role: 'assistant',
-
-                  // Combine followup message and the artifact with files and command actions
-                  content: `Example Restored your chat from a snapshot. You can revert this message to load the full chat history.
-                  <exampleArtifact id="restored-project-setup" title="Restored Project & Setup" type="bundled">
-                  ${Object.entries(snapshot?.files || {})
-                    .map(([key, value]) => {
-                      if (value?.type === 'file') {
-                        return `
-                      <exampleAction type="file" filePath="${key}">
-${value.content}
-                      </exampleAction>
-                      `;
-                      } else {
-                        return ``;
-                      }
-                    })
-                    .join('\n')}
-                  ${commandActionsString} 
-                  </exampleArtifact>
-                  `, // Added commandActionsString, followupMessage, updated id and title
-                  annotations: [
-                    'no-store',
-                    ...(summary
-                      ? [
-                          {
-                            chatId: storedMessages.messages[snapshotIndex].id,
-                            type: 'chatSummary',
-                            summary,
-                          } satisfies ContextAnnotation,
-                        ]
-                      : []),
-                  ],
                 },
 
                 // Remove the separate user and assistant messages for commands
@@ -222,7 +166,7 @@ ${value.content}
     [db],
   );
 
-  const restoreSnapshot = useCallback(async (id: string, snapshot?: Snapshot) => {
+  const restoreSnapshot = useCallback(async (_id: string, snapshot?: Snapshot) => {
     // const snapshotStr = localStorage.getItem(`snapshot:${id}`); // Remove localStorage usage
     const container = await webcontainer;
 
