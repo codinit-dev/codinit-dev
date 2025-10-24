@@ -2,7 +2,6 @@ import type { Message } from 'ai';
 import { toast } from 'react-toastify';
 import { ImportFolderButton } from '~/components/chat/ImportFolderButton';
 import { Button } from '~/components/ui/Button';
-import { classNames } from '~/utils/classNames';
 
 type ChatData = {
   messages?: Message[]; // Standard Example format
@@ -64,33 +63,14 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
               const input = document.getElementById('chat-import');
               input?.click();
             }}
-            variant="default"
-            size="lg"
-            className={classNames(
-              'gap-3 bg-[#1f1f1f] dark:bg-[#1f1f1f]',
-              'text-white',
-              'hover:bg-[#2a2a2a] dark:hover:bg-[#2a2a2a]',
-              'border border-[rgba(255,255,255,0.1)]',
-              'h-12 px-6 py-3 min-w-[160px] justify-start',
-              'transition-all duration-200 ease-in-out',
-              'rounded-xl font-medium',
-            )}
+            variant="outline"
+            size="icon"
+            aria-label="Import Chat"
+            title="Import Chat"
           >
             <span className="i-ph:upload-simple w-5 h-5" />
-            Import Chat
           </Button>
-          <ImportFolderButton
-            importChat={importChat}
-            className={classNames(
-              'gap-3 bg-[#1f1f1f] dark:bg-[#1f1f1f]',
-              'text-white',
-              'hover:bg-[#2a2a2a] dark:hover:bg-[#2a2a2a]',
-              'border border-[rgba(255,255,255,0.1)]',
-              'h-12 px-6 py-3 min-w-[160px] justify-start',
-              'transition-all duration-200 ease-in-out',
-              'rounded-xl font-medium',
-            )}
-          />
+          <ImportFolderButton importChat={importChat} />
         </div>
       </div>
     </div>
