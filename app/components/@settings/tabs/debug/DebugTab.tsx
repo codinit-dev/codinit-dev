@@ -172,7 +172,7 @@ const DependencySection = ({
         className={classNames(
           'flex w-full items-center justify-between p-4',
           'bg-white dark:bg-[#0A0A0A]',
-          'hover:bg-purple-50/50 dark:hover:bg-[#1a1a1a]',
+          'hover:bg-blue-50/50 dark:hover:bg-[#1a1a1a]',
           'border-b border-[#E5E5E5] dark:border-[#1A1A1A]',
           'transition-colors duration-200',
           'first:rounded-t-lg last:rounded-b-lg',
@@ -1240,11 +1240,11 @@ export default function DebugTab() {
             'text-sm text-gray-900 dark:text-white',
             'bg-[#FAFAFA] dark:bg-[#0A0A0A]',
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-purple-500/10 dark:hover:bg-purple-500/20',
+            'hover:bg-blue-500/10 dark:hover:bg-blue-500/20',
             'transition-all duration-200',
           )}
         >
-          <span className="i-ph:download text-lg text-gray-500 dark:text-gray-400 group-hover:text-purple-500 transition-colors" />
+          <span className="i-ph:download text-lg text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
           Export
         </button>
 
@@ -1264,8 +1264,8 @@ export default function DebugTab() {
                     'flex items-center gap-3 px-4 py-3 text-sm rounded-lg transition-colors w-full text-left',
                     'bg-white dark:bg-[#0A0A0A]',
                     'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-                    'hover:bg-purple-50 dark:hover:bg-[#1a1a1a]',
-                    'hover:border-purple-200 dark:hover:border-purple-900/30',
+                    'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+                    'hover:border-blue-200 dark:hover:border-blue-900/30',
                     'text-bolt-elements-textPrimary',
                   )}
                 >
@@ -1336,9 +1336,9 @@ export default function DebugTab() {
       {/* Quick Stats Banner */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Errors Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-purple-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
-            <div className="i-ph:warning-octagon text-purple-500 w-4 h-4" />
+            <div className="i-ph:warning-octagon text-blue-500 w-4 h-4" />
             <div className="text-sm text-bolt-elements-textSecondary">Errors</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
@@ -1360,9 +1360,9 @@ export default function DebugTab() {
         </div>
 
         {/* Memory Usage Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-purple-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
-            <div className="i-ph:cpu text-purple-500 w-4 h-4" />
+            <div className="i-ph:cpu text-blue-500 w-4 h-4" />
             <div className="text-sm text-bolt-elements-textSecondary">Memory Usage</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
@@ -1391,15 +1391,15 @@ export default function DebugTab() {
             )}
           />
           <div className="text-xs text-bolt-elements-textSecondary mt-2 flex items-center gap-1.5">
-            <div className="i-ph:info w-3.5 h-3.5 text-purple-500" />
+            <div className="i-ph:info w-3.5 h-3.5 text-blue-500" />
             Used: {systemInfo?.memory.used ?? '0 GB'} / {systemInfo?.memory.total ?? '0 GB'}
           </div>
         </div>
 
         {/* Page Load Time Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-purple-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
-            <div className="i-ph:timer text-purple-500 w-4 h-4" />
+            <div className="i-ph:timer text-blue-500 w-4 h-4" />
             <div className="text-sm text-bolt-elements-textSecondary">Page Load Time</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
@@ -1417,15 +1417,15 @@ export default function DebugTab() {
             </span>
           </div>
           <div className="text-xs text-bolt-elements-textSecondary mt-2 flex items-center gap-1.5">
-            <div className="i-ph:code w-3.5 h-3.5 text-purple-500" />
+            <div className="i-ph:code w-3.5 h-3.5 text-blue-500" />
             DOM Ready: {systemInfo ? (systemInfo.performance.timing.domReadyTime / 1000).toFixed(2) : '-'}s
           </div>
         </div>
 
         {/* Network Speed Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-purple-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
-            <div className="i-ph:wifi-high text-purple-500 w-4 h-4" />
+            <div className="i-ph:wifi-high text-blue-500 w-4 h-4" />
             <div className="text-sm text-bolt-elements-textSecondary">Network Speed</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
@@ -1443,16 +1443,16 @@ export default function DebugTab() {
             </span>
           </div>
           <div className="text-xs text-bolt-elements-textSecondary mt-2 flex items-center gap-1.5">
-            <div className="i-ph:activity w-3.5 h-3.5 text-purple-500" />
+            <div className="i-ph:activity w-3.5 h-3.5 text-blue-500" />
             RTT: {systemInfo?.network.rtt ?? '-'} ms
           </div>
         </div>
 
         {/* Ollama Service Card - Now spans all 4 columns */}
-        <div className="md:col-span-4 p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-purple-500/30 transition-all duration-200 h-[260px] flex flex-col">
+        <div className="md:col-span-4 p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[260px] flex flex-col">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="i-ph:robot text-purple-500 w-5 h-5" />
+              <div className="i-ph:robot text-blue-500 w-5 h-5" />
               <div>
                 <div className="text-base font-medium text-bolt-elements-textPrimary">Ollama Service</div>
                 <div className="text-xs text-bolt-elements-textSecondary mt-0.5">{status.message}</div>
@@ -1482,7 +1482,7 @@ export default function DebugTab() {
               <>
                 <div className="text-xs font-medium text-bolt-elements-textSecondary flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="i-ph:cube-duotone w-4 h-4 text-purple-500" />
+                    <div className="i-ph:cube-duotone w-4 h-4 text-blue-500" />
                     <span>Installed Models</span>
                     <Badge variant="secondary" className="ml-1">
                       {ollamaStatus.models.length}
@@ -1497,7 +1497,7 @@ export default function DebugTab() {
                         className="text-sm bg-bolt-elements-background-depth-3 hover:bg-bolt-elements-background-depth-4 rounded-lg px-4 py-3 flex items-center justify-between transition-colors group"
                       >
                         <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
-                          <div className="i-ph:cube w-4 h-4 text-purple-500/70 group-hover:text-purple-500 transition-colors" />
+                          <div className="i-ph:cube w-4 h-4 text-blue-500/70 group-hover:text-blue-500 transition-colors" />
                           <span className="font-mono truncate">{model.name}</span>
                         </div>
                         <Badge variant="outline" className="ml-2 text-xs font-mono">
@@ -1515,7 +1515,7 @@ export default function DebugTab() {
                     className={classNames('w-12 h-12', {
                       'i-ph:warning-circle text-red-500/80':
                         status.status === 'Not Running' || status.status === 'Disabled',
-                      'i-ph:cube-duotone text-purple-500/80': status.status === 'Running',
+                      'i-ph:cube-duotone text-blue-500/80': status.status === 'Running',
                     })}
                   />
                   <span className="text-sm text-bolt-elements-textSecondary">{status.message}</span>
@@ -1535,8 +1535,8 @@ export default function DebugTab() {
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
             'bg-white dark:bg-[#0A0A0A]',
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-purple-50 dark:hover:bg-[#1a1a1a]',
-            'hover:border-purple-200 dark:hover:border-purple-900/30',
+            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-bolt-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.systemInfo },
           )}
@@ -1556,8 +1556,8 @@ export default function DebugTab() {
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
             'bg-white dark:bg-[#0A0A0A]',
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-purple-50 dark:hover:bg-[#1a1a1a]',
-            'hover:border-purple-200 dark:hover:border-purple-900/30',
+            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-bolt-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.performance },
           )}
@@ -1577,8 +1577,8 @@ export default function DebugTab() {
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
             'bg-white dark:bg-[#0A0A0A]',
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-purple-50 dark:hover:bg-[#1a1a1a]',
-            'hover:border-purple-200 dark:hover:border-purple-900/30',
+            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-bolt-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.errors },
           )}
@@ -1598,8 +1598,8 @@ export default function DebugTab() {
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
             'bg-white dark:bg-[#0A0A0A]',
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-purple-50 dark:hover:bg-[#1a1a1a]',
-            'hover:border-purple-200 dark:hover:border-purple-900/30',
+            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-bolt-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.webAppInfo },
           )}
@@ -1624,7 +1624,7 @@ export default function DebugTab() {
         <CollapsibleTrigger className="w-full">
           <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-3">
-              <div className="i-ph:cpu text-purple-500 w-5 h-5" />
+              <div className="i-ph:cpu text-blue-500 w-5 h-5" />
               <h3 className="text-base font-medium text-bolt-elements-textPrimary">System Information</h3>
             </div>
             <div
@@ -1771,7 +1771,7 @@ export default function DebugTab() {
         <CollapsibleTrigger className="w-full">
           <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-3">
-              <div className="i-ph:chart-line text-purple-500 w-5 h-5" />
+              <div className="i-ph:chart-line text-blue-500 w-5 h-5" />
               <h3 className="text-base font-medium text-bolt-elements-textPrimary">Performance Metrics</h3>
             </div>
             <div

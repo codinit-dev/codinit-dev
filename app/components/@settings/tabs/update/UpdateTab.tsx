@@ -292,7 +292,7 @@ const UpdateTab = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="i-ph:arrow-circle-up text-xl text-purple-500" />
+        <div className="i-ph:arrow-circle-up text-xl text-blue-500" />
         <div>
           <h3 className="text-lg font-medium text-bolt-elements-textPrimary">Updates</h3>
           <p className="text-sm text-bolt-elements-textSecondary">Check for and manage application updates</p>
@@ -307,7 +307,7 @@ const UpdateTab = () => {
         transition={{ duration: 0.3, delay: 0.1 }}
       >
         <div className="flex items-center gap-3 mb-6">
-          <div className="i-ph:gear text-purple-500 w-5 h-5" />
+          <div className="i-ph:gear text-blue-500 w-5 h-5" />
           <h3 className="text-lg font-medium text-bolt-elements-textPrimary">Update Settings</h3>
         </div>
 
@@ -323,7 +323,7 @@ const UpdateTab = () => {
               onClick={() => setUpdateSettings((prev) => ({ ...prev, autoUpdate: !prev.autoUpdate }))}
               className={classNames(
                 'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
-                updateSettings.autoUpdate ? 'bg-purple-500' : 'bg-gray-200 dark:bg-gray-700',
+                updateSettings.autoUpdate ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700',
               )}
             >
               <span
@@ -344,7 +344,7 @@ const UpdateTab = () => {
               onClick={() => setUpdateSettings((prev) => ({ ...prev, notifyInApp: !prev.notifyInApp }))}
               className={classNames(
                 'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
-                updateSettings.notifyInApp ? 'bg-purple-500' : 'bg-gray-200 dark:bg-gray-700',
+                updateSettings.notifyInApp ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700',
               )}
             >
               <span
@@ -391,7 +391,7 @@ const UpdateTab = () => {
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="i-ph:arrows-clockwise text-purple-500 w-5 h-5" />
+            <div className="i-ph:arrows-clockwise text-blue-500 w-5 h-5" />
             <h3 className="text-lg font-medium text-bolt-elements-textPrimary">Update Status</h3>
           </div>
           <div className="flex items-center gap-2">
@@ -400,8 +400,8 @@ const UpdateTab = () => {
                 onClick={handleUpdate}
                 className={classNames(
                   'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
-                  'bg-purple-500 text-white',
-                  'hover:bg-purple-600',
+                  'bg-blue-500 text-white',
+                  'hover:bg-blue-600',
                   'transition-colors duration-200',
                 )}
               >
@@ -417,8 +417,8 @@ const UpdateTab = () => {
               className={classNames(
                 'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
                 'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                'hover:bg-purple-500/10 hover:text-purple-500',
-                'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
+                'hover:bg-blue-500/10 hover:text-blue-500',
+                'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
                 'text-bolt-elements-textPrimary',
                 'transition-colors duration-200',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -472,8 +472,8 @@ const UpdateTab = () => {
                   className={classNames(
                     'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
                     'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                    'hover:bg-purple-500/10 hover:text-purple-500',
-                    'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
+                    'hover:bg-blue-500/10 hover:text-blue-500',
+                    'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
                     'text-bolt-elements-textPrimary',
                     'transition-colors duration-200',
                     'w-fit',
@@ -486,7 +486,7 @@ const UpdateTab = () => {
             </div>
             {updateProgress?.details?.additions !== undefined && updateProgress?.details?.deletions !== undefined && (
               <div className="mt-2 flex items-center gap-2">
-                <div className="i-ph:git-diff text-purple-500 w-4 h-4" />
+                <div className="i-ph:git-diff text-blue-500 w-4 h-4" />
                 Changes: <span className="text-green-600">+{updateProgress.details.additions}</span>{' '}
                 <span className="text-red-600">-{updateProgress.details.deletions}</span>
               </div>
@@ -498,7 +498,7 @@ const UpdateTab = () => {
         {updateProgress?.details?.changelog && (
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
-              <div className="i-ph:scroll text-purple-500 w-5 h-5" />
+              <div className="i-ph:scroll text-blue-500 w-5 h-5" />
               <p className="font-medium">Changelog</p>
             </div>
             <div className="bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-lg p-4 overflow-auto max-h-[300px]">
@@ -519,8 +519,8 @@ const UpdateTab = () => {
               className={classNames(
                 'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
                 'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                'hover:bg-purple-500/10 hover:text-purple-500',
-                'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
+                'hover:bg-blue-500/10 hover:text-blue-500',
+                'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
                 'text-bolt-elements-textPrimary',
                 'transition-colors duration-200',
                 'w-fit',
@@ -566,8 +566,8 @@ const UpdateTab = () => {
                     className={classNames(
                       'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
                       'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                      'hover:bg-purple-500/10 hover:text-purple-500',
-                      'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
+                      'hover:bg-blue-500/10 hover:text-blue-500',
+                      'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
                       'text-bolt-elements-textPrimary',
                       'transition-colors duration-200',
                       'w-fit',
@@ -585,7 +585,7 @@ const UpdateTab = () => {
                   <div className="bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-lg p-3 space-y-2">
                     {updateProgress.details.commitMessages.map((msg, index) => (
                       <div key={index} className="text-sm text-bolt-elements-textSecondary flex items-start gap-2">
-                        <div className="i-ph:git-commit text-purple-500 w-4 h-4 mt-0.5 flex-shrink-0" />
+                        <div className="i-ph:git-commit text-blue-500 w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>{msg}</span>
                       </div>
                     ))}
@@ -596,13 +596,13 @@ const UpdateTab = () => {
               {updateProgress?.details?.totalSize && (
                 <div className="flex items-center gap-4 text-sm text-bolt-elements-textSecondary">
                   <div className="flex items-center gap-2">
-                    <div className="i-ph:file text-purple-500 w-4 h-4" />
+                    <div className="i-ph:file text-blue-500 w-4 h-4" />
                     Total size: {updateProgress.details.totalSize}
                   </div>
                   {updateProgress?.details?.additions !== undefined &&
                     updateProgress?.details?.deletions !== undefined && (
                       <div className="flex items-center gap-2">
-                        <div className="i-ph:git-diff text-purple-500 w-4 h-4" />
+                        <div className="i-ph:git-diff text-blue-500 w-4 h-4" />
                         Changes: <span className="text-green-600">+{updateProgress.details.additions}</span>{' '}
                         <span className="text-red-600">-{updateProgress.details.deletions}</span>
                       </div>

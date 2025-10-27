@@ -61,7 +61,7 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                     'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                     'border border-[#E5E5E5] dark:border-[#1A1A1A]',
                     'text-bolt-elements-textPrimary placeholder:text-bolt-elements-textTertiary',
-                    'focus:outline-none focus:ring-2 focus:ring-purple-500/50',
+                    'focus:outline-none focus:ring-2 focus:ring-blue-500/50',
                   )}
                   required
                 />
@@ -83,7 +83,7 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                     'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
                     'border border-[#E5E5E5] dark:border-[#1A1A1A]',
                     'text-bolt-elements-textPrimary',
-                    'focus:outline-none focus:ring-2 focus:ring-purple-500/50',
+                    'focus:outline-none focus:ring-2 focus:ring-blue-500/50',
                   )}
                 >
                   {branches?.map((branch) => (
@@ -123,8 +123,8 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                   'px-4 py-2 rounded-lg text-sm font-medium',
                   'text-bolt-elements-textPrimary',
                   'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                  'hover:bg-purple-500/10 hover:text-purple-500',
-                  'dark:hover:bg-purple-500/20 dark:hover:text-purple-500',
+                  'hover:bg-blue-500/10 hover:text-blue-500',
+                  'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
                   'transition-colors',
                 )}
               >
@@ -134,8 +134,8 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                 type="submit"
                 className={classNames(
                   'px-4 py-2 rounded-lg text-sm font-medium',
-                  'text-white bg-purple-500',
-                  'hover:bg-purple-600',
+                  'text-white bg-blue-500',
+                  'hover:bg-blue-600',
                   'transition-colors',
                 )}
               >

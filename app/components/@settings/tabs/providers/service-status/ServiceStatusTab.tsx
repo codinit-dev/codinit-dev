@@ -84,7 +84,7 @@ export default function ServiceStatusTab() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="animate-spin i-ph:circle-notch w-8 h-8 text-purple-500" />
+        <div className="animate-spin i-ph:circle-notch w-8 h-8 text-blue-500" />
       </div>
     );
   }

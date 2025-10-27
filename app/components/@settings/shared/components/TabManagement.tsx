@@ -50,7 +50,7 @@ const BETA_TABS = new Set<TabType>(['task-manager', 'service-status', 'update', 
 
 // Beta label component
 const BetaLabel = () => (
-  <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-purple-500/10 text-purple-500 font-medium">BETA</span>
+  <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-blue-500/10 text-blue-500 font-medium">BETA</span>
 );
 
 export const TabManagement = () => {
@@ -150,7 +150,7 @@ export const TabManagement = () => {
               className={classNames(
                 'w-8 h-8 flex items-center justify-center rounded-lg',
                 'bg-bolt-elements-background-depth-3',
-                'text-purple-500',
+                'text-blue-500',
               )}
             >
               <TbLayoutGrid className="w-5 h-5" />
@@ -177,7 +177,7 @@ export const TabManagement = () => {
                 'border border-bolt-elements-borderColor',
                 'text-bolt-elements-textPrimary',
                 'placeholder-bolt-elements-textTertiary',
-                'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
+                'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
                 'transition-all duration-200',
               )}
             />
@@ -189,7 +189,7 @@ export const TabManagement = () => {
           {/* Default Section Header */}
           {filteredTabs.some((tab) => DEFAULT_USER_TABS.includes(tab.id)) && (
             <div className="col-span-full flex items-center gap-2 mt-4 mb-2">
-              <div className="i-ph:star-fill w-4 h-4 text-purple-500" />
+              <div className="i-ph:star-fill w-4 h-4 text-blue-500" />
               <span className="text-sm font-medium text-bolt-elements-textPrimary">Default Tabs</span>
             </div>
           )}
@@ -214,7 +214,7 @@ export const TabManagement = () => {
               >
                 {/* Status Badges */}
                 <div className="absolute top-1 right-1.5 flex gap-1">
-                  <span className="px-1.5 py-0.25 text-xs rounded-full bg-purple-500/10 text-purple-500 font-medium mr-2">
+                  <span className="px-1.5 py-0.25 text-xs rounded-full bg-blue-500/10 text-blue-500 font-medium mr-2">
                     Default
                   </span>
                 </div>
@@ -225,7 +225,7 @@ export const TabManagement = () => {
                       'w-10 h-10 flex items-center justify-center rounded-xl',
                       'bg-bolt-elements-background-depth-3 group-hover:bg-bolt-elements-background-depth-4',
                       'transition-all duration-200',
-                      tab.visible ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
+                      tab.visible ? 'text-blue-500' : 'text-bolt-elements-textSecondary',
                     )}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -241,7 +241,7 @@ export const TabManagement = () => {
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
+                          <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-blue-500 transition-colors">
                             {TAB_LABELS[tab.id]}
                           </h4>
                           {BETA_TABS.has(tab.id) && <BetaLabel />}
@@ -260,7 +260,7 @@ export const TabManagement = () => {
                             handleTabVisibilityChange(tab.id, checked);
                           }
                         }}
-                        className={classNames('data-[state=checked]:bg-purple-500 ml-4', {
+                        className={classNames('data-[state=checked]:bg-blue-500 ml-4', {
                           'opacity-50 pointer-events-none':
                             !DEFAULT_USER_TABS.includes(tab.id) && !OPTIONAL_USER_TABS.includes(tab.id),
                         })}
@@ -270,7 +270,7 @@ export const TabManagement = () => {
                 </div>
 
                 <motion.div
-                  className="absolute inset-0 border-2 border-purple-500/0 rounded-lg pointer-events-none"
+                  className="absolute inset-0 border-2 border-blue-500/0 rounded-lg pointer-events-none"
                   animate={{
                     borderColor: tab.visible ? 'rgba(168, 85, 247, 0.2)' : 'rgba(168, 85, 247, 0)',
                     scale: tab.visible ? 1 : 0.98,
@@ -319,7 +319,7 @@ export const TabManagement = () => {
                       'w-10 h-10 flex items-center justify-center rounded-xl',
                       'bg-bolt-elements-background-depth-3 group-hover:bg-bolt-elements-background-depth-4',
                       'transition-all duration-200',
-                      tab.visible ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
+                      tab.visible ? 'text-blue-500' : 'text-bolt-elements-textSecondary',
                     )}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -335,7 +335,7 @@ export const TabManagement = () => {
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
+                          <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-blue-500 transition-colors">
                             {TAB_LABELS[tab.id]}
                           </h4>
                           {BETA_TABS.has(tab.id) && <BetaLabel />}
@@ -354,7 +354,7 @@ export const TabManagement = () => {
                             handleTabVisibilityChange(tab.id, checked);
                           }
                         }}
-                        className={classNames('data-[state=checked]:bg-purple-500 ml-4', {
+                        className={classNames('data-[state=checked]:bg-blue-500 ml-4', {
                           'opacity-50 pointer-events-none':
                             !DEFAULT_USER_TABS.includes(tab.id) && !OPTIONAL_USER_TABS.includes(tab.id),
                         })}
@@ -364,7 +364,7 @@ export const TabManagement = () => {
                 </div>
 
                 <motion.div
-                  className="absolute inset-0 border-2 border-purple-500/0 rounded-lg pointer-events-none"
+                  className="absolute inset-0 border-2 border-blue-500/0 rounded-lg pointer-events-none"
                   animate={{
                     borderColor: tab.visible ? 'rgba(168, 85, 247, 0.2)' : 'rgba(168, 85, 247, 0)',
                     scale: tab.visible ? 1 : 0.98,

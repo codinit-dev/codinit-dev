@@ -144,7 +144,7 @@ const CloudProvidersTab = () => {
               className={classNames(
                 'w-8 h-8 flex items-center justify-center rounded-lg',
                 'bg-bolt-elements-background-depth-3',
-                'text-purple-500',
+                'text-blue-500',
               )}
             >
               <TbCloudComputing className="w-5 h-5" />
@@ -181,7 +181,7 @@ const CloudProvidersTab = () => {
               <div className="absolute top-0 right-0 p-2 flex gap-1">
                 {URL_CONFIGURABLE_PROVIDERS.includes(provider.name) && (
                   <motion.span
-                    className="px-2 py-0.5 text-xs rounded-full bg-purple-500/10 text-purple-500 font-medium"
+                    className="px-2 py-0.5 text-xs rounded-full bg-blue-500/10 text-blue-500 font-medium"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -196,7 +196,7 @@ const CloudProvidersTab = () => {
                     'w-10 h-10 flex items-center justify-center rounded-xl',
                     'bg-bolt-elements-background-depth-3 group-hover:bg-bolt-elements-background-depth-4',
                     'transition-all duration-200',
-                    provider.settings.enabled ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
+                    provider.settings.enabled ? 'text-blue-500' : 'text-bolt-elements-textSecondary',
                   )}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -212,7 +212,7 @@ const CloudProvidersTab = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <div>
-                      <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-purple-500 transition-colors">
+                      <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-blue-500 transition-colors">
                         {provider.name}
                       </h4>
                       <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
@@ -245,7 +245,7 @@ const CloudProvidersTab = () => {
                               'flex-1 px-3 py-1.5 rounded-lg text-sm',
                               'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
                               'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
-                              'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
+                              'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
                               'transition-all duration-200',
                             )}
                             onKeyDown={(e) => {
@@ -265,7 +265,7 @@ const CloudProvidersTab = () => {
                           >
                             <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
                               <div className="i-ph:link text-sm" />
-                              <span className="group-hover/url:text-purple-500 transition-colors">
+                              <span className="group-hover/url:text-blue-500 transition-colors">
                                 {provider.settings.baseUrl || 'Click to set base URL'}
                               </span>
                             </div>
@@ -287,7 +287,7 @@ const CloudProvidersTab = () => {
               </div>
 
               <motion.div
-                className="absolute inset-0 border-2 border-purple-500/0 rounded-lg pointer-events-none"
+                className="absolute inset-0 border-2 border-blue-500/0 rounded-lg pointer-events-none"
                 animate={{
                   borderColor: provider.settings.enabled ? 'rgba(168, 85, 247, 0.2)' : 'rgba(168, 85, 247, 0)',
                   scale: provider.settings.enabled ? 1 : 0.98,

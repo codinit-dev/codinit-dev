@@ -113,7 +113,7 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                           href="https://github.com/settings/tokens"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-purple-500 hover:underline"
+                          className="text-blue-500 hover:underline"
                         >
                           github.com/settings/tokens
                         </a>
@@ -128,7 +128,7 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                             type="radio"
                             checked={tokenType === 'classic'}
                             onChange={() => setTokenType('classic')}
-                            className="w-3.5 h-3.5 accent-purple-500"
+                            className="w-3.5 h-3.5 accent-blue-500"
                           />
                           <span className="text-sm text-[#111111] dark:text-white">Classic</span>
                         </label>
@@ -137,7 +137,7 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                             type="radio"
                             checked={tokenType === 'fine-grained'}
                             onChange={() => setTokenType('fine-grained')}
-                            className="w-3.5 h-3.5 accent-purple-500"
+                            className="w-3.5 h-3.5 accent-blue-500"
                           />
                           <span className="text-sm text-[#111111] dark:text-white">Fine-grained</span>
                         </label>
@@ -147,7 +147,7 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                      className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                     >
                       {isSubmitting ? 'Connecting...' : 'Connect to GitHub'}
                     </button>

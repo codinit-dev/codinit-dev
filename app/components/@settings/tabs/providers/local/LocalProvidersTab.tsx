@@ -305,17 +305,17 @@ export default function LocalProvidersTab() {
   const ModelDetails = ({ model }: { model: OllamaModel }) => (
     <div className="flex items-center gap-3 text-xs text-bolt-elements-textSecondary">
       <div className="flex items-center gap-1">
-        <div className="i-ph:code text-purple-500" />
+        <div className="i-ph:code text-blue-500" />
         <span>{model.digest.substring(0, 7)}</span>
       </div>
       {model.details && (
         <>
           <div className="flex items-center gap-1">
-            <div className="i-ph:database text-purple-500" />
+            <div className="i-ph:database text-blue-500" />
             <span>{model.details.parameter_size}</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="i-ph:cube text-purple-500" />
+            <div className="i-ph:cube text-blue-500" />
             <span>{model.details.quantization_level}</span>
           </div>
         </>
@@ -339,8 +339,8 @@ export default function LocalProvidersTab() {
         disabled={model.status === 'updating'}
         className={classNames(
           'rounded-lg p-2',
-          'bg-purple-500/10 text-purple-500',
-          'hover:bg-purple-500/20',
+          'bg-blue-500/10 text-blue-500',
+          'hover:bg-blue-500/20',
           'transition-all duration-200',
           { 'opacity-50 cursor-not-allowed': model.status === 'updating' },
         )}
@@ -398,7 +398,7 @@ export default function LocalProvidersTab() {
             <motion.div
               className={classNames(
                 'w-10 h-10 flex items-center justify-center rounded-xl',
-                'bg-purple-500/10 text-purple-500',
+                'bg-blue-500/10 text-blue-500',
               )}
               whileHover={{ scale: 1.05 }}
             >
@@ -445,7 +445,7 @@ export default function LocalProvidersTab() {
                     className={classNames(
                       'w-12 h-12 flex items-center justify-center rounded-xl',
                       'bg-bolt-elements-background-depth-3',
-                      provider.settings.enabled ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
+                      provider.settings.enabled ? 'text-blue-500' : 'text-bolt-elements-textSecondary',
                     )}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                   >
@@ -491,7 +491,7 @@ export default function LocalProvidersTab() {
                             'w-full px-3 py-2 rounded-lg text-sm',
                             'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
                             'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
-                            'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
+                            'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
                             'transition-all duration-200',
                           )}
                           onKeyDown={(e) => {
@@ -510,7 +510,7 @@ export default function LocalProvidersTab() {
                           className={classNames(
                             'w-full px-3 py-2 rounded-lg text-sm cursor-pointer',
                             'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
-                            'hover:border-purple-500/30 hover:bg-bolt-elements-background-depth-4',
+                            'hover:border-blue-500/30 hover:bg-bolt-elements-background-depth-4',
                             'transition-all duration-200',
                           )}
                         >
@@ -530,7 +530,7 @@ export default function LocalProvidersTab() {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="i-ph:cube-duotone text-purple-500" />
+                      <div className="i-ph:cube-duotone text-blue-500" />
                       <h4 className="text-sm font-medium text-bolt-elements-textPrimary">Installed Models</h4>
                     </div>
                     {isLoadingModels ? (
@@ -565,7 +565,7 @@ export default function LocalProvidersTab() {
                             href="https://ollama.com/library"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-purple-500 hover:underline inline-flex items-center gap-0.5 text-base font-medium"
+                            className="text-blue-500 hover:underline inline-flex items-center gap-0.5 text-base font-medium"
                           >
                             ollama.com/library
                             <div className="i-ph:arrow-square-out text-xs" />
@@ -654,7 +654,7 @@ export default function LocalProvidersTab() {
                         className={classNames(
                           'w-12 h-12 flex items-center justify-center rounded-xl',
                           'bg-bolt-elements-background-depth-3',
-                          provider.settings.enabled ? 'text-purple-500' : 'text-bolt-elements-textSecondary',
+                          provider.settings.enabled ? 'text-blue-500' : 'text-bolt-elements-textSecondary',
                         )}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
@@ -671,7 +671,7 @@ export default function LocalProvidersTab() {
                               Local
                             </span>
                             {URL_CONFIGURABLE_PROVIDERS.includes(provider.name) && (
-                              <span className="px-2 py-0.5 text-xs rounded-full bg-purple-500/10 text-purple-500">
+                              <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/10 text-blue-500">
                                 Configurable
                               </span>
                             )}
@@ -709,7 +709,7 @@ export default function LocalProvidersTab() {
                                 'w-full px-3 py-2 rounded-lg text-sm',
                                 'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
                                 'text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary',
-                                'focus:outline-none focus:ring-2 focus:ring-purple-500/30',
+                                'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
                                 'transition-all duration-200',
                               )}
                               onKeyDown={(e) => {
@@ -728,7 +728,7 @@ export default function LocalProvidersTab() {
                               className={classNames(
                                 'w-full px-3 py-2 rounded-lg text-sm cursor-pointer',
                                 'bg-bolt-elements-background-depth-3 border border-bolt-elements-borderColor',
-                                'hover:border-purple-500/30 hover:bg-bolt-elements-background-depth-4',
+                                'hover:border-blue-500/30 hover:bg-bolt-elements-background-depth-4',
                                 'transition-all duration-200',
                               )}
                             >

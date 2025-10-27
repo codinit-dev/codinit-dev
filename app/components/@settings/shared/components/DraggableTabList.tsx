@@ -103,7 +103,7 @@ const DraggableTabItem = ({
             <Switch
               checked={tab.visible}
               onCheckedChange={(checked: boolean) => onVisibilityChange?.(tab, checked)}
-              className="data-[state=checked]:bg-purple-500"
+              className="data-[state=checked]:bg-blue-500"
               aria-label={`Toggle ${TAB_LABELS[tab.id]} visibility`}
             />
             <label className="text-sm text-bolt-elements-textSecondary">Visible</label>
@@ -113,7 +113,7 @@ const DraggableTabItem = ({
             <Switch
               checked={tab.window === 'developer'}
               onCheckedChange={(checked: boolean) => onWindowChange?.(tab, checked ? 'developer' : 'user')}
-              className="data-[state=checked]:bg-purple-500"
+              className="data-[state=checked]:bg-blue-500"
               aria-label={`Toggle ${TAB_LABELS[tab.id]} window assignment`}
             />
             <label className="text-sm text-bolt-elements-textSecondary">Dev</label>
