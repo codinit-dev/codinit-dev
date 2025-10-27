@@ -40,7 +40,9 @@
     "electron:build:mac": "rimraf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --mac",
     "electron:build:win": "rimraf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --win",
     "electron:build:linux": "rimraf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --linux",
-    "electron:build:dist": "rimraf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder -m -w -l"
+    "electron:build:dist": "rimraf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder -m -w -l",
+    "email:dev": "email dev --dir emails --port 3000",
+    "email:export": "email export --dir emails --outDir .react-email"
   },
   "engines": {
     "node": ">=20.15.1"
@@ -94,6 +96,8 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@react-email/components": "^0.5.7",
+    "@react-email/render": "^1.4.0",
     "@remix-run/cloudflare": "^2.17.1",
     "@remix-run/cloudflare-pages": "^2.17.1",
     "@remix-run/node": "^2.17.1",
@@ -138,6 +142,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.3.1",
+    "react-email": "^4.3.2",
     "react-hotkeys-hook": "^4.6.2",
     "react-icons": "^5.5.0",
     "react-markdown": "^9.1.0",
@@ -150,6 +155,7 @@
     "remark-gfm": "^4.0.1",
     "remix-island": "^0.2.0",
     "remix-utils": "^7.7.0",
+    "resend": "^6.2.2",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "shiki": "^1.29.2",
     "tailwind-merge": "^2.6.0",
