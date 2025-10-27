@@ -72,7 +72,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
     <>
       <div
         className={classNames(
-          'relative bg-[#141414] backdrop-blur p-3 rounded-lg border border-[rgba(255,255,255,0.08)] relative w-full max-w-chat mx-auto z-prompt',
+          'relative bg-bolt-elements-bg-depth-2 backdrop-blur p-3 rounded-lg border border-bolt-elements-borderColor relative w-full max-w-chat mx-auto z-prompt transition-theme',
 
           /*
            * {
@@ -156,7 +156,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           )}
         </ClientOnly>
         {props.selectedElement && (
-          <div className="flex mx-1.5 gap-2 items-center justify-between rounded-lg rounded-b-none border border-b-none border-[rgba(255,255,255,0.08)] text-bolt-elements-textPrimary flex py-1 px-2.5 font-medium text-xs">
+          <div className="flex mx-1.5 gap-2 items-center justify-between rounded-lg rounded-b-none border border-b-none border-bolt-elements-borderColor text-bolt-elements-textPrimary flex py-1 px-2.5 font-medium text-xs transition-theme">
             <div className="flex gap-2 items-center lowercase">
               <code className="bg-accent-500 rounded-4px px-1.5 py-1 mr-0.5 text-white">
                 {props?.selectedElement?.tagName}
@@ -173,14 +173,14 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         )}
         <div
           className={classNames(
-            'relative shadow-xs border border-[rgba(255,255,255,0.08)] backdrop-blur rounded-lg bg-[#0a0a0a]',
+            'relative shadow-xs border border-bolt-elements-borderColor backdrop-blur rounded-lg bg-bolt-elements-bg-depth-1 transition-theme',
           )}
         >
           {!props.chatStarted && props.input.length === 0 && <TypingAnimation />}
           <textarea
             ref={props.textareaRef}
             className={classNames(
-              'w-full pl-4 pt-4 pr-16 outline-none resize-none text-[#e8e8e8] placeholder-[#6b6b6b] bg-transparent text-sm',
+              'w-full pl-4 pt-4 pr-16 outline-none resize-none text-bolt-elements-textPrimary placeholder-bolt-elements-textTertiary bg-transparent text-sm',
               'transition-all duration-200',
               'hover:border-bolt-elements-focus',
             )}
@@ -332,13 +332,13 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               </IconButton>
             </div>
             {props.input.length > 3 ? (
-              <div className="text-xs text-[#6b6b6b]">
+              <div className="text-xs text-bolt-elements-textTertiary transition-theme">
                 Use{' '}
-                <kbd className="kdb px-1.5 py-0.5 rounded bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)]">
+                <kbd className="kdb px-1.5 py-0.5 rounded bg-bolt-elements-bg-depth-2 border border-bolt-elements-borderColor transition-theme">
                   Shift
                 </kbd>{' '}
                 +{' '}
-                <kbd className="kdb px-1.5 py-0.5 rounded bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)]">
+                <kbd className="kdb px-1.5 py-0.5 rounded bg-bolt-elements-bg-depth-2 border border-bolt-elements-borderColor transition-theme">
                   Return
                 </kbd>{' '}
                 a new line

@@ -58,9 +58,9 @@ export function TypingAnimation({ onPromptClick: _onPromptClick }: TypingAnimati
 
   return (
     <div className="absolute inset-0 flex items-center px-4 pointer-events-none">
-      <div className="flex items-center gap-2 text-[#6b6b6b] text-sm">
+      <div className="flex items-center gap-2 text-bolt-elements-textTertiary text-sm transition-theme">
         <span>{displayedText}</span>
-        <span className="inline-block w-0.5 h-4 bg-[#60a5fa] animate-pulse" />
+        <span className="inline-block w-0.5 h-4 bg-accent-400 animate-pulse transition-theme" />
       </div>
     </div>
   );
