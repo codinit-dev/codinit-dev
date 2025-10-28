@@ -12,10 +12,11 @@ export function BuiltWithCodinitBadge() {
                  rounded-lg shadow-sm
                  transition-colors duration-150
                  text-xs font-medium"
-      aria-label="Built with CodinIT"
+      aria-label="Built with CodinIT.dev"
     >
-      <img src="/icon-light.png" alt="CodinIT" width="16" height="16" className="flex-shrink-0" />
-      <span className="hidden md:inline whitespace-nowrap">Built with CodinIT</span>
+      <img src="/badge-light.png" alt="CodinIT" width="16" height="16" className="flex-shrink-0 dark:hidden" />
+      <img src="/icon-light.png" alt="CodinIT" width="16" height="16" className="hidden flex-shrink-0 dark:block" />
+      <span className="hidden md:inline whitespace-nowrap">Built with CodinIT.dev</span>
     </a>
   );
 }
