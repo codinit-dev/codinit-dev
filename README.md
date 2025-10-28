@@ -1,11 +1,9 @@
 <p align="center">
   <img src="/readme_assets/readme.png" alt="CodinIT Hero" width="80%" />
-</p>
+</p> 
 
-<p align="center">
-  <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens" aria-label="Featured on HuntScreens">
-  <img src="https://shot.huntscreens.com/badge.svg" alt="Featured on HuntScreens" width="240" height="60" loading="lazy" />
-</a>
+<p align="center"> svg" alt="Featured on HuntScreens" width="240" height="60" loading="lazy" />
+</a>''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 </p>
 
 <p align="center">
