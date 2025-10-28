@@ -1,5 +1,5 @@
 appId: com.codinit.dev
-productName: CodinIT.dev Local
+productName: CodinIT.dev
 directories:
   buildResources: build
   output: dist
