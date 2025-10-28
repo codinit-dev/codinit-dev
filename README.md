@@ -3,9 +3,9 @@
 </p>
 
 <p align="center">
-  <a href="https://huntscreens.com">
-    <img src="/readme_assets/featured.svg" alt="Featured on HuntScreens" width="240" height="60" loading="lazy" />
-  </a>
+  <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens" aria-label="Featured on HuntScreens">
+  <img src="https://shot.huntscreens.com/badge.svg" alt="Featured on HuntScreens" width="240" height="60" loading="lazy" />
+</a>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 ## 🚀 Quick Start
 
-Get up and running with **CodinIT** in just a few steps.
+Get up and running with **CodinIT.dev** in just a few steps.
 
 ### 1️⃣ Clone the Repository
 
@@ -26,8 +26,9 @@ git clone https://github.com/Gerome-Elassaad/codinit-app.git
 cd codinit-app
 ```
 
-2️⃣ Install Dependencies
+Install Dependencies
 
+```bash
 # npm
 npm install
 
@@ -36,22 +37,31 @@ pnpm install
 
 # or yarn
 yarn install
+```
+### 2️⃣ Set Up the Database
 
-3️⃣ Configure Environment
+Ensure you have a PostgreSQL database running. You can use Supabase for a quick setup.
 
+### 3️⃣ Configure Environment
+```bash
 cp .env.example .env.local
+```
 
-Edit .env.local and add your provider keys:
+#### Edit .env.local and add your provider keys:
 
+```bash
 OPENAI_API_KEY=your_openai_key
 ANTHROPIC_API_KEY=your_anthropic_key
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+### 4️⃣ Run the Dev Server
 
-4️⃣ Run the Dev Server
-
+```bash
 pnpm run dev
+```
 
 The app will be available at 👉 http://localhost:5173
-
 
 ---
 
@@ -108,7 +118,7 @@ Open an issue, submit a pull request, or join discussions to help improve CodinI
 ---
 
 <p align="center">
-  <strong>🧠 CodinIT.dev — Build Faster. Code Smarter.</strong><br/>
+  <strong>CodinIT.dev — Build Faster. Code Smarter.</strong><br/>
 
   <a href="https://github.com/Gerome-Elassaad/codinit-app/releases/latest">Download the latest version →</a>
 </p>
