@@ -1,0 +1,210 @@
+/* Platform-specific styles for iOS and Android */
+
+/* iOS-specific styles (Human Interface Guidelines) */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific */
+  .ios-safe-area-insets {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* iOS-specific button styles */
+  .ios-button {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .ios-button:active {
+    transform: scale(0.98);
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* iOS-specific scroll behavior */
+  .ios-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* iOS-specific input styles */
+  .ios-input {
+    border-radius: 10px;
+    border: 1px solid #c6c6c8;
+    background-color: #ffffff;
+    font-size: 17px;
+    padding: 12px 16px;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .ios-input:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 0 1px #007aff;
+  }
+}
+
+/* Android-specific styles (Material Design) */
+@supports not (-webkit-touch-callout: none) {
+  /* Android Chrome specific */
+  .android-safe-area-insets {
+    padding-top: max(env(safe-area-inset-top), 24px);
+    padding-bottom: max(env(safe-area-inset-bottom), 24px);
+    padding-left: max(env(safe-area-inset-left), 16px);
+    padding-right: max(env(safe-area-inset-right), 16px);
+  }
+
+  /* Material Design button styles */
+  .material-button {
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.0892857143em;
+    transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .material-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: width 0.6s, height 0.6s;
+    transform: translate(-50%, -50%);
+  }
+
+  .material-button:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Material Design elevation */
+  .material-card {
+    border-radius: 4px;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+                0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+                0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    transition: box-shadow 0.28s cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  .material-card:hover {
+    box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2),
+                0px 3px 4px 0px rgba(0, 0, 0, 0.14),
+                0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Material Design input styles */
+  .material-input {
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid #6200ee;
+    background-color: transparent;
+    font-size: 16px;
+    padding: 16px 12px 8px;
+    transition: border-color 0.2s ease;
+  }
+
+  .material-input:focus {
+    border-bottom: 2px solid #6200ee;
+    outline: none;
+  }
+
+  .material-input::placeholder {
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* Cross-platform touch improvements */
+.touch-device {
+  /* Disable text selection on touch devices */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  /* Re-enable for inputs and text areas */
+  input, textarea, [contenteditable] {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+  /* Better touch scrolling */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Mobile-specific enhancements */
+@media (max-width: 767px) {
+  /* Improved touch targets for mobile */
+  .touch-target {
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+
+  .touch-target-comfortable {
+    min-height: var(--touch-target-comfortable);
+    min-width: var(--touch-target-comfortable);
+  }
+
+  /* Mobile navigation improvements */
+  .ios-navigation, .android-navigation {
+    padding-left: var(--mobile-padding);
+    padding-right: var(--mobile-padding);
+  }
+
+  /* Mobile modal improvements */
+  .ios-modal, .android-modal {
+    margin: var(--mobile-margin);
+    max-width: calc(100vw - 2 * var(--mobile-margin));
+  }
+
+  /* Mobile input improvements */
+  .ios-input, .material-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 14px 16px; /* Larger touch targets */
+  }
+
+  /* Mobile button improvements */
+  .ios-button, .material-button {
+    min-height: var(--touch-target-min);
+    padding: 12px 16px;
+  }
+}
+
+/* Platform-specific navigation patterns */
+.ios-navigation {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.android-navigation {
+  padding-bottom: max(env(safe-area-inset-bottom), 16px);
+}
+
+/* Platform-specific dialog/modal styles */
+.ios-modal {
+  border-radius: 10px;
+  margin: 16px;
+}
+
+.android-modal {
+  border-radius: 4px;
+  margin: 24px;
+  max-height: calc(100vh - 48px);
+}
+
+/* Platform-specific status bar handling */
+.ios-status-bar {
+  padding-top: env(safe-area-inset-top);
+}
+
+.android-status-bar {
+  padding-top: max(env(safe-area-inset-top), 24px);
+}

@@ -5,7 +5,7 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Gerome-Elassaad",
     "email": "gerome.e24@gmail.com"
@@ -150,6 +150,7 @@
     "react-resizable-panels": "^2.1.9",
     "react-toastify": "^10.0.6",
     "react-window": "^1.8.11",
+    "react-window-infinite-loader": "^2.0.0",
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",

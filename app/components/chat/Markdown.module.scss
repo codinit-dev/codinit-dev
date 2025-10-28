@@ -1,6 +1,11 @@
 $font-mono: ui-monospace, 'Fira Code', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 $code-font-size: 13px;
 
+// Mobile-specific variables
+$code-font-size-mobile: 12px;
+$mobile-spacing: 12px;
+$mobile-heading-font-size: 1.1em;
+
 @mixin not-inside-actions {
   &:not(:has(:global(.actions)), :global(.actions *)) {
     @content;
@@ -13,6 +18,11 @@ $code-font-size: 13px;
 
   > *:not(:last-child) {
     margin-block-end: 16px;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      margin-block-end: $mobile-spacing;
+    }
   }
 
   :global(.artifact) {
@@ -26,6 +36,12 @@ $code-font-size: 13px;
       font-weight: 600;
       line-height: 1.25;
       color: var(--bolt-elements-textPrimary);
+
+      /* Mobile optimization */
+      @media (max-width: 767px) {
+        margin-block-start: $mobile-spacing;
+        margin-block-end: $mobile-spacing;
+      }
     }
   }
 
@@ -33,16 +49,31 @@ $code-font-size: 13px;
     font-size: 2em;
     border-bottom: 1px solid var(--bolt-elements-borderColor);
     padding-bottom: 0.3em;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      font-size: 1.5em;
+    }
   }
 
   h2 {
     font-size: 1.5em;
     border-bottom: 1px solid var(--bolt-elements-borderColor);
     padding-bottom: 0.3em;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      font-size: 1.25em;
+    }
   }
 
   h3 {
     font-size: 1.25em;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      font-size: 1.1em;
+    }
   }
 
   h4 {
@@ -81,6 +112,11 @@ $code-font-size: 13px;
     font-family: $font-mono;
     font-size: $code-font-size;
 
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      font-size: $code-font-size-mobile;
+    }
+
     @include not-inside-actions {
       border-radius: 6px;
       padding: 0.2em 0.4em;
@@ -92,6 +128,11 @@ $code-font-size: 13px;
   pre {
     padding: 20px 16px;
     border-radius: 6px;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      padding: 12px 8px;
+    }
   }
 
   pre:has(> code) {
@@ -100,6 +141,11 @@ $code-font-size: 13px;
     background: transparent;
     overflow-x: auto;
     min-width: 0;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      font-size: $code-font-size-mobile;
+    }
   }
 
   blockquote {
@@ -114,6 +160,12 @@ $code-font-size: 13px;
       padding-left: 2em;
       margin-block-start: 0;
       margin-block-end: 16px;
+
+      /* Mobile optimization */
+      @media (max-width: 767px) {
+        padding-left: 1.5em;
+        margin-block-end: $mobile-spacing;
+      }
     }
   }
 

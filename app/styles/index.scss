@@ -1,17 +1,95 @@
 @use 'variables.scss';
 @use 'z-index.scss';
 @use 'animations.scss';
+@use 'platform-specific.scss';
 @use 'components/terminal.scss';
 @use 'components/resize-handle.scss';
 @use 'components/code.scss';
 @use 'components/editor.scss';
 @use 'components/toast.scss';
 
+/* Mobile-first responsive design */
 html,
 body {
   height: 100%;
   width: 100%;
   background-color: var(--bolt-elements-bg-depth-1);
+
+  /* Prevent zoom on input focus in iOS */
+  -webkit-text-size-adjust: 100%;
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+
+  /* Touch optimizations */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  /* Re-enable selection for text areas and inputs */
+  input, textarea, [contenteditable] {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+}
+
+/* Responsive breakpoints */
+@media (max-width: 479px) {
+  :root {
+    --header-height: var(--header-height-mobile);
+    --chat-max-width: var(--chat-max-width-mobile);
+    --chat-min-width: var(--chat-min-width-mobile);
+    --workbench-width: var(--workbench-width-mobile);
+    --workbench-inner-width: var(--workbench-inner-width-mobile);
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  :root {
+    --header-height: var(--header-height-mobile);
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 767px) {
+  /* Touch-friendly interactions */
+  * {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Prevent horizontal scrolling on mobile */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Mobile-specific scrollbar adjustments */
+  .modern-scrollbar {
+    &::-webkit-scrollbar {
+      width: 3px;
+      height: 3px;
+    }
+  }
+
+  /* Improved text readability on mobile */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Mobile gesture support */
+  .touch-action-pan-x {
+    touch-action: pan-x;
+  }
+
+  .touch-action-pan-y {
+    touch-action: pan-y;
+  }
 }
 
 :root {

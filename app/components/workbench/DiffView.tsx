@@ -5,7 +5,7 @@ import type { FileMap } from '~/lib/stores/files';
 import type { EditorDocument } from '~/components/editor/codemirror/CodeMirrorEditor';
 import { diffLines, type Change } from 'diff';
 import { getHighlighter } from 'shiki';
-import '~/styles/diff-view.css';
+import '~/styles/diff-view.scss';
 import { diffFiles, extractRelativePath } from '~/utils/diff';
 import { ActionRunner } from '~/lib/runtime/action-runner';
 import type { FileHistory } from '~/types/actions';

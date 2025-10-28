@@ -46,7 +46,16 @@ export const IconButton = memo(
         <button
           ref={ref}
           className={classNames(
-            'flex items-center text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md p-1 enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none',
+            'flex items-center text-bolt-elements-item-contentDefault bg-transparent enabled:hover:text-bolt-elements-item-contentActive rounded-md enabled:hover:bg-bolt-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none',
+
+            // Touch-friendly sizing and interactions
+            'min-h-[var(--touch-target-min)] min-w-[var(--touch-target-min)] p-2 sm:p-1',
+
+            // Remove hover states on touch devices
+            'touch-manipulation',
+
+            // Better focus indicator for accessibility
+            'focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2',
             {
               [classNames('opacity-30', disabledClassName)]: disabled,
             },

@@ -21,6 +21,7 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { McpIntegrationPanel } from './MCPIntegrationPanel';
 import { TypingAnimation } from './TypingAnimation';
+import { TokenConfigSelector } from './TokenConfigSelector';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -272,8 +273,8 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               />
             )}
           </ClientOnly>
-          <div className="flex justify-between items-center text-sm p-4 pt-2">
-            <div className="flex gap-1 items-center">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-sm p-4 pt-2 gap-2">
+            <div className="flex gap-1 items-center flex-wrap">
               <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
               <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
                 <div className="i-ph:paperclip text-xl"></div>
@@ -300,6 +301,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 onStop={props.stopListening}
                 disabled={props.isStreaming}
               />
+              <TokenConfigSelector />
               <IconButton
                 title="Discuss"
                 className={classNames(
@@ -343,7 +345,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 a new line
               </div>
             ) : null}
-            <div className="flex gap-1 items-center">
+            <div className="flex gap-1 items-center justify-center sm:justify-end">
               <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />
               <SupabaseConnection />
             </div>

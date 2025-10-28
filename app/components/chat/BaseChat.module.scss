@@ -10,6 +10,12 @@
       will-change: transform, opacity;
       transform: translateX(-50%);
       opacity: 0;
+
+      /* Mobile optimization */
+      @media (max-width: 767px) {
+        transition-duration: 0.2s; /* Faster transitions on mobile */
+        transform: translateX(-100%); /* Full slide-out on mobile */
+      }
     }
   }
 }
@@ -26,6 +32,12 @@
   inset: calc(var(--prompt-container-offset) / -2);
   width: calc(100% + var(--prompt-container-offset));
   height: calc(100% + var(--prompt-container-offset));
+
+  /* Mobile optimization - reduce effect size */
+  @media (max-width: 767px) {
+    --prompt-container-offset: 30px;
+    display: none; /* Disable complex effects on mobile for performance */
+  }
 }
 
 .PromptEffectLine {

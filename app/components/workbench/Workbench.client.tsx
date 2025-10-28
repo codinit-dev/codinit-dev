@@ -297,7 +297,8 @@ export const Workbench = memo(
     const files = useStore(workbenchStore.files);
     const selectedView = useStore(workbenchStore.currentView);
 
-    const isSmallViewport = useViewport(1024);
+    const viewport = useViewport();
+    const isSmallViewport = viewport.width < 1024;
 
     const setSelectedView = (view: WorkbenchViewType) => {
       workbenchStore.currentView.set(view);
@@ -374,10 +375,11 @@ export const Workbench = memo(
             className={classNames(
               'fixed top-[calc(var(--header-height)+1.5rem)] bottom-6 w-[var(--workbench-inner-width)] mr-4 z-0 transition-[left,width] duration-200 bolt-ease-cubic-bezier',
               {
-                'w-full': isSmallViewport,
-                'left-0': showWorkbench && isSmallViewport,
-                'left-[var(--workbench-left)]': showWorkbench,
+                'w-full mr-0': viewport.isMobile,
+                'left-0': showWorkbench && (isSmallViewport || viewport.isMobile),
+                'left-[var(--workbench-left)]': showWorkbench && !viewport.isMobile,
                 'left-[100%]': !showWorkbench,
+                'top-[calc(var(--header-height-mobile)+1.5rem)]': viewport.isMobile,
               },
             )}
           >

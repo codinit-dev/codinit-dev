@@ -3,6 +3,18 @@
   animation-duration: var(--animate-duration, 0.2s);
   animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
 
+  /* Mobile-friendly reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Mobile-specific touch interactions */
+  @media (max-width: 767px) {
+    animation-duration: var(--animate-duration-mobile, 0.15s);
+  }
+
   &.fadeInRight {
     animation-name: fadeInRight;
   }
@@ -39,6 +51,12 @@
   opacity: 0;
   animation: fadeMoveDown 0.15s forwards;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Mobile-specific adjustments */
+  @media (max-width: 767px) {
+    animation-duration: 0.12s;
+    transform: translateY(-2px); /* Reduced movement for mobile */
+  }
 }
 
 @keyframes fadeMoveDown {

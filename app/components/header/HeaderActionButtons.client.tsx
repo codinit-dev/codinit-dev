@@ -24,7 +24,8 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   const activePreview = previews[activePreviewIndex];
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployingTo, setDeployingTo] = useState<'netlify' | 'vercel' | null>(null);
-  const isSmallViewport = useViewport(1024);
+  const viewport = useViewport();
+  const isSmallViewport = viewport.isMobile;
   const canHideChat = showWorkbench || !showChat;
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

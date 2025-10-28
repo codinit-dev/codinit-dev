@@ -6,5 +6,10 @@
     left: -53px;
     padding: 2px 6px;
     height: 30px;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      display: none; /* Hide tooltip on mobile to avoid layout issues */
+    }
   }
 }

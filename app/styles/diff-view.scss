@@ -1,11 +1,22 @@
 .diff-panel-content {
   scrollbar-width: thin;
   scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+
+  /* Mobile optimization */
+  @media (max-width: 767px) {
+    scrollbar-width: auto; /* Show scrollbars on mobile for better usability */
+  }
 }
 
 .diff-panel-content::-webkit-scrollbar {
   width: 8px;
   height: 8px;
+
+  /* Mobile-friendly larger touch targets */
+  @media (max-width: 767px) {
+    width: 12px;
+    height: 12px;
+  }
 }
 
 .diff-panel-content::-webkit-scrollbar-track {
@@ -16,6 +27,13 @@
   background-color: rgba(155, 155, 155, 0.5);
   border-radius: 4px;
   border: 2px solid transparent;
+
+  /* Mobile-specific adjustments */
+  @media (max-width: 767px) {
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
 }
 
 .diff-panel-content::-webkit-scrollbar-thumb:hover {
@@ -56,10 +74,20 @@
 
 .diff-line-number {
   @apply w-12 shrink-0 pl-2 py-0.5 text-left font-mono text-bolt-elements-textTertiary border-r border-bolt-elements-borderColor bg-bolt-elements-background-depth-1;
+
+  /* Mobile optimization */
+  @media (max-width: 767px) {
+    @apply w-8 pl-1; /* Smaller width on mobile */
+  }
 }
 
 .diff-line-content {
   @apply px-4 py-0.5 font-mono whitespace-pre flex-1 group-hover:bg-bolt-elements-background-depth-2 text-bolt-elements-textPrimary;
+
+  /* Mobile optimization */
+  @media (max-width: 767px) {
+    @apply px-2 text-sm; /* Reduced padding and smaller text on mobile */
+  }
 }
 
 /* Cores específicas para adições/remoções */

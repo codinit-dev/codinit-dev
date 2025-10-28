@@ -11,6 +11,13 @@
   display: flex;
   flex-direction: column;
   z-index: 101;
+
+  /* Mobile optimization */
+  @media (max-width: 767px) {
+    max-width: 100vw;
+    border-left: none;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+  }
 }
 
 .backdrop {
@@ -25,11 +32,21 @@
   flex-shrink: 0;
   border-bottom: 1px solid var(--bolt-elements-borderColor);
 
+  /* Mobile optimization */
+  @media (max-width: 767px) {
+    border-bottom: none;
+  }
+
   .titleBar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      padding: 0.75rem 1rem;
+    }
 
     h2 {
       font-size: 1.125rem;
@@ -43,6 +60,12 @@
     display: flex;
     gap: 0.5rem;
     padding: 0 1.5rem 1rem;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      padding: 0 1rem 0.75rem;
+      gap: 0.25rem;
+    }
 
     button {
       flex: 1;
@@ -82,6 +105,11 @@
   flex: 1;
   overflow-y: auto;
   padding: 1.5rem;
+
+  /* Mobile optimization */
+  @media (max-width: 767px) {
+    padding: 1rem;
+  }
 
   .description {
     background: var(--bolt-elements-bg-depth-2);

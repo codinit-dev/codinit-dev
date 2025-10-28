@@ -17,6 +17,12 @@
   z-index: 0;
   //   background-color: transparent;
 
+  /* Mobile optimization */
+  @media (max-width: 767px) {
+    animation: none; /* Disable animations on mobile for performance */
+    opacity: 0.3; /* Reduce opacity on mobile */
+  }
+
   :global(html[data-theme='dark']) & {
     mix-blend-mode: screen;
   }
@@ -30,6 +36,11 @@
   position: absolute;
   border-radius: 100%;
 
+  /* Mobile optimization - reduce performance impact */
+  @media (max-width: 767px) {
+    animation: none; /* Disable ray animations on mobile */
+  }
+
   :global(html[data-theme='dark']) & {
     mix-blend-mode: screen;
   }
@@ -37,6 +48,11 @@
   :global(html[data-theme='light']) & {
     mix-blend-mode: multiply;
     opacity: 0.4;
+
+    /* Mobile optimization */
+    @media (max-width: 767px) {
+      opacity: 0.2; /* Further reduce opacity on mobile */
+    }
   }
 }
 

@@ -215,17 +215,59 @@
 }
 
 /*
- * Element Tokens
- *
- * Hierarchy: Element Token -> (Element Token | Color Tokens) -> Primitives
- */
-:root {
-  --header-height: 54px;
-  --chat-max-width: 33rem;
-  --chat-min-width: 533px;
-  --workbench-width: min(calc(100% - var(--chat-min-width)), 2536px);
-  --workbench-inner-width: var(--workbench-width);
-  --workbench-left: calc(100% - var(--workbench-width));
+  * Element Tokens
+  *
+  * Hierarchy: Element Token -> (Element Token | Color Tokens) -> Primitives
+  */
+ :root {
+   --header-height: 54px;
+   --header-height-mobile: 48px;
+
+   /* Responsive breakpoints */
+   --breakpoint-sm: 480px;
+   --breakpoint-md: 768px;
+   --breakpoint-lg: 1024px;
+   --breakpoint-xl: 1280px;
+
+   /* Chat dimensions - responsive */
+   --chat-max-width: 33rem;
+   --chat-max-width-mobile: 100vw;
+   --chat-min-width: clamp(320px, 80vw, 533px);
+   --chat-min-width-mobile: 100vw;
+
+   /* Workbench dimensions - responsive */
+   --workbench-width: min(calc(100% - var(--chat-min-width)), 2536px);
+   --workbench-width-mobile: 100vw;
+   --workbench-inner-width: var(--workbench-width);
+   --workbench-inner-width-mobile: 100vw;
+   --workbench-left: calc(100% - var(--workbench-width));
+
+   /* Touch targets */
+   --touch-target-min: 44px;
+   --touch-target-comfortable: 48px;
+
+   /* Mobile-specific spacing */
+   --mobile-padding: 16px;
+   --mobile-margin: 12px;
+
+   /* Mobile animation durations */
+   --animate-duration-mobile: 0.15s;
+
+   /* Mobile font sizes */
+   --font-size-mobile-sm: 14px;
+   --font-size-mobile-base: 16px;
+   --font-size-mobile-lg: 18px;
+
+   /* Mobile breakpoints for reference */
+   --mobile-max-width: 767px;
+   --tablet-min-width: 768px;
+   --tablet-max-width: 1023px;
+
+   /* Mobile-specific colors for better contrast */
+   --mobile-text-primary: var(--bolt-elements-textPrimary);
+   --mobile-text-secondary: var(--bolt-elements-textSecondary);
+   --mobile-bg-primary: var(--bolt-elements-bg-depth-1);
+   --mobile-bg-secondary: var(--bolt-elements-bg-depth-2);
 
   /* Toasts */
   --toastify-color-progress-success: var(--bolt-elements-icon-success);
