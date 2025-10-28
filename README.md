@@ -20,7 +20,7 @@
 Get up and running with **CodinIT.dev** in just a few steps.
 
 ### 1️⃣ Clone the Repository
-```bash
+
 git clone https://github.com/Gerome-Elassaad/codinit-app.git
 cd codinit-app
 
