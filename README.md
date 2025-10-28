@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>⚡ CodinIT.dev — The AI-Powered Full-Stack Development Platform ⚡</strong><br/>
+  <strong>⚡ CodinIT.dev — Build Your Next Startup Idea With OpenSource ⚡</strong><br/>
   Build, manage, and deploy intelligent applications directly from your browser or desktop.
 </p>
 
@@ -109,4 +109,3 @@ Open an issue, submit a pull request, or join discussions to help improve CodinI
   <strong>🧠 CodinIT.dev — Build Faster. Code Smarter.</strong><br/>
   <a href="https://github.com/Gerome-Elassaad/codinit-app/releases/latest">Download the latest version →</a>
 </p>
-```
