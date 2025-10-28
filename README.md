@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>⚡ CodinIT.dev — Build Your Next Startup Idea With OpenSource ⚡</strong><br/>
+  <strong>⚡ CodinIT.dev — The AI-Powered Full-Stack Development Platform ⚡</strong><br/>
   Build, manage, and deploy intelligent applications directly from your browser or desktop.
 </p>
 
@@ -17,12 +17,14 @@
 
 ## 🚀 Quick Start
 
-Get up and running with **CodinIT.dev** in just a few steps.
+Get up and running with **CodinIT** in just a few steps.
 
 ### 1️⃣ Clone the Repository
 
+```bash
 git clone https://github.com/Gerome-Elassaad/codinit-app.git
 cd codinit-app
+```
 
 2️⃣ Install Dependencies
 
@@ -55,19 +57,19 @@ The app will be available at 👉 http://localhost:5173
 
 🧩 Key Features
 
-🧠 AI-powered full-stack development
-
-📡 Connect with your favourite integrations in our MCP marketplace or add your own. 
+🧠 AI-powered full-stack development for Node.js apps
 
 🌐 Integrations with 19+ AI providers (OpenAI, Anthropic, Google, Groq, etc.)
 
 🖥️ Web and Desktop support (Electron app included)
 
-🐳 Docker-ready and deployable to cloudflare.
+🐳 Docker-ready and deployable to Vercel, Netlify, or GitHub Pages
 
 🔍 Built-in search, diff view, and file locking system
 
 🧰 Supabase integration, data visualization, and voice prompting
+
+
 
 ---
 
@@ -107,5 +109,6 @@ Open an issue, submit a pull request, or join discussions to help improve CodinI
 
 <p align="center">
   <strong>🧠 CodinIT.dev — Build Faster. Code Smarter.</strong><br/>
+
   <a href="https://github.com/Gerome-Elassaad/codinit-app/releases/latest">Download the latest version →</a>
 </p>
