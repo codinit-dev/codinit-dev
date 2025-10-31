@@ -36,7 +36,7 @@ Examples:
 User: I need to build a todo app
 Response:
 <selection>
-  <templateName>Vite React TS</templateName>
+  <templateName>shadcn/ui Vite React</templateName>
   <title>Simple React todo application</title>
 </selection>
 </example>
@@ -45,7 +45,7 @@ Response:
 User: Create a website for my portfolio
 Response:
 <selection>
-  <templateName>Vite React TS</templateName>
+  <templateName>shadcn/ui Vite React</templateName>
   <title>Portfolio website</title>
 </selection>
 </example>
@@ -63,24 +63,24 @@ Response:
 User: Build an e-commerce landing page
 Response:
 <selection>
-  <templateName>Vite React TS</templateName>
+  <templateName>shadcn/ui Vite React</templateName>
   <title>E-commerce landing page</title>
 </selection>
 </example>
 
 Instructions:
 1. For simple scripts and command-line utilities ONLY, use the blank template
-2. For ANY web application, website, landing page, or UI project without a specific framework mentioned, DEFAULT to "Vite React TS"
+2. For ANY web application, website, landing page, or UI project without a specific framework mentioned, DEFAULT to "shadcn/ui Vite React"
 3. For specific framework requests (Next.js, Astro, Angular, etc.), recommend the matching template
 4. Follow the exact XML format
 5. Consider both technical requirements and tags
-6. When in doubt between blank and a web framework, ALWAYS choose "Vite React TS"
+6. When in doubt between blank and a web framework, ALWAYS choose "shadcn/ui Vite React"
 
 Important: Provide only the selection tags in your response, no additional text.
 MOST IMPORTANT: YOU DONT HAVE TIME TO THINK JUST START RESPONDING BASED ON HUNCH 
 `;
 
-const templates: Template[] = STARTER_TEMPLATES.filter((t) => !t.name.includes('shadcn'));
+const templates: Template[] = STARTER_TEMPLATES;
 
 const parseSelectedTemplate = (llmOutput: string): { template: string; title: string } | null => {
   try {
@@ -120,10 +120,10 @@ export const selectStarterTemplate = async (options: { message: string; model: s
   if (selectedTemplate) {
     return selectedTemplate;
   } else {
-    console.log('No template selected, using Vite React TS as default');
+    console.log('No template selected, using shadcn/ui Vite React as default');
 
     return {
-      template: 'Vite React TS',
+      template: 'shadcn/ui Vite React',
       title: 'New Project',
     };
   }
@@ -243,7 +243,7 @@ export async function getTemplates(templateName: string, title?: string) {
   }
 
   const assistantMessage = `
-Example is initializing your project with the required files using the ${template.name} template.
+CodinIT is initializing your project with the required files using the ${template.name} template.
 <exampleArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
 ${filesToImport.files
   .map(
