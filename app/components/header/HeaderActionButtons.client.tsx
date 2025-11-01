@@ -53,7 +53,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
 
   return (
     <div className="flex gap-2">
-      <div className="flex border border-bolt-elements-borderColor rounded-md overflow-hidden">
+      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden">
         <IconButton
           title={
             !netlifyConn.user
@@ -80,7 +80,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           )}
           {netlifyConn.user && <NetlifyDeploymentLink />}
         </IconButton>
-        <div className="w-[1px] bg-bolt-elements-borderColor" />
+        <div className="w-[1px] bg-codinit-elements-borderColor" />
         <IconButton
           title={
             !vercelConn.user ? 'Connect Vercel Account' : deployingTo === 'vercel' ? 'Deploying...' : 'Deploy to Vercel'
@@ -103,7 +103,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           )}
           {vercelConn.user && <VercelDeploymentLink />}
         </IconButton>
-        <div className="w-[1px] bg-bolt-elements-borderColor" />
+        <div className="w-[1px] bg-codinit-elements-borderColor" />
         <IconButton title="Deploy to Cloudflare (Coming Soon)" disabled>
           <img
             className="w-5 h-5"
@@ -115,7 +115,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           />
         </IconButton>
       </div>
-      <div className="flex border border-bolt-elements-borderColor rounded-md overflow-hidden">
+      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden">
         <Button
           active={showChat}
           disabled={!canHideChat || isSmallViewport} // expand button is disabled on mobile as it's not needed
@@ -125,9 +125,9 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             }
           }}
         >
-          <div className="i-bolt:chat text-sm" />
+          <div className="i-codinit:chat text-sm" />
         </Button>
-        <div className="w-[1px] bg-bolt-elements-borderColor" />
+        <div className="w-[1px] bg-codinit-elements-borderColor" />
         <Button
           active={showWorkbench}
           onClick={() => {
@@ -159,10 +159,10 @@ function Button({ active = false, disabled = false, children, onClick, className
       className={classNames(
         'flex items-center p-1.5',
         {
-          'bg-bolt-elements-item-backgroundDefault hover:bg-bolt-elements-item-backgroundActive text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary':
+          'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
             !active,
-          'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent': active && !disabled,
-          'bg-bolt-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
+          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
+          'bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
             disabled,
         },
         className,
@@ -187,10 +187,10 @@ function IconButton({ active = false, disabled = false, children, onClick, title
     <button
       title={title}
       className={classNames('flex items-center justify-center p-1.5 relative', {
-        'bg-bolt-elements-item-backgroundDefault hover:bg-bolt-elements-item-backgroundActive text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary':
+        'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
           !active,
-        'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent': active && !disabled,
-        'bg-bolt-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
+        'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
+        'bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
           disabled,
       })}
       onClick={onClick}
