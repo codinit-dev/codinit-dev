@@ -24,7 +24,6 @@ export default class GroqProvider extends BaseProvider {
       provider: 'Groq',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
-      icon: '/thirdparty/logos/groq.svg',
     },
 
     // Llama 3.3 70B: 128k context, most capable model
@@ -34,7 +33,6 @@ export default class GroqProvider extends BaseProvider {
       provider: 'Groq',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
-      icon: '/thirdparty/logos/groq.svg',
     },
   ];
 

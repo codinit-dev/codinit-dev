@@ -25,7 +25,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 131072,
       maxCompletionTokens: 4096,
-      icon: '/thirdparty/logos/github.svg',
     },
     {
       name: 'openai/gpt-4o-mini',
@@ -33,7 +32,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 131072,
       maxCompletionTokens: 4096,
-      icon: '/thirdparty/logos/github.svg',
     },
     {
       name: 'openai/o1-preview',
@@ -41,7 +39,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 32000,
-      icon: '/thirdparty/logos/github.svg',
     },
     {
       name: 'openai/o1-mini',
@@ -49,7 +46,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 65000,
-      icon: '/thirdparty/logos/github.svg',
     },
     {
       name: 'openai/o1',
@@ -57,7 +53,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 200000,
       maxCompletionTokens: 100000,
-      icon: '/thirdparty/logos/github.svg',
     },
     {
       name: 'openai/gpt-4.1',
@@ -65,7 +60,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 1048576,
       maxCompletionTokens: 32768,
-      icon: '/thirdparty/logos/github.svg',
     },
     {
       name: 'openai/gpt-4.1-mini',
@@ -73,7 +67,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 1048576,
       maxCompletionTokens: 32768,
-      icon: '/thirdparty/logos/github.svg',
     },
     {
       name: 'deepseek/deepseek-r1',
@@ -81,7 +74,6 @@ export default class GithubProvider extends BaseProvider {
       provider: 'Github',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 4096,
-      icon: '/thirdparty/logos/github.svg',
     },
   ];
 

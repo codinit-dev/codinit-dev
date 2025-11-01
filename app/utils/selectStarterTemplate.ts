@@ -217,12 +217,12 @@ export async function getTemplates(templateName: string, title?: string) {
      */
   }
 
-  // exclude    .bolt
-  filteredFiles = filteredFiles.filter((x: { path: string }) => x.path.startsWith('.bolt') == false);
+  // exclude    .codinit
+  filteredFiles = filteredFiles.filter((x: { path: string }) => x.path.startsWith('.codinit') == false);
 
-  // check for ignore file in .bolt folder
+  // check for ignore file in .codinit folder
   const templateIgnoreFile = files.find(
-    (x: { path: string; name: string }) => x.path.startsWith('.bolt') && x.name == 'ignore',
+    (x: { path: string; name: string }) => x.path.startsWith('.codinit') && x.name == 'ignore',
   );
 
   const filesToImport = {
@@ -257,7 +257,7 @@ ${file.content}
 `;
   let userMessage = ``;
   const templatePromptFile = files
-    .filter((x: { path: string }) => x.path.startsWith('.bolt'))
+    .filter((x: { path: string }) => x.path.startsWith('.codinit'))
     .find((x: { name: string }) => x.name == 'prompt');
 
   if (templatePromptFile) {

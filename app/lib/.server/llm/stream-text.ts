@@ -61,15 +61,15 @@ export async function streamText(props: {
     } else if (message.role == 'assistant') {
       let content = message.content;
       content = content.replace(/<div class=\\"__boltThought__\\">.*?<\/div>/s, '');
+      content = content.replace(/<div class=\\"__codinitThinking__\\"[^>]*>.*?<\/div>/gs, '');
       content = content.replace(/<think>.*?<\/think>/s, '');
+      content = content.replace(/<codinitThinking[^>]*>.*?<\/codinitThinking>/gs, '');
 
-      // Remove package-lock.json content specifically keeping token usage MUCH lower
       content = content.replace(
         /<exampleAction type="file" filePath="package-lock\.json">[\s\S]*?<\/exampleAction>/g,
         '[package-lock.json content removed]',
       );
 
-      // Trim whitespace potentially left after removals
       content = content.trim();
 
       return { ...message, content };

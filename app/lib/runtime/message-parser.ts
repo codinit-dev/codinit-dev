@@ -1,5 +1,6 @@
 import type { ActionType, BoltAction, BoltActionData, FileAction, ShellAction, SupabaseAction } from '~/types/actions';
 import type { ExampleArtifactData } from '~/types/artifact';
+import type { ThinkingData } from '~/types/thinking';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
@@ -14,6 +15,10 @@ const BOLT_ARTIFACT_TAG_CLOSE = '</boltArtifact>';
 const BOLT_ACTION_TAG_OPEN = '<boltAction';
 const BOLT_ACTION_TAG_CLOSE = '</boltAction>';
 
+// Thinking tags
+const THINKING_TAG_OPEN = '<codinitThinking';
+const THINKING_TAG_CLOSE = '</codinitThinking>';
+
 const logger = createScopedLogger('MessageParser');
 
 export interface ArtifactCallbackData extends ExampleArtifactData {
@@ -27,8 +32,13 @@ export interface ActionCallbackData {
   action: BoltAction;
 }
 
+export interface ThinkingCallbackData extends ThinkingData {
+  messageId: string;
+}
+
 export type ArtifactCallback = (data: ArtifactCallbackData) => void;
 export type ActionCallback = (data: ActionCallbackData) => void;
+export type ThinkingCallback = (data: ThinkingCallbackData) => void;
 
 export interface ParserCallbacks {
   onArtifactOpen?: ArtifactCallback;
@@ -36,6 +46,8 @@ export interface ParserCallbacks {
   onActionOpen?: ActionCallback;
   onActionStream?: ActionCallback;
   onActionClose?: ActionCallback;
+  onThinkingOpen?: ThinkingCallback;
+  onThinkingClose?: ThinkingCallback;
 }
 
 interface ElementFactoryProps {
@@ -53,8 +65,10 @@ interface MessageState {
   position: number;
   insideArtifact: boolean;
   insideAction: boolean;
+  insideThinking: boolean;
   currentArtifact?: ExampleArtifactData;
   currentAction: BoltActionData;
+  currentThinking?: ThinkingData;
   actionId: number;
 }
 
@@ -87,6 +101,7 @@ export class StreamingMessageParser {
         position: 0,
         insideAction: false,
         insideArtifact: false,
+        insideThinking: false,
         currentAction: { content: '' },
         actionId: 0,
       };
@@ -241,15 +256,52 @@ export class StreamingMessageParser {
         let j = i;
         let potentialTag = '';
 
-        const maxTagLength = Math.max(ARTIFACT_TAG_OPEN.length, BOLT_ARTIFACT_TAG_OPEN.length);
+        const maxTagLength = Math.max(
+          ARTIFACT_TAG_OPEN.length,
+          BOLT_ARTIFACT_TAG_OPEN.length,
+          THINKING_TAG_OPEN.length,
+        );
 
         while (j < input.length && potentialTag.length < maxTagLength) {
           potentialTag += input[j];
 
           const isExampleTag = potentialTag === ARTIFACT_TAG_OPEN;
-          const isBoltTag = potentialTag === BOLT_ARTIFACT_TAG_OPEN;
+          const isCodinitTag = potentialTag === BOLT_ARTIFACT_TAG_OPEN;
+          const isThinkingTag = potentialTag === THINKING_TAG_OPEN;
 
-          if (isExampleTag || isBoltTag) {
+          if (isThinkingTag) {
+            const nextChar = input[j + 1];
+
+            if (nextChar && nextChar !== '>' && nextChar !== ' ') {
+              output += input.slice(i, j + 1);
+              i = j + 1;
+              break;
+            }
+
+            const openTagEnd = input.indexOf('>', j);
+
+            if (openTagEnd !== -1) {
+              const thinkingTag = input.slice(i, openTagEnd + 1);
+              const thinkingId = this.#extractAttribute(thinkingTag, 'id') as string;
+
+              state.insideThinking = true;
+
+              const currentThinking = {
+                id: thinkingId || `thinking-${Date.now()}`,
+                content: '',
+              } satisfies ThinkingData;
+
+              state.currentThinking = currentThinking;
+
+              this._options.callbacks?.onThinkingOpen?.({ messageId, ...currentThinking });
+
+              i = openTagEnd + 1;
+            } else {
+              earlyBreak = true;
+            }
+
+            break;
+          } else if (isExampleTag || isCodinitTag) {
             const nextChar = input[j + 1];
 
             if (nextChar && nextChar !== '>' && nextChar !== ' ') {
@@ -297,7 +349,11 @@ export class StreamingMessageParser {
             }
 
             break;
-          } else if (!ARTIFACT_TAG_OPEN.startsWith(potentialTag) && !BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag)) {
+          } else if (
+            !ARTIFACT_TAG_OPEN.startsWith(potentialTag) &&
+            !BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) &&
+            !THINKING_TAG_OPEN.startsWith(potentialTag)
+          ) {
             output += input.slice(i, j + 1);
             i = j + 1;
             break;
@@ -308,8 +364,41 @@ export class StreamingMessageParser {
 
         if (
           j === input.length &&
-          (ARTIFACT_TAG_OPEN.startsWith(potentialTag) || BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag))
+          (ARTIFACT_TAG_OPEN.startsWith(potentialTag) ||
+            BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) ||
+            THINKING_TAG_OPEN.startsWith(potentialTag))
         ) {
+          break;
+        }
+      } else if (state.insideThinking) {
+        const closeIndex = input.indexOf(THINKING_TAG_CLOSE, i);
+
+        if (closeIndex !== -1) {
+          const content = input.slice(i, closeIndex);
+
+          if (state.currentThinking) {
+            state.currentThinking.content += content;
+
+            output += `<div class="__codinitThinking__" data-message-id="${messageId}">${state.currentThinking.content}</div>`;
+
+            this._options.callbacks?.onThinkingClose?.({
+              messageId,
+              ...state.currentThinking,
+            });
+
+            state.insideThinking = false;
+            state.currentThinking = undefined;
+
+            i = closeIndex + THINKING_TAG_CLOSE.length;
+          } else {
+            output += input[i];
+            i++;
+          }
+        } else {
+          if (state.currentThinking) {
+            state.currentThinking.content += input.slice(i);
+          }
+
           break;
         }
       } else {

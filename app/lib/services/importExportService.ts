@@ -419,9 +419,9 @@ export class ImportExportService {
     // Import UI configuration
     if (data.ui) {
       // Import localStorage UI settings
-      if (data.ui.bolt_tab_configuration) {
+      if (data.ui.codinit_tab_configuration) {
         try {
-          this._safeSetItem('bolt_tab_configuration', data.ui.bolt_tab_configuration);
+          this._safeSetItem('bolt_tab_configuration', data.ui.codinit_tab_configuration);
         } catch (err) {
           console.error('Error importing tab configuration:', err);
         }

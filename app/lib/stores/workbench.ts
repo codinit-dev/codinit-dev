@@ -110,8 +110,8 @@ export class WorkbenchStore {
   get showTerminal() {
     return this.#terminalStore.showTerminal;
   }
-  get boltTerminal() {
-    return this.#terminalStore.boltTerminal;
+  get codinitTerminal() {
+    return this.#terminalStore.codinitTerminal;
   }
   get alert() {
     return this.actionAlert;
@@ -479,7 +479,7 @@ export class WorkbenchStore {
       type,
       runner: new ActionRunner(
         webcontainer,
-        () => this.boltTerminal,
+        () => this.codinitTerminal,
         (alert) => {
           if (this.#reloadedMessages.has(messageId)) {
             return;

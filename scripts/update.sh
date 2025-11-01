@@ -3,7 +3,7 @@
 # Exit on any error
 set -e
 
-echo "Starting Example.DIY update process..."
+echo "Starting CodinIT.dev update process..."
 
 # Get the current directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
