@@ -149,15 +149,15 @@ export const TabManagement = () => {
             <div
               className={classNames(
                 'w-8 h-8 flex items-center justify-center rounded-lg',
-                'bg-bolt-elements-background-depth-3',
+                'bg-codinit-elements-background-depth-3',
                 'text-blue-500',
               )}
             >
               <TbLayoutGrid className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-md font-medium text-bolt-elements-textPrimary">Tab Management</h4>
-              <p className="text-sm text-bolt-elements-textSecondary">Configure visible tabs and their order</p>
+              <h4 className="text-md font-medium text-codinit-elements-textPrimary">Tab Management</h4>
+              <p className="text-sm text-codinit-elements-textSecondary">Configure visible tabs and their order</p>
             </div>
           </div>
 
@@ -173,10 +173,10 @@ export const TabManagement = () => {
               placeholder="Search tabs..."
               className={classNames(
                 'w-full pl-10 pr-4 py-2 rounded-lg',
-                'bg-bolt-elements-background-depth-2',
-                'border border-bolt-elements-borderColor',
-                'text-bolt-elements-textPrimary',
-                'placeholder-bolt-elements-textTertiary',
+                'bg-codinit-elements-background-depth-2',
+                'border border-codinit-elements-borderColor',
+                'text-codinit-elements-textPrimary',
+                'placeholder-codinit-elements-textTertiary',
                 'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
                 'transition-all duration-200',
               )}
@@ -190,7 +190,7 @@ export const TabManagement = () => {
           {filteredTabs.some((tab) => DEFAULT_USER_TABS.includes(tab.id)) && (
             <div className="col-span-full flex items-center gap-2 mt-4 mb-2">
               <div className="i-ph:star-fill w-4 h-4 text-blue-500" />
-              <span className="text-sm font-medium text-bolt-elements-textPrimary">Default Tabs</span>
+              <span className="text-sm font-medium text-codinit-elements-textPrimary">Default Tabs</span>
             </div>
           )}
 
@@ -201,9 +201,9 @@ export const TabManagement = () => {
               <motion.div
                 key={tab.id}
                 className={classNames(
-                  'rounded-lg border bg-bolt-elements-background text-bolt-elements-textPrimary',
-                  'bg-bolt-elements-background-depth-2',
-                  'hover:bg-bolt-elements-background-depth-3',
+                  'rounded-lg border bg-codinit-elements-background text-codinit-elements-textPrimary',
+                  'bg-codinit-elements-background-depth-2',
+                  'hover:bg-codinit-elements-background-depth-3',
                   'transition-all duration-200',
                   'relative overflow-hidden group',
                 )}
@@ -223,9 +223,9 @@ export const TabManagement = () => {
                   <motion.div
                     className={classNames(
                       'w-10 h-10 flex items-center justify-center rounded-xl',
-                      'bg-bolt-elements-background-depth-3 group-hover:bg-bolt-elements-background-depth-4',
+                      'bg-codinit-elements-background-depth-3 group-hover:bg-codinit-elements-background-depth-4',
                       'transition-all duration-200',
-                      tab.visible ? 'text-blue-500' : 'text-bolt-elements-textSecondary',
+                      tab.visible ? 'text-blue-500' : 'text-codinit-elements-textSecondary',
                     )}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -241,12 +241,12 @@ export const TabManagement = () => {
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-blue-500 transition-colors">
+                          <h4 className="text-sm font-medium text-codinit-elements-textPrimary group-hover:text-blue-500 transition-colors">
                             {TAB_LABELS[tab.id]}
                           </h4>
                           {BETA_TABS.has(tab.id) && <BetaLabel />}
                         </div>
-                        <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
+                        <p className="text-xs text-codinit-elements-textSecondary mt-0.5">
                           {tab.visible ? 'Visible in user mode' : 'Hidden in user mode'}
                         </p>
                       </div>
@@ -284,7 +284,7 @@ export const TabManagement = () => {
           {filteredTabs.some((tab) => OPTIONAL_USER_TABS.includes(tab.id)) && (
             <div className="col-span-full flex items-center gap-2 mt-8 mb-2">
               <div className="i-ph:plus-circle-fill w-4 h-4 text-blue-500" />
-              <span className="text-sm font-medium text-bolt-elements-textPrimary">Optional Tabs</span>
+              <span className="text-sm font-medium text-codinit-elements-textPrimary">Optional Tabs</span>
             </div>
           )}
 
@@ -295,9 +295,9 @@ export const TabManagement = () => {
               <motion.div
                 key={tab.id}
                 className={classNames(
-                  'rounded-lg border bg-bolt-elements-background text-bolt-elements-textPrimary',
-                  'bg-bolt-elements-background-depth-2',
-                  'hover:bg-bolt-elements-background-depth-3',
+                  'rounded-lg border bg-codinit-elements-background text-codinit-elements-textPrimary',
+                  'bg-codinit-elements-background-depth-2',
+                  'hover:bg-codinit-elements-background-depth-3',
                   'transition-all duration-200',
                   'relative overflow-hidden group',
                 )}
@@ -317,9 +317,9 @@ export const TabManagement = () => {
                   <motion.div
                     className={classNames(
                       'w-10 h-10 flex items-center justify-center rounded-xl',
-                      'bg-bolt-elements-background-depth-3 group-hover:bg-bolt-elements-background-depth-4',
+                      'bg-codinit-elements-background-depth-3 group-hover:bg-codinit-elements-background-depth-4',
                       'transition-all duration-200',
-                      tab.visible ? 'text-blue-500' : 'text-bolt-elements-textSecondary',
+                      tab.visible ? 'text-blue-500' : 'text-codinit-elements-textSecondary',
                     )}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -335,12 +335,12 @@ export const TabManagement = () => {
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-medium text-bolt-elements-textPrimary group-hover:text-blue-500 transition-colors">
+                          <h4 className="text-sm font-medium text-codinit-elements-textPrimary group-hover:text-blue-500 transition-colors">
                             {TAB_LABELS[tab.id]}
                           </h4>
                           {BETA_TABS.has(tab.id) && <BetaLabel />}
                         </div>
-                        <p className="text-xs text-bolt-elements-textSecondary mt-0.5">
+                        <p className="text-xs text-codinit-elements-textSecondary mt-0.5">
                           {tab.visible ? 'Visible in user mode' : 'Hidden in user mode'}
                         </p>
                       </div>

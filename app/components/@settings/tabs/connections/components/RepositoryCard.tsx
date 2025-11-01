@@ -12,7 +12,7 @@ import { useMemo } from 'react';
 export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
   // Use a consistent styling for all repository cards
   const getCardStyle = () => {
-    return 'from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-1 dark:from-bolt-elements-background-depth-2-dark dark:to-bolt-elements-background-depth-2-dark';
+    return 'from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-1 dark:from-codinit-elements-background-depth-2-dark dark:to-codinit-elements-background-depth-2-dark';
   };
 
   // Format the date in a more readable format
@@ -51,7 +51,7 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
 
   return (
     <motion.div
-      className={`p-5 rounded-xl bg-gradient-to-br ${cardStyle} border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark hover:border-blue-500/40 transition-all duration-300 shadow-sm hover:shadow-md`}
+      className={`p-5 rounded-xl bg-gradient-to-br ${cardStyle} border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-blue-500/40 transition-all duration-300 shadow-sm hover:shadow-md`}
       whileHover={{
         scale: 1.02,
         y: -2,
@@ -64,14 +64,14 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
     >
       <div className="flex items-start justify-between mb-3 gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-bolt-elements-background-depth-1/80 dark:bg-bolt-elements-background-depth-4/80 backdrop-blur-sm flex items-center justify-center text-blue-500 shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-codinit-elements-background-depth-1/80 dark:bg-codinit-elements-background-depth-4/80 backdrop-blur-sm flex items-center justify-center text-blue-500 shadow-sm">
             <span className="i-ph:git-branch w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark text-base">
+            <h3 className="font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark text-base">
               {repo.name}
             </h3>
-            <p className="text-xs text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark flex items-center gap-1">
+            <p className="text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark flex items-center gap-1">
               <span className="i-ph:user w-3 h-3" />
               {repo.full_name.split('/')[0]}
             </p>
@@ -89,8 +89,8 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
       </div>
 
       {repo.description && (
-        <div className="mb-4 bg-bolt-elements-background-depth-1/50 dark:bg-bolt-elements-background-depth-4/50 backdrop-blur-sm p-3 rounded-lg border border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30">
-          <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark line-clamp-2">
+        <div className="mb-4 bg-codinit-elements-background-depth-1/50 dark:bg-codinit-elements-background-depth-4/50 backdrop-blur-sm p-3 rounded-lg border border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30">
+          <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark line-clamp-2">
             {repo.description}
           </p>
         </div>
@@ -104,35 +104,35 @@ export function RepositoryCard({ repo, onSelect }: RepositoryCardProps) {
           </span>
         )}
         {repo.language && (
-          <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-bolt-elements-background-depth-1/50 dark:bg-bolt-elements-background-depth-4/50 backdrop-blur-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark text-xs border border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30">
+          <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-codinit-elements-background-depth-1/50 dark:bg-codinit-elements-background-depth-4/50 backdrop-blur-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark text-xs border border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30">
             <span className="i-ph:code w-3 h-3" />
             {repo.language}
           </span>
         )}
-        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-bolt-elements-background-depth-1/50 dark:bg-bolt-elements-background-depth-4/50 backdrop-blur-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark text-xs border border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30">
+        <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-codinit-elements-background-depth-1/50 dark:bg-codinit-elements-background-depth-4/50 backdrop-blur-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark text-xs border border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30">
           <span className="i-ph:star w-3 h-3" />
           {repo.stargazers_count.toLocaleString()}
         </span>
         {repo.forks_count > 0 && (
-          <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-bolt-elements-background-depth-1/50 dark:bg-bolt-elements-background-depth-4/50 backdrop-blur-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark text-xs border border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30">
+          <span className="flex items-center gap-1 px-2 py-1 rounded-lg bg-codinit-elements-background-depth-1/50 dark:bg-codinit-elements-background-depth-4/50 backdrop-blur-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark text-xs border border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30">
             <span className="i-ph:git-fork w-3 h-3" />
             {repo.forks_count.toLocaleString()}
           </span>
         )}
       </div>
 
-      <div className="mt-3 pt-3 border-t border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30 flex items-center justify-between">
-        <span className="flex items-center gap-1 text-xs text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
+      <div className="mt-3 pt-3 border-t border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30 flex items-center justify-between">
+        <span className="flex items-center gap-1 text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
           <span className="i-ph:clock w-3 h-3" />
           Updated {formatDate(repo.updated_at)}
         </span>
 
         {repo.topics && repo.topics.length > 0 && (
-          <span className="text-xs text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
+          <span className="text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
             {repo.topics.slice(0, 1).map((topic) => (
               <span
                 key={topic}
-                className="px-1.5 py-0.5 rounded-full bg-bolt-elements-background-depth-1/50 dark:bg-bolt-elements-background-depth-4/50 text-xs"
+                className="px-1.5 py-0.5 rounded-full bg-codinit-elements-background-depth-1/50 dark:bg-codinit-elements-background-depth-4/50 text-xs"
               >
                 {topic}
               </span>

@@ -17,9 +17,9 @@ export function RepositoryList({ repos, isLoading, onSelect, activeTab }: Reposi
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-8 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
+      <div className="flex flex-col items-center justify-center py-8 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
         <StatusIndicator status="loading" pulse={true} size="lg" label="Loading repositories..." className="mb-2" />
-        <p className="text-xs text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
+        <p className="text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
           This may take a moment
         </p>
       </div>

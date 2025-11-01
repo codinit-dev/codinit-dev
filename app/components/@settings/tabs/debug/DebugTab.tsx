@@ -180,16 +180,16 @@ const DependencySection = ({
         )}
       >
         <div className="flex items-center gap-3">
-          <div className="i-ph:package text-bolt-elements-textSecondary w-4 h-4" />
-          <span className="text-base text-bolt-elements-textPrimary">
+          <div className="i-ph:package text-codinit-elements-textSecondary w-4 h-4" />
+          <span className="text-base text-codinit-elements-textPrimary">
             {title} Dependencies ({deps.length})
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-bolt-elements-textSecondary">{isOpen ? 'Hide' : 'Show'}</span>
+          <span className="text-sm text-codinit-elements-textSecondary">{isOpen ? 'Hide' : 'Show'}</span>
           <div
             className={classNames(
-              'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-bolt-elements-textSecondary',
+              'i-ph:caret-down w-4 h-4 transform transition-transform duration-200 text-codinit-elements-textSecondary',
               isOpen ? 'rotate-180' : '',
             )}
           />
@@ -207,8 +207,8 @@ const DependencySection = ({
           <div className="space-y-2 p-4">
             {deps.map((dep) => (
               <div key={dep.name} className="flex items-center justify-between text-sm">
-                <span className="text-bolt-elements-textPrimary">{dep.name}</span>
-                <span className="text-bolt-elements-textSecondary">{dep.version}</span>
+                <span className="text-codinit-elements-textPrimary">{dep.name}</span>
+                <span className="text-codinit-elements-textSecondary">{dep.version}</span>
               </div>
             ))}
           </div>
@@ -721,7 +721,7 @@ export default function DebugTab() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `bolt-debug-info-${new Date().toISOString()}.json`;
+      a.download = `codinit-debug-info-${new Date().toISOString()}.json`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -764,7 +764,7 @@ export default function DebugTab() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `bolt-debug-info-${new Date().toISOString()}.csv`;
+      a.download = `codinit-debug-info-${new Date().toISOString()}.csv`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -1095,7 +1095,7 @@ export default function DebugTab() {
       addFooters();
 
       // Save the PDF
-      doc.save(`bolt-debug-info-${new Date().toISOString()}.pdf`);
+      doc.save(`codinit-debug-info-${new Date().toISOString()}.pdf`);
       toast.success('Debug information exported as PDF');
     } catch (error) {
       console.error('Failed to export PDF:', error);
@@ -1126,7 +1126,7 @@ export default function DebugTab() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `bolt-debug-info-${new Date().toISOString()}.txt`;
+      a.download = `codinit-debug-info-${new Date().toISOString()}.txt`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -1266,13 +1266,13 @@ export default function DebugTab() {
                     'border border-[#E5E5E5] dark:border-[#1A1A1A]',
                     'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
                     'hover:border-blue-200 dark:hover:border-blue-900/30',
-                    'text-bolt-elements-textPrimary',
+                    'text-codinit-elements-textPrimary',
                   )}
                 >
                   <div className={classNames(format.icon, 'w-5 h-5')} />
                   <div>
                     <div className="font-medium">{format.label}</div>
-                    <div className="text-xs text-bolt-elements-textSecondary mt-0.5">
+                    <div className="text-xs text-codinit-elements-textSecondary mt-0.5">
                       {format.id === 'json' && 'Export as a structured JSON file'}
                       {format.id === 'csv' && 'Export as a CSV spreadsheet'}
                       {format.id === 'pdf' && 'Export as a formatted PDF document'}
@@ -1339,7 +1339,7 @@ export default function DebugTab() {
         <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:warning-octagon text-blue-500 w-4 h-4" />
-            <div className="text-sm text-bolt-elements-textSecondary">Errors</div>
+            <div className="text-sm text-codinit-elements-textSecondary">Errors</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span
@@ -1348,7 +1348,7 @@ export default function DebugTab() {
               {errorLogs.length}
             </span>
           </div>
-          <div className="text-xs text-bolt-elements-textSecondary mt-2 flex items-center gap-1.5">
+          <div className="text-xs text-codinit-elements-textSecondary mt-2 flex items-center gap-1.5">
             <div
               className={classNames(
                 'w-3.5 h-3.5',
@@ -1363,7 +1363,7 @@ export default function DebugTab() {
         <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:cpu text-blue-500 w-4 h-4" />
-            <div className="text-sm text-bolt-elements-textSecondary">Memory Usage</div>
+            <div className="text-sm text-codinit-elements-textSecondary">Memory Usage</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span
@@ -1390,7 +1390,7 @@ export default function DebugTab() {
                   : '[&>div]:bg-green-500',
             )}
           />
-          <div className="text-xs text-bolt-elements-textSecondary mt-2 flex items-center gap-1.5">
+          <div className="text-xs text-codinit-elements-textSecondary mt-2 flex items-center gap-1.5">
             <div className="i-ph:info w-3.5 h-3.5 text-blue-500" />
             Used: {systemInfo?.memory.used ?? '0 GB'} / {systemInfo?.memory.total ?? '0 GB'}
           </div>
@@ -1400,7 +1400,7 @@ export default function DebugTab() {
         <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:timer text-blue-500 w-4 h-4" />
-            <div className="text-sm text-bolt-elements-textSecondary">Page Load Time</div>
+            <div className="text-sm text-codinit-elements-textSecondary">Page Load Time</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span
@@ -1416,7 +1416,7 @@ export default function DebugTab() {
               {systemInfo ? (systemInfo.performance.timing.loadTime / 1000).toFixed(2) : '-'}s
             </span>
           </div>
-          <div className="text-xs text-bolt-elements-textSecondary mt-2 flex items-center gap-1.5">
+          <div className="text-xs text-codinit-elements-textSecondary mt-2 flex items-center gap-1.5">
             <div className="i-ph:code w-3.5 h-3.5 text-blue-500" />
             DOM Ready: {systemInfo ? (systemInfo.performance.timing.domReadyTime / 1000).toFixed(2) : '-'}s
           </div>
@@ -1426,7 +1426,7 @@ export default function DebugTab() {
         <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:wifi-high text-blue-500 w-4 h-4" />
-            <div className="text-sm text-bolt-elements-textSecondary">Network Speed</div>
+            <div className="text-sm text-codinit-elements-textSecondary">Network Speed</div>
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span
@@ -1442,7 +1442,7 @@ export default function DebugTab() {
               {systemInfo?.network.downlink ?? '-'} Mbps
             </span>
           </div>
-          <div className="text-xs text-bolt-elements-textSecondary mt-2 flex items-center gap-1.5">
+          <div className="text-xs text-codinit-elements-textSecondary mt-2 flex items-center gap-1.5">
             <div className="i-ph:activity w-3.5 h-3.5 text-blue-500" />
             RTT: {systemInfo?.network.rtt ?? '-'} ms
           </div>
@@ -1454,12 +1454,12 @@ export default function DebugTab() {
             <div className="flex items-center gap-3">
               <div className="i-ph:robot text-blue-500 w-5 h-5" />
               <div>
-                <div className="text-base font-medium text-bolt-elements-textPrimary">Ollama Service</div>
-                <div className="text-xs text-bolt-elements-textSecondary mt-0.5">{status.message}</div>
+                <div className="text-base font-medium text-codinit-elements-textPrimary">Ollama Service</div>
+                <div className="text-xs text-codinit-elements-textSecondary mt-0.5">{status.message}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-bolt-elements-background-depth-3">
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-codinit-elements-background-depth-3">
                 <div
                   className={classNames('w-2 h-2 rounded-full animate-pulse', status.bgColor, {
                     'shadow-lg shadow-green-500/20': status.status === 'Running',
@@ -1470,7 +1470,7 @@ export default function DebugTab() {
                   {status.status}
                 </span>
               </div>
-              <div className="text-[10px] text-bolt-elements-textTertiary flex items-center gap-1.5">
+              <div className="text-[10px] text-codinit-elements-textTertiary flex items-center gap-1.5">
                 <div className="i-ph:clock w-3 h-3" />
                 {ollamaStatus.lastChecked.toLocaleTimeString()}
               </div>
@@ -1480,7 +1480,7 @@ export default function DebugTab() {
           <div className="mt-6 flex-1 min-h-0 flex flex-col">
             {status.status === 'Running' && ollamaStatus.models && ollamaStatus.models.length > 0 ? (
               <>
-                <div className="text-xs font-medium text-bolt-elements-textSecondary flex items-center justify-between mb-3">
+                <div className="text-xs font-medium text-codinit-elements-textSecondary flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <div className="i-ph:cube-duotone w-4 h-4 text-blue-500" />
                     <span>Installed Models</span>
@@ -1494,9 +1494,9 @@ export default function DebugTab() {
                     {ollamaStatus.models.map((model) => (
                       <div
                         key={model.name}
-                        className="text-sm bg-bolt-elements-background-depth-3 hover:bg-bolt-elements-background-depth-4 rounded-lg px-4 py-3 flex items-center justify-between transition-colors group"
+                        className="text-sm bg-codinit-elements-background-depth-3 hover:bg-codinit-elements-background-depth-4 rounded-lg px-4 py-3 flex items-center justify-between transition-colors group"
                       >
-                        <div className="flex items-center gap-2 text-bolt-elements-textSecondary">
+                        <div className="flex items-center gap-2 text-codinit-elements-textSecondary">
                           <div className="i-ph:cube w-4 h-4 text-blue-500/70 group-hover:text-blue-500 transition-colors" />
                           <span className="font-mono truncate">{model.name}</span>
                         </div>
@@ -1518,7 +1518,7 @@ export default function DebugTab() {
                       'i-ph:cube-duotone text-blue-500/80': status.status === 'Running',
                     })}
                   />
-                  <span className="text-sm text-bolt-elements-textSecondary">{status.message}</span>
+                  <span className="text-sm text-codinit-elements-textSecondary">{status.message}</span>
                 </div>
               </div>
             )}
@@ -1537,7 +1537,7 @@ export default function DebugTab() {
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
             'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
-            'text-bolt-elements-textPrimary',
+            'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.systemInfo },
           )}
         >
@@ -1558,7 +1558,7 @@ export default function DebugTab() {
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
             'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
-            'text-bolt-elements-textPrimary',
+            'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.performance },
           )}
         >
@@ -1579,7 +1579,7 @@ export default function DebugTab() {
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
             'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
-            'text-bolt-elements-textPrimary',
+            'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.errors },
           )}
         >
@@ -1600,7 +1600,7 @@ export default function DebugTab() {
             'border border-[#E5E5E5] dark:border-[#1A1A1A]',
             'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
-            'text-bolt-elements-textPrimary',
+            'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.webAppInfo },
           )}
         >
@@ -1625,7 +1625,7 @@ export default function DebugTab() {
           <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-3">
               <div className="i-ph:cpu text-blue-500 w-5 h-5" />
-              <h3 className="text-base font-medium text-bolt-elements-textPrimary">System Information</h3>
+              <h3 className="text-base font-medium text-codinit-elements-textPrimary">System Information</h3>
             </div>
             <div
               className={classNames(
@@ -1642,57 +1642,57 @@ export default function DebugTab() {
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:desktop text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">OS: </span>
-                    <span className="text-bolt-elements-textPrimary">{systemInfo.os}</span>
+                    <div className="i-ph:desktop text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">OS: </span>
+                    <span className="text-codinit-elements-textPrimary">{systemInfo.os}</span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:device-mobile text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Platform: </span>
-                    <span className="text-bolt-elements-textPrimary">{systemInfo.platform}</span>
+                    <div className="i-ph:device-mobile text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Platform: </span>
+                    <span className="text-codinit-elements-textPrimary">{systemInfo.platform}</span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:circuitry text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Architecture: </span>
-                    <span className="text-bolt-elements-textPrimary">{systemInfo.arch}</span>
+                    <div className="i-ph:circuitry text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Architecture: </span>
+                    <span className="text-codinit-elements-textPrimary">{systemInfo.arch}</span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:cpu text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">CPU Cores: </span>
-                    <span className="text-bolt-elements-textPrimary">{systemInfo.cpus}</span>
+                    <div className="i-ph:cpu text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">CPU Cores: </span>
+                    <span className="text-codinit-elements-textPrimary">{systemInfo.cpus}</span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:graph text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Node Version: </span>
-                    <span className="text-bolt-elements-textPrimary">{systemInfo.node}</span>
+                    <div className="i-ph:graph text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Node Version: </span>
+                    <span className="text-codinit-elements-textPrimary">{systemInfo.node}</span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:wifi-high text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Network Type: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:wifi-high text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Network Type: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.network.type} ({systemInfo.network.effectiveType})
                     </span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:gauge text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Network Speed: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:gauge text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Network Speed: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.network.downlink}Mbps (RTT: {systemInfo.network.rtt}ms)
                     </span>
                   </div>
                   {systemInfo.battery && (
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:battery-charging text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Battery: </span>
-                      <span className="text-bolt-elements-textPrimary">
+                      <div className="i-ph:battery-charging text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Battery: </span>
+                      <span className="text-codinit-elements-textPrimary">
                         {systemInfo.battery.level.toFixed(1)}% {systemInfo.battery.charging ? '(Charging)' : ''}
                       </span>
                     </div>
                   )}
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:hard-drive text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Storage: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:hard-drive text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Storage: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.storage.usage / (1024 * 1024 * 1024)).toFixed(2)}GB /{' '}
                       {(systemInfo.storage.quota / (1024 * 1024 * 1024)).toFixed(2)}GB
                     </span>
@@ -1700,63 +1700,63 @@ export default function DebugTab() {
                 </div>
                 <div className="space-y-2">
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:database text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Memory Usage: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:database text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Memory Usage: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.memory.used} / {systemInfo.memory.total} ({systemInfo.memory.percentage}%)
                     </span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:browser text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Browser: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:browser text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Browser: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.browser.name} {systemInfo.browser.version}
                     </span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:monitor text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Screen: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:monitor text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Screen: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.screen.width}x{systemInfo.screen.height} ({systemInfo.screen.pixelRatio}x)
                     </span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:clock text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Timezone: </span>
-                    <span className="text-bolt-elements-textPrimary">{systemInfo.time.timezone}</span>
+                    <div className="i-ph:clock text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Timezone: </span>
+                    <span className="text-codinit-elements-textPrimary">{systemInfo.time.timezone}</span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:translate text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Language: </span>
-                    <span className="text-bolt-elements-textPrimary">{systemInfo.browser.language}</span>
+                    <div className="i-ph:translate text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Language: </span>
+                    <span className="text-codinit-elements-textPrimary">{systemInfo.browser.language}</span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:chart-pie text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">JS Heap: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:chart-pie text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">JS Heap: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1)}MB /{' '}
                       {(systemInfo.performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(1)}MB (
                       {systemInfo.performance.memory.usagePercentage.toFixed(1)}%)
                     </span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:timer text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">Page Load: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:timer text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">Page Load: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.timing.loadTime / 1000).toFixed(2)}s
                     </span>
                   </div>
                   <div className="text-sm flex items-center gap-2">
-                    <div className="i-ph:code text-bolt-elements-textSecondary w-4 h-4" />
-                    <span className="text-bolt-elements-textSecondary">DOM Ready: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <div className="i-ph:code text-codinit-elements-textSecondary w-4 h-4" />
+                    <span className="text-codinit-elements-textSecondary">DOM Ready: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.timing.domReadyTime / 1000).toFixed(2)}s
                     </span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="text-sm text-bolt-elements-textSecondary">Loading system information...</div>
+              <div className="text-sm text-codinit-elements-textSecondary">Loading system information...</div>
             )}
           </div>
         </CollapsibleContent>
@@ -1772,7 +1772,7 @@ export default function DebugTab() {
           <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-3">
               <div className="i-ph:chart-line text-blue-500 w-5 h-5" />
-              <h3 className="text-base font-medium text-bolt-elements-textPrimary">Performance Metrics</h3>
+              <h3 className="text-base font-medium text-codinit-elements-textPrimary">Performance Metrics</h3>
             </div>
             <div
               className={classNames(
@@ -1789,47 +1789,47 @@ export default function DebugTab() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">Page Load Time: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">Page Load Time: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.timing.loadTime / 1000).toFixed(2)}s
                     </span>
                   </div>
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">DOM Ready Time: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">DOM Ready Time: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.timing.domReadyTime / 1000).toFixed(2)}s
                     </span>
                   </div>
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">Request Time: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">Request Time: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.timing.requestTime / 1000).toFixed(2)}s
                     </span>
                   </div>
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">Redirect Time: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">Redirect Time: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.timing.redirectTime / 1000).toFixed(2)}s
                     </span>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">JS Heap Usage: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">JS Heap Usage: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {(systemInfo.performance.memory.usedJSHeapSize / (1024 * 1024)).toFixed(1)}MB /{' '}
                       {(systemInfo.performance.memory.totalJSHeapSize / (1024 * 1024)).toFixed(1)}MB
                     </span>
                   </div>
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">Heap Utilization: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">Heap Utilization: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.performance.memory.usagePercentage.toFixed(1)}%
                     </span>
                   </div>
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">Navigation Type: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">Navigation Type: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.performance.navigation.type === 0
                         ? 'Navigate'
                         : systemInfo.performance.navigation.type === 1
@@ -1840,8 +1840,8 @@ export default function DebugTab() {
                     </span>
                   </div>
                   <div className="text-sm">
-                    <span className="text-bolt-elements-textSecondary">Redirects: </span>
-                    <span className="text-bolt-elements-textPrimary">
+                    <span className="text-codinit-elements-textSecondary">Redirects: </span>
+                    <span className="text-codinit-elements-textPrimary">
                       {systemInfo.performance.navigation.redirectCount}
                     </span>
                   </div>
@@ -1862,7 +1862,7 @@ export default function DebugTab() {
           <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-3">
               <div className="i-ph:info text-blue-500 w-5 h-5" />
-              <h3 className="text-base font-medium text-bolt-elements-textPrimary">WebApp Information</h3>
+              <h3 className="text-base font-medium text-codinit-elements-textPrimary">WebApp Information</h3>
               {loading.webAppInfo && <span className="loading loading-spinner loading-sm" />}
             </div>
             <div
@@ -1881,7 +1881,7 @@ export default function DebugTab() {
                 <span className="loading loading-spinner loading-lg" />
               </div>
             ) : !webAppInfo ? (
-              <div className="flex flex-col items-center justify-center p-8 text-bolt-elements-textSecondary">
+              <div className="flex flex-col items-center justify-center p-8 text-codinit-elements-textSecondary">
                 <div className="i-ph:warning-circle w-8 h-8 mb-2" />
                 <p>Failed to load WebApp information</p>
                 <button
@@ -1894,67 +1894,67 @@ export default function DebugTab() {
             ) : (
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <h3 className="mb-4 text-base font-medium text-bolt-elements-textPrimary">Basic Information</h3>
+                  <h3 className="mb-4 text-base font-medium text-codinit-elements-textPrimary">Basic Information</h3>
                   <div className="space-y-3">
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:app-window text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Name:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.name}</span>
+                      <div className="i-ph:app-window text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Name:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.name}</span>
                     </div>
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:tag text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Version:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.version}</span>
+                      <div className="i-ph:tag text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Version:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.version}</span>
                     </div>
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:certificate text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">License:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.license}</span>
+                      <div className="i-ph:certificate text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">License:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.license}</span>
                     </div>
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:cloud text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Environment:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.environment}</span>
+                      <div className="i-ph:cloud text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Environment:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.environment}</span>
                     </div>
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:graph text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Node Version:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.runtimeInfo.nodeVersion}</span>
+                      <div className="i-ph:graph text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Node Version:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.runtimeInfo.nodeVersion}</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="mb-4 text-base font-medium text-bolt-elements-textPrimary">Git Information</h3>
+                  <h3 className="mb-4 text-base font-medium text-codinit-elements-textPrimary">Git Information</h3>
                   <div className="space-y-3">
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:git-branch text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Branch:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.gitInfo.local.branch}</span>
+                      <div className="i-ph:git-branch text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Branch:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.gitInfo.local.branch}</span>
                     </div>
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:git-commit text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Commit:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.gitInfo.local.commitHash}</span>
+                      <div className="i-ph:git-commit text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Commit:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.gitInfo.local.commitHash}</span>
                     </div>
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:user text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Author:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.gitInfo.local.author}</span>
+                      <div className="i-ph:user text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Author:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.gitInfo.local.author}</span>
                     </div>
                     <div className="text-sm flex items-center gap-2">
-                      <div className="i-ph:clock text-bolt-elements-textSecondary w-4 h-4" />
-                      <span className="text-bolt-elements-textSecondary">Commit Time:</span>
-                      <span className="text-bolt-elements-textPrimary">{webAppInfo.gitInfo.local.commitTime}</span>
+                      <div className="i-ph:clock text-codinit-elements-textSecondary w-4 h-4" />
+                      <span className="text-codinit-elements-textSecondary">Commit Time:</span>
+                      <span className="text-codinit-elements-textPrimary">{webAppInfo.gitInfo.local.commitTime}</span>
                     </div>
 
                     {webAppInfo.gitInfo.github && (
                       <>
                         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
                           <div className="text-sm flex items-center gap-2">
-                            <div className="i-ph:git-fork text-bolt-elements-textSecondary w-4 h-4" />
-                            <span className="text-bolt-elements-textSecondary">Repository:</span>
-                            <span className="text-bolt-elements-textPrimary">
+                            <div className="i-ph:git-fork text-codinit-elements-textSecondary w-4 h-4" />
+                            <span className="text-codinit-elements-textSecondary">Repository:</span>
+                            <span className="text-codinit-elements-textPrimary">
                               {webAppInfo.gitInfo.github.currentRepo.fullName}
                               {webAppInfo.gitInfo.isForked && ' (fork)'}
                             </span>
@@ -1963,19 +1963,19 @@ export default function DebugTab() {
                           <div className="mt-2 flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-1">
                               <div className="i-ph:star text-yellow-500 w-4 h-4" />
-                              <span className="text-bolt-elements-textSecondary">
+                              <span className="text-codinit-elements-textSecondary">
                                 {webAppInfo.gitInfo.github.currentRepo.stars}
                               </span>
                             </div>
                             <div className="flex items-center gap-1">
                               <div className="i-ph:git-fork text-blue-500 w-4 h-4" />
-                              <span className="text-bolt-elements-textSecondary">
+                              <span className="text-codinit-elements-textSecondary">
                                 {webAppInfo.gitInfo.github.currentRepo.forks}
                               </span>
                             </div>
                             <div className="flex items-center gap-1">
                               <div className="i-ph:warning-circle text-red-500 w-4 h-4" />
-                              <span className="text-bolt-elements-textSecondary">
+                              <span className="text-codinit-elements-textSecondary">
                                 {webAppInfo.gitInfo.github.currentRepo.openIssues}
                               </span>
                             </div>
@@ -1985,9 +1985,9 @@ export default function DebugTab() {
                         {webAppInfo.gitInfo.github.upstream && (
                           <div className="mt-2">
                             <div className="text-sm flex items-center gap-2">
-                              <div className="i-ph:git-fork text-bolt-elements-textSecondary w-4 h-4" />
-                              <span className="text-bolt-elements-textSecondary">Upstream:</span>
-                              <span className="text-bolt-elements-textPrimary">
+                              <div className="i-ph:git-fork text-codinit-elements-textSecondary w-4 h-4" />
+                              <span className="text-codinit-elements-textSecondary">Upstream:</span>
+                              <span className="text-codinit-elements-textPrimary">
                                 {webAppInfo.gitInfo.github.upstream.fullName}
                               </span>
                             </div>
@@ -1995,13 +1995,13 @@ export default function DebugTab() {
                             <div className="mt-2 flex items-center gap-4 text-sm">
                               <div className="flex items-center gap-1">
                                 <div className="i-ph:star text-yellow-500 w-4 h-4" />
-                                <span className="text-bolt-elements-textSecondary">
+                                <span className="text-codinit-elements-textSecondary">
                                   {webAppInfo.gitInfo.github.upstream.stars}
                                 </span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <div className="i-ph:git-fork text-blue-500 w-4 h-4" />
-                                <span className="text-bolt-elements-textSecondary">
+                                <span className="text-codinit-elements-textSecondary">
                                   {webAppInfo.gitInfo.github.upstream.forks}
                                 </span>
                               </div>
@@ -2017,7 +2017,7 @@ export default function DebugTab() {
 
             {webAppInfo && (
               <div className="mt-6">
-                <h3 className="mb-4 text-base font-medium text-bolt-elements-textPrimary">Dependencies</h3>
+                <h3 className="mb-4 text-base font-medium text-codinit-elements-textPrimary">Dependencies</h3>
                 <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] rounded-lg divide-y divide-[#E5E5E5] dark:divide-[#1A1A1A]">
                   <DependencySection title="Production" deps={webAppInfo.dependencies.production} />
                   <DependencySection title="Development" deps={webAppInfo.dependencies.development} />
@@ -2040,7 +2040,7 @@ export default function DebugTab() {
           <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
             <div className="flex items-center gap-3">
               <div className="i-ph:warning text-red-500 w-5 h-5" />
-              <h3 className="text-base font-medium text-bolt-elements-textPrimary">Error Check</h3>
+              <h3 className="text-base font-medium text-codinit-elements-textPrimary">Error Check</h3>
               {errorLogs.length > 0 && (
                 <Badge variant="destructive" className="ml-2">
                   {errorLogs.length} Errors
@@ -2060,7 +2060,7 @@ export default function DebugTab() {
           <div className="p-6 mt-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
             <ScrollArea className="h-[300px]">
               <div className="space-y-4">
-                <div className="text-sm text-bolt-elements-textSecondary">
+                <div className="text-sm text-codinit-elements-textSecondary">
                   Checks for:
                   <ul className="list-disc list-inside mt-2 space-y-1">
                     <li>Unhandled JavaScript errors</li>
@@ -2070,8 +2070,8 @@ export default function DebugTab() {
                   </ul>
                 </div>
                 <div className="text-sm">
-                  <span className="text-bolt-elements-textSecondary">Status: </span>
-                  <span className="text-bolt-elements-textPrimary">
+                  <span className="text-codinit-elements-textSecondary">Status: </span>
+                  <span className="text-codinit-elements-textPrimary">
                     {loading.errors
                       ? 'Checking...'
                       : errorLogs.length > 0
@@ -2081,7 +2081,7 @@ export default function DebugTab() {
                 </div>
                 {errorLogs.length > 0 && (
                   <div className="mt-4">
-                    <div className="text-sm font-medium text-bolt-elements-textPrimary mb-2">Recent Errors:</div>
+                    <div className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Recent Errors:</div>
                     <div className="space-y-2">
                       {errorLogs.map((error) => (
                         <div key={error.id} className="text-sm text-red-500 dark:text-red-400 p-2 rounded bg-red-500/5">
