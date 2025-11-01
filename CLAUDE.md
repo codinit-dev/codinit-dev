@@ -29,6 +29,7 @@ pnpm run build
 ```bash
 pnpm run test           # Run all tests once
 pnpm run test:watch     # Run tests in watch mode
+vitest run <file>       # Run a single test file
 ```
 
 ### linting and formatting
@@ -37,6 +38,8 @@ pnpm run lint           # Lint app directory with ESLint
 pnpm run lint:fix       # Auto-fix lint issues and format with Prettier
 pnpm run typecheck      # Run TypeScript type checking
 ```
+
+**Note**: Pre-commit hooks (husky) automatically run typecheck and lint before each commit. If checks fail, the commit is aborted.
 
 ### deployment
 ```bash
@@ -58,6 +61,13 @@ pnpm run electron:build:dist             # Build for all platforms
 pnpm run dockerbuild                     # Build development Docker image
 pnpm run dockerbuild:prod                # Build production Docker image
 docker compose --profile development up  # Run with Docker Compose
+pnpm run dockerrun                       # Run built container on port 5173
+```
+
+### email development
+```bash
+pnpm run email:dev      # Start email preview server on port 3000
+pnpm run email:export   # Export email templates to .react-email
 ```
 
 ## architecture
@@ -119,8 +129,12 @@ docker compose --profile development up  # Run with Docker Compose
 ### provider settings
 Local providers (Ollama, LMStudio, OpenAILike) are disabled by default. Enable them in settings or via environment variables. The `URL_CONFIGURABLE_PROVIDERS` constant defines which providers support custom base URLs.
 
+**Important**: When using Ollama or LMStudio, avoid `localhost` URLs due to IPv6 issues. Use `127.0.0.1` instead (e.g., `http://127.0.0.1:11434` for Ollama).
+
 ### git operations
 The platform includes isomorphic-git for in-browser Git operations. Git proxy routes (`api.git-proxy.$.ts`) handle authentication and CORS.
+
+GitHub integration can be configured via `VITE_GITHUB_ACCESS_TOKEN` environment variable. Classic tokens are recommended for broader access. This enables importing private repositories and avoids rate limiting.
 
 ### webcontainer routes
 Routes prefixed with `webcontainer.` serve isolated iframes for preview and terminal. These use separate Remix loaders to avoid parent page interference.
@@ -139,6 +153,8 @@ Tests use Vitest. Test files use `.spec.ts` extension. Snapshot tests exist for 
 
 ### environment configuration
 Copy `.env.example` to `.env.local` and add API keys. Required variables for providers are documented inline. Use `VITE_` prefix for client-accessible variables.
+
+**Supabase integration**: Optional Supabase support is available for database operations. Configure `SUPABASE_URL` and `SUPABASE_ANON_KEY` if needed. The platform includes data visualization and migration support.
 
 ## deployment targets
 
@@ -180,3 +196,6 @@ Editor state lives in `app/lib/stores/editor.ts`. File operations go through `ap
 
 ### debugging
 Set `VITE_LOG_LEVEL=debug` in `.env.local` for verbose logging. Use `createScopedLogger` utility for consistent logging across modules.
+
+### theme system
+The codebase uses a consistent CSS custom property naming convention with the `codinit-elements-*` prefix. Theme colors, backgrounds, borders, and text colors are all defined through these CSS variables for easy theming across the entire application.
