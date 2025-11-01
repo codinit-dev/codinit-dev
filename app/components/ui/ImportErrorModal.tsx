@@ -221,7 +221,7 @@ Please analyze these errors and suggest how to resolve the import issues.
                   {failedFilesList.length > 0 && (
                     <button
                       onClick={handleCopyErrorReport}
-                      className="text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-colors"
+                      className="text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary transition-colors"
                       title="Copy error report"
                     >
                       <div className="i-ph:copy text-base"></div>
@@ -233,7 +233,7 @@ Please analyze these errors and suggest how to resolve the import issues.
                   <div className="flex gap-3 mb-3 text-xs">
                     <span className="text-green-600 dark:text-green-400">✓ {successCount} succeeded</span>
                     <span className="text-red-600 dark:text-red-400">✗ {failedFilesList.length} failed</span>
-                    <span className="text-bolt-elements-textSecondary">Total: {totalCount}</span>
+                    <span className="text-codinit-elements-textSecondary">Total: {totalCount}</span>
                   </div>
                 )}
 
@@ -242,13 +242,13 @@ Please analyze these errors and suggest how to resolve the import issues.
                 {failedFilesList.length > 0 && (
                   <div className="mt-4 mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm font-medium text-bolt-elements-textPrimary">
+                      <p className="text-sm font-medium text-codinit-elements-textPrimary">
                         Failed files ({failedFilesList.length}):
                       </p>
                       {failedFilesList.length > 5 && (
                         <button
                           onClick={() => setIsExpanded(!isExpanded)}
-                          className="text-xs text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary flex items-center gap-1"
+                          className="text-xs text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary flex items-center gap-1"
                         >
                           <div
                             className={classNames(
@@ -263,7 +263,7 @@ Please analyze these errors and suggest how to resolve the import issues.
 
                     <div
                       className={classNames(
-                        'rounded border border-bolt-elements-borderColor bg-bolt-elements-background-depth-1 p-2',
+                        'rounded border border-codinit-elements-borderColor bg-codinit-elements-background-depth-1 p-2',
                         !isExpanded && failedFilesList.length > 5 ? 'max-h-[180px]' : 'max-h-[320px]',
                         'overflow-y-auto',
                       )}
@@ -289,7 +289,7 @@ Please analyze these errors and suggest how to resolve the import issues.
                               {files.map((file, index) => (
                                 <li
                                   key={index}
-                                  className="text-xs bg-bolt-elements-background-depth-2 rounded p-2 flex items-start gap-2"
+                                  className="text-xs bg-codinit-elements-background-depth-2 rounded p-2 flex items-start gap-2"
                                 >
                                   {hasExclusionFeature && (
                                     <input
@@ -301,10 +301,10 @@ Please analyze these errors and suggest how to resolve the import issues.
                                     />
                                   )}
                                   <div className="flex-1 min-w-0">
-                                    <div className="font-mono text-bolt-elements-textPrimary break-all">
+                                    <div className="font-mono text-codinit-elements-textPrimary break-all">
                                       {file.path}
                                     </div>
-                                    <div className="text-bolt-elements-textSecondary mt-0.5">{file.error}</div>
+                                    <div className="text-codinit-elements-textSecondary mt-0.5">{file.error}</div>
                                   </div>
                                 </li>
                               ))}
@@ -315,7 +315,7 @@ Please analyze these errors and suggest how to resolve the import issues.
                     </div>
 
                     {hasExclusionFeature && selectedForExclusion.size > 0 && (
-                      <div className="mt-2 text-xs text-bolt-elements-textSecondary">
+                      <div className="mt-2 text-xs text-codinit-elements-textSecondary">
                         {selectedForExclusion.size} file(s) selected for exclusion
                       </div>
                     )}
@@ -328,7 +328,7 @@ Please analyze these errors and suggest how to resolve the import issues.
               {hasAIIntegration && failedFilesList.length > 0 && (
                 <Button
                   onClick={handleAskAI}
-                  className="bg-bolt-elements-button-primary-background text-bolt-elements-button-primary-text hover:bg-bolt-elements-button-primary-backgroundHover flex items-center gap-1.5"
+                  className="bg-codinit-elements-button-primary-background text-codinit-elements-button-primary-text hover:bg-codinit-elements-button-primary-backgroundHover flex items-center gap-1.5"
                 >
                   <div className="i-ph:chat-circle-duotone"></div>
                   Ask AI to Fix
@@ -338,7 +338,7 @@ Please analyze these errors and suggest how to resolve the import issues.
                 <Button
                   variant="outline"
                   onClick={handleRetryWithExclusions}
-                  className="border-bolt-elements-borderColor text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive"
+                  className="border-codinit-elements-borderColor text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive"
                 >
                   Exclude & Retry ({selectedForExclusion.size})
                 </Button>
@@ -347,7 +347,7 @@ Please analyze these errors and suggest how to resolve the import issues.
                 <Button
                   variant="outline"
                   onClick={onRetry}
-                  className="border-bolt-elements-borderColor text-bolt-elements-textPrimary hover:bg-bolt-elements-item-backgroundActive"
+                  className="border-codinit-elements-borderColor text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive"
                 >
                   Retry Failed Files
                 </Button>
