@@ -60,7 +60,7 @@ export async function streamText(props: {
       return { ...message, content };
     } else if (message.role == 'assistant') {
       let content = message.content;
-      content = content.replace(/<div class=\\"__boltThought__\\">.*?<\/div>/s, '');
+      content = content.replace(/<div class=\\"__codinitThought__\\">.*?<\/div>/s, '');
       content = content.replace(/<div class=\\"__codinitThinking__\\"[^>]*>.*?<\/div>/gs, '');
       content = content.replace(/<think>.*?<\/think>/s, '');
       content = content.replace(/<codinitThinking[^>]*>.*?<\/codinitThinking>/gs, '');
