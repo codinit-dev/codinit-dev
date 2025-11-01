@@ -13,7 +13,7 @@ export function useIndexedDB() {
       try {
         setIsLoading(true);
 
-        const request = indexedDB.open('boltDB', 1);
+        const request = indexedDB.open('codinitDB', 1);
 
         request.onupgradeneeded = (event) => {
           const db = (event.target as IDBOpenDBRequest).result;

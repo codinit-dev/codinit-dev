@@ -8,7 +8,7 @@ import BackgroundRays from '~/components/ui/BackgroundRays';
 export const meta: MetaFunction = () => {
   return [
     { title: 'CodinIT.dev' },
-    { name: 'description', content: 'Talk with CodinIT, an AI assistant from StackBlitz' },
+    { name: 'description', content: 'Talk with CodinIT, an AI assistant from CodinIT.dev' },
   ];
 };
 
@@ -22,7 +22,7 @@ export const loader = () => json({});
  */
 export default function Index() {
   return (
-    <div className="flex flex-col h-full w-full bg-bolt-elements-background-depth-1">
+    <div className="flex flex-col h-full w-full bg-codinit-elements-background-depth-1">
       <BackgroundRays />
       <Header />
       <ClientOnly fallback={<BaseChat />}>{() => <Chat />}</ClientOnly>

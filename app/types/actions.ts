@@ -39,7 +39,13 @@ export interface ActionAlert {
   title: string;
   description: string;
   content?: string;
-  source?: 'terminal' | 'preview'; // Add source to differentiate between terminal and preview errors
+  source?: 'terminal' | 'preview';
+  stackTrace?: string;
+  affectedFiles?: Array<{ path: string; line?: number; column?: number }>;
+  errorType?: 'syntax' | 'runtime' | 'build' | 'network' | 'permission' | 'dependency' | 'unknown';
+  timestamp?: number;
+  command?: string;
+  exitCode?: number;
 }
 
 export interface SupabaseAlert {

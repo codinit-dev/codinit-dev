@@ -50,7 +50,6 @@ export default class OpenAILikeProvider extends BaseProvider {
         label: model.id,
         provider: this.name,
         maxTokenAllowed: 8000,
-        icon: '/thirdparty/logos/openai.svg',
       }));
     } catch (error) {
       console.log(`${this.name}: Not allowed to GET /models endpoint for provider`, error);
@@ -105,7 +104,6 @@ export default class OpenAILikeProvider extends BaseProvider {
           label,
           provider: this.name,
           maxTokenAllowed: limit,
-          icon: '/thirdparty/logos/openai.svg',
         });
       }
 

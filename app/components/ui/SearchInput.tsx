@@ -37,7 +37,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         {/* Search icon or loading spinner */}
         <div
           className={classNames(
-            'absolute left-3 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary',
+            'absolute left-3 top-1/2 -translate-y-1/2 text-codinit-elements-textTertiary',
             iconClassName,
           )}
         >
@@ -65,7 +65,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
               transition={{ duration: 0.15 }}
               type="button"
               onClick={onClear}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary hover:text-bolt-elements-textSecondary p-1 rounded-full hover:bg-bolt-elements-background-depth-2"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-codinit-elements-textTertiary hover:text-codinit-elements-textSecondary p-1 rounded-full hover:bg-codinit-elements-background-depth-2"
               aria-label="Clear search"
             >
               <span className="i-ph:x w-3.5 h-3.5" />

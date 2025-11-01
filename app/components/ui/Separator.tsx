@@ -10,7 +10,7 @@ export const Separator = ({ className, orientation = 'horizontal' }: SeparatorPr
   return (
     <SeparatorPrimitive.Root
       className={classNames(
-        'bg-bolt-elements-borderColor',
+        'bg-codinit-elements-borderColor',
         orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px',
         className,
       )}

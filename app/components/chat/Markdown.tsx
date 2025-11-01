@@ -5,6 +5,7 @@ import { createScopedLogger } from '~/utils/logger';
 import { rehypePlugins, remarkPlugins, allowedHTMLElements } from '~/utils/markdown';
 import { Artifact } from './Artifact';
 import { CodeBlock } from './CodeBlock';
+import { ThinkingProcess } from './ThinkingProcess';
 
 import styles from './Markdown.module.scss';
 import ThoughtBox from './ThoughtBox';
@@ -33,8 +34,12 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
           return <Artifact messageId={messageId} />;
         }
 
-        if (className?.includes('__boltThought__')) {
+        if (className?.includes('__codinitThought__')) {
           return <ThoughtBox title="Thought process">{children}</ThoughtBox>;
+        }
+
+        if (className?.includes('__codinitThinking__')) {
+          return <ThinkingProcess>{children}</ThinkingProcess>;
         }
 
         return (
@@ -98,19 +103,19 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
  * - Safely handles edge cases like empty input or artifacts at start/end of content
  */
 export const stripCodeFenceFromArtifact = (content: string) => {
-  if (!content || !content.includes('__exampleArtifact__')) {
+  if (!content || (!content.includes('__exampleArtifact__') && !content.includes('__codinitThinking__'))) {
     return content;
   }
 
   const lines = content.split('\n');
-  const artifactLineIndex = lines.findIndex((line) => line.includes('__exampleArtifact__'));
+  const artifactLineIndex = lines.findIndex(
+    (line) => line.includes('__exampleArtifact__') || line.includes('__codinitThinking__'),
+  );
 
-  // Return original content if artifact line not found
   if (artifactLineIndex === -1) {
     return content;
   }
 
-  // Check previous line for code fence
   if (artifactLineIndex > 0 && lines[artifactLineIndex - 1]?.trim().match(/^```\w*$/)) {
     lines[artifactLineIndex - 1] = '';
   }

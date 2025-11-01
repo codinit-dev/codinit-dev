@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getDebugStatus, acknowledgeWarning, acknowledgeError, type DebugIssue } from '~/lib/api/debug';
 
-const ACKNOWLEDGED_DEBUG_ISSUES_KEY = 'bolt_acknowledged_debug_issues';
+const ACKNOWLEDGED_DEBUG_ISSUES_KEY = 'codinit_acknowledged_debug_issues';
 
 const getAcknowledgedIssues = (): string[] => {
   try {

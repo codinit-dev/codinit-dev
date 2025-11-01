@@ -24,7 +24,6 @@ export default class AnthropicProvider extends BaseProvider {
       provider: 'Anthropic',
       maxTokenAllowed: 200000,
       maxCompletionTokens: 128000,
-      icon: '/thirdparty/logos/anthropic.svg',
     },
 
     // Claude 3 Haiku: 200k context, fastest and most cost-effective
@@ -34,7 +33,6 @@ export default class AnthropicProvider extends BaseProvider {
       provider: 'Anthropic',
       maxTokenAllowed: 200000,
       maxCompletionTokens: 128000,
-      icon: '/thirdparty/logos/anthropic.svg',
     },
 
     // Claude Opus 4: 200k context, 32k output limit (latest flagship model)
@@ -44,7 +42,6 @@ export default class AnthropicProvider extends BaseProvider {
       provider: 'Anthropic',
       maxTokenAllowed: 200000,
       maxCompletionTokens: 32000,
-      icon: '/thirdparty/logos/anthropic.svg',
     },
   ];
 

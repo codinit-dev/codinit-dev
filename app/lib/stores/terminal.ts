@@ -7,7 +7,7 @@ import { coloredText } from '~/utils/terminal';
 export class TerminalStore {
   #webcontainer: Promise<WebContainer>;
   #terminals: Array<{ terminal: ITerminal; process: WebContainerProcess }> = [];
-  #boltTerminal = newExampleShellProcess();
+  #codinitTerminal = newExampleShellProcess();
 
   showTerminal: WritableAtom<boolean> = import.meta.hot?.data.showTerminal ?? atom(true);
 
@@ -18,8 +18,8 @@ export class TerminalStore {
       import.meta.hot.data.showTerminal = this.showTerminal;
     }
   }
-  get boltTerminal() {
-    return this.#boltTerminal;
+  get codinitTerminal() {
+    return this.#codinitTerminal;
   }
 
   toggleTerminal(value?: boolean) {
@@ -28,9 +28,9 @@ export class TerminalStore {
   async attachCodinitTerminal(terminal: ITerminal) {
     try {
       const wc = await this.#webcontainer;
-      await this.#boltTerminal.init(wc, terminal);
+      await this.#codinitTerminal.init(wc, terminal);
     } catch (error: any) {
-      terminal.write(coloredText.red('Failed to spawn bolt shell\n\n') + error.message);
+      terminal.write(coloredText.red('Failed to spawn codinit shell\n\n') + error.message);
       return;
     }
   }

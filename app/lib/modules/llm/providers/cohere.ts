@@ -20,7 +20,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'command-r-08-2024',
@@ -28,7 +27,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'command-r-plus',
@@ -36,7 +34,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'command-r',
@@ -44,7 +41,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'command',
@@ -52,7 +48,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'command-nightly',
@@ -60,7 +55,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'command-light',
@@ -68,7 +62,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'command-light-nightly',
@@ -76,7 +69,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'c4ai-aya-expanse-8b',
@@ -84,7 +76,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
     {
       name: 'c4ai-aya-expanse-32b',
@@ -92,7 +83,6 @@ export default class CohereProvider extends BaseProvider {
       provider: 'Cohere',
       maxTokenAllowed: 4096,
       maxCompletionTokens: 4000,
-      icon: '/thirdparty/logos/cohere.svg',
     },
   ];
 

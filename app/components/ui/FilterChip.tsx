@@ -46,7 +46,7 @@ export function FilterChip({ label, value, onRemove, active = false, icon, class
         'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all',
         active
           ? 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30'
-          : 'bg-bolt-elements-background-depth-2 dark:bg-bolt-elements-background-depth-3 text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark',
+          : 'bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-3 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark',
         onRemove && 'pr-1',
         className,
       )}
@@ -63,7 +63,7 @@ export function FilterChip({ label, value, onRemove, active = false, icon, class
             className={
               active
                 ? 'text-blue-700 dark:text-blue-300 font-semibold'
-                : 'text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark'
+                : 'text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark'
             }
           >
             {value}
@@ -77,10 +77,10 @@ export function FilterChip({ label, value, onRemove, active = false, icon, class
           type="button"
           onClick={onRemove}
           className={classNames(
-            'ml-1 p-0.5 rounded-full hover:bg-bolt-elements-background-depth-3 dark:hover:bg-bolt-elements-background-depth-4 transition-colors',
+            'ml-1 p-0.5 rounded-full hover:bg-codinit-elements-background-depth-3 dark:hover:bg-codinit-elements-background-depth-4 transition-colors',
             active
               ? 'text-blue-600 dark:text-blue-400'
-              : 'text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark',
+              : 'text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark',
           )}
           aria-label={`Remove ${label} filter`}
         >

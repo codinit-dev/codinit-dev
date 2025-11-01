@@ -544,18 +544,18 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
       >
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
-          <Dialog.Content className="fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[650px] max-h-[85vh] overflow-hidden bg-white dark:bg-bolt-elements-background-depth-1 rounded-xl shadow-xl z-[51] border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark">
+          <Dialog.Content className="fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[650px] max-h-[85vh] overflow-hidden bg-white dark:bg-codinit-elements-background-depth-1 rounded-xl shadow-xl z-[51] border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark">
             {/* Header */}
-            <div className="p-5 border-b border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark flex items-center justify-between">
+            <div className="p-5 border-b border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
                   <span className="i-ph:github-logo w-5 h-5" />
                 </div>
                 <div>
-                  <Dialog.Title className="text-lg font-semibold text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark">
+                  <Dialog.Title className="text-lg font-semibold text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark">
                     Import GitHub Repository
                   </Dialog.Title>
-                  <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
+                  <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
                     Clone a repository from GitHub to your workspace
                   </p>
                 </div>
@@ -564,10 +564,10 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                 onClick={handleClose}
                 className={classNames(
                   'p-2 rounded-lg transition-all duration-200 ease-in-out bg-transparent',
-                  'text-bolt-elements-textTertiary hover:text-bolt-elements-textPrimary',
-                  'dark:text-bolt-elements-textTertiary-dark dark:hover:text-bolt-elements-textPrimary-dark',
-                  'hover:bg-bolt-elements-background-depth-2 dark:hover:bg-bolt-elements-background-depth-3',
-                  'focus:outline-none focus:ring-2 focus:ring-bolt-elements-borderColor dark:focus:ring-bolt-elements-borderColor-dark',
+                  'text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary',
+                  'dark:text-codinit-elements-textTertiary-dark dark:hover:text-codinit-elements-textPrimary-dark',
+                  'hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-3',
+                  'focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColor dark:focus:ring-codinit-elements-borderColor-dark',
                 )}
               >
                 <span className="i-ph:x block w-5 h-5" aria-hidden="true" />
@@ -576,10 +576,10 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
             </div>
 
             {/* Auth Info Banner */}
-            <div className="p-4 border-b border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark flex items-center justify-between bg-gradient-to-r from-bolt-elements-background-depth-2 to-bolt-elements-background-depth-1 dark:from-bolt-elements-background-depth-3 dark:to-bolt-elements-background-depth-2">
+            <div className="p-4 border-b border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark flex items-center justify-between bg-gradient-to-r from-codinit-elements-background-depth-2 to-codinit-elements-background-depth-1 dark:from-codinit-elements-background-depth-3 dark:to-codinit-elements-background-depth-2">
               <div className="flex items-center gap-2">
                 <span className="i-ph:info text-blue-500" />
-                <span className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
+                <span className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
                   Need to access private repositories?
                 </span>
               </div>
@@ -598,15 +598,15 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
             <div className="p-5">
               {/* Tabs */}
               <div className="mb-6">
-                <div className="bg-[#f0f0f0] dark:bg-[#1e1e1e] rounded-lg overflow-hidden border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark">
+                <div className="bg-[#f0f0f0] dark:bg-[#1e1e1e] rounded-lg overflow-hidden border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark">
                   <div className="flex">
                     <button
                       onClick={() => setActiveTab('my-repos')}
                       className={classNames(
                         'flex-1 py-3 px-4 text-center text-sm font-medium transition-colors',
                         activeTab === 'my-repos'
-                          ? 'bg-[#e6e6e6] dark:bg-[#2a2a2a] text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark'
-                          : 'bg-[#f0f0f0] dark:bg-[#1e1e1e] text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark hover:bg-[#e6e6e6] dark:hover:bg-[#2a2a2a]/50',
+                          ? 'bg-[#e6e6e6] dark:bg-[#2a2a2a] text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark'
+                          : 'bg-[#f0f0f0] dark:bg-[#1e1e1e] text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:bg-[#e6e6e6] dark:hover:bg-[#2a2a2a]/50',
                       )}
                     >
                       My Repos
@@ -616,8 +616,8 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                       className={classNames(
                         'flex-1 py-3 px-4 text-center text-sm font-medium transition-colors',
                         activeTab === 'search'
-                          ? 'bg-[#e6e6e6] dark:bg-[#2a2a2a] text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark'
-                          : 'bg-[#f0f0f0] dark:bg-[#1e1e1e] text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark hover:bg-[#e6e6e6] dark:hover:bg-[#2a2a2a]/50',
+                          ? 'bg-[#e6e6e6] dark:bg-[#2a2a2a] text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark'
+                          : 'bg-[#f0f0f0] dark:bg-[#1e1e1e] text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:bg-[#e6e6e6] dark:hover:bg-[#2a2a2a]/50',
                       )}
                     >
                       Search
@@ -627,8 +627,8 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                       className={classNames(
                         'flex-1 py-3 px-4 text-center text-sm font-medium transition-colors',
                         activeTab === 'url'
-                          ? 'bg-[#e6e6e6] dark:bg-[#2a2a2a] text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark'
-                          : 'bg-[#f0f0f0] dark:bg-[#1e1e1e] text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark hover:bg-[#e6e6e6] dark:hover:bg-[#2a2a2a]/50',
+                          ? 'bg-[#e6e6e6] dark:bg-[#2a2a2a] text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark'
+                          : 'bg-[#f0f0f0] dark:bg-[#1e1e1e] text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:bg-[#e6e6e6] dark:hover:bg-[#2a2a2a]/50',
                       )}
                     >
                       From URL
@@ -639,8 +639,8 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
 
               {activeTab === 'url' ? (
                 <div className="space-y-5">
-                  <div className="bg-gradient-to-br from-bolt-elements-background-depth-1 to-bolt-elements-background-depth-1 dark:from-bolt-elements-background-depth-2-dark dark:to-bolt-elements-background-depth-2-dark p-5 rounded-xl border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark">
-                    <h3 className="text-base font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark mb-3 flex items-center gap-2">
+                  <div className="bg-gradient-to-br from-codinit-elements-background-depth-1 to-codinit-elements-background-depth-1 dark:from-codinit-elements-background-depth-2-dark dark:to-codinit-elements-background-depth-2-dark p-5 rounded-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark">
+                    <h3 className="text-base font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark mb-3 flex items-center gap-2">
                       <span className="i-ph:link-simple w-4 h-4 text-blue-500" />
                       Repository URL
                     </h3>
@@ -654,17 +654,17 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                         placeholder="Enter GitHub repository URL (e.g., https://github.com/user/repo)"
                         value={customUrl}
                         onChange={(e) => setCustomUrl(e.target.value)}
-                        className="w-full pl-10 py-3 border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full pl-10 py-3 border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
 
-                    <div className="mt-3 text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark bg-white/50 dark:bg-bolt-elements-background-depth-4/50 p-3 rounded-lg border border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30 backdrop-blur-sm">
+                    <div className="mt-3 text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark bg-white/50 dark:bg-codinit-elements-background-depth-4/50 p-3 rounded-lg border border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30 backdrop-blur-sm">
                       <p className="flex items-start gap-2">
                         <span className="i-ph:info w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-blue-500" />
                         <span>
                           You can paste any GitHub repository URL, including specific branches or tags.
                           <br />
-                          <span className="text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
+                          <span className="text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
                             Example: https://github.com/username/repository/tree/branch-name
                           </span>
                         </span>
@@ -672,10 +672,10 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
-                    <div className="h-px flex-grow bg-bolt-elements-borderColor dark:bg-bolt-elements-borderColor-dark"></div>
+                  <div className="flex items-center gap-3 text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
+                    <div className="h-px flex-grow bg-codinit-elements-borderColor dark:bg-codinit-elements-borderColor-dark"></div>
                     <span>Ready to import?</span>
-                    <div className="h-px flex-grow bg-bolt-elements-borderColor dark:bg-bolt-elements-borderColor-dark"></div>
+                    <div className="h-px flex-grow bg-codinit-elements-borderColor dark:bg-codinit-elements-borderColor-dark"></div>
                   </div>
 
                   <motion.button
@@ -698,8 +698,8 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                 <>
                   {activeTab === 'search' && (
                     <div className="space-y-5 mb-5">
-                      <div className="bg-gradient-to-br from-blue-500/5 to-cyan-500/5 p-5 rounded-xl border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark">
-                        <h3 className="text-base font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark mb-3 flex items-center gap-2">
+                      <div className="bg-gradient-to-br from-blue-500/5 to-cyan-500/5 p-5 rounded-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark">
+                        <h3 className="text-base font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark mb-3 flex items-center gap-2">
                           <span className="i-ph:magnifying-glass w-4 h-4 text-blue-500" />
                           Search GitHub
                         </h3>
@@ -726,13 +726,13 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                                 setSearchResults([]);
                               }}
                               iconClassName="text-blue-500"
-                              className="py-3 bg-white dark:bg-bolt-elements-background-depth-4 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                              className="py-3 bg-white dark:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                               loading={isLoading}
                             />
                           </div>
                           <motion.button
                             onClick={() => setFilters({})}
-                            className="px-3 py-2 rounded-lg bg-white dark:bg-bolt-elements-background-depth-4 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark shadow-sm"
+                            className="px-3 py-2 rounded-lg bg-white dark:bg-codinit-elements-background-depth-4 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark shadow-sm"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             title="Clear filters"
@@ -742,7 +742,7 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                         </div>
 
                         <div className="mt-3">
-                          <div className="text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark mb-2">
+                          <div className="text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark mb-2">
                             Filters
                           </div>
 
@@ -807,7 +807,7 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
 
                           <div className="grid grid-cols-3 gap-2">
                             <div className="relative col-span-3 md:col-span-1">
-                              <div className="absolute left-2 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
+                              <div className="absolute left-2 top-1/2 -translate-y-1/2 text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
                                 <span className="i-ph:code w-3.5 h-3.5" />
                               </div>
                               <input
@@ -821,11 +821,11 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                                     handleSearch(searchQuery);
                                   }
                                 }}
-                                className="w-full pl-8 px-3 py-2 text-sm rounded-lg bg-white dark:bg-bolt-elements-background-depth-4 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-8 px-3 py-2 text-sm rounded-lg bg-white dark:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
                             </div>
                             <div className="relative">
-                              <div className="absolute left-2 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
+                              <div className="absolute left-2 top-1/2 -translate-y-1/2 text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
                                 <span className="i-ph:star w-3.5 h-3.5" />
                               </div>
                               <input
@@ -833,11 +833,11 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                                 placeholder="Min stars"
                                 value={filters.stars || ''}
                                 onChange={(e) => handleFilterChange('stars', e.target.value)}
-                                className="w-full pl-8 px-3 py-2 text-sm rounded-lg bg-white dark:bg-bolt-elements-background-depth-4 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-8 px-3 py-2 text-sm rounded-lg bg-white dark:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
                             </div>
                             <div className="relative">
-                              <div className="absolute left-2 top-1/2 -translate-y-1/2 text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark">
+                              <div className="absolute left-2 top-1/2 -translate-y-1/2 text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark">
                                 <span className="i-ph:git-fork w-3.5 h-3.5" />
                               </div>
                               <input
@@ -845,13 +845,13 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                                 placeholder="Min forks"
                                 value={filters.forks || ''}
                                 onChange={(e) => handleFilterChange('forks', e.target.value)}
-                                className="w-full pl-8 px-3 py-2 text-sm rounded-lg bg-white dark:bg-bolt-elements-background-depth-4 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full pl-8 px-3 py-2 text-sm rounded-lg bg-white dark:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
                             </div>
                           </div>
                         </div>
 
-                        <div className="mt-3 text-xs text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark bg-white/50 dark:bg-bolt-elements-background-depth-4/50 p-3 rounded-lg border border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30 backdrop-blur-sm">
+                        <div className="mt-3 text-xs text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark bg-white/50 dark:bg-codinit-elements-background-depth-4/50 p-3 rounded-lg border border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30 backdrop-blur-sm">
                           <p className="flex items-start gap-2">
                             <span className="i-ph:info w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-blue-500" />
                             <span>
@@ -866,22 +866,22 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
 
                   <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                     {selectedRepository ? (
-                      <div className="space-y-5 bg-gradient-to-br from-blue-500/5 to-blue-500/5 p-5 rounded-xl border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark">
+                      <div className="space-y-5 bg-gradient-to-br from-blue-500/5 to-blue-500/5 p-5 rounded-xl border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <motion.button
                               onClick={() => setSelectedRepository(null)}
-                              className="p-2 rounded-lg hover:bg-white dark:hover:bg-bolt-elements-background-depth-4 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary shadow-sm"
+                              className="p-2 rounded-lg hover:bg-white dark:hover:bg-codinit-elements-background-depth-4 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary shadow-sm"
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                             >
                               <span className="i-ph:arrow-left w-4 h-4" />
                             </motion.button>
                             <div>
-                              <h3 className="font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark text-lg">
+                              <h3 className="font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark text-lg">
                                 {selectedRepository.name}
                               </h3>
-                              <p className="text-xs text-bolt-elements-textTertiary dark:text-bolt-elements-textTertiary-dark flex items-center gap-1">
+                              <p className="text-xs text-codinit-elements-textTertiary dark:text-codinit-elements-textTertiary-dark flex items-center gap-1">
                                 <span className="i-ph:user w-3 h-3" />
                                 {selectedRepository.full_name.split('/')[0]}
                               </p>
@@ -896,8 +896,8 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                         </div>
 
                         {selectedRepository.description && (
-                          <div className="bg-white/50 dark:bg-bolt-elements-background-depth-4/50 p-3 rounded-lg border border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30 backdrop-blur-sm">
-                            <p className="text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
+                          <div className="bg-white/50 dark:bg-codinit-elements-background-depth-4/50 p-3 rounded-lg border border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30 backdrop-blur-sm">
+                            <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
                               {selectedRepository.description}
                             </p>
                           </div>
@@ -919,23 +919,23 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                           )}
                         </div>
 
-                        <div className="pt-3 border-t border-bolt-elements-borderColor/30 dark:border-bolt-elements-borderColor-dark/30">
+                        <div className="pt-3 border-t border-codinit-elements-borderColor/30 dark:border-codinit-elements-borderColor-dark/30">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="i-ph:git-branch w-4 h-4 text-blue-500" />
-                            <label className="text-sm font-medium text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark">
+                            <label className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark">
                               Select Branch
                             </label>
                           </div>
                           <select
                             value={selectedBranch}
                             onChange={(e) => setSelectedBranch(e.target.value)}
-                            className="w-full px-3 py-3 rounded-lg bg-white dark:bg-bolt-elements-background-depth-4 border border-bolt-elements-borderColor dark:border-bolt-elements-borderColor-dark text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                            className="w-full px-3 py-3 rounded-lg bg-white dark:bg-codinit-elements-background-depth-4 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                           >
                             {branches.map((branch) => (
                               <option
                                 key={branch.name}
                                 value={branch.name}
-                                className="bg-white dark:bg-bolt-elements-background-depth-4 text-bolt-elements-textPrimary dark:text-bolt-elements-textPrimary-dark"
+                                className="bg-white dark:bg-codinit-elements-background-depth-4 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark"
                               >
                                 {branch.name} {branch.default ? '(default)' : ''}
                               </option>
@@ -943,10 +943,10 @@ export function RepositorySelectionDialog({ isOpen, onClose, onSelect }: Reposit
                           </select>
                         </div>
 
-                        <div className="flex items-center gap-3 text-sm text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark">
-                          <div className="h-px flex-grow bg-bolt-elements-borderColor/30 dark:bg-bolt-elements-borderColor-dark/30"></div>
+                        <div className="flex items-center gap-3 text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark">
+                          <div className="h-px flex-grow bg-codinit-elements-borderColor/30 dark:bg-codinit-elements-borderColor-dark/30"></div>
                           <span>Ready to import?</span>
-                          <div className="h-px flex-grow bg-bolt-elements-borderColor/30 dark:bg-bolt-elements-borderColor-dark/30"></div>
+                          <div className="h-px flex-grow bg-codinit-elements-borderColor/30 dark:bg-codinit-elements-borderColor-dark/30"></div>
                         </div>
 
                         <motion.button

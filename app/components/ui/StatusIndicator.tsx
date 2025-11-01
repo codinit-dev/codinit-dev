@@ -78,7 +78,7 @@ export function StatusIndicator({ status, size = 'md', pulse = false, label, cla
       {label && (
         <span
           className={classNames(
-            'text-bolt-elements-textSecondary dark:text-bolt-elements-textSecondary-dark',
+            'text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark',
             textSizeClass,
           )}
         >

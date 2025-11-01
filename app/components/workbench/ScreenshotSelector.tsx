@@ -183,10 +183,10 @@ export const ScreenshotSelector = memo(
 
           if (textarea) {
             // Get the setters from the BaseChat component
-            const setUploadedFiles = (window as any).__BOLT_SET_UPLOADED_FILES__;
-            const setImageDataList = (window as any).__BOLT_SET_IMAGE_DATA_LIST__;
-            const uploadedFiles = (window as any).__BOLT_UPLOADED_FILES__ || [];
-            const imageDataList = (window as any).__BOLT_IMAGE_DATA_LIST__ || [];
+            const setUploadedFiles = (window as any).__CODINIT_SET_UPLOADED_FILES__;
+            const setImageDataList = (window as any).__CODINIT_SET_IMAGE_DATA_LIST__;
+            const uploadedFiles = (window as any).__CODINIT_UPLOADED_FILES__ || [];
+            const imageDataList = (window as any).__CODINIT_IMAGE_DATA_LIST__ || [];
 
             if (setUploadedFiles && setImageDataList) {
               // Update the files and image data

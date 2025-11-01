@@ -5,7 +5,7 @@ import { defineConfig, presetIcons, presetUno, transformerDirectives } from 'uno
 
 const iconPaths = globSync('./icons/*.svg');
 
-const collectionName = 'bolt';
+const collectionName = 'codinit';
 
 const customIconCollection = iconPaths.reduce(
   (acc, iconPath) => {
@@ -33,6 +33,19 @@ const BASE_COLORS = {
     800: '#262626',
     900: '#1a1a1a',
     950: '#0a0a0a',
+  },
+  slate: {
+    50: '#f8fafc',
+    100: '#f1f5f9',
+    200: '#e2e8f0',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    500: '#64748b',
+    600: '#475569',
+    700: '#313139',
+    800: '#222228',
+    900: '#16161c',
+    950: '#0a0a0e',
   },
   accent: {
     50: '#EFF6FF',
@@ -92,17 +105,18 @@ const COLOR_PRIMITIVES = {
   alpha: {
     white: generateAlphaPalette(BASE_COLORS.white),
     gray: generateAlphaPalette(BASE_COLORS.gray[900]),
+    slate: generateAlphaPalette(BASE_COLORS.slate[900]),
     red: generateAlphaPalette(BASE_COLORS.red[500]),
     accent: generateAlphaPalette(BASE_COLORS.accent[500]),
   },
 };
 
 export default defineConfig({
-  safelist: [...Object.keys(customIconCollection[collectionName] || {}).map((x) => `i-bolt:${x}`)],
+  safelist: [...Object.keys(customIconCollection[collectionName] || {}).map((x) => `i-codinit:${x}`)],
   shortcuts: {
-    'bolt-ease-cubic-bezier': 'ease-[cubic-bezier(0.4,0,0.2,1)]',
-    'transition-theme': 'transition-[background-color,border-color,color] duration-150 bolt-ease-cubic-bezier',
-    kdb: 'bg-bolt-elements-code-background text-bolt-elements-code-text py-1 px-1.5 rounded-md',
+    'codinit-ease-cubic-bezier': 'ease-[cubic-bezier(0.4,0,0.2,1)]',
+    'transition-theme': 'transition-[background-color,border-color,color] duration-150 codinit-ease-cubic-bezier',
+    kdb: 'bg-codinit-elements-code-background text-codinit-elements-code-text py-1 px-1.5 rounded-md',
     'max-w-chat': 'max-w-[var(--chat-max-width)]',
   },
   rules: [
@@ -115,115 +129,115 @@ export default defineConfig({
   theme: {
     colors: {
       ...COLOR_PRIMITIVES,
-      bolt: {
+      codinit: {
         elements: {
-          borderColor: 'var(--bolt-elements-borderColor)',
-          borderColorActive: 'var(--bolt-elements-borderColorActive)',
+          borderColor: 'var(--codinit-elements-borderColor)',
+          borderColorActive: 'var(--codinit-elements-borderColorActive)',
           background: {
             depth: {
-              1: 'var(--bolt-elements-bg-depth-1)',
-              2: 'var(--bolt-elements-bg-depth-2)',
-              3: 'var(--bolt-elements-bg-depth-3)',
-              4: 'var(--bolt-elements-bg-depth-4)',
+              1: 'var(--codinit-elements-bg-depth-1)',
+              2: 'var(--codinit-elements-bg-depth-2)',
+              3: 'var(--codinit-elements-bg-depth-3)',
+              4: 'var(--codinit-elements-bg-depth-4)',
             },
           },
-          textPrimary: 'var(--bolt-elements-textPrimary)',
-          textSecondary: 'var(--bolt-elements-textSecondary)',
-          textTertiary: 'var(--bolt-elements-textTertiary)',
+          textPrimary: 'var(--codinit-elements-textPrimary)',
+          textSecondary: 'var(--codinit-elements-textSecondary)',
+          textTertiary: 'var(--codinit-elements-textTertiary)',
           code: {
-            background: 'var(--bolt-elements-code-background)',
-            text: 'var(--bolt-elements-code-text)',
+            background: 'var(--codinit-elements-code-background)',
+            text: 'var(--codinit-elements-code-text)',
           },
           button: {
             primary: {
-              background: 'var(--bolt-elements-button-primary-background)',
-              backgroundHover: 'var(--bolt-elements-button-primary-backgroundHover)',
-              text: 'var(--bolt-elements-button-primary-text)',
+              background: 'var(--codinit-elements-button-primary-background)',
+              backgroundHover: 'var(--codinit-elements-button-primary-backgroundHover)',
+              text: 'var(--codinit-elements-button-primary-text)',
             },
             secondary: {
-              background: 'var(--bolt-elements-button-secondary-background)',
-              backgroundHover: 'var(--bolt-elements-button-secondary-backgroundHover)',
-              text: 'var(--bolt-elements-button-secondary-text)',
+              background: 'var(--codinit-elements-button-secondary-background)',
+              backgroundHover: 'var(--codinit-elements-button-secondary-backgroundHover)',
+              text: 'var(--codinit-elements-button-secondary-text)',
             },
             danger: {
-              background: 'var(--bolt-elements-button-danger-background)',
-              backgroundHover: 'var(--bolt-elements-button-danger-backgroundHover)',
-              text: 'var(--bolt-elements-button-danger-text)',
+              background: 'var(--codinit-elements-button-danger-background)',
+              backgroundHover: 'var(--codinit-elements-button-danger-backgroundHover)',
+              text: 'var(--codinit-elements-button-danger-text)',
             },
           },
           item: {
-            contentDefault: 'var(--bolt-elements-item-contentDefault)',
-            contentActive: 'var(--bolt-elements-item-contentActive)',
-            contentAccent: 'var(--bolt-elements-item-contentAccent)',
-            contentDanger: 'var(--bolt-elements-item-contentDanger)',
-            backgroundDefault: 'var(--bolt-elements-item-backgroundDefault)',
-            backgroundActive: 'var(--bolt-elements-item-backgroundActive)',
-            backgroundAccent: 'var(--bolt-elements-item-backgroundAccent)',
-            backgroundDanger: 'var(--bolt-elements-item-backgroundDanger)',
+            contentDefault: 'var(--codinit-elements-item-contentDefault)',
+            contentActive: 'var(--codinit-elements-item-contentActive)',
+            contentAccent: 'var(--codinit-elements-item-contentAccent)',
+            contentDanger: 'var(--codinit-elements-item-contentDanger)',
+            backgroundDefault: 'var(--codinit-elements-item-backgroundDefault)',
+            backgroundActive: 'var(--codinit-elements-item-backgroundActive)',
+            backgroundAccent: 'var(--codinit-elements-item-backgroundAccent)',
+            backgroundDanger: 'var(--codinit-elements-item-backgroundDanger)',
           },
           actions: {
-            background: 'var(--bolt-elements-actions-background)',
+            background: 'var(--codinit-elements-actions-background)',
             code: {
-              background: 'var(--bolt-elements-actions-code-background)',
+              background: 'var(--codinit-elements-actions-code-background)',
             },
           },
           artifacts: {
-            background: 'var(--bolt-elements-artifacts-background)',
-            backgroundHover: 'var(--bolt-elements-artifacts-backgroundHover)',
-            borderColor: 'var(--bolt-elements-artifacts-borderColor)',
+            background: 'var(--codinit-elements-artifacts-background)',
+            backgroundHover: 'var(--codinit-elements-artifacts-backgroundHover)',
+            borderColor: 'var(--codinit-elements-artifacts-borderColor)',
             inlineCode: {
-              background: 'var(--bolt-elements-artifacts-inlineCode-background)',
-              text: 'var(--bolt-elements-artifacts-inlineCode-text)',
+              background: 'var(--codinit-elements-artifacts-inlineCode-background)',
+              text: 'var(--codinit-elements-artifacts-inlineCode-text)',
             },
           },
           messages: {
-            background: 'var(--bolt-elements-messages-background)',
-            linkColor: 'var(--bolt-elements-messages-linkColor)',
+            background: 'var(--codinit-elements-messages-background)',
+            linkColor: 'var(--codinit-elements-messages-linkColor)',
             code: {
-              background: 'var(--bolt-elements-messages-code-background)',
+              background: 'var(--codinit-elements-messages-code-background)',
             },
             inlineCode: {
-              background: 'var(--bolt-elements-messages-inlineCode-background)',
-              text: 'var(--bolt-elements-messages-inlineCode-text)',
+              background: 'var(--codinit-elements-messages-inlineCode-background)',
+              text: 'var(--codinit-elements-messages-inlineCode-text)',
             },
           },
           icon: {
-            success: 'var(--bolt-elements-icon-success)',
-            error: 'var(--bolt-elements-icon-error)',
-            primary: 'var(--bolt-elements-icon-primary)',
-            secondary: 'var(--bolt-elements-icon-secondary)',
-            tertiary: 'var(--bolt-elements-icon-tertiary)',
+            success: 'var(--codinit-elements-icon-success)',
+            error: 'var(--codinit-elements-icon-error)',
+            primary: 'var(--codinit-elements-icon-primary)',
+            secondary: 'var(--codinit-elements-icon-secondary)',
+            tertiary: 'var(--codinit-elements-icon-tertiary)',
           },
           preview: {
             addressBar: {
-              background: 'var(--bolt-elements-preview-addressBar-background)',
-              backgroundHover: 'var(--bolt-elements-preview-addressBar-backgroundHover)',
-              backgroundActive: 'var(--bolt-elements-preview-addressBar-backgroundActive)',
-              text: 'var(--bolt-elements-preview-addressBar-text)',
-              textActive: 'var(--bolt-elements-preview-addressBar-textActive)',
+              background: 'var(--codinit-elements-preview-addressBar-background)',
+              backgroundHover: 'var(--codinit-elements-preview-addressBar-backgroundHover)',
+              backgroundActive: 'var(--codinit-elements-preview-addressBar-backgroundActive)',
+              text: 'var(--codinit-elements-preview-addressBar-text)',
+              textActive: 'var(--codinit-elements-preview-addressBar-textActive)',
             },
           },
           terminals: {
-            background: 'var(--bolt-elements-terminals-background)',
-            buttonBackground: 'var(--bolt-elements-terminals-buttonBackground)',
+            background: 'var(--codinit-elements-terminals-background)',
+            buttonBackground: 'var(--codinit-elements-terminals-buttonBackground)',
           },
-          dividerColor: 'var(--bolt-elements-dividerColor)',
+          dividerColor: 'var(--codinit-elements-dividerColor)',
           loader: {
-            background: 'var(--bolt-elements-loader-background)',
-            progress: 'var(--bolt-elements-loader-progress)',
+            background: 'var(--codinit-elements-loader-background)',
+            progress: 'var(--codinit-elements-loader-progress)',
           },
           prompt: {
-            background: 'var(--bolt-elements-prompt-background)',
+            background: 'var(--codinit-elements-prompt-background)',
           },
           sidebar: {
-            dropdownShadow: 'var(--bolt-elements-sidebar-dropdownShadow)',
-            buttonBackgroundDefault: 'var(--bolt-elements-sidebar-buttonBackgroundDefault)',
-            buttonBackgroundHover: 'var(--bolt-elements-sidebar-buttonBackgroundHover)',
-            buttonText: 'var(--bolt-elements-sidebar-buttonText)',
+            dropdownShadow: 'var(--codinit-elements-sidebar-dropdownShadow)',
+            buttonBackgroundDefault: 'var(--codinit-elements-sidebar-buttonBackgroundDefault)',
+            buttonBackgroundHover: 'var(--codinit-elements-sidebar-buttonBackgroundHover)',
+            buttonText: 'var(--codinit-elements-sidebar-buttonText)',
           },
           cta: {
-            background: 'var(--bolt-elements-cta-background)',
-            text: 'var(--bolt-elements-cta-text)',
+            background: 'var(--codinit-elements-cta-background)',
+            text: 'var(--codinit-elements-cta-text)',
           },
         },
       },

@@ -19,12 +19,12 @@ export const ExpoQrModal: React.FC<ExpoQrModalProps> = ({ open, onClose }) => {
         showCloseButton={true}
         onClose={onClose}
       >
-        <div className="border !border-bolt-elements-borderColor flex flex-col gap-5 justify-center items-center p-6 bg-bolt-elements-background-depth-2 rounded-md">
-          <div className="i-bolt:expo-brand h-10 w-full invert dark:invert-none"></div>
-          <DialogTitle className="text-bolt-elements-textTertiary text-lg font-semibold leading-6">
+        <div className="border !border-codinit-elements-borderColor flex flex-col gap-5 justify-center items-center p-6 bg-codinit-elements-background-depth-2 rounded-md">
+          <div className="i-codinit:expo-brand h-10 w-full invert dark:invert-none"></div>
+          <DialogTitle className="text-codinit-elements-textTertiary text-lg font-semibold leading-6">
             Preview on your own mobile device
           </DialogTitle>
-          <DialogDescription className="bg-bolt-elements-background-depth-3 max-w-sm rounded-md p-1 border border-bolt-elements-borderColor">
+          <DialogDescription className="bg-codinit-elements-background-depth-3 max-w-sm rounded-md p-1 border border-codinit-elements-borderColor">
             Scan this QR code with the Expo Go app on your mobile device to open your project.
           </DialogDescription>
           <div className="my-6 flex flex-col items-center">

@@ -13,7 +13,7 @@ const watcherState = {
 function tryLoadFallbackState(): boolean {
   try {
     if (typeof localStorage !== 'undefined') {
-      const state = localStorage.getItem('bolt-file-watcher-fallback');
+      const state = localStorage.getItem('codinit-file-watcher-fallback');
       return state === 'true';
     }
   } catch {
@@ -26,7 +26,7 @@ function tryLoadFallbackState(): boolean {
 function saveFallbackState(state: boolean) {
   try {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('bolt-file-watcher-fallback', state ? 'true' : 'false');
+      localStorage.setItem('codinit-file-watcher-fallback', state ? 'true' : 'false');
     }
   } catch {
     console.warn('[FileWatcher] Failed to save fallback state to localStorage');
