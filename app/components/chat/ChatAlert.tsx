@@ -99,7 +99,7 @@ ${content}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
-        className="rounded-lg border border-bolt-elements-borderColor bg-bolt-elements-background-depth-2 p-4 mb-2"
+        className="rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 p-4 mb-2"
       >
         <div className="flex items-start">
           <motion.div
@@ -108,7 +108,7 @@ ${content}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="i-ph:warning-duotone text-xl text-bolt-elements-button-danger-text"></div>
+            <div className="i-ph:warning-duotone text-xl text-codinit-elements-button-danger-text"></div>
           </motion.div>
 
           <div className="ml-3 flex-1">
@@ -118,7 +118,7 @@ ${content}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="text-sm font-medium text-bolt-elements-textPrimary"
+                  className="text-sm font-medium text-codinit-elements-textPrimary"
                 >
                   {title}
                 </motion.h3>
@@ -128,7 +128,7 @@ ${content}
               </div>
               <button
                 onClick={handleCopyError}
-                className="text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary transition-colors"
+                className="text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary transition-colors"
                 title="Copy error details"
               >
                 <div className="i-ph:copy text-base"></div>
@@ -136,7 +136,7 @@ ${content}
             </div>
 
             {timestamp && (
-              <div className="text-xs text-bolt-elements-textSecondary mb-2">
+              <div className="text-xs text-codinit-elements-textSecondary mb-2">
                 {new Date(timestamp).toLocaleString()}
               </div>
             )}
@@ -145,25 +145,25 @@ ${content}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="mt-2 text-sm text-bolt-elements-textSecondary"
+              className="mt-2 text-sm text-codinit-elements-textSecondary"
             >
               <p>{message}</p>
 
               {description && (
-                <div className="text-xs text-bolt-elements-textSecondary p-2 bg-bolt-elements-background-depth-3 rounded mt-3 mb-2">
+                <div className="text-xs text-codinit-elements-textSecondary p-2 bg-codinit-elements-background-depth-3 rounded mt-3 mb-2">
                   <span className="font-medium">Error:</span> {description}
                 </div>
               )}
 
               {command && (
                 <div className="mt-2 mb-2 flex items-center gap-2">
-                  <span className="text-xs font-medium text-bolt-elements-textSecondary">Command:</span>
-                  <code className="text-xs bg-bolt-elements-background-depth-3 px-2 py-1 rounded font-mono flex-1">
+                  <span className="text-xs font-medium text-codinit-elements-textSecondary">Command:</span>
+                  <code className="text-xs bg-codinit-elements-background-depth-3 px-2 py-1 rounded font-mono flex-1">
                     {command}
                   </code>
                   <button
                     onClick={() => copyToClipboard(command)}
-                    className="text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary"
+                    className="text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary"
                     title="Copy command"
                   >
                     <div className="i-ph:copy text-sm"></div>
@@ -173,16 +173,16 @@ ${content}
 
               {extractedFiles.length > 0 && (
                 <div className="mt-3 mb-2">
-                  <div className="text-xs font-medium text-bolt-elements-textPrimary mb-1">Affected Files:</div>
+                  <div className="text-xs font-medium text-codinit-elements-textPrimary mb-1">Affected Files:</div>
                   <div className="flex flex-wrap gap-1">
                     {extractedFiles.slice(0, 3).map((file, index) => (
                       <span
                         key={index}
-                        className="text-xs bg-bolt-elements-background-depth-3 px-2 py-1 rounded font-mono text-bolt-elements-textSecondary"
+                        className="text-xs bg-codinit-elements-background-depth-3 px-2 py-1 rounded font-mono text-codinit-elements-textSecondary"
                       >
                         {file.path}
                         {file.line && (
-                          <span className="text-bolt-elements-button-danger-text">
+                          <span className="text-codinit-elements-button-danger-text">
                             :{file.line}
                             {file.column && `:${file.column}`}
                           </span>
@@ -190,7 +190,7 @@ ${content}
                       </span>
                     ))}
                     {extractedFiles.length > 3 && (
-                      <span className="text-xs text-bolt-elements-textSecondary px-2 py-1">
+                      <span className="text-xs text-codinit-elements-textSecondary px-2 py-1">
                         +{extractedFiles.length - 3} more
                       </span>
                     )}
@@ -202,7 +202,7 @@ ${content}
                 <div className="mt-3">
                   <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-xs font-medium text-bolt-elements-textPrimary hover:text-accent-500 flex items-center gap-1"
+                    className="text-xs font-medium text-codinit-elements-textPrimary hover:text-accent-500 flex items-center gap-1"
                   >
                     <div
                       className={classNames('i-ph:caret-right transition-transform', isExpanded ? 'rotate-90' : '')}
@@ -219,8 +219,8 @@ ${content}
                     >
                       {stackTrace && (
                         <div className="mb-3">
-                          <div className="text-xs font-medium text-bolt-elements-textPrimary mb-1">Stack Trace:</div>
-                          <pre className="text-xs bg-bolt-elements-background-depth-3 p-2 rounded overflow-x-auto max-h-40 overflow-y-auto font-mono text-bolt-elements-textSecondary whitespace-pre-wrap">
+                          <div className="text-xs font-medium text-codinit-elements-textPrimary mb-1">Stack Trace:</div>
+                          <pre className="text-xs bg-codinit-elements-background-depth-3 p-2 rounded overflow-x-auto max-h-40 overflow-y-auto font-mono text-codinit-elements-textSecondary whitespace-pre-wrap">
                             {stackTrace}
                           </pre>
                         </div>
@@ -228,8 +228,8 @@ ${content}
 
                       {content && (
                         <div>
-                          <div className="text-xs font-medium text-bolt-elements-textPrimary mb-1">Full Output:</div>
-                          <pre className="text-xs bg-bolt-elements-background-depth-3 p-2 rounded overflow-x-auto max-h-60 overflow-y-auto font-mono text-bolt-elements-textSecondary whitespace-pre-wrap">
+                          <div className="text-xs font-medium text-codinit-elements-textPrimary mb-1">Full Output:</div>
+                          <pre className="text-xs bg-codinit-elements-background-depth-3 p-2 rounded overflow-x-auto max-h-60 overflow-y-auto font-mono text-codinit-elements-textSecondary whitespace-pre-wrap">
                             {content}
                           </pre>
                         </div>
@@ -251,10 +251,10 @@ ${content}
                   onClick={handleAskAI}
                   className={classNames(
                     'px-3 py-1.5 rounded-md text-sm font-medium',
-                    'bg-bolt-elements-button-primary-background',
-                    'hover:bg-bolt-elements-button-primary-backgroundHover',
-                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bolt-elements-button-danger-background',
-                    'text-bolt-elements-button-primary-text',
+                    'bg-codinit-elements-button-primary-background',
+                    'hover:bg-codinit-elements-button-primary-backgroundHover',
+                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-danger-background',
+                    'text-codinit-elements-button-primary-text',
                     'flex items-center gap-1.5',
                   )}
                 >
@@ -265,10 +265,10 @@ ${content}
                   onClick={clearAlert}
                   className={classNames(
                     'px-3 py-1.5 rounded-md text-sm font-medium',
-                    'bg-bolt-elements-button-secondary-background',
-                    'hover:bg-bolt-elements-button-secondary-backgroundHover',
-                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bolt-elements-button-secondary-background',
-                    'text-bolt-elements-button-secondary-text',
+                    'bg-codinit-elements-button-secondary-background',
+                    'hover:bg-codinit-elements-button-secondary-backgroundHover',
+                    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-codinit-elements-button-secondary-background',
+                    'text-codinit-elements-button-secondary-text',
                   )}
                 >
                   Dismiss

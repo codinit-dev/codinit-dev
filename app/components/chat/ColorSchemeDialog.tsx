@@ -62,13 +62,13 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
   const renderColorSection = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-bolt-elements-textPrimary flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-bolt-elements-item-contentAccent"></div>
+        <h3 className="text-lg font-semibold text-codinit-elements-textPrimary flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-codinit-elements-item-contentAccent"></div>
           Color Palette
         </h3>
         <button
           onClick={handleReset}
-          className="text-sm bg-transparent hover:bg-bolt-elements-bg-depth-2 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary rounded-lg flex items-center gap-2 transition-all duration-200"
+          className="text-sm bg-transparent hover:bg-codinit-elements-bg-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary rounded-lg flex items-center gap-2 transition-all duration-200"
         >
           <span className="i-ph:arrow-clockwise text-sm" />
           Reset
@@ -79,11 +79,11 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         {paletteRoles.map((role) => (
           <div
             key={role.key}
-            className="group flex items-center gap-4 p-4 rounded-xl bg-bolt-elements-bg-depth-3 hover:bg-bolt-elements-bg-depth-2 border border-transparent hover:border-bolt-elements-borderColor transition-all duration-200"
+            className="group flex items-center gap-4 p-4 rounded-xl bg-codinit-elements-bg-depth-3 hover:bg-codinit-elements-bg-depth-2 border border-transparent hover:border-codinit-elements-borderColor transition-all duration-200"
           >
             <div className="relative flex-shrink-0">
               <div
-                className="w-12 h-12 rounded-xl shadow-md cursor-pointer transition-all duration-200 hover:scale-110 ring-2 ring-transparent hover:ring-bolt-elements-borderColorActive"
+                className="w-12 h-12 rounded-xl shadow-md cursor-pointer transition-all duration-200 hover:scale-110 ring-2 ring-transparent hover:ring-codinit-elements-borderColorActive"
                 style={{ backgroundColor: palette[role.key] }}
                 onClick={() => document.getElementById(`color-input-${role.key}`)?.click()}
                 role="button"
@@ -98,16 +98,16 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 tabIndex={-1}
               />
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-bolt-elements-bg-depth-1 rounded-full flex items-center justify-center shadow-sm">
-                <span className="i-ph:pencil-simple text-xs text-bolt-elements-textSecondary" />
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-codinit-elements-bg-depth-1 rounded-full flex items-center justify-center shadow-sm">
+                <span className="i-ph:pencil-simple text-xs text-codinit-elements-textSecondary" />
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-semibold text-bolt-elements-textPrimary transition-colors">{role.label}</div>
-              <div className="text-sm text-bolt-elements-textSecondary line-clamp-2 leading-relaxed">
+              <div className="font-semibold text-codinit-elements-textPrimary transition-colors">{role.label}</div>
+              <div className="text-sm text-codinit-elements-textSecondary line-clamp-2 leading-relaxed">
                 {role.description}
               </div>
-              <div className="text-xs text-bolt-elements-textTertiary font-mono mt-1 px-2 py-1 bg-bolt-elements-bg-depth-1 rounded-md inline-block">
+              <div className="text-xs text-codinit-elements-textTertiary font-mono mt-1 px-2 py-1 bg-codinit-elements-bg-depth-1 rounded-md inline-block">
                 {palette[role.key]}
               </div>
             </div>
@@ -119,8 +119,8 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
 
   const renderTypographySection = () => (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-bolt-elements-textPrimary flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-bolt-elements-item-contentAccent"></div>
+      <h3 className="text-lg font-semibold text-codinit-elements-textPrimary flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-codinit-elements-item-contentAccent"></div>
         Typography
       </h3>
 
@@ -130,16 +130,18 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             key={f.key}
             type="button"
             onClick={() => handleFontToggle(f.key)}
-            className={`group p-4 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-bolt-elements-borderColorActive ${
+            className={`group p-4 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
               font.includes(f.key)
-                ? 'bg-bolt-elements-item-backgroundAccent border-bolt-elements-borderColorActive shadow-lg'
-                : 'bg-bolt-elements-background-depth-3 border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive hover:bg-bolt-elements-bg-depth-2'
+                ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive shadow-lg'
+                : 'bg-codinit-elements-background-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive hover:bg-codinit-elements-bg-depth-2'
             }`}
           >
             <div className="text-center space-y-2">
               <div
                 className={`text-2xl font-medium transition-colors ${
-                  font.includes(f.key) ? 'text-bolt-elements-item-contentAccent' : 'text-bolt-elements-textPrimary'
+                  font.includes(f.key)
+                    ? 'text-codinit-elements-item-contentAccent'
+                    : 'text-codinit-elements-textPrimary'
                 }`}
                 style={{ fontFamily: f.key }}
               >
@@ -147,13 +149,15 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
               </div>
               <div
                 className={`text-sm font-medium transition-colors ${
-                  font.includes(f.key) ? 'text-bolt-elements-item-contentAccent' : 'text-bolt-elements-textSecondary'
+                  font.includes(f.key)
+                    ? 'text-codinit-elements-item-contentAccent'
+                    : 'text-codinit-elements-textSecondary'
                 }`}
               >
                 {f.label}
               </div>
               {font.includes(f.key) && (
-                <div className="w-6 h-6 mx-auto bg-bolt-elements-item-contentAccent rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 mx-auto bg-codinit-elements-item-contentAccent rounded-full flex items-center justify-center">
                   <span className="i-ph:check text-white text-sm" />
                 </div>
               )}
@@ -166,8 +170,8 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
 
   const renderFeaturesSection = () => (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-bolt-elements-textPrimary flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-bolt-elements-item-contentAccent"></div>
+      <h3 className="text-lg font-semibold text-codinit-elements-textPrimary flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-codinit-elements-item-contentAccent"></div>
         Design Features
       </h3>
 
@@ -180,7 +184,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
               <button
                 type="button"
                 onClick={() => handleFeatureToggle(f.key)}
-                className={`group relative w-full p-6 text-sm font-medium transition-all duration-200 bg-bolt-elements-background-depth-3 text-bolt-elements-item-textSecondary ${
+                className={`group relative w-full p-6 text-sm font-medium transition-all duration-200 bg-codinit-elements-background-depth-3 text-codinit-elements-item-textSecondary ${
                   f.key === 'rounded'
                     ? isSelected
                       ? 'rounded-3xl'
@@ -191,25 +195,25 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 } ${
                   f.key === 'border'
                     ? isSelected
-                      ? 'border-3 border-bolt-elements-borderColorActive bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent'
-                      : 'border-2 border-bolt-elements-borderColor hover:border-bolt-elements-borderColorActive text-bolt-elements-textSecondary'
+                      ? 'border-3 border-codinit-elements-borderColorActive bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent'
+                      : 'border-2 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary'
                     : f.key === 'gradient'
                       ? ''
                       : isSelected
-                        ? 'bg-bolt-elements-item-backgroundAccent text-bolt-elements-item-contentAccent shadow-lg'
-                        : 'bg-bolt-elements-bg-depth-3 hover:bg-bolt-elements-bg-depth-2 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary'
+                        ? 'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent shadow-lg'
+                        : 'bg-codinit-elements-bg-depth-3 hover:bg-codinit-elements-bg-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
                 } ${f.key === 'shadow' ? (isSelected ? 'shadow-xl' : 'shadow-lg') : 'shadow-md'}`}
                 style={{
                   ...(f.key === 'gradient' && {
                     background: isSelected
                       ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                      : 'var(--bolt-elements-bg-depth-3)',
-                    color: isSelected ? 'white' : 'var(--bolt-elements-textSecondary)',
+                      : 'var(--codinit-elements-bg-depth-3)',
+                    color: isSelected ? 'white' : 'var(--codinit-elements-textSecondary)',
                   }),
                 }}
               >
                 <div className="flex flex-col items-center gap-4">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-bolt-elements-bg-depth-1 bg-opacity-20">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-codinit-elements-bg-depth-1 bg-opacity-20">
                     {f.key === 'rounded' && (
                       <div
                         className={`w-6 h-6 bg-current transition-all duration-200 ${
@@ -280,17 +284,17 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         <Dialog>
           <div className="py-4 px-4 min-w-[480px] max-w-[90vw] max-h-[85vh] flex flex-col gap-6 overflow-hidden">
             <div className="">
-              <DialogTitle className="text-2xl font-bold text-bolt-elements-textPrimary">
+              <DialogTitle className="text-2xl font-bold text-codinit-elements-textPrimary">
                 Design Palette & Features
               </DialogTitle>
-              <DialogDescription className="text-bolt-elements-textSecondary leading-relaxed">
+              <DialogDescription className="text-codinit-elements-textSecondary leading-relaxed">
                 Customize your color palette, typography, and design features. These preferences will guide the AI in
                 creating designs that match your style.
               </DialogDescription>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex gap-1 p-1 bg-bolt-elements-bg-depth-3 rounded-xl">
+            <div className="flex gap-1 p-1 bg-codinit-elements-bg-depth-3 rounded-xl">
               {[
                 { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
                 { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
@@ -301,8 +305,8 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   onClick={() => setActiveSection(tab.key as any)}
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                     activeSection === tab.key
-                      ? 'bg-bolt-elements-background-depth-3 text-bolt-elements-textPrimary shadow-md'
-                      : 'bg-bolt-elements-background-depth-2 text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary hover:bg-bolt-elements-bg-depth-2'
+                      ? 'bg-codinit-elements-background-depth-3 text-codinit-elements-textPrimary shadow-md'
+                      : 'bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-bg-depth-2'
                   }`}
                 >
                   <span className={`${tab.icon} text-lg`} />
@@ -320,7 +324,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
 
             {/* Action Buttons */}
             <div className="flex justify-between items-center">
-              <div className="text-sm text-bolt-elements-textSecondary">
+              <div className="text-sm text-codinit-elements-textSecondary">
                 {Object.keys(palette).length} colors • {font.length} fonts • {features.length} features
               </div>
               <div className="flex gap-3">
@@ -330,7 +334,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 <Button
                   variant="ghost"
                   onClick={handleSave}
-                  className="bg-bolt-elements-button-primary-background hover:bg-bolt-elements-button-primary-backgroundHover text-bolt-elements-button-primary-text"
+                  className="bg-codinit-elements-button-primary-background hover:bg-codinit-elements-button-primary-backgroundHover text-codinit-elements-button-primary-text"
                 >
                   Save Changes
                 </Button>
@@ -343,7 +347,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
       <style>{`
         .custom-scrollbar {
           scrollbar-width: thin;
-          scrollbar-color: var(--bolt-elements-textTertiary) transparent;
+          scrollbar-color: var(--codinit-elements-textTertiary) transparent;
         }
         .custom-scrollbar::-webkit-scrollbar {
           width: 6px;
@@ -352,11 +356,11 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
           background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background-color: var(--bolt-elements-textTertiary);
+          background-color: var(--codinit-elements-textTertiary);
           border-radius: 3px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background-color: var(--bolt-elements-textSecondary);
+          background-color: var(--codinit-elements-textSecondary);
         }
         .line-clamp-2 {
           display: -webkit-box;

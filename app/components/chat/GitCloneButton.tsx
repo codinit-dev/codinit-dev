@@ -155,7 +155,7 @@ ${escapeExampleTags(file.content)}
         onClick={() => setIsDialogOpen(true)}
         title="GitHub"
         aria-label="GitHub"
-        className="flex items-center gap-1.5 border border-bolt-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-1.5 border border-codinit-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={!ready || loading}
       >
         <span

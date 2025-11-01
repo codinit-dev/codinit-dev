@@ -54,9 +54,9 @@ export const ThinkingProcess = memo(({ children }: ThinkingProcessProps) => {
         {steps.map((step, index) => (
           <div key={index} className="flex items-start gap-3 group">
             <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">
-              {index + 1}
+              {index + 1}codinit
             </div>
-            <div className="flex-1 text-sm text-bolt-elements-textPrimary leading-relaxed pt-0.5">{step}</div>
+            <div className="flex-1 text-sm text-codinit-elements-textPrimary leading-relaxed pt-0.5">{step}</div>
           </div>
         ))}
       </div>

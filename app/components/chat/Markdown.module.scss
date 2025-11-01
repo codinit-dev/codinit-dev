@@ -9,7 +9,7 @@ $code-font-size: 13px;
 
 .MarkdownContent {
   line-height: 1.6;
-  color: var(--bolt-elements-textPrimary);
+  color: var(--codinit-elements-textPrimary);
 
   > *:not(:last-child) {
     margin-block-end: 16px;
@@ -25,19 +25,19 @@ $code-font-size: 13px;
       margin-block-end: 16px;
       font-weight: 600;
       line-height: 1.25;
-      color: var(--bolt-elements-textPrimary);
+      color: var(--codinit-elements-textPrimary);
     }
   }
 
   h1 {
     font-size: 2em;
-    border-bottom: 1px solid var(--bolt-elements-borderColor);
+    border-bottom: 1px solid var(--codinit-elements-borderColor);
     padding-bottom: 0.3em;
   }
 
   h2 {
     font-size: 1.5em;
-    border-bottom: 1px solid var(--bolt-elements-borderColor);
+    border-bottom: 1px solid var(--codinit-elements-borderColor);
     padding-bottom: 0.3em;
   }
 
@@ -68,7 +68,7 @@ $code-font-size: 13px;
   }
 
   a {
-    color: var(--bolt-elements-messages-linkColor);
+    color: var(--codinit-elements-messages-linkColor);
     text-decoration: none;
     cursor: pointer;
 
@@ -84,8 +84,8 @@ $code-font-size: 13px;
     @include not-inside-actions {
       border-radius: 6px;
       padding: 0.2em 0.4em;
-      background-color: var(--bolt-elements-messages-inlineCode-background);
-      color: var(--bolt-elements-messages-inlineCode-text);
+      background-color: var(--codinit-elements-messages-inlineCode-background);
+      color: var(--codinit-elements-messages-inlineCode-text);
     }
   }
 
@@ -105,8 +105,8 @@ $code-font-size: 13px;
   blockquote {
     margin: 0;
     padding: 0 1em;
-    color: var(--bolt-elements-textTertiary);
-    border-left: 0.25em solid var(--bolt-elements-borderColor);
+    color: var(--codinit-elements-textTertiary);
+    border-left: 0.25em solid var(--codinit-elements-borderColor);
   }
 
   :is(ul, ol) {
@@ -150,7 +150,7 @@ $code-font-size: 13px;
     height: 0.25em;
     padding: 0;
     margin: 24px 0;
-    background-color: var(--bolt-elements-borderColor);
+    background-color: var(--codinit-elements-borderColor);
     border: 0;
   }
 

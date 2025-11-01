@@ -34,7 +34,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
           return <Artifact messageId={messageId} />;
         }
 
-        if (className?.includes('__boltThought__')) {
+        if (className?.includes('__codinitThought__')) {
           return <ThoughtBox title="Thought process">{children}</ThoughtBox>;
         }
 

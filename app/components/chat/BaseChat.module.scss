@@ -4,7 +4,7 @@
     --workbench-left: 0;
 
     .Chat {
-      --at-apply: bolt-ease-cubic-bezier;
+      --at-apply: codinit-ease-cubic-bezier;
       transition-property: transform, opacity;
       transition-duration: 0.3s;
       will-change: transform, opacity;

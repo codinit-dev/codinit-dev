@@ -64,7 +64,7 @@ export function ImportButtons(importChat: ((description: string, messages: Messa
             }}
             aria-label="Import Chat"
             title="Import Chat"
-            className="flex items-center gap-1.5 border border-bolt-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-bolt-elements-textSecondary hover:text-bolt-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900"
+            className="flex items-center gap-1.5 border border-codinit-elements-borderColor rounded-full px-3 py-1.5 text-xs transition-theme text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary bg-gray-50 dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900"
           >
             <span className="w-4 h-4 block transition-theme i-ph:upload-simple" />
             <span className="transition-theme">Import Chat</span>
