@@ -28,7 +28,7 @@ describe('StreamingMessageParser', () => {
       ['Foo bar <', 'Foo bar '],
       ['Foo bar <p', 'Foo bar <p'],
       [['Foo bar <', 's', 'p', 'an>some text</span>'], 'Foo bar <span>some text</span>'],
-    ])('should correctly parse chunks and strip out bolt artifacts (%#)', (input, expected) => {
+    ])('should correctly parse chunks and strip out codinit artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });
@@ -44,7 +44,7 @@ describe('StreamingMessageParser', () => {
       ['Foo bar <exampleArtifacs></exampleArtifact>', 'Foo bar <exampleArtifacs></exampleArtifact>'],
       ['Before <oltArtfiact>foo</exampleArtifact> After', 'Before <oltArtfiact>foo</exampleArtifact> After'],
       ['Before <exampleArtifactt>foo</exampleArtifact> After', 'Before <exampleArtifactt>foo</exampleArtifact> After'],
-    ])('should correctly parse chunks and strip out bolt artifacts (%#)', (input, expected) => {
+    ])('should correctly parse chunks and strip out codinit artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });
@@ -131,7 +131,7 @@ describe('StreamingMessageParser', () => {
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 0, onActionClose: 0 },
         },
       ],
-    ])('should correctly parse chunks and strip out bolt artifacts (%#)', (input, expected) => {
+    ])('should correctly parse chunks and strip out codinit artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });
@@ -152,7 +152,7 @@ describe('StreamingMessageParser', () => {
           callbacks: { onArtifactOpen: 1, onArtifactClose: 1, onActionOpen: 2, onActionClose: 2 },
         },
       ],
-    ])('should correctly parse chunks and strip out bolt artifacts (%#)', (input, expected) => {
+    ])('should correctly parse chunks and strip out codinit artifacts (%#)', (input, expected) => {
       runTest(input, expected);
     });
   });

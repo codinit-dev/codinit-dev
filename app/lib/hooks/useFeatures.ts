@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getFeatureFlags, markFeatureViewed, type Feature } from '~/lib/api/features';
 
-const VIEWED_FEATURES_KEY = 'bolt_viewed_features';
+const VIEWED_FEATURES_KEY = 'codinit_viewed_features';
 
 const getViewedFeatures = (): string[] => {
   try {

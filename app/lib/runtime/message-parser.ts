@@ -9,11 +9,11 @@ const ARTIFACT_TAG_CLOSE = '</exampleArtifact>';
 const ARTIFACT_ACTION_TAG_OPEN = '<exampleAction';
 const ARTIFACT_ACTION_TAG_CLOSE = '</exampleAction>';
 
-// Legacy bolt tags (for backward compatibility)
-const BOLT_ARTIFACT_TAG_OPEN = '<boltArtifact';
-const BOLT_ARTIFACT_TAG_CLOSE = '</boltArtifact>';
-const BOLT_ACTION_TAG_OPEN = '<boltAction';
-const BOLT_ACTION_TAG_CLOSE = '</boltAction>';
+// Legacy codinit tags (for backward compatibility)
+const CODINIT_ARTIFACT_TAG_OPEN = '<codinitArtifact';
+const CODINIT_ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
+const CODINIT_ACTION_TAG_OPEN = '<codinitAction';
+const CODINIT_ACTION_TAG_CLOSE = '</codinitAction>';
 
 // Thinking tags
 const THINKING_TAG_OPEN = '<codinitThinking';
@@ -124,9 +124,9 @@ export class StreamingMessageParser {
         if (state.insideAction) {
           let closeIndex = input.indexOf(ARTIFACT_ACTION_TAG_CLOSE, i);
 
-          // Also check for legacy bolt action close tag
+          // Also check for legacy codinit action close tag
           if (closeIndex === -1) {
-            closeIndex = input.indexOf(BOLT_ACTION_TAG_CLOSE, i);
+            closeIndex = input.indexOf(CODINIT_ACTION_TAG_CLOSE, i);
           }
 
           const currentAction = state.currentAction;
@@ -169,7 +169,7 @@ export class StreamingMessageParser {
             const closeTagLength =
               input.indexOf(ARTIFACT_ACTION_TAG_CLOSE, i) === closeIndex
                 ? ARTIFACT_ACTION_TAG_CLOSE.length
-                : BOLT_ACTION_TAG_CLOSE.length;
+                : CODINIT_ACTION_TAG_CLOSE.length;
 
             i = closeIndex + closeTagLength;
           } else {
@@ -199,21 +199,21 @@ export class StreamingMessageParser {
           let actionOpenIndex = input.indexOf(ARTIFACT_ACTION_TAG_OPEN, i);
           let artifactCloseIndex = input.indexOf(ARTIFACT_TAG_CLOSE, i);
 
-          // Also check for legacy bolt tags
-          const boltActionOpenIndex = input.indexOf(BOLT_ACTION_TAG_OPEN, i);
-          const boltArtifactCloseIndex = input.indexOf(BOLT_ARTIFACT_TAG_CLOSE, i);
+          // Also check for legacy codinit tags
+          const codinitActionOpenIndex = input.indexOf(CODINIT_ACTION_TAG_OPEN, i);
+          const codinitArtifactCloseIndex = input.indexOf(CODINIT_ARTIFACT_TAG_CLOSE, i);
 
           // Use the earliest action open tag found
-          if (boltActionOpenIndex !== -1 && (actionOpenIndex === -1 || boltActionOpenIndex < actionOpenIndex)) {
-            actionOpenIndex = boltActionOpenIndex;
+          if (codinitActionOpenIndex !== -1 && (actionOpenIndex === -1 || codinitActionOpenIndex < actionOpenIndex)) {
+            actionOpenIndex = codinitActionOpenIndex;
           }
 
           // Use the earliest artifact close tag found
           if (
-            boltArtifactCloseIndex !== -1 &&
-            (artifactCloseIndex === -1 || boltArtifactCloseIndex < artifactCloseIndex)
+            codinitArtifactCloseIndex !== -1 &&
+            (artifactCloseIndex === -1 || codinitArtifactCloseIndex < artifactCloseIndex)
           ) {
-            artifactCloseIndex = boltArtifactCloseIndex;
+            artifactCloseIndex = codinitArtifactCloseIndex;
           }
 
           if (actionOpenIndex !== -1 && (artifactCloseIndex === -1 || actionOpenIndex < artifactCloseIndex)) {
@@ -245,7 +245,7 @@ export class StreamingMessageParser {
             const closeTagLength =
               input.indexOf(ARTIFACT_TAG_CLOSE, i) === artifactCloseIndex
                 ? ARTIFACT_TAG_CLOSE.length
-                : BOLT_ARTIFACT_TAG_CLOSE.length;
+                : CODINIT_ARTIFACT_TAG_CLOSE.length;
 
             i = artifactCloseIndex + closeTagLength;
           } else {
@@ -258,7 +258,7 @@ export class StreamingMessageParser {
 
         const maxTagLength = Math.max(
           ARTIFACT_TAG_OPEN.length,
-          BOLT_ARTIFACT_TAG_OPEN.length,
+          CODINIT_ARTIFACT_TAG_OPEN.length,
           THINKING_TAG_OPEN.length,
         );
 
@@ -266,7 +266,7 @@ export class StreamingMessageParser {
           potentialTag += input[j];
 
           const isExampleTag = potentialTag === ARTIFACT_TAG_OPEN;
-          const isCodinitTag = potentialTag === BOLT_ARTIFACT_TAG_OPEN;
+          const isCodinitTag = potentialTag === CODINIT_ARTIFACT_TAG_OPEN;
           const isThinkingTag = potentialTag === THINKING_TAG_OPEN;
 
           if (isThinkingTag) {
@@ -351,7 +351,7 @@ export class StreamingMessageParser {
             break;
           } else if (
             !ARTIFACT_TAG_OPEN.startsWith(potentialTag) &&
-            !BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) &&
+            !CODINIT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) &&
             !THINKING_TAG_OPEN.startsWith(potentialTag)
           ) {
             output += input.slice(i, j + 1);
@@ -365,7 +365,7 @@ export class StreamingMessageParser {
         if (
           j === input.length &&
           (ARTIFACT_TAG_OPEN.startsWith(potentialTag) ||
-            BOLT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) ||
+            CODINIT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) ||
             THINKING_TAG_OPEN.startsWith(potentialTag))
         ) {
           break;
