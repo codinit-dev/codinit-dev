@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/readme_assets/readme.png" alt="CodinIT Hero" width="80%" />
+  <img src="https://github.com/user-attachments/assets/8e5ff508-45a8-4315-8a36-15dab8d8244b" alt="CodinIT Hero" width="80%" />
 </p>
 
 <p align="center">
