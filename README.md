@@ -1,9 +1,10 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/8e5ff508-45a8-4315-8a36-15dab8d8244b" alt="CodinIT Hero" width="80%" />
+  <img width="1650" height="1033" alt="1000027646" src="https://github.com/user-attachments/assets/36e18424-c1e8-47e7-b668-0b7493dba2dd" />
+
 </p>
 
 <p align="center">
-  <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens" aria-label="Featured on HuntScreens">
+  <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens" aria-label="Featured on Huntscreens<img width="1650" height="1033" alt="1000027646" src="https://github.com/user-attachments/assets/d01b10f2-ff66-475a-b4ef-b38c9ac02a66" />
   <img src="https://shot.huntscreens.com/badge.svg" alt="Featured on HuntScreens" width="240" height="60" loading="lazy" />
 </a>
 </p>
@@ -113,7 +114,6 @@ Download the latest release for your OS:
 
 We welcome contributions!
 Open an issue, submit a pull request, or join discussions to help improve CodinIT.
-
 
 ---
 
