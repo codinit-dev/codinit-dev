@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const EXAMPLE_PROMPTS = [
-  'Build a modern landing page with React and Tailwind...',
-  'Create a todo app with dark mode support...',
-  'Design a dashboard with charts and analytics...',
-  'Make a responsive portfolio website...',
-  'Build an e-commerce product page...',
-  'Create a blog with markdown support...',
-];
+const EXAMPLE_PROMPTS = ['Tip: Select a starter template to get started quickly!'];
 
 interface TypingAnimationProps {
   onPromptClick?: (prompt: string) => void;
