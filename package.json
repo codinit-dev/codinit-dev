@@ -23,6 +23,8 @@
     "@hookform/resolvers": "^5.2.2",
     "@monaco-editor/react": "^4.7.0",
     "@nanostores/react": "^1.0.0",
+    "@openrouter/ai-sdk-provider": "^1.2.0",
+    "@opentelemetry/api": "^1.9.0",
     "@posthog/ai": "^6.4.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -100,7 +102,17 @@
       "undici": "^6.21.3",
       "prismjs": "^1.30.0",
       "esbuild": "^0.25.9"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "@vercel/speed-insights",
+      "core-js",
+      "esbuild",
+      "protobufjs",
+      "sharp",
+      "unrs-resolver"
+    ]
   },
   "devDependencies": {
     "@swc/cli": "^0.7.8",

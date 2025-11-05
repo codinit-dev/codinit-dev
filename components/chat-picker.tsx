@@ -81,10 +81,16 @@ export function ChatPicker({
           </SelectTrigger>
           <SelectContent>
             {Object.entries(
-              Object.groupBy(models, ({ provider }) => provider),
-            ).map(([provider, models]) => (
-              <SelectGroup key={provider}>
-                <SelectLabel>{provider}</SelectLabel>
+              Object.groupBy(models, (model) =>
+                model.providerId === 'openrouter'
+                  ? 'openrouter'
+                  : model.provider,
+              ),
+            ).map(([groupKey, models]) => (
+              <SelectGroup key={groupKey}>
+                <SelectLabel>
+                  {groupKey === 'openrouter' ? 'OpenRouter' : groupKey}
+                </SelectLabel>
                 {models?.map((model) => (
                   <SelectItem key={model.id} value={model.id}>
                     <div className="flex items-center space-x-2">

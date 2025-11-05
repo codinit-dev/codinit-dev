@@ -14,7 +14,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authView, setAuthView] = useState<any>('sign_in')
-  const [authDialog, setAuthDialog] = useState(false)
+  const [authDialog, setAuthDialog] = useState(true)
   const { session, loading } = useAuth(setAuthDialog, setAuthView)
 
   return (

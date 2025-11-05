@@ -5,6 +5,7 @@ import { createVertex } from '@ai-sdk/google-vertex'
 import { createMistral } from '@ai-sdk/mistral'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createOllama } from 'ollama-ai-provider'
+import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 
 export type LLMModel = {
   id: string
@@ -85,6 +86,11 @@ export function getModelClient(model: LLMModel, config: LLMModelConfig) {
       createOpenAI({
         apiKey: apiKey || process.env.DEEPSEEK_API_KEY,
         baseURL: baseURL || 'https://api.deepseek.com/v1',
+      })(modelNameString),
+    openrouter: () =>
+      createOpenRouter({
+        apiKey: apiKey || process.env.OPENROUTER_API_KEY,
+        baseURL: baseURL || 'https://openrouter.ai/api/v1',
       })(modelNameString),
   }
 
