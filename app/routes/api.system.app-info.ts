@@ -47,7 +47,7 @@ const getAppResponse = () => {
   return {
     name: __PKG_NAME || 'codinit-app',
     version: __APP_VERSION || '0.9.6',
-    description: __PKG_DESCRIPTION || 'A DIY LLM interface',
+    description: __PKG_DESCRIPTION || 'A LLM interface',
     license: __PKG_LICENSE || 'MIT',
     environment: 'cloudflare',
     gitInfo,

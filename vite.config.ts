@@ -58,7 +58,7 @@ const getPackageJson = () => {
   } catch {
     return {
       name: 'codinit.dev',
-      description: 'A DIY LLM interface',
+      description: 'A LLM interface',
       license: 'MIT',
       dependencies: {},
       devDependencies: {},

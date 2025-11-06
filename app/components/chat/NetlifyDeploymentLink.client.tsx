@@ -14,7 +14,7 @@ export function NetlifyDeploymentLink() {
     }
   }, [connection.token, currentChatId]);
 
-  const deployedSite = connection.stats?.sites?.find((site) => site.name.includes(`codinit-diy-${currentChatId}`));
+  const deployedSite = connection.stats?.sites?.find((site) => site.name.includes(`codinit-dev-${currentChatId}`));
 
   if (!deployedSite) {
     return null;
