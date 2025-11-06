@@ -52,7 +52,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   const isDeploying = deployingTo !== null;
 
   return (
-    <div className="flex gap-2">
+    <div className={classNames('flex gap-2', { 'gap-1': showChat })}>
       <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden">
         <IconButton
           title={
@@ -154,11 +154,15 @@ interface ButtonProps {
 }
 
 function Button({ active = false, disabled = false, children, onClick, className }: ButtonProps) {
+  const { showChat } = useStore(chatStore);
+
   return (
     <button
       className={classNames(
-        'flex items-center p-1.5',
+        'flex items-center',
         {
+          'p-1.5': !showChat,
+          'p-1': showChat,
           'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
             !active,
           'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
@@ -183,10 +187,14 @@ interface IconButtonProps {
 }
 
 function IconButton({ active = false, disabled = false, children, onClick, title }: IconButtonProps) {
+  const { showChat } = useStore(chatStore);
+
   return (
     <button
       title={title}
-      className={classNames('flex items-center justify-center p-1.5 relative', {
+      className={classNames('flex items-center justify-center relative', {
+        'p-1.5': !showChat,
+        'p-1': showChat,
         'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
           !active,
         'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
