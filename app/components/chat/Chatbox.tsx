@@ -330,19 +330,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 {props.isModelSettingsCollapsed ? <span className="text-xs">{props.model}</span> : <span />}
               </IconButton>
             </div>
-            {props.input.length > 3 ? (
-              <div className="text-xs text-codinit-elements-textTertiary transition-theme">
-                Use{' '}
-                <kbd className="kdb px-1.5 py-0.5 rounded bg-codinit-elements-bg-depth-2 border border-codinit-elements-borderColor transition-theme">
-                  Shift
-                </kbd>{' '}
-                +{' '}
-                <kbd className="kdb px-1.5 py-0.5 rounded bg-codinit-elements-bg-depth-2 border border-codinit-elements-borderColor transition-theme">
-                  Return
-                </kbd>{' '}
-                a new line
-              </div>
-            ) : null}
             <div className="flex gap-1 items-center">
               <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />
               <SupabaseConnection />

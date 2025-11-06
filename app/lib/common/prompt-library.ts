@@ -1,6 +1,6 @@
 import { getSystemPrompt } from './prompts/prompts';
 import optimized from './prompts/optimized';
-import { getFineTunedPrompt } from './prompts/new-prompt';
+import { getFineTunedPrompt } from './prompts/fine-tuned';
 
 export interface PromptOptions {
   cwd: string;
