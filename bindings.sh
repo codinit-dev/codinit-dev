@@ -13,13 +13,13 @@ if [ -f ".env.local" ]; then
     if [[ ! "$line" =~ ^# ]] && [[ -n "$line" ]]; then
       name=$(echo "$line" | cut -d '=' -f 1)
       value=$(echo "$line" | cut -d '=' -f 2-)
-      value=$(echo $value | sed 's/^"\(.*\)"$/\1/')
+      value="${value//\"/}"
       bindings+="--binding ${name}=${value} "
     fi
   done < .env.local
 else
   # If .env.local doesn't exist, use environment variables defined in .d.ts
-  env_vars=($(extract_env_vars))
+  mapfile -t env_vars < <(extract_env_vars)
   # Generate bindings for each environment variable if it exists
   for var in "${env_vars[@]}"; do
     if [ -n "${!var}" ]; then
@@ -28,6 +28,6 @@ else
   done
 fi
 
-bindings=$(echo $bindings | sed 's/[[:space:]]*$//')
+bindings="${bindings%% }"
 
-echo $bindings
+echo "$bindings"
