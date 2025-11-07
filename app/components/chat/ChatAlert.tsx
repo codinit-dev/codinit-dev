@@ -14,7 +14,7 @@ const ERROR_TYPE_LABELS: Record<string, { label: string; color: string }> = {
   runtime: { label: 'Runtime Error', color: 'bg-orange-500' },
   build: { label: 'Build Error', color: 'bg-yellow-600' },
   network: { label: 'Network Error', color: 'bg-blue-500' },
-  permission: { label: 'Permission Error', color: 'bg-purple-500' },
+  permission: { label: 'Permission Error', color: 'bg-blue-500' },
   dependency: { label: 'Dependency Error', color: 'bg-pink-500' },
   unknown: { label: 'Error', color: 'bg-gray-500' },
 };

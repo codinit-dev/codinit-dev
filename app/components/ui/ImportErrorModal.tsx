@@ -42,9 +42,9 @@ const ERROR_TYPE_INFO: Record<string, { label: string; color: string; icon: stri
   },
   auth: {
     label: 'Auth',
-    color: 'text-purple-600 dark:text-purple-400',
+    color: 'text-blue-600 dark:text-blue-400',
     icon: 'i-ph:lock',
-    bgColor: 'bg-purple-100 dark:bg-purple-500/20',
+    bgColor: 'bg-blue-100 dark:bg-blue-500/20',
   },
   size: {
     label: 'File Size',

@@ -18,20 +18,49 @@ body {
   background-color: var(--codinit-elements-bg-depth-1);
 }
 
+/* --------------------------------------- */
+/* GLOBAL COLOR SYSTEM MATCHING SCREENSHOT  */
+/* --------------------------------------- */
+
 :root {
+  /* Main App Background (very dark neutral) */
+  --codinit-elements-bg-depth-1: #303030; /* page background */
+  --codinit-elements-bg-depth-2: #373737; /* editor panel / content surfaces */
+
+  /* Text Colors */
+  --codinit-elements-textPrimary: #e6e6e7;
+  --codinit-elements-textSecondary: #b3b3b5;
+  --codinit-elements-textTertiary: #7a7a7d;
+
+  /* Borders */
+  --codinit-elements-borderColor: rgba(255, 255, 255, 0.06);
+  --codinit-elements-borderColorActive: rgba(66, 180, 255, 0.7);
+
+  /* Buttons & Actions */
+  --codinit-elements-item-backgroundDefault: #2c2c31;
+  --codinit-elements-item-backgroundActive: rgba(255, 255, 255, 0.08);
+  --codinit-elements-item-contentDefault: #d1d5db;
+  --codinit-elements-item-contentActive: #ffffff;
+
+  /* Scrollbar */
+  --modern-scrollbar-thumb-background: rgba(255, 255, 255, 0.18);
+  --modern-scrollbar-thumb-backgroundHover: rgba(255, 255, 255, 0.32);
+
+  /* Accent gradient colors (if used) */
   --gradient-opacity: 0.8;
   --primary-color: rgba(37, 99, 235, var(--gradient-opacity));
   --secondary-color: rgba(59, 130, 246, var(--gradient-opacity));
   --accent-color: rgba(96, 165, 250, var(--gradient-opacity));
-  // --primary-color: rgba(147, 112, 219, var(--gradient-opacity));
-  // --secondary-color: rgba(138, 43, 226, var(--gradient-opacity));
-  // --accent-color: rgba(180, 170, 220, var(--gradient-opacity));
 }
+
+
+/* --------------------------------------- */
+/* MODERN SCROLLBAR                        */
+/* --------------------------------------- */
 
 .modern-scrollbar {
   overflow: auto;
 
-  // WebKit scrollbar styling
   &::-webkit-scrollbar {
     width: 2px;
     height: 4px;
@@ -42,36 +71,30 @@ body {
   }
 
   &::-webkit-scrollbar-thumb {
-    // Use CSS variables for colors
     background-color: var(--modern-scrollbar-thumb-background);
-    border-radius: 9999px; // pill shape
-    border: 2px solid transparent; // for padding-like effect
+    border-radius: 9999px;
+    border: 2px solid transparent;
     background-clip: content-box;
-    transition: background-color 0.2s ease-in-out; // Add transition
+    transition: background-color 0.2s ease-in-out;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    // Use CSS variable for hover color
     background-color: var(--modern-scrollbar-thumb-backgroundHover);
   }
 
-  // Firefox support
   scrollbar-width: thin;
-  // Use CSS variables for Firefox colors
-  scrollbar-color: var(--modern-scrollbar-thumb-backgroundHover) transparent; // Use hover color for thumb for consistency
+  scrollbar-color: var(--modern-scrollbar-thumb-backgroundHover) transparent;
 }
 
+/* Inverted scrollbar for light-on-dark panels */
 .modern-scrollbar-invert {
   &::-webkit-scrollbar-thumb {
-    // Override with a contrasting color, e.g., primary text color with transparency
     background-color: color-mix(in srgb, var(--codinit-elements-textPrimary), transparent 70%);
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    // Darker/more opaque version on hover
     background-color: color-mix(in srgb, var(--codinit-elements-textPrimary), transparent 50%);
   }
 
-  // Firefox support for inverted colors
   scrollbar-color: color-mix(in srgb, var(--codinit-elements-textPrimary), transparent 50%) transparent;
 }
