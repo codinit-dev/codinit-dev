@@ -1,16 +1,41 @@
 <p align="center">
-  <img width="1650" height="1033" alt="1000027646" src="https://github.com/user-attachments/assets/36e18424-c1e8-47e7-b668-0b7493dba2dd" />
-
+  <img 
+    width="1650" 
+    height="1033" 
+    alt="1000027646" 
+    src="https://github.com/user-attachments/assets/36e18424-c1e8-47e7-b668-0b7493dba2dd"
+    style="border-radius: 16px;"
+  />
 </p>
 
 <p align="center">
-  <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens" aria-label="Featured on Huntscreens<img width="1650" height="1033" alt="1000027646" src="https://github.com/user-attachments/assets/d01b10f2-ff66-475a-b4ef-b38c9ac02a66" />
-  <img src="https://shot.huntscreens.com/badge.svg" alt="Featured on HuntScreens" width="240" height="60" loading="lazy" />
-</a>
+  <!-- HuntScreens Feature Badge -->
+  <a href="https://huntscreens.com/en/products/codinit" 
+     target="_blank" 
+     title="Featured on HuntScreens" 
+     aria-label="Featured on HuntScreens">
+    <img src="https://shot.huntscreens.com/badge.svg" 
+         alt="Featured on HuntScreens" 
+         width="240" 
+         height="60" 
+         loading="lazy" />
+  </a>
+
+  <br/>
+
+  <!-- SourceForge Download Button (moved under HuntScreens badge) -->
+  <a href="https://sourceforge.net/projects/codinit-dev/files/latest/download">
+    <img alt="Download CodinIT.dev"
+         src="https://a.fsdn.com/con/app/sf-download-button"
+         width="276"
+         height="48"
+         srcset="https://a.fsdn.com/con/app/sf-download-button?button_size=2x 2x">
+  </a>
 </p>
 
+
 <p align="center">
-  <strong>⚡ CodinIT.dev — The AI-Powered Full-Stack Development Platform ⚡</strong><br/>
+  <strong>⚡ CodinIT.dev — OpenSource AI App Builder ⚡</strong><br/>
   Build, manage, and deploy intelligent applications directly from your browser or desktop.
 </p>
 
@@ -105,7 +130,7 @@ docker compose --profile development up
 Run as Desktop App
 
 Download the latest release for your OS:
-👉 CodinIT Releases
+[👉 CodinIT Releases](https://github.com/Gerome-Elassaad/codinit-app/releases/latest)
 
 
 ---
