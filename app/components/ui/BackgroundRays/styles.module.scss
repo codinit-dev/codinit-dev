@@ -15,7 +15,9 @@
   animation: fadeIn 1.5s ease-out;
   pointer-events: none;
   z-index: 0;
-  //   background-color: transparent;
+  :global(html[data-theme='dark']) & {
+    background-color: #1a1a1a; /* Dark gray background */
+  }
 
   :global(html[data-theme='dark']) & {
     mix-blend-mode: screen;
@@ -47,8 +49,8 @@
   transform: rotate(65deg);
   top: -500px;
   left: -100px;
-  filter: blur(80px);
-  opacity: 0.6;
+  filter: blur(50px);
+  opacity: 0.4;
   animation: float1 15s infinite ease-in-out;
 }
 
@@ -59,8 +61,8 @@
   transform: rotate(-30deg);
   top: -300px;
   left: 200px;
-  filter: blur(60px);
-  opacity: 0.6;
+  filter: blur(50px);
+  opacity: 0.4;
   animation: float2 18s infinite ease-in-out;
 }
 
@@ -70,7 +72,7 @@
   background: var(--ray-gradient-accent);
   top: -320px;
   left: 500px;
-  filter: blur(65px);
+  filter: blur(50px);
   opacity: 0.5;
   animation: float3 20s infinite ease-in-out;
 }
@@ -81,7 +83,7 @@
   background: var(--ray-gradient-secondary);
   top: -350px;
   left: 800px;
-  filter: blur(55px);
+  filter: blur(50px);
   opacity: 0.55;
   animation: float4 17s infinite ease-in-out;
 }
@@ -93,8 +95,8 @@
   transform: rotate(-45deg);
   top: -250px;
   left: 1000px;
-  filter: blur(45px);
-  opacity: 0.6;
+  filter: blur(50px);
+  opacity: 0.4;
   animation: float5 16s infinite ease-in-out;
 }
 
@@ -105,7 +107,7 @@
   transform: rotate(75deg);
   top: -400px;
   left: 600px;
-  filter: blur(75px);
+  filter: blur(50px);
   opacity: 0.45;
   animation: float6 19s infinite ease-in-out;
 }
@@ -117,7 +119,7 @@
   transform: rotate(45deg);
   top: -450px;
   left: 350px;
-  filter: blur(65px);
+  filter: blur(50px);
   opacity: 0.55;
   animation: float7 21s infinite ease-in-out;
 }
@@ -130,7 +132,7 @@
   top: -380px;
   left: 750px;
   filter: blur(58px);
-  opacity: 0.6;
+  opacity: 0.4;
   animation: float8 14s infinite ease-in-out;
 }
 
@@ -203,11 +205,11 @@
   0%,
   100% {
     transform: rotate(75deg) scale(1);
-    filter: blur(75px);
+    filter: blur(50px);
   }
   50% {
     transform: rotate(85deg) scale(1.1);
-    filter: blur(65px);
+    filter: blur(50px);
   }
 }
 
@@ -236,7 +238,27 @@
   }
 }
 
-@keyframes fadeIn {
+.ray9 {
+  width: 100%;
+  height: 200px;
+  background: var(--ray-gradient-primary);
+  top: auto;
+  bottom: -100px;
+  left: 0;
+  filter: blur(60px);
+  opacity: 0.3;
+  animation: float9 22s infinite ease-in-out;
+}
+
+@keyframes float9 {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
   from {
     opacity: 0;
   }
