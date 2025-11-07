@@ -56,9 +56,9 @@
 
   --codinit-elements-icon-success: theme('colors.green.500');
   --codinit-elements-icon-error: theme('colors.red.500');
-  --codinit-elements-icon-primary: theme('colors.gray.950');
-  --codinit-elements-icon-secondary: theme('colors.gray.600');
-  --codinit-elements-icon-tertiary: theme('colors.gray.500');
+  --codinit-elements-icon-primary: #CCCCCC; /* Changed from theme('colors.gray.950') to low-contrast gray */
+  --codinit-elements-icon-secondary: #A0A0A0; /* Changed from theme('colors.gray.600') to dimmer gray */
+  --codinit-elements-icon-tertiary: #888888; /* Changed from theme('colors.gray.500') to softer gray */
 
   --codinit-elements-dividerColor: theme('colors.gray.100');
 
@@ -108,74 +108,74 @@
 /* Color Tokens Dark Theme */
 :root,
 :root[data-theme='dark'] {
-  --codinit-elements-borderColor: rgba(255, 255, 255, 0.08);
-  --codinit-elements-borderColorActive: rgba(59, 130, 246, 0.8);
+  --codinit-elements-borderColor: #30363d;
+  --codinit-elements-borderColorActive: #58a6ff;
 
-  --codinit-elements-bg-depth-1: #0f0f0f;
-  --codinit-elements-bg-depth-2: #1a1a1a;
-  --codinit-elements-bg-depth-3: #262626;
-  --codinit-elements-bg-depth-4: rgba(255, 255, 255, 0.05);
+  --codinit-elements-bg-depth-1: #0d1117;
+  --codinit-elements-bg-depth-2: #161b22;
+  --codinit-elements-bg-depth-3: #21262d;
+  --codinit-elements-bg-depth-4: #30363d;
 
-  --codinit-elements-textPrimary: #ffffff;
-  --codinit-elements-textSecondary: #a1a1aa;
-  --codinit-elements-textTertiary: #71717a;
+  --codinit-elements-textPrimary: #f0f6fc;
+  --codinit-elements-textSecondary: #c9d1d9;
+  --codinit-elements-textTertiary: #8b949e;
 
-  --codinit-elements-code-background: #1a1a1a;
-  --codinit-elements-code-text: #ffffff;
+  --codinit-elements-code-background: #161b22;
+  --codinit-elements-code-text: #f0f6fc;
 
-  --codinit-elements-button-primary-background: rgba(59, 130, 246, 0.1);
-  --codinit-elements-button-primary-backgroundHover: rgba(59, 130, 246, 0.2);
-  --codinit-elements-button-primary-text: #3b82f6;
+  --codinit-elements-button-primary-background: #21262d;
+  --codinit-elements-button-primary-backgroundHover: #30363d;
+  --codinit-elements-button-primary-text: #c9d1d9;
 
-  --codinit-elements-button-secondary-background: rgba(255, 255, 255, 0.05);
-  --codinit-elements-button-secondary-backgroundHover: rgba(255, 255, 255, 0.1);
-  --codinit-elements-button-secondary-text: #ffffff;
+  --codinit-elements-button-secondary-background: #21262d;
+  --codinit-elements-button-secondary-backgroundHover: #30363d;
+  --codinit-elements-button-secondary-text: #c9d1d9;
 
-  --codinit-elements-button-danger-background: rgba(239, 68, 68, 0.1);
-  --codinit-elements-button-danger-backgroundHover: rgba(239, 68, 68, 0.2);
-  --codinit-elements-button-danger-text: #ef4444;
+  --codinit-elements-button-danger-background: rgba(248, 81, 73, 0.1);
+  --codinit-elements-button-danger-backgroundHover: rgba(248, 81, 73, 0.2);
+  --codinit-elements-button-danger-text: #f85149;
 
-  --codinit-elements-item-contentDefault: rgba(255, 255, 255, 0.6);
-  --codinit-elements-item-contentActive: #ffffff;
-  --codinit-elements-item-contentAccent: #3b82f6;
-  --codinit-elements-item-contentDanger: #ef4444;
-  --codinit-elements-item-backgroundDefault: rgba(255, 255, 255, 0.03);
-  --codinit-elements-item-backgroundActive: rgba(255, 255, 255, 0.08);
-  --codinit-elements-item-backgroundAccent: rgba(59, 130, 246, 0.1);
-  --codinit-elements-item-backgroundDanger: rgba(239, 68, 68, 0.1);
+  --codinit-elements-item-contentDefault: #8b949e;
+  --codinit-elements-item-contentActive: #f0f6fc;
+  --codinit-elements-item-contentAccent: #58a6ff;
+  --codinit-elements-item-contentDanger: #f85149;
+  --codinit-elements-item-backgroundDefault: #21262d;
+  --codinit-elements-item-backgroundActive: #30363d;
+  --codinit-elements-item-backgroundAccent: rgba(88, 166, 255, 0.1);
+  --codinit-elements-item-backgroundDanger: rgba(248, 81, 73, 0.1);
 
   --codinit-elements-loader-background: rgba(255, 255, 255, 0.05);
-  --codinit-elements-loader-progress: #3b82f6;
+  --codinit-elements-loader-progress: #d3d3d3; /* Changed to light gray */
 
-  --codinit-elements-artifacts-background: #1a1a1a;
-  --codinit-elements-artifacts-backgroundHover: rgba(255, 255, 255, 0.03);
+  --codinit-elements-artifacts-background: #161b22;
+  --codinit-elements-artifacts-backgroundHover: rgba(240, 246, 252, 0.03);
   --codinit-elements-artifacts-borderColor: var(--codinit-elements-borderColor);
-  --codinit-elements-artifacts-inlineCode-background: #1a1a1a;
-  --codinit-elements-artifacts-inlineCode-text: #ffffff;
+  --codinit-elements-artifacts-inlineCode-background: #161b22;
+  --codinit-elements-artifacts-inlineCode-text: #f0f6fc;
 
-  --codinit-elements-actions-background: #1a1a1a;
-  --codinit-elements-actions-code-background: #1a1a1a;
+  --codinit-elements-actions-background: #161b22;
+  --codinit-elements-actions-code-background: #161b22;
 
-  --codinit-elements-messages-background: #1a1a1a;
-  --codinit-elements-messages-linkColor: #3b82f6;
-  --codinit-elements-messages-code-background: #0f0f0f;
-  --codinit-elements-messages-inlineCode-background: #262626;
+  --codinit-elements-messages-background: #161b22;
+  --codinit-elements-messages-linkColor: #58a6ff;
+  --codinit-elements-messages-code-background: #0d1117;
+  --codinit-elements-messages-inlineCode-background: #21262d;
   --codinit-elements-messages-inlineCode-text: var(--codinit-elements-textPrimary);
 
-  --codinit-elements-icon-success: #22c55e;
-  --codinit-elements-icon-error: #ef4444;
-  --codinit-elements-icon-primary: #0f0f0f;
-  --codinit-elements-icon-secondary: #71717a;
-  --codinit-elements-icon-tertiary: #52525b;
+  --codinit-elements-icon-success: #56d364;
+  --codinit-elements-icon-error: #f85149;
+  --codinit-elements-icon-primary: #0d1117;
+  --codinit-elements-icon-secondary: #c9d1d9;
+  --codinit-elements-icon-tertiary: #8b949e;
 
-  --codinit-elements-dividerColor: rgba(255, 255, 255, 0.08);
+  --codinit-elements-dividerColor: #30363d;
 
   --codinit-elements-prompt-background: rgba(15, 15, 15, 0.8);
 
   --codinit-elements-sidebar-dropdownShadow: rgba(0, 0, 0, 0.3);
-  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(59, 130, 246, 0.1);
-  --codinit-elements-sidebar-buttonBackgroundHover: rgba(59, 130, 246, 0.2);
-  --codinit-elements-sidebar-buttonText: #3b82f6;
+  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(88, 166, 255, 0.1);
+  --codinit-elements-sidebar-buttonBackgroundHover: rgba(88, 166, 255, 0.2);
+  --codinit-elements-sidebar-buttonText: #58a6ff;
 
   --codinit-elements-preview-addressBar-background: var(--codinit-elements-bg-depth-1);
   --codinit-elements-preview-addressBar-backgroundHover: rgba(255, 255, 255, 0.03);

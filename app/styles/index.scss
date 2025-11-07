@@ -24,13 +24,13 @@ body {
 
 :root {
   /* Main App Background (very dark neutral) */
-  --codinit-elements-bg-depth-1: #303030; /* page background */
-  --codinit-elements-bg-depth-2: #373737; /* editor panel / content surfaces */
+  --codinit-elements-bg-depth-1: #0d1117; /* page background */
+  --codinit-elements-bg-depth-2: #161b22; /* editor panel / content surfaces */
 
   /* Text Colors */
-  --codinit-elements-textPrimary: #e6e6e7;
-  --codinit-elements-textSecondary: #b3b3b5;
-  --codinit-elements-textTertiary: #7a7a7d;
+  --codinit-elements-textPrimary: #E0E0E0; /* Changed from #e6e6e7 */
+  --codinit-elements-textSecondary: #A0A0A0; /* Changed from #b3b3b5 */
+  --codinit-elements-textTertiary: #888888; /* Changed from #7a7a7d */
 
   /* Borders */
   --codinit-elements-borderColor: rgba(255, 255, 255, 0.06);
@@ -48,9 +48,9 @@ body {
 
   /* Accent gradient colors (if used) */
   --gradient-opacity: 0.8;
-  --primary-color: rgba(37, 99, 235, var(--gradient-opacity));
-  --secondary-color: rgba(59, 130, 246, var(--gradient-opacity));
-  --accent-color: rgba(96, 165, 250, var(--gradient-opacity));
+  --primary-color: rgba(255, 138, 0, var(--gradient-opacity)); /* Orange */
+  --secondary-color: rgba(198, 58, 214, var(--gradient-opacity)); /* Purple */
+  --accent-color: rgba(255, 77, 210, var(--gradient-opacity)); /* Pink */
 }
 
 

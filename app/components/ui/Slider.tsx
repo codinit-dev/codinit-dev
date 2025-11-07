@@ -5,9 +5,9 @@ import { cubicEasingFn } from '~/utils/easings';
 import { genericMemo } from '~/utils/react';
 
 export type SliderOptions<T> = {
-  left: { value: T; text: string };
-  middle?: { value: T; text: string };
-  right: { value: T; text: string };
+  left: { value: T; text: string | JSX.Element };
+  middle?: { value: T; text: string | JSX.Element };
+  right: { value: T; text: string | JSX.Element };
 };
 
 interface SliderProps<T> {

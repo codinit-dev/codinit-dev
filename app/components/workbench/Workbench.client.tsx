@@ -44,15 +44,27 @@ const viewTransition = { ease: cubicEasingFn };
 const sliderOptions: SliderOptions<WorkbenchViewType> = {
   left: {
     value: 'code',
-    text: 'Code',
+    text: (
+      <>
+        <div className="i-ph:code mr-1" />
+      </>
+    ),
   },
   middle: {
     value: 'diff',
-    text: 'Diff',
+    text: (
+      <>
+        <div className="i-ph:git-diff mr-1" />
+      </>
+    ),
   },
   right: {
     value: 'preview',
-    text: 'Preview',
+    text: (
+      <>
+        <div className="i-ph:eye mr-1" />
+      </>
+    ),
   },
 };
 
