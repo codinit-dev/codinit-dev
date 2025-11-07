@@ -108,109 +108,123 @@
 /* Color Tokens Dark Theme */
 :root,
 :root[data-theme='dark'] {
-  --codinit-elements-borderColor: #30363d;
-  --codinit-elements-borderColorActive: #58a6ff;
+  /* Increased contrast for backgrounds and borders */
+  --codinit-elements-borderColor: #21262d; /* Darker border */
+  --codinit-elements-borderColorActive: #79c0ff; /* Brighter active border */
 
-  --codinit-elements-bg-depth-1: #0d1117;
-  --codinit-elements-bg-depth-2: #161b22;
-  --codinit-elements-bg-depth-3: #21262d;
-  --codinit-elements-bg-depth-4: #30363d;
+  --codinit-elements-bg-depth-1: #0d1117; /* Slightly lighter page background */
+  --codinit-elements-bg-depth-2: #0d1117; /* Darker content surfaces */
+  --codinit-elements-bg-depth-3: #161b22; /* Slightly lighter for distinction */
+  --codinit-elements-bg-depth-4: #21262d; /* Slightly lighter for distinction */
 
-  --codinit-elements-textPrimary: #f0f6fc;
-  --codinit-elements-textSecondary: #c9d1d9;
-  --codinit-elements-textTertiary: #8b949e;
+  /* Increased contrast for text */
+  --codinit-elements-textPrimary: #f0f6fc; /* Remains bright white */
+  --codinit-elements-textSecondary: #c9d1d9; /* Remains bright */
+  --codinit-elements-textTertiary: #8b949e; /* Remains subtle */
 
-  --codinit-elements-code-background: #161b22;
-  --codinit-elements-code-text: #f0f6fc;
+  --codinit-elements-code-background: #0d1117; /* Darker code background */
+  --codinit-elements-code-text: #f0f6fc; /* Bright code text */
 
-  --codinit-elements-button-primary-background: #21262d;
-  --codinit-elements-button-primary-backgroundHover: #30363d;
-  --codinit-elements-button-primary-text: #c9d1d9;
+  /* Primary Button - Higher contrast */
+  --codinit-elements-button-primary-background: #238635; /* Brighter green */
+  --codinit-elements-button-primary-backgroundHover: #279f43; /* Even brighter on hover */
+  --codinit-elements-button-primary-text: #ffffff; /* White text for max contrast */
 
+  /* Secondary Button - Subtle but clear */
   --codinit-elements-button-secondary-background: #21262d;
   --codinit-elements-button-secondary-backgroundHover: #30363d;
   --codinit-elements-button-secondary-text: #c9d1d9;
 
+  /* Danger Button - Remains prominent */
   --codinit-elements-button-danger-background: rgba(248, 81, 73, 0.1);
   --codinit-elements-button-danger-backgroundHover: rgba(248, 81, 73, 0.2);
   --codinit-elements-button-danger-text: #f85149;
 
+  /* Item backgrounds and content */
   --codinit-elements-item-contentDefault: #8b949e;
-  --codinit-elements-item-contentActive: #f0f6fc;
-  --codinit-elements-item-contentAccent: #58a6ff;
-  --codinit-elements-item-contentDanger: #f85149;
-  --codinit-elements-item-backgroundDefault: #21262d;
-  --codinit-elements-item-backgroundActive: #30363d;
-  --codinit-elements-item-backgroundAccent: rgba(88, 166, 255, 0.1);
+  --codinit-elements-item-contentActive: #ffffff; /* White for active */
+  --codinit-elements-item-contentAccent: #79c0ff; /* Brighter accent */
+  --codinit-elements-item-contentDanger: #f85149; /* Remains prominent */
+  --codinit-elements-item-backgroundDefault: #0d1117; /* Darker default background */
+  --codinit-elements-item-backgroundActive: #21262d; /* Darker active background */
+  --codinit-elements-item-backgroundAccent: rgba(115, 190, 255, 0.1); /* Brighter accent background */
   --codinit-elements-item-backgroundDanger: rgba(248, 81, 73, 0.1);
 
-  --codinit-elements-loader-background: rgba(255, 255, 255, 0.05);
-  --codinit-elements-loader-progress: #d3d3d3; /* Changed to light gray */
+  /* Loader - Higher contrast */
+  --codinit-elements-loader-background: rgba(255, 255, 255, 0.1); /* Slightly more opaque */
+  --codinit-elements-loader-progress: #79c0ff; /* Brighter progress color */
 
-  --codinit-elements-artifacts-background: #161b22;
-  --codinit-elements-artifacts-backgroundHover: rgba(240, 246, 252, 0.03);
+  /* Artifacts - Darker backgrounds */
+  --codinit-elements-artifacts-background: #0d1117; /* Darker artifact background */
+  --codinit-elements-artifacts-backgroundHover: rgba(240, 246, 252, 0.05); /* Subtle hover */
   --codinit-elements-artifacts-borderColor: var(--codinit-elements-borderColor);
   --codinit-elements-artifacts-inlineCode-background: #161b22;
   --codinit-elements-artifacts-inlineCode-text: #f0f6fc;
 
-  --codinit-elements-actions-background: #161b22;
+  /* Actions - Darker backgrounds */
+  --codinit-elements-actions-background: #0d1117; /* Darker action background */
   --codinit-elements-actions-code-background: #161b22;
 
-  --codinit-elements-messages-background: #161b22;
-  --codinit-elements-messages-linkColor: #58a6ff;
-  --codinit-elements-messages-code-background: #0d1117;
-  --codinit-elements-messages-inlineCode-background: #21262d;
+  /* Messages - Darker backgrounds */
+  --codinit-elements-messages-background: #0d1117; /* Darker message background */
+  --codinit-elements-messages-linkColor: #79c0ff; /* Brighter link color */
+  --codinit-elements-messages-code-background: #010409; /* Darkest code background */
+  --codinit-elements-messages-inlineCode-background: #161b22; /* Darker inline code background */
   --codinit-elements-messages-inlineCode-text: var(--codinit-elements-textPrimary);
 
-  --codinit-elements-icon-success: #56d364;
-  --codinit-elements-icon-error: #f85149;
-  --codinit-elements-icon-primary: #0d1117;
-  --codinit-elements-icon-secondary: #c9d1d9;
-  --codinit-elements-icon-tertiary: #8b949e;
+  /* Icons - Adjusted for dark theme contrast */
+  --codinit-elements-icon-success: #56d364; /* Remains green */
+  --codinit-elements-icon-error: #f85149; /* Remains red */
+  --codinit-elements-icon-primary: #f0f6fc; /* Bright white */
+  --codinit-elements-icon-secondary: #c9d1d9; /* Bright */
+  --codinit-elements-icon-tertiary: #8b949e; /* Subtle */
 
-  --codinit-elements-dividerColor: #30363d;
+  --codinit-elements-dividerColor: #30363d; /* Darker divider */
 
-  --codinit-elements-prompt-background: rgba(15, 15, 15, 0.8);
+  --codinit-elements-prompt-background: rgba(15, 15, 15, 0.8); /* Remains similar */
 
-  --codinit-elements-sidebar-dropdownShadow: rgba(0, 0, 0, 0.3);
-  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(88, 166, 255, 0.1);
-  --codinit-elements-sidebar-buttonBackgroundHover: rgba(88, 166, 255, 0.2);
-  --codinit-elements-sidebar-buttonText: #58a6ff;
+  /* Sidebar - Higher contrast */
+  --codinit-elements-sidebar-dropdownShadow: rgba(0, 0, 0, 0.5); /* Darker shadow */
+  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(115, 190, 255, 0.1); /* Brighter accent background */
+  --codinit-elements-sidebar-buttonBackgroundHover: rgba(115, 190, 255, 0.2); /* Brighter hover */
+  --codinit-elements-sidebar-buttonText: #79c0ff; /* Brighter text */
 
-  --codinit-elements-preview-addressBar-background: var(--codinit-elements-bg-depth-1);
-  --codinit-elements-preview-addressBar-backgroundHover: rgba(255, 255, 255, 0.03);
-  --codinit-elements-preview-addressBar-backgroundActive: var(--codinit-elements-bg-depth-1);
+  /* Preview Address Bar - Higher contrast */
+  --codinit-elements-preview-addressBar-background: var(--codinit-elements-bg-depth-2); /* Use depth-2 for consistency */
+  --codinit-elements-preview-addressBar-backgroundHover: rgba(255, 255, 255, 0.05); /* Subtle hover */
+  --codinit-elements-preview-addressBar-backgroundActive: var(--codinit-elements-bg-depth-1); /* Use depth-1 for active */
   --codinit-elements-preview-addressBar-text: var(--codinit-elements-textSecondary);
   --codinit-elements-preview-addressBar-textActive: var(--codinit-elements-textPrimary);
 
-  --codinit-elements-terminals-background: var(--codinit-elements-bg-depth-1);
-  --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-3);
+  /* Terminals - Darker backgrounds */
+  --codinit-elements-terminals-background: var(--codinit-elements-bg-depth-1); /* Use depth-1 for terminal background */
+  --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-3); /* Use depth-3 for buttons */
 
-  --codinit-elements-cta-background: rgba(255, 255, 255, 0.05);
+  --codinit-elements-cta-background: rgba(255, 255, 255, 0.08); /* Slightly more opaque CTA */
   --codinit-elements-cta-text: #ffffff;
 
-  /* Terminal Colors */
-  --codinit-terminal-background: var(--codinit-elements-terminals-background);
-  --codinit-terminal-foreground: #eff0eb;
-  --codinit-terminal-selection-background: #97979b33;
-  --codinit-terminal-black: #000000;
-  --codinit-terminal-red: #ff5c57;
-  --codinit-terminal-green: #5af78e;
-  --codinit-terminal-yellow: #f3f99d;
-  --codinit-terminal-blue: #57c7ff;
-  --codinit-terminal-magenta: #ff6ac1;
-  --codinit-terminal-cyan: #9aedfe;
-  --codinit-terminal-white: #f1f1f0;
-  --codinit-terminal-brightBlack: #686868;
-  --codinit-terminal-brightRed: #ff5c57;
-  --codinit-terminal-brightGreen: #5af78e;
-  --codinit-terminal-brightYellow: #f3f99d;
-  --codinit-terminal-brightBlue: #57c7ff;
-  --codinit-terminal-brightMagenta: #ff6ac1;
-  --codinit-terminal-brightCyan: #9aedfe;
-  --codinit-terminal-brightWhite: #f1f1f0;
-  --modern-scrollbar-thumb-background: rgba(255, 255, 255, 0.15);
-  --modern-scrollbar-thumb-backgroundHover: rgba(255, 255, 255, 0.25);
+  /* Terminal Colors - Adjusted for higher contrast */
+  --codinit-terminal-background: var(--codinit-elements-terminals-background); /* Inherit from terminal background */
+  --codinit-terminal-foreground: #f0f6fc; /* Bright white foreground */
+  --codinit-terminal-selection-background: rgba(115, 190, 255, 0.2); /* Brighter selection */
+  --codinit-terminal-black: #010409; /* Very dark black */
+  --codinit-terminal-red: #ff7b72; /* Brighter red */
+  --codinit-terminal-green: #76d974; /* Brighter green */
+  --codinit-terminal-yellow: #e2e27a; /* Brighter yellow */
+  --codinit-terminal-blue: #63a3ff; /* Brighter blue */
+  --codinit-terminal-magenta: #ff79c6; /* Brighter magenta */
+  --codinit-terminal-cyan: #98d4ca; /* Brighter cyan */
+  --codinit-terminal-white: #f0f6fc; /* Bright white */
+  --codinit-terminal-brightBlack: #686868; /* Subtle bright black */
+  --codinit-terminal-brightRed: #ff7b72; /* Brighter red */
+  --codinit-terminal-brightGreen: #76d974; /* Brighter green */
+  --codinit-terminal-brightYellow: #e2e27a; /* Brighter yellow */
+  --codinit-terminal-brightBlue: #63a3ff; /* Brighter blue */
+  --codinit-terminal-brightMagenta: #ff79c6; /* Brighter magenta */
+  --codinit-terminal-brightCyan: #98d4ca; /* Brighter cyan */
+  --codinit-terminal-brightWhite: #f0f6fc; /* Bright white */
+  --modern-scrollbar-thumb-background: rgba(255, 255, 255, 0.25); /* Slightly more opaque thumb */
+  --modern-scrollbar-thumb-backgroundHover: rgba(255, 255, 255, 0.4); /* More opaque on hover */
 }
 
 /*
@@ -222,7 +236,7 @@
   --header-height: 54px;
   --chat-max-width: 33rem;
   --chat-min-width: 533px;
-  --workbench-width: min(calc(100% - var(--chat-min-width)), 2536px);
+  --workbench-width: min(calc(100% - var(--chat-min-width)), 3000px);
   --workbench-inner-width: var(--workbench-width);
   --workbench-left: calc(100% - var(--workbench-width));
 
