@@ -22,15 +22,15 @@ mac:
   target:
     - dmg
   identity: null
-  category: "public.app-category.developer-tools"
-  type: "distribution"
+  category: 'public.app-category.developer-tools'
+  type: 'distribution'
   hardenedRuntime: true
-  entitlements: "assets/entitlements.mac.plist"
-  entitlementsInherit: "assets/entitlements.mac.plist"
+  entitlements: 'assets/entitlements.mac.plist'
+  entitlementsInherit: 'assets/entitlements.mac.plist'
   gatekeeperAssess: false
 
 win:
-  icon: /assets/icon.ico
+  icon: assets/icons/icon.ico
   target:
     - nsis
   artifactName: ${name}-${version}-${os}-${arch}.${ext}
