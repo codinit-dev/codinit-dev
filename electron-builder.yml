@@ -30,7 +30,7 @@ mac:
   gatekeeperAssess: false
 
 win:
-  icon: /icon.ico
+  icon: /assets/icon.ico
   target:
     - nsis
   artifactName: ${name}-${version}-${os}-${arch}.${ext}
