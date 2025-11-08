@@ -356,17 +356,6 @@
   animation: 0.25s ease-out 0.15s 1 _fade-and-move-in_t1btp_1 forwards;
 }
 
-._StackBlitzLogo_t1btp_24 {
-  display: block;
-  height: 32px;
-  width: 107.84px;
-  background-color: currentColor;
-  mask-image: url(/static/stackblitz-logo.svg);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: contain;
-}
-
 @keyframes _fade-in_t1btp_1 {
   0% {
     opacity: 0;
