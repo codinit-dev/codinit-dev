@@ -56,8 +56,8 @@
 
   --codinit-elements-icon-success: theme('colors.green.500');
   --codinit-elements-icon-error: theme('colors.red.500');
-  --codinit-elements-icon-primary: #CCCCCC; /* Changed from theme('colors.gray.950') to low-contrast gray */
-  --codinit-elements-icon-secondary: #A0A0A0; /* Changed from theme('colors.gray.600') to dimmer gray */
+  --codinit-elements-icon-primary: #cccccc; /* Changed from theme('colors.gray.950') to low-contrast gray */
+  --codinit-elements-icon-secondary: #a0a0a0; /* Changed from theme('colors.gray.600') to dimmer gray */
   --codinit-elements-icon-tertiary: #888888; /* Changed from theme('colors.gray.500') to softer gray */
 
   --codinit-elements-dividerColor: theme('colors.gray.100');
@@ -190,9 +190,13 @@
   --codinit-elements-sidebar-buttonText: #79c0ff; /* Brighter text */
 
   /* Preview Address Bar - Higher contrast */
-  --codinit-elements-preview-addressBar-background: var(--codinit-elements-bg-depth-2); /* Use depth-2 for consistency */
+  --codinit-elements-preview-addressBar-background: var(
+    --codinit-elements-bg-depth-2
+  ); /* Use depth-2 for consistency */
   --codinit-elements-preview-addressBar-backgroundHover: rgba(255, 255, 255, 0.05); /* Subtle hover */
-  --codinit-elements-preview-addressBar-backgroundActive: var(--codinit-elements-bg-depth-1); /* Use depth-1 for active */
+  --codinit-elements-preview-addressBar-backgroundActive: var(
+    --codinit-elements-bg-depth-1
+  ); /* Use depth-1 for active */
   --codinit-elements-preview-addressBar-text: var(--codinit-elements-textSecondary);
   --codinit-elements-preview-addressBar-textActive: var(--codinit-elements-textPrimary);
 

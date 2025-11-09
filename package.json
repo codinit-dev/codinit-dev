@@ -11,7 +11,6 @@
     "email": "gerome.e24@gmail.com"
   },
   "scripts": {
-    "deploy": "npm run build && wrangler pages deploy",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 remix vite:build",
     "dev": "node pre-start.cjs && remix vite:dev",
     "test": "vitest --run",

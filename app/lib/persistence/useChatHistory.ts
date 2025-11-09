@@ -230,7 +230,7 @@ export function useChatHistory() {
       if (!urlId && firstArtifact?.id) {
         const urlId = await getUrlId(db, firstArtifact.id);
         _urlId = urlId;
-        navigateChat(urlId);
+        navigate(`/chat/${urlId}`, { replace: true });
         setUrlId(urlId);
       }
 
@@ -261,9 +261,22 @@ export function useChatHistory() {
 
         chatId.set(nextId);
 
+        // Save messages before navigating
+        await setMessages(
+          db,
+          nextId,
+          [...archivedMessages, ...messages],
+          urlId,
+          description.get(),
+          undefined,
+          chatMetadata.get(),
+        );
+
         if (!urlId) {
-          navigateChat(nextId);
+          navigate(`/chat/${nextId}`, { replace: true });
         }
+
+        return; // Exit early since we already saved
       }
 
       // Ensure chatId.get() is used for the final setMessages call
@@ -340,16 +353,4 @@ export function useChatHistory() {
       URL.revokeObjectURL(url);
     },
   };
-}
-
-function navigateChat(nextId: string) {
-  /**
-   * FIXME: Using the intended navigate function causes a rerender for <Chat /> that breaks the app.
-   *
-   * `navigate(`/chat/${nextId}`, { replace: true });`
-   */
-  const url = new URL(window.location.href);
-  url.pathname = `/chat/${nextId}`;
-
-  window.history.replaceState({}, '', url);
 }

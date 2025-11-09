@@ -1,0 +1,3 @@
+packages:
+  - 'app/*'
+  - 'codinit-vite-starter/*'

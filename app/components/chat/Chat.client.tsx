@@ -18,7 +18,7 @@ import { useSettings } from '~/lib/hooks/useSettings';
 import type { ProviderInfo } from '~/types/model';
 import { useSearchParams } from '@remix-run/react';
 import { createSampler } from '~/utils/sampler';
-import { getTemplates, selectStarterTemplate } from '~/utils/selectStarterTemplate';
+import { getLocalStarter } from '~/utils/selectStarterTemplate';
 import { logStore } from '~/lib/stores/logs';
 import { streamingState } from '~/lib/stores/streaming';
 import { filesToArtifacts } from '~/utils/fileUtils';
@@ -100,7 +100,7 @@ export const ChatImpl = memo(
       (project) => project.id === supabaseConn.selectedProjectId,
     );
     const supabaseAlert = useStore(workbenchStore.supabaseAlert);
-    const { activeProviders, promptId, autoSelectTemplate, contextOptimizationEnabled } = useSettings();
+    const { activeProviders, promptId, contextOptimizationEnabled } = useSettings();
     const [llmErrorAlert, setLlmErrorAlert] = useState<LlmErrorAlertType | undefined>(undefined);
     const [model, setModel] = useState(() => {
       const savedModel = Cookies.get('selectedModel');
@@ -177,19 +177,76 @@ export const ChatImpl = memo(
       initialInput: Cookies.get(PROMPT_COOKIE_KEY) || '',
     });
     useEffect(() => {
-      const prompt = searchParams.get('prompt');
+      const handlePrompt = async () => {
+        const prompt = searchParams.get('prompt');
 
-      // console.log(prompt, searchParams, model, provider);
+        if (prompt && !chatStarted) {
+          setSearchParams({});
+          runAnimation();
+          setFakeLoading(true);
 
-      if (prompt) {
-        setSearchParams({});
-        runAnimation();
-        append({
-          role: 'user',
-          content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
-        });
-      }
-    }, [model, provider, searchParams]);
+          const temResp = await getLocalStarter(prompt).catch((e) => {
+            console.error('Failed to load local starter template:', e);
+            toast.warning('Failed to load starter template\n Continuing with blank template');
+
+            return null;
+          });
+
+          if (temResp) {
+            const { assistantMessage, userMessage } = temResp;
+            const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`;
+
+            setMessages([
+              {
+                id: `1-${new Date().getTime()}`,
+                role: 'user',
+                content: userMessageText,
+                parts: createMessageParts(userMessageText, imageDataList),
+              },
+              {
+                id: `2-${new Date().getTime()}`,
+                role: 'assistant',
+                content: assistantMessage,
+              },
+              {
+                id: `3-${new Date().getTime()}`,
+                role: 'user',
+                content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userMessage}`,
+                annotations: ['hidden'],
+              },
+            ]);
+
+            const reloadOptions =
+              uploadedFiles.length > 0
+                ? { experimental_attachments: await filesToAttachments(uploadedFiles) }
+                : undefined;
+
+            reload(reloadOptions);
+            setInput('');
+            Cookies.remove(PROMPT_COOKIE_KEY);
+
+            setUploadedFiles([]);
+            setImageDataList([]);
+
+            resetEnhancer();
+
+            textareaRef.current?.blur();
+            setFakeLoading(false);
+
+            return;
+          }
+        } else if (prompt) {
+          setSearchParams({});
+          runAnimation();
+          append({
+            role: 'user',
+            content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`,
+          });
+        }
+      };
+
+      handlePrompt();
+    }, [model, provider, searchParams, chatStarted]);
 
     const { enhancingPrompt, promptEnhanced, enhancePrompt, resetEnhancer } = usePromptEnhancer();
     const { parsedMessages, parseMessages } = useMessageParser();
@@ -410,95 +467,13 @@ export const ChatImpl = memo(
       runAnimation();
 
       if (!chatStarted) {
-        setFakeLoading(true);
-
-        if (autoSelectTemplate) {
-          const { template, title } = await selectStarterTemplate({
-            message: finalMessageContent,
-            model,
-            provider,
-          });
-
-          if (template !== 'blank') {
-            const temResp = await getTemplates(template, title).catch((e) => {
-              if (e.message.includes('rate limit')) {
-                toast.warning('Rate limit exceeded. Skipping starter template\n Continuing with blank template');
-              } else {
-                toast.warning('Failed to import starter template\n Continuing with blank template');
-              }
-
-              return null;
-            });
-
-            if (temResp) {
-              const { assistantMessage, userMessage } = temResp;
-              const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
-
-              setMessages([
-                {
-                  id: `1-${new Date().getTime()}`,
-                  role: 'user',
-                  content: userMessageText,
-                  parts: createMessageParts(userMessageText, imageDataList),
-                },
-                {
-                  id: `2-${new Date().getTime()}`,
-                  role: 'assistant',
-                  content: assistantMessage,
-                },
-                {
-                  id: `3-${new Date().getTime()}`,
-                  role: 'user',
-                  content: `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${userMessage}`,
-                  annotations: ['hidden'],
-                },
-              ]);
-
-              const reloadOptions =
-                uploadedFiles.length > 0
-                  ? { experimental_attachments: await filesToAttachments(uploadedFiles) }
-                  : undefined;
-
-              reload(reloadOptions);
-              setInput('');
-              Cookies.remove(PROMPT_COOKIE_KEY);
-
-              setUploadedFiles([]);
-              setImageDataList([]);
-
-              resetEnhancer();
-
-              textareaRef.current?.blur();
-              setFakeLoading(false);
-
-              return;
-            }
-          }
-        }
-
-        // If autoSelectTemplate is disabled or template selection failed, proceed with normal message
-        const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
-        const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
-
-        setMessages([
-          {
-            id: `${new Date().getTime()}`,
-            role: 'user',
-            content: userMessageText,
-            parts: createMessageParts(userMessageText, imageDataList),
-            experimental_attachments: attachments,
-          },
-        ]);
-        reload(attachments ? { experimental_attachments: attachments } : undefined);
-        setFakeLoading(false);
+        // On home page, set prompt in URL to trigger the useEffect
+        setSearchParams({ prompt: finalMessageContent });
         setInput('');
         Cookies.remove(PROMPT_COOKIE_KEY);
-
         setUploadedFiles([]);
         setImageDataList([]);
-
         resetEnhancer();
-
         textareaRef.current?.blur();
 
         return;
