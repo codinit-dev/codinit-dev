@@ -72,6 +72,38 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
 
+    // Check if this is a request to build a React app
+    if (
+      messages.length === 1 &&
+      messages[0].role === 'user' &&
+      messages[0].content.toLowerCase().includes('build a react app')
+    ) {
+      const importMessage = `Cloning the repo https://github.com/codinit-dev/vite-react-ts-starter into /home/project
+
+Project Created
+Click to open Workbench
+Initial files created
+Gerome
+Setup the codebase and Start the application
+
+Found "dev" script in package.json. Running "npm run dev" after installation.
+
+Project Setup
+Click to open Workbench
+
+Run command
+npm install
+Start Application
+npm run dev`;
+
+      return new Response(importMessage, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+        },
+      });
+    }
+
     let lastChunk: string | undefined = undefined;
 
     const dataStream = createDataStream({
