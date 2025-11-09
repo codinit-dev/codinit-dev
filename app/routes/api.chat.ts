@@ -73,12 +73,13 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
 
-    // Check if any user message contains "build a react app"
-    const hasBuildReactApp = messages.some(
-      (msg) => msg.role === 'user' && msg.content.toLowerCase().includes('build a react app'),
+    // Check if any user message contains build-related keywords
+    const hasBuildPrompt = messages.some(
+      (msg) => msg.role === 'user' && /build.*(app|project|react|application)/i.test(msg.content),
     );
 
-    if (hasBuildReactApp) {
+    if (hasBuildPrompt) {
+      let lastChunk: string | undefined = undefined;
       const repo = 'codinit-dev/vite-react-ts-starter';
       const githubToken =
         (context?.cloudflare?.env as any)?.GITHUB_TOKEN ||
@@ -86,7 +87,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         process.env.VITE_GITHUB_ACCESS_TOKEN;
 
       const dataStream = createDataStream({
-        async execute(dataStream) {
+        async execute(dataStream: any) {
           dataStream.writeData({
             type: 'progress',
             label: 'import',
@@ -95,70 +96,107 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             message: 'Cloning the repo https://github.com/codinit-dev/vite-react-ts-starter into /home/project',
           } satisfies ProgressAnnotation);
 
-          try {
-            const fileList = await fetchRepoContentsCloudflare(repo, githubToken);
-            const filteredFiles = fileList.files.filter((file: any) => !file.path.startsWith('.git'));
+          const fileList = await fetchRepoContentsCloudflare(repo, githubToken);
+          const filteredFiles = fileList.files.filter((file: any) => !file.path.startsWith('.git'));
 
+          dataStream.writeData({
+            type: 'progress',
+            label: 'import',
+            status: 'complete',
+            order: 2,
+            message: 'Project Created',
+          } satisfies ProgressAnnotation);
+
+          dataStream.writeMessageAnnotation({
+            type: 'codeContext',
+            files: filteredFiles.map((file: any) => '/home/project/' + file.path),
+          } satisfies ContextAnnotation);
+
+          // Send the files as data
+          filteredFiles.forEach((file: any) => {
             dataStream.writeData({
-              type: 'progress',
-              label: 'import',
-              status: 'complete',
-              order: 2,
-              message: 'Project Created',
-            } satisfies ProgressAnnotation);
-
-            dataStream.writeMessageAnnotation({
-              type: 'codeContext',
-              files: filteredFiles.map((file: any) => file.path),
-            } satisfies ContextAnnotation);
-
-            // Send the files as data
-            filteredFiles.forEach((file: any) => {
-              dataStream.writeData({
-                type: 'file',
-                path: file.path,
-                content: file.content,
-              });
+              type: 'file',
+              path: '/home/project/' + file.path,
+              content: file.content,
             });
+          });
 
-            dataStream.writeData({
-              type: 'progress',
-              label: 'import',
-              status: 'complete',
-              order: 3,
-              message: 'Initial files created',
-            } satisfies ProgressAnnotation);
+          dataStream.writeData({
+            type: 'progress',
+            label: 'import',
+            status: 'complete',
+            order: 3,
+            message: 'Initial files created',
+          } satisfies ProgressAnnotation);
 
-            const setupMessage = `Gerome
-Setup the codebase and Start the application
+          dataStream.writeData({
+            type: 'progress',
+            label: 'setup',
+            status: 'in-progress',
+            order: 4,
+            message: 'Setting up the codebase',
+          } satisfies ProgressAnnotation);
 
-Found "dev" script in package.json. Running "npm run dev" after installation.
+          // Send setup commands
+          dataStream.writeData({
+            type: 'command',
+            command: 'npm install',
+            cwd: '/home/project',
+          });
 
-Project Setup
-Click to open Workbench
+          dataStream.writeData({
+            type: 'command',
+            command: 'npm run dev',
+            cwd: '/home/project',
+          });
 
-Run command
-npm install
-Start Application
-npm run dev`;
-
-            dataStream.writeData(setupMessage);
-          } catch (error) {
-            dataStream.writeData({
-              type: 'error',
-              message: `Failed to import template: ${error instanceof Error ? error.message : String(error)}`,
-            });
-          }
+          dataStream.writeData({
+            type: 'progress',
+            label: 'setup',
+            status: 'complete',
+            order: 5,
+            message: 'Codebase setup complete. You can now ask for specific features or modifications.',
+          } satisfies ProgressAnnotation);
         },
+        onError: (error: any) => `Custom error: ${error.message}`,
       });
 
       return new Response(
         dataStream.pipeThrough(
           new TransformStream({
-            transform: (chunk, controller) => {
+            transform: (chunk: any, controller: any) => {
               try {
-                const str = typeof chunk === 'string' ? chunk : JSON.stringify(chunk);
-                controller.enqueue(encoder.encode(str + '\n'));
+                if (!lastChunk) {
+                  lastChunk = ' ';
+                }
+
+                if (typeof chunk === 'string') {
+                  if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
+                    controller.enqueue(encoder.encode(`0: "<div class=\\"__codinitThought__\\">"\n`));
+                  }
+
+                  if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
+                    controller.enqueue(encoder.encode(`0: "</div>\\n"\n`));
+                  }
+                }
+
+                lastChunk = chunk;
+
+                let transformedChunk = chunk;
+
+                if (typeof chunk === 'string' && chunk.startsWith('g')) {
+                  let content = chunk.split(':').slice(1).join(':');
+
+                  if (content.endsWith('\n')) {
+                    content = content.slice(0, content.length - 1);
+                  }
+
+                  transformedChunk = `0:${content}\n`;
+                }
+
+                // Convert the string stream to a byte stream
+                const str = typeof transformedChunk === 'string' ? transformedChunk : JSON.stringify(transformedChunk);
+                controller.enqueue(encoder.encode(str));
               } catch (error) {
                 if (!(error instanceof TypeError && error.message.includes('Controller is already closed'))) {
                   throw error;
@@ -177,174 +215,215 @@ npm run dev`;
           },
         },
       );
-    }
+    } else {
+      let lastChunk: string | undefined = undefined;
 
-    let lastChunk: string | undefined = undefined;
+      return new Response(
+        createDataStream({
+          async execute(dataStream: any) {
+            const filePaths = getFilePaths(files || {});
+            let filteredFiles: FileMap | undefined = undefined;
+            let summary: string | undefined = undefined;
+            let messageSliceId = 0;
 
-    const dataStream = createDataStream({
-      async execute(dataStream) {
-        const filePaths = getFilePaths(files || {});
-        let filteredFiles: FileMap | undefined = undefined;
-        let summary: string | undefined = undefined;
-        let messageSliceId = 0;
-
-        if (messages.length > 3) {
-          messageSliceId = messages.length - 3;
-        }
-
-        if (filePaths.length > 0 && contextOptimization) {
-          logger.debug('Generating Chat Summary');
-          dataStream.writeData({
-            type: 'progress',
-            label: 'summary',
-            status: 'in-progress',
-            order: progressCounter++,
-            message: 'Analysing Request',
-          } satisfies ProgressAnnotation);
-
-          // Create a summary of the chat
-          console.log(`Messages count: ${messages.length}`);
-
-          summary = await createSummary({
-            messages: [...messages],
-            env: context.cloudflare?.env,
-            apiKeys,
-            providerSettings,
-            promptId,
-            contextOptimization,
-            onFinish(resp) {
-              if (resp.usage) {
-                logger.debug('createSummary token usage', JSON.stringify(resp.usage));
-                cumulativeUsage.completionTokens += resp.usage.completionTokens || 0;
-                cumulativeUsage.promptTokens += resp.usage.promptTokens || 0;
-                cumulativeUsage.totalTokens += resp.usage.totalTokens || 0;
-              }
-            },
-          });
-          dataStream.writeData({
-            type: 'progress',
-            label: 'summary',
-            status: 'complete',
-            order: progressCounter++,
-            message: 'Analysis Complete',
-          } satisfies ProgressAnnotation);
-
-          dataStream.writeMessageAnnotation({
-            type: 'chatSummary',
-            summary,
-            chatId: messages.slice(-1)?.[0]?.id,
-          } as ContextAnnotation);
-
-          // Update context buffer
-          logger.debug('Updating Context Buffer');
-          dataStream.writeData({
-            type: 'progress',
-            label: 'context',
-            status: 'in-progress',
-            order: progressCounter++,
-            message: 'Determining Files to Read',
-          } satisfies ProgressAnnotation);
-
-          // Select context files
-          console.log(`Messages count: ${messages.length}`);
-          filteredFiles = await selectContext({
-            messages: [...messages],
-            env: context.cloudflare?.env,
-            apiKeys,
-            files,
-            providerSettings,
-            promptId,
-            contextOptimization,
-            summary,
-            onFinish(resp) {
-              if (resp.usage) {
-                logger.debug('selectContext token usage', JSON.stringify(resp.usage));
-                cumulativeUsage.completionTokens += resp.usage.completionTokens || 0;
-                cumulativeUsage.promptTokens += resp.usage.promptTokens || 0;
-                cumulativeUsage.totalTokens += resp.usage.totalTokens || 0;
-              }
-            },
-          });
-
-          if (filteredFiles) {
-            logger.debug(`files in context : ${JSON.stringify(Object.keys(filteredFiles))}`);
-          }
-
-          dataStream.writeMessageAnnotation({
-            type: 'codeContext',
-            files: Object.keys(filteredFiles).map((key) => {
-              let path = key;
-
-              if (path.startsWith(WORK_DIR)) {
-                path = path.replace(WORK_DIR, '');
-              }
-
-              return path;
-            }),
-          } as ContextAnnotation);
-
-          dataStream.writeData({
-            type: 'progress',
-            label: 'context',
-            status: 'complete',
-            order: progressCounter++,
-            message: 'Code Files Selected',
-          } satisfies ProgressAnnotation);
-
-          // logger.debug('Code Files Selected');
-        }
-
-        const options: StreamingOptions = {
-          supabaseConnection: supabase,
-          toolChoice: 'none',
-          abortSignal: request.signal,
-          onFinish: async ({ text: content, finishReason, usage }) => {
-            logger.debug('usage', JSON.stringify(usage));
-
-            if (usage) {
-              cumulativeUsage.completionTokens += usage.completionTokens || 0;
-              cumulativeUsage.promptTokens += usage.promptTokens || 0;
-              cumulativeUsage.totalTokens += usage.totalTokens || 0;
+            if (messages.length > 3) {
+              messageSliceId = messages.length - 3;
             }
 
-            if (finishReason !== 'length') {
-              dataStream.writeMessageAnnotation({
-                type: 'usage',
-                value: {
-                  completionTokens: cumulativeUsage.completionTokens,
-                  promptTokens: cumulativeUsage.promptTokens,
-                  totalTokens: cumulativeUsage.totalTokens,
+            if (filePaths.length > 0 && contextOptimization) {
+              logger.debug('Generating Chat Summary');
+              dataStream.writeData({
+                type: 'progress',
+                label: 'summary',
+                status: 'in-progress',
+                order: progressCounter++,
+                message: 'Analysing Request',
+              } satisfies ProgressAnnotation);
+
+              // Create a summary of the chat
+              console.log(`Messages count: ${messages.length}`);
+
+              summary = await createSummary({
+                messages: [...messages],
+                env: context.cloudflare?.env,
+                apiKeys,
+                providerSettings,
+                promptId,
+                contextOptimization,
+                onFinish(resp) {
+                  if (resp.usage) {
+                    logger.debug('createSummary token usage', JSON.stringify(resp.usage));
+                    cumulativeUsage.completionTokens += resp.usage.completionTokens || 0;
+                    cumulativeUsage.promptTokens += resp.usage.promptTokens || 0;
+                    cumulativeUsage.totalTokens += resp.usage.totalTokens || 0;
+                  }
                 },
               });
               dataStream.writeData({
                 type: 'progress',
-                label: 'response',
+                label: 'summary',
                 status: 'complete',
                 order: progressCounter++,
-                message: 'Response Generated',
+                message: 'Analysis Complete',
               } satisfies ProgressAnnotation);
-              await new Promise((resolve) => setTimeout(resolve, 0));
 
-              // stream.close();
-              return;
+              dataStream.writeMessageAnnotation({
+                type: 'chatSummary',
+                summary,
+                chatId: messages.slice(-1)?.[0]?.id,
+              } as ContextAnnotation);
+
+              // Update context buffer
+              logger.debug('Updating Context Buffer');
+              dataStream.writeData({
+                type: 'progress',
+                label: 'context',
+                status: 'in-progress',
+                order: progressCounter++,
+                message: 'Determining Files to Read',
+              } satisfies ProgressAnnotation);
+
+              // Select context files
+              console.log(`Messages count: ${messages.length}`);
+              filteredFiles = await selectContext({
+                messages: [...messages],
+                env: context.cloudflare?.env,
+                apiKeys,
+                files,
+                providerSettings,
+                promptId,
+                contextOptimization,
+                summary,
+                onFinish(resp) {
+                  if (resp.usage) {
+                    logger.debug('selectContext token usage', JSON.stringify(resp.usage));
+                    cumulativeUsage.completionTokens += resp.usage.completionTokens || 0;
+                    cumulativeUsage.promptTokens += resp.usage.promptTokens || 0;
+                    cumulativeUsage.totalTokens += resp.usage.totalTokens || 0;
+                  }
+                },
+              });
+
+              if (filteredFiles) {
+                logger.debug(`files in context : ${JSON.stringify(Object.keys(filteredFiles))}`);
+              }
+
+              dataStream.writeMessageAnnotation({
+                type: 'codeContext',
+                files: Object.keys(filteredFiles).map((key) => {
+                  let path = key;
+
+                  if (path.startsWith(WORK_DIR)) {
+                    path = path.replace(WORK_DIR, '');
+                  }
+
+                  return path;
+                }),
+              } as ContextAnnotation);
+
+              dataStream.writeData({
+                type: 'progress',
+                label: 'context',
+                status: 'complete',
+                order: progressCounter++,
+                message: 'Code Files Selected',
+              } satisfies ProgressAnnotation);
+
+              // logger.debug('Code Files Selected');
             }
 
-            if (stream.switches >= MAX_RESPONSE_SEGMENTS) {
-              throw Error('Cannot continue message: Maximum segments reached');
-            }
+            const options: StreamingOptions = {
+              supabaseConnection: supabase,
+              toolChoice: 'none',
+              abortSignal: request.signal,
+              onFinish: async ({ text: content, finishReason, usage }) => {
+                logger.debug('usage', JSON.stringify(usage));
 
-            const switchesLeft = MAX_RESPONSE_SEGMENTS - stream.switches;
+                if (usage) {
+                  cumulativeUsage.completionTokens += usage.completionTokens || 0;
+                  cumulativeUsage.promptTokens += usage.promptTokens || 0;
+                  cumulativeUsage.totalTokens += usage.totalTokens || 0;
+                }
 
-            logger.info(`Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`);
+                if (finishReason !== 'length') {
+                  dataStream.writeMessageAnnotation({
+                    type: 'usage',
+                    value: {
+                      completionTokens: cumulativeUsage.completionTokens,
+                      promptTokens: cumulativeUsage.promptTokens,
+                      totalTokens: cumulativeUsage.totalTokens,
+                    },
+                  });
+                  dataStream.writeData({
+                    type: 'progress',
+                    label: 'response',
+                    status: 'complete',
+                    order: progressCounter++,
+                    message: 'Response Generated',
+                  } satisfies ProgressAnnotation);
+                  await new Promise((resolve) => setTimeout(resolve, 0));
 
-            const lastUserMessage = messages.filter((x) => x.role == 'user').slice(-1)[0];
-            const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
-            messages.push({ id: generateId(), role: 'assistant', content });
-            messages.push({
-              id: generateId(),
-              role: 'user',
-              content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
-            });
+                  // stream.close();
+                  return;
+                }
+
+                if (stream.switches >= MAX_RESPONSE_SEGMENTS) {
+                  throw Error('Cannot continue message: Maximum segments reached');
+                }
+
+                const switchesLeft = MAX_RESPONSE_SEGMENTS - stream.switches;
+
+                logger.info(
+                  `Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`,
+                );
+
+                const lastUserMessage = messages.filter((x) => x.role == 'user').slice(-1)[0];
+                const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
+                messages.push({ id: generateId(), role: 'assistant', content });
+                messages.push({
+                  id: generateId(),
+                  role: 'user',
+                  content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
+                });
+
+                const result = await streamText({
+                  messages,
+                  env: context.cloudflare?.env,
+                  options,
+                  apiKeys,
+                  files,
+                  providerSettings,
+                  promptId,
+                  contextOptimization,
+                  contextFiles: filteredFiles,
+                  summary,
+                  messageSliceId,
+                });
+
+                result.mergeIntoDataStream(dataStream);
+
+                (async () => {
+                  for await (const part of result.fullStream) {
+                    if (part.type === 'error') {
+                      const error: any = part.error;
+                      logger.error(`${error}`);
+
+                      return;
+                    }
+                  }
+                })();
+
+                return;
+              },
+            };
+
+            dataStream.writeData({
+              type: 'progress',
+              label: 'response',
+              status: 'in-progress',
+              order: progressCounter++,
+              message: 'Generating Response',
+            } satisfies ProgressAnnotation);
 
             const result = await streamText({
               messages,
@@ -360,8 +439,6 @@ npm run dev`;
               messageSliceId,
             });
 
-            result.mergeIntoDataStream(dataStream);
-
             (async () => {
               for await (const part of result.fullStream) {
                 if (part.type === 'error') {
@@ -372,100 +449,57 @@ npm run dev`;
                 }
               }
             })();
-
-            return;
+            result.mergeIntoDataStream(dataStream);
           },
-        };
-
-        dataStream.writeData({
-          type: 'progress',
-          label: 'response',
-          status: 'in-progress',
-          order: progressCounter++,
-          message: 'Generating Response',
-        } satisfies ProgressAnnotation);
-
-        const result = await streamText({
-          messages,
-          env: context.cloudflare?.env,
-          options,
-          apiKeys,
-          files,
-          providerSettings,
-          promptId,
-          contextOptimization,
-          contextFiles: filteredFiles,
-          summary,
-          messageSliceId,
-        });
-
-        (async () => {
-          for await (const part of result.fullStream) {
-            if (part.type === 'error') {
-              const error: any = part.error;
-              logger.error(`${error}`);
-
-              return;
-            }
-          }
-        })();
-        result.mergeIntoDataStream(dataStream);
-      },
-      onError: (error: any) => `Custom error: ${error.message}`,
-    }).pipeThrough(
-      new TransformStream({
-        transform: (chunk, controller) => {
-          try {
-            if (!lastChunk) {
-              lastChunk = ' ';
-            }
-
-            if (typeof chunk === 'string') {
-              if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
-                controller.enqueue(encoder.encode(`0: "<div class=\\"__codinitThought__\\">"\n`));
+          onError: (error: any) => `Custom error: ${error.message}`,
+        }).pipeThrough(
+          new TransformStream({
+            transform: (chunk: any, controller: any) => {
+              if (!lastChunk) {
+                lastChunk = ' ';
               }
 
-              if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
-                controller.enqueue(encoder.encode(`0: "</div>\\n"\n`));
-              }
-            }
+              if (typeof chunk === 'string') {
+                if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
+                  controller.enqueue(encoder.encode(`0: "<div class=\\"__codinitThought__\\">"\n`));
+                }
 
-            lastChunk = chunk;
-
-            let transformedChunk = chunk;
-
-            if (typeof chunk === 'string' && chunk.startsWith('g')) {
-              let content = chunk.split(':').slice(1).join(':');
-
-              if (content.endsWith('\n')) {
-                content = content.slice(0, content.length - 1);
+                if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
+                  controller.enqueue(encoder.encode(`0: "</div>\\n"\n`));
+                }
               }
 
-              transformedChunk = `0:${content}\n`;
-            }
+              lastChunk = chunk;
 
-            // Convert the string stream to a byte stream
-            const str = typeof transformedChunk === 'string' ? transformedChunk : JSON.stringify(transformedChunk);
-            controller.enqueue(encoder.encode(str));
-          } catch (error) {
-            // Ignore errors like "Controller is already closed"
-            if (!(error instanceof TypeError && error.message.includes('Controller is already closed'))) {
-              throw error;
-            }
-          }
+              let transformedChunk = chunk;
+
+              if (typeof chunk === 'string' && chunk.startsWith('g')) {
+                let content = chunk.split(':').slice(1).join(':');
+
+                if (content.endsWith('\n')) {
+                  content = content.slice(0, content.length - 1);
+                }
+
+                transformedChunk = `0:${content}\n`;
+              }
+
+              // Convert the string stream to a byte stream
+              const str = typeof transformedChunk === 'string' ? transformedChunk : JSON.stringify(transformedChunk);
+              controller.enqueue(encoder.encode(str));
+            },
+          }),
+        ),
+        {
+          status: 200,
+          headers: {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            Connection: 'keep-alive',
+            'Cache-Control': 'no-cache',
+            'Text-Encoding': 'chunked',
+          },
         },
-      }),
-    );
-
-    return new Response(dataStream, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/event-stream; charset=utf-8',
-        Connection: 'keep-alive',
-        'Cache-Control': 'no-cache',
-        'Text-Encoding': 'chunked',
-      },
-    });
+      );
+    }
   } catch (error: any) {
     logger.error(error);
 
