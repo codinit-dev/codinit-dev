@@ -190,6 +190,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         const options: StreamingOptions = {
           supabaseConnection: supabase,
           toolChoice: 'none',
+          abortSignal: request.signal,
           onFinish: async ({ text: content, finishReason, usage }) => {
             logger.debug('usage', JSON.stringify(usage));
 
@@ -307,37 +308,44 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     }).pipeThrough(
       new TransformStream({
         transform: (chunk, controller) => {
-          if (!lastChunk) {
-            lastChunk = ' ';
-          }
-
-          if (typeof chunk === 'string') {
-            if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
-              controller.enqueue(encoder.encode(`0: "<div class=\\"__codinitThought__\\">"\n`));
+          try {
+            if (!lastChunk) {
+              lastChunk = ' ';
             }
 
-            if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
-              controller.enqueue(encoder.encode(`0: "</div>\\n"\n`));
-            }
-          }
+            if (typeof chunk === 'string') {
+              if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
+                controller.enqueue(encoder.encode(`0: "<div class=\\"__codinitThought__\\">"\n`));
+              }
 
-          lastChunk = chunk;
-
-          let transformedChunk = chunk;
-
-          if (typeof chunk === 'string' && chunk.startsWith('g')) {
-            let content = chunk.split(':').slice(1).join(':');
-
-            if (content.endsWith('\n')) {
-              content = content.slice(0, content.length - 1);
+              if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
+                controller.enqueue(encoder.encode(`0: "</div>\\n"\n`));
+              }
             }
 
-            transformedChunk = `0:${content}\n`;
-          }
+            lastChunk = chunk;
 
-          // Convert the string stream to a byte stream
-          const str = typeof transformedChunk === 'string' ? transformedChunk : JSON.stringify(transformedChunk);
-          controller.enqueue(encoder.encode(str));
+            let transformedChunk = chunk;
+
+            if (typeof chunk === 'string' && chunk.startsWith('g')) {
+              let content = chunk.split(':').slice(1).join(':');
+
+              if (content.endsWith('\n')) {
+                content = content.slice(0, content.length - 1);
+              }
+
+              transformedChunk = `0:${content}\n`;
+            }
+
+            // Convert the string stream to a byte stream
+            const str = typeof transformedChunk === 'string' ? transformedChunk : JSON.stringify(transformedChunk);
+            controller.enqueue(encoder.encode(str));
+          } catch (error) {
+            // Ignore errors like "Controller is already closed"
+            if (!(error instanceof TypeError && error.message.includes('Controller is already closed'))) {
+              throw error;
+            }
+          }
         },
       }),
     );
