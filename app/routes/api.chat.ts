@@ -11,6 +11,7 @@ import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
 import { WORK_DIR } from '~/utils/constants';
 import { createSummary } from '~/lib/.server/llm/create-summary';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
+import { fetchRepoContentsCloudflare } from './api.github-template';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -72,18 +73,63 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
     logger.debug(`Total message length: ${totalMessageContent.split(' ').length}, words`);
 
-    // Check if this is a request to build a React app
-    if (
-      messages.length === 1 &&
-      messages[0].role === 'user' &&
-      messages[0].content.toLowerCase().includes('build a react app')
-    ) {
-      const importMessage = `Cloning the repo https://github.com/codinit-dev/vite-react-ts-starter into /home/project
+    // Check if any user message contains "build a react app"
+    const hasBuildReactApp = messages.some(
+      (msg) => msg.role === 'user' && msg.content.toLowerCase().includes('build a react app'),
+    );
 
-Project Created
-Click to open Workbench
-Initial files created
-Gerome
+    if (hasBuildReactApp) {
+      const repo = 'codinit-dev/vite-react-ts-starter';
+      const githubToken =
+        (context?.cloudflare?.env as any)?.GITHUB_TOKEN ||
+        process.env.GITHUB_TOKEN ||
+        process.env.VITE_GITHUB_ACCESS_TOKEN;
+
+      const dataStream = createDataStream({
+        async execute(dataStream) {
+          dataStream.writeData({
+            type: 'progress',
+            label: 'import',
+            status: 'in-progress',
+            order: 1,
+            message: 'Cloning the repo https://github.com/codinit-dev/vite-react-ts-starter into /home/project',
+          } satisfies ProgressAnnotation);
+
+          try {
+            const fileList = await fetchRepoContentsCloudflare(repo, githubToken);
+            const filteredFiles = fileList.files.filter((file: any) => !file.path.startsWith('.git'));
+
+            dataStream.writeData({
+              type: 'progress',
+              label: 'import',
+              status: 'complete',
+              order: 2,
+              message: 'Project Created',
+            } satisfies ProgressAnnotation);
+
+            dataStream.writeMessageAnnotation({
+              type: 'codeContext',
+              files: filteredFiles.map((file: any) => file.path),
+            } satisfies ContextAnnotation);
+
+            // Send the files as data
+            filteredFiles.forEach((file: any) => {
+              dataStream.writeData({
+                type: 'file',
+                path: file.path,
+                content: file.content,
+              });
+            });
+
+            dataStream.writeData({
+              type: 'progress',
+              label: 'import',
+              status: 'complete',
+              order: 3,
+              message: 'Initial files created',
+            } satisfies ProgressAnnotation);
+
+            const setupMessage = `Gerome
 Setup the codebase and Start the application
 
 Found "dev" script in package.json. Running "npm run dev" after installation.
@@ -96,12 +142,41 @@ npm install
 Start Application
 npm run dev`;
 
-      return new Response(importMessage, {
-        status: 200,
-        headers: {
-          'Content-Type': 'text/plain; charset=utf-8',
+            dataStream.writeData(setupMessage);
+          } catch (error) {
+            dataStream.writeData({
+              type: 'error',
+              message: `Failed to import template: ${error instanceof Error ? error.message : String(error)}`,
+            });
+          }
         },
       });
+
+      return new Response(
+        dataStream.pipeThrough(
+          new TransformStream({
+            transform: (chunk, controller) => {
+              try {
+                const str = typeof chunk === 'string' ? chunk : JSON.stringify(chunk);
+                controller.enqueue(encoder.encode(str + '\n'));
+              } catch (error) {
+                if (!(error instanceof TypeError && error.message.includes('Controller is already closed'))) {
+                  throw error;
+                }
+              }
+            },
+          }),
+        ),
+        {
+          status: 200,
+          headers: {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            Connection: 'keep-alive',
+            'Cache-Control': 'no-cache',
+            'Text-Encoding': 'chunked',
+          },
+        },
+      );
     }
 
     let lastChunk: string | undefined = undefined;
