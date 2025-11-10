@@ -110,6 +110,21 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
     return () => clearTimeout(timeout);
   }, [displayedText, isDeleting, isPaused, currentPromptIndex]);
 
+  useEffect(() => {
+    if (props.textareaRef?.current) {
+      if (!props.chatStarted && props.input.length === 0) {
+        props.textareaRef.current.placeholder = displayedText;
+      } else {
+        props.textareaRef.current.placeholder =
+          !props.chatStarted && props.input.length === 0
+            ? ''
+            : props.chatMode === 'build'
+              ? 'How can CodinIT help you today?'
+              : 'What would you like to discuss?';
+      }
+    }
+  }, [displayedText, props.chatStarted, props.input.length, props.chatMode, props.textareaRef]);
+
   return (
     <>
       <div
@@ -213,14 +228,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             </button>
           </div>
         )}
-        {!props.chatStarted && props.input.length === 0 && (
-          <div className="absolute top-0 left-0 right-0 flex items-start pl-4 pt-4 pointer-events-none">
-            <div className="flex items-center gap-2 text-codinit-elements-textTertiary text-sm transition-theme">
-              <span>{displayedText}</span>
-              <span className="inline-block w-0.5 h-4 bg-accent-400 animate-pulse transition-theme" />
-            </div>
-          </div>
-        )}
+
         <textarea
           ref={props.textareaRef}
           className={classNames(
@@ -288,13 +296,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             minHeight: props.TEXTAREA_MIN_HEIGHT,
             maxHeight: props.TEXTAREA_MAX_HEIGHT,
           }}
-          placeholder={
-            !props.chatStarted && props.input.length === 0
-              ? ''
-              : props.chatMode === 'build'
-                ? 'How can CodinIT help you today?'
-                : 'What would you like to discuss?'
-          }
           translate="no"
         />
         <ClientOnly>
