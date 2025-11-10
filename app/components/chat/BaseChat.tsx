@@ -350,7 +350,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             {!chatStarted && (
               <div id="intro" className="mt-[16vh] max-w-2xl mx-auto text-center px-4 lg:px-0">
                 <h1 className="flex flex-wrap items-center gap-2 text-codinit-elements-textPrimary justify-center font-display font-bold text-5xl tracking-tight">
-                  <span className="text-codinit-elements-textPrimary">Prompt Build</span>
+                  <span className="text-codinit-elements-textPrimary">Prompt </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="135"
@@ -493,7 +493,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       </linearGradient>
                     </defs>
                   </svg>
-                  <span className="text-[#3b82f6] italic">& Deploy</span>
+                  <span className="text-codinit-elements-textPrimary">& Deploy</span>
                 </h1>
                 <p className="text-md lg:text-xl mb-8 text-codinit-elements-textSecondary animate-fade-in animation-delay-200">
                   Let your imagination build your next startup idea.
