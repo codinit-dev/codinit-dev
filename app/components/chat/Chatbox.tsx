@@ -232,7 +232,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <textarea
           ref={props.textareaRef}
           className={classNames(
-            'w-full pl-4 pt-4 pr-0 pb-4 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
+            'w-full pl-4 pt-2 pr-0 pb-4 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
             'transition-all duration-200',
             'hover:border-codinit-elements-focus',
           )}
