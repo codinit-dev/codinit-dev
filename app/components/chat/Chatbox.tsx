@@ -92,10 +92,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               gradientUnits="userSpaceOnUse"
               gradientTransform="rotate(-45)"
             >
-              <stop offset="0%" stopColor="#b44aff" stopOpacity="0%"></stop>
-              <stop offset="40%" stopColor="#b44aff" stopOpacity="80%"></stop>
-              <stop offset="50%" stopColor="#b44aff" stopOpacity="80%"></stop>
-              <stop offset="100%" stopColor="#b44aff" stopOpacity="0%"></stop>
+              <stop offset="0%" stopColor="#1488fc" stopOpacity="0%"></stop>
+              <stop offset="40%" stopColor="#1488fc" stopOpacity="80%"></stop>
+              <stop offset="50%" stopColor="#1488fc" stopOpacity="80%"></stop>
+              <stop offset="100%" stopColor="#1488fc" stopOpacity="0%"></stop>
             </linearGradient>
             <linearGradient id="shine-gradient">
               <stop offset="0%" stopColor="white" stopOpacity="0%"></stop>
@@ -171,11 +171,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             </button>
           </div>
         )}
-        <div
-          className={classNames(
-            'relative shadow-xs border border-codinit-elements-borderColor backdrop-blur rounded-lg bg-codinit-elements-bg-depth-1 transition-theme',
-          )}
-        >
+        <div className={classNames()}>
           {!props.chatStarted && props.input.length === 0 && <TypingAnimation />}
           <textarea
             ref={props.textareaRef}
