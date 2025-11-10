@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
 import { PROVIDER_LIST } from '~/utils/constants';
@@ -20,7 +20,6 @@ import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { McpIntegrationPanel } from './MCPIntegrationPanel';
-import { TypingAnimation } from './TypingAnimation';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -65,8 +64,66 @@ interface ChatBoxProps {
   setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
 }
 
+const EXAMPLE_PROMPTS = ['Tip: Select a starter template to get started quickly!'];
+
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
+
+  useEffect(() => {
+    const currentPrompt = EXAMPLE_PROMPTS[currentPromptIndex];
+
+    if (isPaused) {
+      const pauseTimer = setTimeout(() => {
+        setIsPaused(false);
+        setIsDeleting(true);
+      }, 2000);
+      return () => clearTimeout(pauseTimer);
+    }
+
+    if (!isDeleting && displayedText === currentPrompt) {
+      setIsPaused(true);
+      return undefined;
+    }
+
+    if (isDeleting && displayedText === '') {
+      setIsDeleting(false);
+      setCurrentPromptIndex((prev) => (prev + 1) % EXAMPLE_PROMPTS.length);
+
+      return undefined;
+    }
+
+    const timeout = setTimeout(
+      () => {
+        if (isDeleting) {
+          setDisplayedText(currentPrompt.substring(0, displayedText.length - 1));
+        } else {
+          setDisplayedText(currentPrompt.substring(0, displayedText.length + 1));
+        }
+      },
+      isDeleting ? 30 : 50,
+    );
+
+    return () => clearTimeout(timeout);
+  }, [displayedText, isDeleting, isPaused, currentPromptIndex]);
+
+  useEffect(() => {
+    if (props.textareaRef?.current) {
+      if (!props.chatStarted && props.input.length === 0) {
+        props.textareaRef.current.placeholder = displayedText;
+      } else {
+        props.textareaRef.current.placeholder =
+          !props.chatStarted && props.input.length === 0
+            ? ''
+            : props.chatMode === 'build'
+              ? 'How can CodinIT help you today?'
+              : 'What would you like to discuss?';
+      }
+    }
+  }, [displayedText, props.chatStarted, props.input.length, props.chatMode, props.textareaRef]);
 
   return (
     <>
@@ -172,11 +229,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           </div>
         )}
         <div className={classNames()}>
-          {!props.chatStarted && props.input.length === 0 && <TypingAnimation />}
           <textarea
             ref={props.textareaRef}
             className={classNames(
-              'w-full pl-4 pt-4 pr-16 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
+              'w-full pl-4 pt-4 pr-16 pb-4 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
               'transition-all duration-200',
               'hover:border-codinit-elements-focus',
             )}
@@ -240,13 +296,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               minHeight: props.TEXTAREA_MIN_HEIGHT,
               maxHeight: props.TEXTAREA_MAX_HEIGHT,
             }}
-            placeholder={
-              !props.chatStarted && props.input.length === 0
-                ? ''
-                : props.chatMode === 'build'
-                  ? 'How can CodinIT help you today?'
-                  : 'What would you like to discuss?'
-            }
             translate="no"
           />
           <ClientOnly>
