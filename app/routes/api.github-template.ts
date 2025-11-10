@@ -26,7 +26,7 @@ function isCloudflareEnvironment(context: any): boolean {
 }
 
 // Cloudflare-compatible method using GitHub Contents API
-export async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
+async function fetchRepoContentsCloudflare(repo: string, githubToken?: string) {
   const baseUrl = 'https://api.github.com';
   const failedFiles: Array<{ path: string; error: string }> = [];
 

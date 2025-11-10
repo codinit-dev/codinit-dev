@@ -493,7 +493,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                       </linearGradient>
                     </defs>
                   </svg>
-                  <span className="text-codinit-elements-textPrimary">& Deploy</span>
+                  <span className="text-codinit-elements-textPrimary"> Deploy</span>
                 </h1>
                 <p className="text-md lg:text-xl mb-8 text-codinit-elements-textSecondary animate-fade-in animation-delay-200">
                   Let your imagination build your next startup idea.

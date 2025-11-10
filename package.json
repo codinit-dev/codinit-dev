@@ -11,6 +11,7 @@
     "email": "gerome.e24@gmail.com"
   },
   "scripts": {
+    "deploy": "npm run build && wrangler pages deploy",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 remix vite:build",
     "dev": "node pre-start.cjs && remix vite:dev",
     "test": "vitest --run",
@@ -111,7 +112,7 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/addon-web-links": "^0.11.0",
     "@xterm/xterm": "^5.5.0",
-    "ai": "^4.3.17",
+    "ai": "4.3.16",
     "chalk": "^5.6.2",
     "chart.js": "^4.5.0",
     "class-variance-authority": "^0.7.1",

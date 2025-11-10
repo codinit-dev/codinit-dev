@@ -20,6 +20,7 @@ import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { McpIntegrationPanel } from './MCPIntegrationPanel';
+import { TypingAnimation } from './TypingAnimation';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -238,32 +239,39 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             minHeight: props.TEXTAREA_MIN_HEIGHT,
             maxHeight: props.TEXTAREA_MAX_HEIGHT,
           }}
-          placeholder={
-            !props.chatStarted && props.input.length === 0
-              ? ''
-              : props.chatMode === 'build'
-                ? 'How can CodinIT help you today?'
-                : 'What would you like to discuss?'
-          }
+          placeholder={!props.chatStarted && props.input.length === 0 ? '' : undefined}
           translate="no"
         />
         <ClientOnly>
           {() => (
-            <SendButton
-              show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
-              isStreaming={props.isStreaming}
-              disabled={!props.providerList || props.providerList.length === 0}
-              onClick={(event) => {
-                if (props.isStreaming) {
-                  props.handleStop?.();
-                  return;
-                }
+            <>
+              {!props.chatStarted && props.input.length === 0 && (
+                <TypingAnimation
+                  onPromptClick={(prompt: string) => {
+                    props.handleInputChange?.({
+                      target: { value: prompt },
+                    } as React.ChangeEvent<HTMLTextAreaElement>);
+                  }}
+                  isProviderDropdownOpen={!props.isModelSettingsCollapsed}
+                  isModelDropdownOpen={!props.isModelSettingsCollapsed}
+                />
+              )}
+              <SendButton
+                show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
+                isStreaming={props.isStreaming}
+                disabled={!props.providerList || props.providerList.length === 0}
+                onClick={(event) => {
+                  if (props.isStreaming) {
+                    props.handleStop?.();
+                    return;
+                  }
 
-                if (props.input.length > 0 || props.uploadedFiles.length > 0) {
-                  props.handleSendMessage?.(event);
-                }
-              }}
-            />
+                  if (props.input.length > 0 || props.uploadedFiles.length > 0) {
+                    props.handleSendMessage?.(event);
+                  }
+                }}
+              />
+            </>
           )}
         </ClientOnly>
         <div className="flex justify-between items-center text-sm p-4 pt-2">

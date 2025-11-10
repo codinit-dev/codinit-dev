@@ -7,7 +7,6 @@ import { BaseChat } from '~/components/chat/BaseChat';
 import { Chat } from '~/components/chat/Chat.client';
 import { useGit } from '~/lib/hooks/useGit';
 import { useChatHistory } from '~/lib/persistence';
-import { workbenchStore } from '~/lib/stores/workbench';
 import { createCommandsMessage, detectProjectCommands, escapeExampleTags } from '~/utils/projectCommands';
 import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { ImportErrorModal } from '~/components/ui/ImportErrorModal';
@@ -51,35 +50,15 @@ export function GitUrlImport() {
       return;
     }
 
-    const prompt = searchParams.get('prompt');
-    const model = searchParams.get('model') || 'claude-3-5-sonnet-latest';
-    const provider = searchParams.get('provider') || 'anthropic';
-
     if (repoUrl) {
       const ig = ignore().add(IGNORE_PATTERNS);
 
       try {
         const { workdir, data } = await gitClone(repoUrl);
 
-        // Update workbench with the cloned files
-        const textDecoder = new TextDecoder('utf-8');
-        Object.entries(data).forEach(async ([path, fileData]) => {
-          const content =
-            fileData.encoding === 'utf8'
-              ? fileData.data
-              : fileData.data instanceof Uint8Array
-                ? textDecoder.decode(fileData.data)
-                : '';
-
-          try {
-            await workbenchStore.createFile(path, content);
-          } catch (error) {
-            console.error(`Failed to add file ${path} to workbench:`, error);
-          }
-        });
-
         if (importChat) {
           const filePaths = Object.keys(data).filter((filePath) => !ig.ignores(filePath));
+          const textDecoder = new TextDecoder('utf-8');
 
           const fileContents = filePaths
             .map((filePath) => {
@@ -114,34 +93,6 @@ ${escapeExampleTags(file.content)}
 
           const messages = [filesMessage];
 
-          // Check for template instructions from .codinit/prompt file
-          const templatePromptFile = fileContents.find((file) => file.path === '.codinit/prompt');
-
-          if (templatePromptFile) {
-            // Create a hidden user message with template instructions, similar to local starter flow
-            const userMessage = `
-TEMPLATE INSTRUCTIONS:
-${templatePromptFile.content}
-
----
-template import is done, and you can now use the imported files,
-edit only the files that need to be changed, and you can create new files as needed.
-DO NOT EDIT/WRITE ANY FILES THAT ALREADY EXIST IN THE PROJECT AND DOES NOT NEED TO BE MODIFIED
----
-Now that the Template is imported please continue with my original request: Build something amazing
-
-IMPORTANT: Dont Forget to install the dependencies before running the app by using \`npm install && npm run dev\`
-`;
-
-            messages.push({
-              role: 'user',
-              id: generateId(),
-              content: `[Model: claude-3-5-sonnet-latest]\n\n[Provider: anthropic]\n\n${userMessage}`,
-              annotations: ['hidden'],
-              createdAt: new Date(),
-            });
-          }
-
           if (commandsMessage) {
             messages.push({
               role: 'user',
@@ -152,26 +103,7 @@ IMPORTANT: Dont Forget to install the dependencies before running the app by usi
             messages.push(commandsMessage);
           }
 
-          if (prompt) {
-            messages.push({
-              role: 'user',
-              id: generateId(),
-              content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${prompt}`,
-              createdAt: new Date(),
-            });
-          }
-
-          try {
-            await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
-          } catch (error) {
-            console.error('Failed to import chat:', error);
-            setLoading(false);
-            setErrorTitle('Import Failed');
-            setErrorMessage(error instanceof Error ? error.message : 'Failed to create chat');
-
-            return;
-          }
-          setLoading(false);
+          await importChat(`Git Project:${repoUrl.split('/').slice(-1)[0]}`, messages, { gitUrl: repoUrl });
         }
       } catch (error) {
         console.error('Error during import:', error);

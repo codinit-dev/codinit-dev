@@ -8,7 +8,6 @@ export const MODEL_REGEX = /^\[Model: (.*?)\]\n\n/;
 export const PROVIDER_REGEX = /\[Provider: (.*?)\]\n\n/;
 export const DEFAULT_MODEL = 'claude-3-5-sonnet-latest';
 export const PROMPT_COOKIE_KEY = 'cachedPrompt';
-export const DEFAULT_TEMPLATE = 'codinit-dev/vite-react-ts-starter';
 
 export const TOOL_EXECUTION_APPROVAL = {
   APPROVE: 'tool_execution_approved',
