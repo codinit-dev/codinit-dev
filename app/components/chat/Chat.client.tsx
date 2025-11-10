@@ -19,6 +19,7 @@ import type { ProviderInfo } from '~/types/model';
 import { useSearchParams } from '@remix-run/react';
 import { createSampler } from '~/utils/sampler';
 import { getLocalStarter } from '~/utils/selectStarterTemplate';
+import { useGit } from '~/lib/hooks/useGit';
 import { logStore } from '~/lib/stores/logs';
 import { streamingState } from '~/lib/stores/streaming';
 import { filesToArtifacts } from '~/utils/fileUtils';
@@ -49,6 +50,7 @@ export function Chat() {
           exportChat={exportChat}
           storeMessageHistory={storeMessageHistory}
           importChat={importChat}
+          ready={ready}
         />
       )}
     </>
@@ -79,10 +81,11 @@ interface ChatProps {
   importChat: (description: string, messages: Message[]) => Promise<void>;
   exportChat: () => void;
   description?: string;
+  ready: boolean;
 }
 
 export const ChatImpl = memo(
-  ({ description, initialMessages, storeMessageHistory, importChat, exportChat }: ChatProps) => {
+  ({ description, initialMessages, storeMessageHistory, importChat, exportChat, ready }: ChatProps) => {
     useShortcuts();
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -102,6 +105,11 @@ export const ChatImpl = memo(
     const supabaseAlert = useStore(workbenchStore.supabaseAlert);
     const { activeProviders, promptId, contextOptimizationEnabled } = useSettings();
     const [llmErrorAlert, setLlmErrorAlert] = useState<LlmErrorAlertType | undefined>(undefined);
+    const { gitClone } = useGit();
+
+    useEffect(() => {
+      setChatStarted(initialMessages.length > 0);
+    }, [initialMessages]);
     const [model, setModel] = useState(() => {
       const savedModel = Cookies.get('selectedModel');
       return savedModel || DEFAULT_MODEL;
@@ -193,15 +201,34 @@ export const ChatImpl = memo(
           });
 
           if (temResp) {
-            const { assistantMessage, userMessage } = temResp;
+            const { workdir, data, assistantMessage, userMessage } = temResp;
             const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${prompt}`;
+
+            // Write files to filesystem like GitUrlImport does
+            if (data && workdir) {
+              const filePaths = Object.keys(data).filter((filePath) => !filePath.startsWith('.git'));
+
+              for (const filePath of filePaths) {
+                const fileData = data[filePath];
+
+                if (fileData && fileData.data) {
+                  try {
+                    // This will write to filesystem and workbench will detect via file watcher
+                    await workbenchStore.createFile(filePath, fileData.data);
+                  } catch (error) {
+                    console.error(`Failed to create file ${filePath}:`, error);
+                  }
+                }
+              }
+            }
+
+            const initialMessageParts = createMessageParts(userMessageText, imageDataList);
 
             setMessages([
               {
                 id: `1-${new Date().getTime()}`,
                 role: 'user',
-                content: userMessageText,
-                parts: createMessageParts(userMessageText, imageDataList),
+                content: imageDataList.length > 0 ? (initialMessageParts as any) : userMessageText,
               },
               {
                 id: `2-${new Date().getTime()}`,
@@ -256,6 +283,37 @@ export const ChatImpl = memo(
     useEffect(() => {
       chatStore.setKey('started', initialMessages.length > 0);
     }, []);
+
+    // Load default template for new chats
+    useEffect(() => {
+      if (ready && initialMessages.length === 0 && !chatStarted) {
+        gitClone('https://github.com/codinit-dev/vite-react-ts-starter')
+          .then((temResp) => {
+            if (temResp) {
+              const { data } = temResp;
+
+              if (data) {
+                const filePaths = Object.keys(data).filter((filePath) => !filePath.startsWith('.git'));
+
+                for (const filePath of filePaths) {
+                  const fileData = data[filePath];
+
+                  if (fileData && fileData.data) {
+                    try {
+                      workbenchStore.createFile(filePath, fileData.data);
+                    } catch (error) {
+                      console.error(`Failed to create file ${filePath}:`, error);
+                    }
+                  }
+                }
+              }
+            }
+          })
+          .catch((e) => {
+            console.error('Failed to load default starter template:', e);
+          });
+      }
+    }, [ready, initialMessages.length, chatStarted, gitClone]);
 
     useEffect(() => {
       processSampledMessages({
@@ -467,15 +525,8 @@ export const ChatImpl = memo(
       runAnimation();
 
       if (!chatStarted) {
-        // On home page, set prompt in URL to trigger the useEffect
-        setSearchParams({ prompt: finalMessageContent });
-        setInput('');
-        Cookies.remove(PROMPT_COOKIE_KEY);
-        setUploadedFiles([]);
-        setImageDataList([]);
-        resetEnhancer();
-        textareaRef.current?.blur();
-
+        // On home page, navigate to git import with the prompt
+        window.location.href = `/git?url=https://github.com/codinit-dev/vite-react-ts-starter&prompt=${encodeURIComponent(finalMessageContent)}&model=${model}&provider=${provider.name}`;
         return;
       }
 
@@ -494,11 +545,12 @@ export const ChatImpl = memo(
         const attachmentOptions =
           uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;
 
+        const messageParts = createMessageParts(messageText, imageDataList);
+
         append(
           {
             role: 'user',
-            content: messageText,
-            parts: createMessageParts(messageText, imageDataList),
+            content: imageDataList.length > 0 ? (messageParts as any) : messageText,
           },
           attachmentOptions,
         );
@@ -510,11 +562,12 @@ export const ChatImpl = memo(
         const attachmentOptions =
           uploadedFiles.length > 0 ? { experimental_attachments: await filesToAttachments(uploadedFiles) } : undefined;
 
+        const messageParts = createMessageParts(messageText, imageDataList);
+
         append(
           {
             role: 'user',
-            content: messageText,
-            parts: createMessageParts(messageText, imageDataList),
+            content: imageDataList.length > 0 ? (messageParts as any) : messageText,
           },
           attachmentOptions,
         );
