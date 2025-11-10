@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
 import { PROVIDER_LIST } from '~/utils/constants';
@@ -20,6 +20,7 @@ import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { McpIntegrationPanel } from './MCPIntegrationPanel';
+import { TypingAnimation } from './TypingAnimation';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -64,72 +65,16 @@ interface ChatBoxProps {
   setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
 }
 
-const EXAMPLE_PROMPTS = ['Tip: Select a starter template to get started quickly!'];
-
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
-  const [displayedText, setDisplayedText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
-
-  useEffect(() => {
-    const currentPrompt = EXAMPLE_PROMPTS[currentPromptIndex];
-
-    if (isPaused) {
-      const pauseTimer = setTimeout(() => {
-        setIsPaused(false);
-        setIsDeleting(true);
-      }, 2000);
-      return () => clearTimeout(pauseTimer);
-    }
-
-    if (!isDeleting && displayedText === currentPrompt) {
-      setIsPaused(true);
-      return undefined;
-    }
-
-    if (isDeleting && displayedText === '') {
-      setIsDeleting(false);
-      setCurrentPromptIndex((prev) => (prev + 1) % EXAMPLE_PROMPTS.length);
-
-      return undefined;
-    }
-
-    const timeout = setTimeout(
-      () => {
-        if (isDeleting) {
-          setDisplayedText(currentPrompt.substring(0, displayedText.length - 1));
-        } else {
-          setDisplayedText(currentPrompt.substring(0, displayedText.length + 1));
-        }
-      },
-      isDeleting ? 30 : 50,
-    );
-
-    return () => clearTimeout(timeout);
-  }, [displayedText, isDeleting, isPaused, currentPromptIndex]);
-
-  useEffect(() => {
-    if (props.textareaRef?.current) {
-      if (!props.chatStarted && props.input.length === 0) {
-        props.textareaRef.current.placeholder = displayedText;
-      } else {
-        props.textareaRef.current.placeholder =
-          !props.chatStarted && props.input.length === 0
-            ? ''
-            : props.chatMode === 'build'
-              ? 'How can CodinIT help you today?'
-              : 'What would you like to discuss?';
-      }
-    }
-  }, [displayedText, props.chatStarted, props.input.length, props.chatMode, props.textareaRef]);
+  const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
+  const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
 
   return (
     <>
       <div
         className={classNames(
-          'relative bg-codinit-elements-bg-depth-1 backdrop-blur pt-6 pb-2 px-2 rounded-lg border border-codinit-elements-borderColor relative w-full max-w-chat mx-auto z-prompt transition-theme',
+          'relative bg-codinit-elements-bg-depth-1 backdrop-blur p-2 rounded-lg border border-codinit-elements-borderColor relative w-full max-w-chat mx-auto z-prompt transition-theme',
 
           /*
            * {
@@ -149,10 +94,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               gradientUnits="userSpaceOnUse"
               gradientTransform="rotate(-45)"
             >
-              <stop offset="0%" stopColor="#1488fc" stopOpacity="0%"></stop>
-              <stop offset="40%" stopColor="#1488fc" stopOpacity="80%"></stop>
-              <stop offset="50%" stopColor="#1488fc" stopOpacity="80%"></stop>
-              <stop offset="100%" stopColor="#1488fc" stopOpacity="0%"></stop>
+              <stop offset="0%" stopColor="#b44aff" stopOpacity="0%"></stop>
+              <stop offset="40%" stopColor="#b44aff" stopOpacity="80%"></stop>
+              <stop offset="50%" stopColor="#b44aff" stopOpacity="80%"></stop>
+              <stop offset="100%" stopColor="#b44aff" stopOpacity="0%"></stop>
             </linearGradient>
             <linearGradient id="shine-gradient">
               <stop offset="0%" stopColor="white" stopOpacity="0%"></stop>
@@ -178,6 +123,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                   providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
                   apiKeys={props.apiKeys}
                   modelLoading={props.isModelLoading}
+                  onDropdownStateChange={(isProviderOpen, isModelOpen) => {
+                    setIsProviderDropdownOpen(isProviderOpen);
+                    setIsModelDropdownOpen(isModelOpen);
+                  }}
                 />
                 {(props.providerList || []).length > 0 &&
                   props.provider &&
@@ -228,7 +177,9 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             </button>
           </div>
         )}
-
+        {!props.chatStarted && props.input.length === 0 && (
+          <TypingAnimation isProviderDropdownOpen={isProviderDropdownOpen} isModelDropdownOpen={isModelDropdownOpen} />
+        )}
         <textarea
           ref={props.textareaRef}
           className={classNames(
@@ -296,6 +247,13 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             minHeight: props.TEXTAREA_MIN_HEIGHT,
             maxHeight: props.TEXTAREA_MAX_HEIGHT,
           }}
+          placeholder={
+            !props.chatStarted && props.input.length === 0
+              ? ''
+              : props.chatMode === 'build'
+                ? 'How can CodinIT help you today?'
+                : 'What would you like to discuss?'
+          }
           translate="no"
         />
         <ClientOnly>

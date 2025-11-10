@@ -4,9 +4,15 @@ const EXAMPLE_PROMPTS = ['Tip: Select a starter template to get started quickly!
 
 interface TypingAnimationProps {
   onPromptClick?: (prompt: string) => void;
+  isProviderDropdownOpen?: boolean;
+  isModelDropdownOpen?: boolean;
 }
 
-export function TypingAnimation({ onPromptClick: _onPromptClick }: TypingAnimationProps) {
+export function TypingAnimation({
+  onPromptClick: _onPromptClick,
+  isProviderDropdownOpen = false,
+  isModelDropdownOpen = false,
+}: TypingAnimationProps) {
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -50,7 +56,11 @@ export function TypingAnimation({ onPromptClick: _onPromptClick }: TypingAnimati
   }, [displayedText, isDeleting, isPaused, currentPromptIndex]);
 
   return (
-    <div className="absolute top-0 left-0 right-0 flex items-start pl-4 pt-4 pointer-events-none z-0">
+    <div
+      className={`absolute left-0 right-0 flex items-start pl-4 pt-4 pointer-events-none z-0 transition-all duration-200 ${
+        isProviderDropdownOpen || isModelDropdownOpen ? 'top-16' : 'top-0'
+      }`}
+    >
       <div className="flex items-center gap-2 text-codinit-elements-textTertiary text-sm transition-theme">
         <span>{displayedText}</span>
         <span className="inline-block w-0.5 h-4 bg-accent-400 animate-pulse transition-theme" />
