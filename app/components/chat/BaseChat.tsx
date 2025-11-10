@@ -143,12 +143,40 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const [progressAnnotations, setProgressAnnotations] = useState<ProgressAnnotation[]>([]);
     const expoUrl = useStore(expoUrlAtom);
     const [qrModalOpen, setQrModalOpen] = useState(false);
+    const chatContainerRef = React.useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       if (expoUrl) {
         setQrModalOpen(true);
       }
+
+      return;
     }, [expoUrl]);
+
+    // Calculate and set --workbench-left based on chat container width
+    useEffect(() => {
+      const updateWorkbenchLeft = () => {
+        if (chatContainerRef.current && showChat) {
+          const chatRect = chatContainerRef.current.getBoundingClientRect();
+          const workbenchLeft = chatRect.right + 16; // 16px margin
+          document.documentElement.style.setProperty('--workbench-left', `${workbenchLeft}px`);
+        }
+
+        return;
+      };
+
+      if (showChat) {
+        // Initial calculation
+        updateWorkbenchLeft();
+
+        // Update on resize
+        window.addEventListener('resize', updateWorkbenchLeft);
+
+        return () => window.removeEventListener('resize', updateWorkbenchLeft);
+      }
+
+      return undefined;
+    }, [showChat, chatStarted]);
 
     useEffect(() => {
       if (data) {
@@ -157,13 +185,19 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
         ) as ProgressAnnotation[];
         setProgressAnnotations(progressList);
       }
+
+      return;
     }, [data]);
     useEffect(() => {
       console.log(transcript);
+
+      return;
     }, [transcript]);
 
     useEffect(() => {
       onStreamingChange?.(isStreaming);
+
+      return;
     }, [isStreaming, onStreamingChange]);
 
     useEffect(() => {
@@ -187,15 +221,21 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             } as React.ChangeEvent<HTMLTextAreaElement>;
             handleInputChange(syntheticEvent);
           }
+
+          return;
         };
 
         recognition.onerror = (event) => {
           console.error('Speech recognition error:', event.error);
           setIsListening(false);
+
+          return;
         };
 
         setRecognition(recognition);
       }
+
+      return;
     }, []);
 
     useEffect(() => {
@@ -224,6 +264,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             setIsModelLoading(undefined);
           });
       }
+
+      return;
     }, [providerList, provider]);
 
     const onApiKeysChange = async (providerName: string, apiKey: string) => {
@@ -256,6 +298,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
         recognition.start();
         setIsListening(true);
       }
+
+      return;
     };
 
     const stopListening = () => {
@@ -263,6 +307,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
         recognition.stop();
         setIsListening(false);
       }
+
+      return;
     };
 
     const handleSendMessage = (event: React.UIEvent, messageInput?: string) => {
@@ -284,6 +330,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           }
         }
       }
+
+      return;
     };
 
     const handleFileUpload = () => {
@@ -301,12 +349,18 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
             const base64Image = e.target?.result as string;
             setUploadedFiles?.([...uploadedFiles, file]);
             setImageDataList?.([...imageDataList, base64Image]);
+
+            return;
           };
           reader.readAsDataURL(file);
         }
+
+        return;
       };
 
       input.click();
+
+      return;
     };
 
     const handlePaste = async (e: React.ClipboardEvent) => {
@@ -329,6 +383,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
               const base64Image = e.target?.result as string;
               setUploadedFiles?.([...uploadedFiles, file]);
               setImageDataList?.([...imageDataList, base64Image]);
+
+              return;
             };
             reader.readAsDataURL(file);
           }
@@ -336,21 +392,32 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           break;
         }
       }
+
+      return;
     };
 
     const baseChat = (
       <div
         ref={ref}
-        className={classNames(styles.BaseChat, 'relative flex h-full w-full overflow-hidden')}
+        className={classNames(
+          styles.BaseChat,
+          'relative flex w-full overflow-hidden',
+          chatStarted ? 'h-screen' : 'h-full',
+        )}
         data-chat-visible={showChat}
       >
         <ClientOnly>{() => <Menu />}</ClientOnly>
         <div className="flex flex-col lg:flex-row overflow-y-auto w-full h-full">
-          <div className={classNames(styles.Chat, 'flex flex-col flex-grow lg:min-w-[var(--chat-min-width)] h-full')}>
+          <div
+            ref={chatContainerRef}
+            className={classNames(styles.Chat, 'flex flex-col lg:w-[var(--chat-min-width)] h-full')}
+          >
             {!chatStarted && (
-              <div id="intro" className="mt-[16vh] max-w-2xl mx-auto text-center px-4 lg:px-0">
-                <h1 className="text-3xl lg:text-6xl font-bold text-codinit-elements-textPrimary mb-4 animate-fade-in">
-                  Prompt Build & Deploy
+              <div id="intro" className="max-w-2xl mx-auto text-center px-4 lg:px-0">
+                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-balance">
+                  <span className="text-codinit-elements-textPrimary">Prompt Build & </span>
+                  <span className="text-[#3b82f6] italic">Deploy</span>
+                  <span className="text-codinit-elements-textPrimary"> In Seconds</span>
                 </h1>
                 <p className="text-md lg:text-xl mb-8 text-codinit-elements-textSecondary animate-fade-in animation-delay-200">
                   Let your imagination build your next startup idea.
@@ -358,13 +425,18 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
               </div>
             )}
             <StickToBottom
-              className={classNames('pt-6 px-2 sm:px-6 relative', {
-                'h-full flex flex-col modern-scrollbar': chatStarted,
+              className={classNames('pt-6 px-2 sm:px-6 relative h-full', {
+                'flex flex-col modern-scrollbar': chatStarted,
               })}
               resize="smooth"
               initial="smooth"
             >
-              <StickToBottom.Content className="flex flex-col gap-4 relative ">
+              <StickToBottom.Content
+                className={classNames('gap-4 relative', {
+                  'flex flex-col pt-6 px-2 sm:px-6 h-full modern-scrollbar': chatStarted,
+                  'flex flex-col justify-center px-2 sm:px-6 h-full': !chatStarted,
+                })}
+              >
                 <ClientOnly>
                   {() => {
                     return chatStarted ? (

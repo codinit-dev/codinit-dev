@@ -8,7 +8,7 @@ import type { IProviderSetting } from '~/types/model';
 import { createScopedLogger } from '~/utils/logger';
 import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
 import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
-import { WORK_DIR } from '~/utils/constants';
+import { WORK_DIR, DEFAULT_TEMPLATE } from '~/utils/constants';
 import { createSummary } from '~/lib/.server/llm/create-summary';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import { fetchRepoContentsCloudflare } from './api.github-template';
@@ -217,11 +217,81 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       );
     } else {
       let lastChunk: string | undefined = undefined;
-
+      const filePaths = getFilePaths(files || {});
       return new Response(
         createDataStream({
           async execute(dataStream: any) {
+
+
+                  dataStream.writeData({
+                    type: 'command',
+                    command: 'npm run dev',
+                    cwd: '/home/project',
+                  });
+
+                  dataStream.writeData({
+                    type: 'progress',
+                    label: 'setup',
+                    status: 'complete',
+                    order: 5,
+                    message: 'Codebase setup complete. You can now ask for specific features or modifications.',
+                  } satisfies ProgressAnnotation);
+                },
+                onError: (error: any) => `Custom error: ${error.message}`,
+              });
+
+              return new Response(
+                dataStream.pipeThrough(
+                  new TransformStream({
+                    transform: (chunk: any, controller: any) => {
+                      if (!lastChunk) {
+                        lastChunk = ' ';
+                      }
+
+                      if (typeof chunk === 'string') {
+                        if (chunk.startsWith('g') && !lastChunk.startsWith('g')) {
+                          controller.enqueue(encoder.encode(`0: "<div class=\\"__codinitThought__\\">"\n`));
+                        }
+
+                        if (lastChunk.startsWith('g') && !chunk.startsWith('g')) {
+                          controller.enqueue(encoder.encode(`0: "</div>\\n"\n`));
+                        }
+                      }
+
+                      lastChunk = chunk;
+
+                      let transformedChunk = chunk;
+
+                      if (typeof chunk === 'string' && chunk.startsWith('g')) {
+                        let content = chunk.split(':').slice(1).join(':');
+
+                        if (content.endsWith('\n')) {
+                          content = content.slice(0, content.length - 1);
+                        }
+
+                        transformedChunk = `0:${content}\n`;
+                      }
+
+                      // Convert the string stream to a byte stream
+                      const str =
+                        typeof transformedChunk === 'string' ? transformedChunk : JSON.stringify(transformedChunk);
+                      controller.enqueue(encoder.encode(str));
+                    },
+                  }),
+                ),
+                {
+                  status: 200,
+                  headers: {
+                    'Content-Type': 'text/event-stream; charset=utf-8',
+                    Connection: 'keep-alive',
+                    'Cache-Control': 'no-cache',
+                    'Text-Encoding': 'chunked',
+                  },
+                },
+              );
+            }
             const filePaths = getFilePaths(files || {});
+
             let filteredFiles: FileMap | undefined = undefined;
             let summary: string | undefined = undefined;
             let messageSliceId = 0;
