@@ -1,5 +1,5 @@
 name: 'Bug report'
-description: Create a report to help us improve
+description: Help us fix an issue
 body:
   - type: markdown
     attributes:
@@ -9,21 +9,20 @@ body:
     id: description
     attributes:
       label: What happened?
-      description: Describe the bug and what you expected to happen.
       placeholder: |
-        **Bug:** The app crashes when I...
-        **Expected:** It should...
+        **Bug:** …
+        **Expected:** …
     validations:
       required: true
 
   - type: textarea
     id: steps
     attributes:
-      label: Steps to reproduce
+      label: How to reproduce
       placeholder: |
-        1. Go to '...'
-        2. Click on '...'
-        3. See error
+        1. …
+        2. …
+        3. …
     validations:
       required: true
 
@@ -31,15 +30,13 @@ body:
     id: environment
     attributes:
       label: Environment
-      description: Browser, OS, Provider/Model used (if relevant)
       placeholder: |
-        - Browser: Chrome 120
-        - OS: macOS 14
-        - Provider: OpenAI
-        - Model: GPT-4
+        - Browser:
+        - OS:
+        - Provider/Model:
 
   - type: textarea
     id: additional
     attributes:
-      label: Additional context
-      description: Screenshots, links, or any other helpful information
+      label: Extra info
+      placeholder: Screenshots, links, etc.

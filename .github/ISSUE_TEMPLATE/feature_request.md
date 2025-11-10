@@ -1,20 +1,20 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Submit a feature request that has been denied by other app dev platforms
 title: ''
 labels: ''
 assignees: ''
 ---
 
-**Is your feature request related to a problem? Please describe:**
+**Describe the solution you'd like:**
 
 <!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
 
-**Describe the solution you'd like:**
+**Have you requested this from a different platform and been denied?:**
 
-<!-- A clear and concise description of what you want to happen. -->
+<!-- Yes or no -->
 
-**Describe alternatives you've considered:**
+**If you answered yes to the last question please write the platform that refused your suggestion.:**
 
 <!-- A clear and concise description of any alternative solutions or features you've considered. -->
 
