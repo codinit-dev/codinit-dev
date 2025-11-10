@@ -20,7 +20,6 @@ import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { McpIntegrationPanel } from './MCPIntegrationPanel';
-import { TypingAnimation } from './TypingAnimation';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -67,8 +66,6 @@ interface ChatBoxProps {
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
-  const [isProviderDropdownOpen, setIsProviderDropdownOpen] = useState(false);
-  const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
 
   return (
     <>
@@ -123,10 +120,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                   providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
                   apiKeys={props.apiKeys}
                   modelLoading={props.isModelLoading}
-                  onDropdownStateChange={(isProviderOpen, isModelOpen) => {
-                    setIsProviderDropdownOpen(isProviderOpen);
-                    setIsModelDropdownOpen(isModelOpen);
-                  }}
                 />
                 {(props.providerList || []).length > 0 &&
                   props.provider &&
@@ -177,9 +170,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             </button>
           </div>
         )}
-        {!props.chatStarted && props.input.length === 0 && (
-          <TypingAnimation isProviderDropdownOpen={isProviderDropdownOpen} isModelDropdownOpen={isModelDropdownOpen} />
-        )}
+
         <textarea
           ref={props.textareaRef}
           className={classNames(

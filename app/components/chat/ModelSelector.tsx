@@ -13,7 +13,6 @@ interface ModelSelectorProps {
   providerList: ProviderInfo[];
   apiKeys: Record<string, string>;
   modelLoading?: string;
-  onDropdownStateChange?: (isProviderOpen: boolean, isModelOpen: boolean) => void;
 }
 
 export const ModelSelector = ({
@@ -24,7 +23,6 @@ export const ModelSelector = ({
   modelList,
   providerList,
   modelLoading,
-  onDropdownStateChange,
 }: ModelSelectorProps) => {
   const [modelSearchQuery, setModelSearchQuery] = useState('');
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
@@ -188,10 +186,6 @@ export const ModelSelector = ({
       providerOptionsRef.current[focusedProviderIndex]?.scrollIntoView({ block: 'nearest' });
     }
   }, [focusedProviderIndex]);
-
-  useEffect(() => {
-    onDropdownStateChange?.(isProviderDropdownOpen, isModelDropdownOpen);
-  }, [isProviderDropdownOpen, isModelDropdownOpen, onDropdownStateChange]);
 
   useEffect(() => {
     if (providerList.length === 0) {
