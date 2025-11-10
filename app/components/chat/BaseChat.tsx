@@ -371,7 +371,11 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     };
 
     const baseChat = (
-      <div className={classNames('my-auto flex flex-col gap-2 w-full max-w-chat mx-auto z-prompt mb-6')}>
+      <div
+        className={classNames(
+          'absolute top-1/2 -translate-y-1/2 flex flex-col gap-2 w-full max-w-chat mx-auto z-prompt mb-6',
+        )}
+      >
         <ClientOnly>{() => <Menu />}</ClientOnly>
         <div className="flex flex-col lg:flex-row overflow-y-auto w-full h-full">
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow lg:min-w-[var(--chat-min-width)] h-full')}>
