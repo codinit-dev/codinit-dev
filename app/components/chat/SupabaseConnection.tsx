@@ -323,7 +323,7 @@ function Button({ active = false, disabled = false, children, onClick, className
   return (
     <button
       className={classNames(
-        'flex items-center p-1.5',
+        'flex items-center p-1.5 focus:outline-none focus:ring-2 focus:ring-accent-500/50',
         {
           'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
             !active,
