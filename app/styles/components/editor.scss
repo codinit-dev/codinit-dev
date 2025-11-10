@@ -71,11 +71,78 @@
   --cm-searchMatch-backgroundColor: rgba(234, 92, 0, 0.4);
 }
 
-/* Light theme overrides (if needed) */
+/* Light theme overrides */
 html[data-theme='light'] {
-  --codinit-elements-editor-gutter-textColor: #237893;
-  --codinit-elements-editor-gutter-activeLineTextColor: #111;
-  --codinit-elements-editor-activeLineBackgroundColor: rgba(0, 0, 0, 0.04);
+  /* Base colors */
+  --cm-backgroundColor: #ffffff; /* editor background */
+  --cm-textColor: #1f2937; /* primary text */
+
+  /* Gutter */
+  --cm-gutter-backgroundColor: #ffffff;
+  --cm-gutter-textColor: #9ca3af; /* muted gray */
+  --cm-gutter-activeLineTextColor: #374151;
+
+  /* Fold Gutter */
+  --cm-foldGutter-textColor: #9ca3af;
+  --cm-foldGutter-textColorHover: #374151;
+
+  /* Active Line */
+  --cm-activeLineBackgroundColor: rgba(0, 0, 0, 0.04); /* subtle */
+
+  /* Cursor */
+  --cm-cursor-width: 2px;
+  --cm-cursor-backgroundColor: #6b7280;
+
+  /* Matching Brackets */
+  --cm-matching-bracket: rgba(59, 130, 246, 0.25);
+
+  /* Selection */
+  --cm-selection-backgroundColorFocused: #3b82f6;
+  --cm-selection-backgroundOpacityFocused: 0.25;
+
+  --cm-selection-backgroundColorBlured: #93c5fd;
+  --cm-selection-backgroundOpacityBlured: 0.2;
+
+  /* Panels */
+  --cm-panels-borderColor: rgba(0, 0, 0, 0.06);
+
+  /* Search */
+  --cm-search-backgroundColor: #ffffff;
+  --cm-search-textColor: #374151;
+
+  --cm-search-closeButton-backgroundColor: transparent;
+  --cm-search-closeButton-backgroundColorHover: rgba(0, 0, 0, 0.08);
+
+  --cm-search-closeButton-textColor: #6b7280;
+  --cm-search-closeButton-textColorHover: #1f2937;
+
+  --cm-search-button-backgroundColor: #f3f4f6;
+  --cm-search-button-backgroundColorHover: rgba(0, 0, 0, 0.08);
+
+  --cm-search-button-textColor: #374151;
+  --cm-search-button-textColorHover: #1f2937;
+
+  --cm-search-button-borderColor: transparent;
+  --cm-search-button-borderColorHover: rgba(0, 0, 0, 0.15);
+
+  --cm-search-button-borderColorFocused: rgba(59, 130, 246, 0.8);
+
+  --cm-search-input-backgroundColor: #f9fafb;
+  --cm-search-input-textColor: #1f2937;
+  --cm-search-input-borderColor: rgba(0, 0, 0, 0.12);
+  --cm-search-input-borderColorFocused: rgba(59, 130, 246, 0.9);
+
+  /* Tooltip */
+  --cm-tooltip-backgroundColor: #ffffff;
+  --cm-tooltip-textColor: #1f2937;
+
+  --cm-tooltip-backgroundColorSelected: rgba(59, 130, 246, 0.2);
+  --cm-tooltip-textColorSelected: #1f2937;
+
+  --cm-tooltip-borderColor: rgba(0, 0, 0, 0.08);
+
+  /* Search highlight */
+  --cm-searchMatch-backgroundColor: rgba(245, 101, 101, 0.4);
 }
 
 /* Dark theme overrides */
