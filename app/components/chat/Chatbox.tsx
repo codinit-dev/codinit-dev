@@ -110,21 +110,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
     return () => clearTimeout(timeout);
   }, [displayedText, isDeleting, isPaused, currentPromptIndex]);
 
-  useEffect(() => {
-    if (props.textareaRef?.current) {
-      if (!props.chatStarted && props.input.length === 0) {
-        props.textareaRef.current.placeholder = displayedText;
-      } else {
-        props.textareaRef.current.placeholder =
-          !props.chatStarted && props.input.length === 0
-            ? ''
-            : props.chatMode === 'build'
-              ? 'How can CodinIT help you today?'
-              : 'What would you like to discuss?';
-      }
-    }
-  }, [displayedText, props.chatStarted, props.input.length, props.chatMode, props.textareaRef]);
-
   return (
     <>
       <div
@@ -228,166 +213,172 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             </button>
           </div>
         )}
-        <div className={classNames()}>
-          <textarea
-            ref={props.textareaRef}
-            className={classNames(
-              'w-full pl-4 pt-4 pr-16 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
-              'transition-all duration-200',
-              'hover:border-codinit-elements-focus',
-            )}
-            onDragEnter={(e) => {
-              e.preventDefault();
-              e.currentTarget.style.border = '2px solid #1488fc';
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              e.currentTarget.style.border = '2px solid #1488fc';
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              e.currentTarget.style.border = '1px solid var(--codinit-elements-borderColor)';
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              e.currentTarget.style.border = '1px solid var(--codinit-elements-borderColor)';
+        {!props.chatStarted && props.input.length === 0 && (
+          <div className="absolute top-0 left-0 right-0 flex items-start pl-4 pt-4 pointer-events-none">
+            <div className="flex items-center gap-2 text-codinit-elements-textTertiary text-sm transition-theme">
+              <span>{displayedText}</span>
+              <span className="inline-block w-0.5 h-4 bg-accent-400 animate-pulse transition-theme" />
+            </div>
+          </div>
+        )}
+        <textarea
+          ref={props.textareaRef}
+          className={classNames(
+            'w-full pl-4 pt-4 pr-0 pb-4 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
+            'transition-all duration-200',
+            'hover:border-codinit-elements-focus',
+          )}
+          onDragEnter={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.border = '2px solid #1488fc';
+          }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.border = '2px solid #1488fc';
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.border = '1px solid var(--codinit-elements-borderColor)';
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.currentTarget.style.border = '1px solid var(--codinit-elements-borderColor)';
 
-              const files = Array.from(e.dataTransfer.files);
-              files.forEach((file) => {
-                if (file.type.startsWith('image/')) {
-                  const reader = new FileReader();
+            const files = Array.from(e.dataTransfer.files);
+            files.forEach((file) => {
+              if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
 
-                  reader.onload = (e) => {
-                    const base64Image = e.target?.result as string;
-                    props.setUploadedFiles?.([...props.uploadedFiles, file]);
-                    props.setImageDataList?.([...props.imageDataList, base64Image]);
-                  };
-                  reader.readAsDataURL(file);
-                }
-              });
-            }}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                if (event.shiftKey) {
-                  return;
-                }
+                reader.onload = (e) => {
+                  const base64Image = e.target?.result as string;
+                  props.setUploadedFiles?.([...props.uploadedFiles, file]);
+                  props.setImageDataList?.([...props.imageDataList, base64Image]);
+                };
+                reader.readAsDataURL(file);
+              }
+            });
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              if (event.shiftKey) {
+                return;
+              }
 
-                event.preventDefault();
+              event.preventDefault();
 
+              if (props.isStreaming) {
+                props.handleStop?.();
+                return;
+              }
+
+              // ignore if using input method engine
+              if (event.nativeEvent.isComposing) {
+                return;
+              }
+
+              props.handleSendMessage?.(event);
+            }
+          }}
+          value={props.input}
+          onChange={(event) => {
+            props.handleInputChange?.(event);
+          }}
+          onPaste={props.handlePaste}
+          style={{
+            minHeight: props.TEXTAREA_MIN_HEIGHT,
+            maxHeight: props.TEXTAREA_MAX_HEIGHT,
+          }}
+          placeholder={
+            !props.chatStarted && props.input.length === 0
+              ? ''
+              : props.chatMode === 'build'
+                ? 'How can CodinIT help you today?'
+                : 'What would you like to discuss?'
+          }
+          translate="no"
+        />
+        <ClientOnly>
+          {() => (
+            <SendButton
+              show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
+              isStreaming={props.isStreaming}
+              disabled={!props.providerList || props.providerList.length === 0}
+              onClick={(event) => {
                 if (props.isStreaming) {
                   props.handleStop?.();
                   return;
                 }
 
-                // ignore if using input method engine
-                if (event.nativeEvent.isComposing) {
-                  return;
+                if (props.input.length > 0 || props.uploadedFiles.length > 0) {
+                  props.handleSendMessage?.(event);
                 }
+              }}
+            />
+          )}
+        </ClientOnly>
+        <div className="flex justify-between items-center text-sm p-4 pt-2">
+          <div className="flex gap-1 items-center">
+            <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
+            <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
+              <div className="i-ph:paperclip text-xl"></div>
+            </IconButton>
+            <IconButton
+              title="Enhance prompt"
+              disabled={props.input.length === 0 || props.enhancingPrompt}
+              className={classNames('transition-all', props.enhancingPrompt ? 'opacity-100' : '')}
+              onClick={() => {
+                props.enhancePrompt?.();
+                toast.success('Prompt enhanced!');
+              }}
+            >
+              {props.enhancingPrompt ? (
+                <div className="i-svg-spinners:90-ring-with-bg text-codinit-elements-loader-progress text-xl animate-spin"></div>
+              ) : (
+                <div className="i-codinit:stars text-xl"></div>
+              )}
+            </IconButton>
 
-                props.handleSendMessage?.(event);
-              }
-            }}
-            value={props.input}
-            onChange={(event) => {
-              props.handleInputChange?.(event);
-            }}
-            onPaste={props.handlePaste}
-            style={{
-              minHeight: props.TEXTAREA_MIN_HEIGHT,
-              maxHeight: props.TEXTAREA_MAX_HEIGHT,
-            }}
-            placeholder={
-              !props.chatStarted && props.input.length === 0
-                ? ''
-                : props.chatMode === 'build'
-                  ? 'How can CodinIT help you today?'
-                  : 'What would you like to discuss?'
-            }
-            translate="no"
-          />
-          <ClientOnly>
-            {() => (
-              <SendButton
-                show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
-                isStreaming={props.isStreaming}
-                disabled={!props.providerList || props.providerList.length === 0}
-                onClick={(event) => {
-                  if (props.isStreaming) {
-                    props.handleStop?.();
-                    return;
-                  }
-
-                  if (props.input.length > 0 || props.uploadedFiles.length > 0) {
-                    props.handleSendMessage?.(event);
-                  }
-                }}
-              />
-            )}
-          </ClientOnly>
-          <div className="flex justify-between items-center text-sm p-4 pt-2">
-            <div className="flex gap-1 items-center">
-              <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
-              <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
-                <div className="i-ph:paperclip text-xl"></div>
-              </IconButton>
-              <IconButton
-                title="Enhance prompt"
-                disabled={props.input.length === 0 || props.enhancingPrompt}
-                className={classNames('transition-all', props.enhancingPrompt ? 'opacity-100' : '')}
-                onClick={() => {
-                  props.enhancePrompt?.();
-                  toast.success('Prompt enhanced!');
-                }}
-              >
-                {props.enhancingPrompt ? (
-                  <div className="i-svg-spinners:90-ring-with-bg text-codinit-elements-loader-progress text-xl animate-spin"></div>
-                ) : (
-                  <div className="i-codinit:stars text-xl"></div>
-                )}
-              </IconButton>
-
-              <SpeechRecognitionButton
-                isListening={props.isListening}
-                onStart={props.startListening}
-                onStop={props.stopListening}
-                disabled={props.isStreaming}
-              />
-              <IconButton
-                title="Discuss"
-                className={classNames(
-                  'transition-all flex items-center gap-1 px-1.5',
-                  props.chatMode === 'discuss'
-                    ? '!bg-codinit-elements-item-backgroundAccent !text-codinit-elements-item-contentAccent'
-                    : 'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault',
-                )}
-                onClick={() => {
-                  props.setChatMode?.(props.chatMode === 'discuss' ? 'build' : 'discuss');
-                }}
-              >
-                <div className={`i-ph:chats text-xl`} />
-                {props.chatMode === 'discuss' ? <span>Discuss</span> : <span />}
-              </IconButton>
-              <IconButton
-                title="Model Settings"
-                className={classNames('transition-all flex items-center gap-1', {
-                  'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent':
-                    props.isModelSettingsCollapsed,
-                  'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault':
-                    !props.isModelSettingsCollapsed,
-                })}
-                onClick={() => props.setIsModelSettingsCollapsed(!props.isModelSettingsCollapsed)}
-                disabled={!props.providerList || props.providerList.length === 0}
-              >
-                <div className={`i-ph:caret-${props.isModelSettingsCollapsed ? 'right' : 'down'} text-lg`} />
-                {props.isModelSettingsCollapsed ? <span className="text-xs">{props.model}</span> : <span />}
-              </IconButton>
-            </div>
-            <div className="flex gap-1 items-center">
-              <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />
-              <SupabaseConnection />
-            </div>
-            <ExpoQrModal open={props.qrModalOpen} onClose={() => props.setQrModalOpen(false)} />
+            <SpeechRecognitionButton
+              isListening={props.isListening}
+              onStart={props.startListening}
+              onStop={props.stopListening}
+              disabled={props.isStreaming}
+            />
+            <IconButton
+              title="Discuss"
+              className={classNames(
+                'transition-all flex items-center gap-1 px-1.5',
+                props.chatMode === 'discuss'
+                  ? '!bg-codinit-elements-item-backgroundAccent !text-codinit-elements-item-contentAccent'
+                  : 'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault',
+              )}
+              onClick={() => {
+                props.setChatMode?.(props.chatMode === 'discuss' ? 'build' : 'discuss');
+              }}
+            >
+              <div className={`i-ph:chats text-xl`} />
+              {props.chatMode === 'discuss' ? <span>Discuss</span> : <span />}
+            </IconButton>
+            <IconButton
+              title="Model Settings"
+              className={classNames('transition-all flex items-center gap-1', {
+                'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent':
+                  props.isModelSettingsCollapsed,
+                'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault':
+                  !props.isModelSettingsCollapsed,
+              })}
+              onClick={() => props.setIsModelSettingsCollapsed(!props.isModelSettingsCollapsed)}
+              disabled={!props.providerList || props.providerList.length === 0}
+            >
+              <div className={`i-ph:caret-${props.isModelSettingsCollapsed ? 'right' : 'down'} text-lg`} />
+              {props.isModelSettingsCollapsed ? <span className="text-xs">{props.model}</span> : <span />}
+            </IconButton>
           </div>
+          <div className="flex gap-1 items-center">
+            <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />
+            <SupabaseConnection />
+          </div>
+          <ExpoQrModal open={props.qrModalOpen} onClose={() => props.setQrModalOpen(false)} />
         </div>
       </div>
 
