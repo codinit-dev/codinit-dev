@@ -349,7 +349,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow lg:min-w-[var(--chat-min-width)] h-full')}>
             {!chatStarted && (
               <div id="intro" className="mt-[16vh] max-w-2xl mx-auto text-center px-4 lg:px-0">
-                <h1 className="flex flex-wrap items-center gap-2 text-bolt-ds-textPrimary justify-center font-display font-bold text-5xl tracking-tight">
+                <h1 className="flex flex-wrap items-center gap-2 text-codinit-elements-textPrimary justify-center font-display font-bold text-5xl tracking-tight">
                   What will you
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
