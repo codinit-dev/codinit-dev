@@ -324,6 +324,166 @@ export function FileIcon({ filename, size = 'md', className }: FileIconProps) {
     return 'text-gray-400';
   };
 
+  const getIconHoverColorForExtension = (extension: string): string => {
+    // Code files
+    if (['js', 'jsx'].includes(extension)) {
+      return 'hover:text-yellow-300';
+    }
+
+    if (['ts', 'tsx'].includes(extension)) {
+      return 'hover:text-blue-300';
+    }
+
+    if (['html', 'htm', 'xhtml'].includes(extension)) {
+      return 'hover:text-orange-300';
+    }
+
+    if (['css', 'scss', 'sass', 'less'].includes(extension)) {
+      return 'hover:text-blue-200';
+    }
+
+    if (['json', 'jsonc'].includes(extension)) {
+      return 'hover:text-yellow-200';
+    }
+
+    if (['md', 'markdown'].includes(extension)) {
+      return 'hover:text-gray-300';
+    }
+
+    if (['py', 'pyc', 'pyd', 'pyo'].includes(extension)) {
+      return 'hover:text-green-300';
+    }
+
+    if (['java', 'class', 'jar'].includes(extension)) {
+      return 'hover:text-red-300';
+    }
+
+    if (['php'].includes(extension)) {
+      return 'hover:text-blue-300';
+    }
+
+    if (['rb', 'ruby'].includes(extension)) {
+      return 'hover:text-red-400';
+    }
+
+    if (['c', 'cpp', 'h', 'hpp', 'cc'].includes(extension)) {
+      return 'hover:text-blue-400';
+    }
+
+    if (['go'].includes(extension)) {
+      return 'hover:text-cyan-300';
+    }
+
+    if (['rs', 'rust'].includes(extension)) {
+      return 'hover:text-orange-400';
+    }
+
+    if (['swift'].includes(extension)) {
+      return 'hover:text-orange-300';
+    }
+
+    if (['kt', 'kotlin'].includes(extension)) {
+      return 'hover:text-blue-200';
+    }
+
+    if (['dart'].includes(extension)) {
+      return 'hover:text-cyan-200';
+    }
+
+    // Config files
+    if (['yml', 'yaml'].includes(extension)) {
+      return 'hover:text-blue-100';
+    }
+
+    if (['xml'].includes(extension)) {
+      return 'hover:text-orange-100';
+    }
+
+    if (['svg'].includes(extension)) {
+      return 'hover:text-green-200';
+    }
+
+    if (['toml'].includes(extension)) {
+      return 'hover:text-gray-300';
+    }
+
+    if (['ini', 'conf', 'config'].includes(extension)) {
+      return 'hover:text-gray-300';
+    }
+
+    if (['env', 'env.local', 'env.development', 'env.production'].includes(extension)) {
+      return 'hover:text-green-300';
+    }
+
+    // Document files
+    if (['pdf'].includes(extension)) {
+      return 'hover:text-red-300';
+    }
+
+    if (['doc', 'docx'].includes(extension)) {
+      return 'hover:text-blue-400';
+    }
+
+    if (['xls', 'xlsx'].includes(extension)) {
+      return 'hover:text-green-400';
+    }
+
+    if (['ppt', 'pptx'].includes(extension)) {
+      return 'hover:text-red-400';
+    }
+
+    if (['txt'].includes(extension)) {
+      return 'hover:text-gray-300';
+    }
+
+    // Image files
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'ico', 'tiff'].includes(extension)) {
+      return 'hover:text-pink-300';
+    }
+
+    // Audio/Video files
+    if (['mp3', 'wav', 'ogg', 'flac', 'aac'].includes(extension)) {
+      return 'hover:text-green-300';
+    }
+
+    if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv'].includes(extension)) {
+      return 'hover:text-blue-300';
+    }
+
+    // Archive files
+    if (['zip', 'rar', '7z', 'tar', 'gz', 'bz2'].includes(extension)) {
+      return 'hover:text-yellow-400';
+    }
+
+    // Special files
+    if (filename === 'package.json') {
+      return 'hover:text-red-200';
+    }
+
+    if (filename === 'tsconfig.json') {
+      return 'hover:text-blue-300';
+    }
+
+    if (filename === 'README.md') {
+      return 'hover:text-blue-200';
+    }
+
+    if (filename === 'LICENSE') {
+      return 'hover:text-gray-300';
+    }
+
+    if (filename === '.gitignore') {
+      return 'hover:text-orange-300';
+    }
+
+    if (filename.startsWith('Dockerfile')) {
+      return 'hover:text-blue-300';
+    }
+
+    // Default
+    return 'hover:text-gray-200';
+  };
+
   const getSizeClass = (size: 'sm' | 'md' | 'lg'): string => {
     switch (size) {
       case 'sm':
@@ -340,7 +500,9 @@ export function FileIcon({ filename, size = 'md', className }: FileIconProps) {
   const extension = getFileExtension(filename);
   const icon = getIconForExtension(extension);
   const color = getIconColorForExtension(extension);
+  const hoverColor = getIconHoverColorForExtension(extension); // Use the new function
   const sizeClass = getSizeClass(size);
 
-  return <span className={classNames(icon, color, sizeClass, className)} />;
+  // Combine default color and hover color classes
+  return <span className={classNames(icon, color, hoverColor, sizeClass, className)} />;
 }

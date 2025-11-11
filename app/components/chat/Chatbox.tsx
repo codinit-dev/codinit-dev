@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
 import { PROVIDER_LIST } from '~/utils/constants';
@@ -66,6 +66,38 @@ interface ChatBoxProps {
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
+  const [placeholderText, setPlaceholderText] = useState('');
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
+
+  useEffect(() => {
+    if (!props.chatStarted && props.input.length === 0 && showPlaceholder) {
+      const tipText = 'Tip: Select a framework for quicker start...';
+      let i = 0;
+      const timer = setInterval(() => {
+        if (i < tipText.length) {
+          setPlaceholderText(tipText.slice(0, i + 1));
+          i++;
+        } else {
+          clearInterval(timer);
+        }
+      }, 50);
+
+      return () => clearInterval(timer);
+    }
+
+    return () => {
+      /* empty */
+    };
+  }, [props.chatStarted, props.input.length, showPlaceholder]);
+
+  // Hide placeholder when textarea is focused
+  const handleTextareaFocus = () => {
+    setShowPlaceholder(false);
+  };
+
+  const handleTextareaBlur = () => {
+    setShowPlaceholder(true);
+  };
 
   return (
     <>
@@ -231,12 +263,14 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           }}
           value={props.input}
           onChange={props.handleInputChange}
+          onFocus={handleTextareaFocus}
+          onBlur={handleTextareaBlur}
           onPaste={props.handlePaste}
           style={{
             minHeight: props.TEXTAREA_MIN_HEIGHT,
             maxHeight: props.TEXTAREA_MAX_HEIGHT,
           }}
-          placeholder={!props.chatStarted && props.input.length === 0 ? 'Ask me anything...' : undefined}
+          placeholder={!props.chatStarted && props.input.length === 0 && showPlaceholder ? placeholderText : undefined}
           translate="no"
         />
         <ClientOnly>
