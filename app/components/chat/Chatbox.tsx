@@ -20,7 +20,6 @@ import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from './MCPTools';
 import { McpIntegrationPanel } from './MCPIntegrationPanel';
-import { TypingAnimation } from './TypingAnimation';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -231,31 +230,18 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             }
           }}
           value={props.input}
-          onChange={(event) => {
-            props.handleInputChange?.(event);
-          }}
+          onChange={props.handleInputChange}
           onPaste={props.handlePaste}
           style={{
             minHeight: props.TEXTAREA_MIN_HEIGHT,
             maxHeight: props.TEXTAREA_MAX_HEIGHT,
           }}
-          placeholder={!props.chatStarted && props.input.length === 0 ? '' : undefined}
+          placeholder={!props.chatStarted && props.input.length === 0 ? 'Ask me anything...' : undefined}
           translate="no"
         />
         <ClientOnly>
           {() => (
             <>
-              {!props.chatStarted && props.input.length === 0 && (
-                <TypingAnimation
-                  onPromptClick={(prompt: string) => {
-                    props.handleInputChange?.({
-                      target: { value: prompt },
-                    } as React.ChangeEvent<HTMLTextAreaElement>);
-                  }}
-                  isProviderDropdownOpen={!props.isModelSettingsCollapsed}
-                  isModelDropdownOpen={!props.isModelSettingsCollapsed}
-                />
-              )}
               <SendButton
                 show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
                 isStreaming={props.isStreaming}
