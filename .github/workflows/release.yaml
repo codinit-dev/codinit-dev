@@ -31,11 +31,11 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - name: add macos cert
-        if: contains(matrix.os.name, 'macos')
-        env:
-          MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
-          MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+       - name: add macos cert
+         if: contains(matrix.os.name, 'macos')
+         env:
+           MACOS_CERT_P12: ${{ secrets.MACOS_CERT_P12 }}
+           MACOS_CERT_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
          run: chmod +x tools/add-macos-cert.sh && bash tools/add-macos-cert.sh
       # Windows only
       - name: Set up certificate
