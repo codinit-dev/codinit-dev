@@ -10,8 +10,8 @@ export function Header() {
 
   return (
     <header
-      className={classNames('flex items-center p-3 border-b h-12', {
-        'border-transparent': !chat.started,
+      className={classNames('flex items-center p-3 h-12', {
+        'border-b border-transparent': !chat.started,
         'border-codinit-elements-borderColor': chat.started,
       })}
     >
