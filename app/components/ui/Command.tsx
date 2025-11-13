@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import * as React from 'react';
 
 import { cn } from '~/lib/utils';
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '~/components/ui/Dialog';
+import { Dialog, DialogDescription, DialogTitle } from '~/components/ui/Dialog';
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -26,11 +26,11 @@ const CommandDialog = ({ children, ...props }: DialogProps) => {
     <Dialog {...props}>
       <DialogTitle></DialogTitle> {/* Temporary fix to silence console warning */}
       <DialogDescription></DialogDescription> {/* Temporary fix to silence console warning */}
-      <DialogContent className="overflow-hidden p-0 sm:max-w-lg [&>button:last-child]:hidden">
+      <div className="overflow-hidden p-0 sm:max-w-lg">
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-2">
           {children}
         </Command>
-      </DialogContent>
+      </div>
     </Dialog>
   );
 };
