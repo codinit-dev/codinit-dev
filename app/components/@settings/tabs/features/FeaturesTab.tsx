@@ -1,11 +1,11 @@
-// Remove unused imports
-import React, { memo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { useCallback } from 'react';
 import { Switch } from '~/components/ui/Switch';
 import { useSettings } from '~/lib/hooks/useSettings';
 import { classNames } from '~/utils/classNames';
 import { toast } from 'react-toastify';
 import { PromptLibrary } from '~/lib/common/prompt-library';
+import { SettingsSection } from '~/components/@settings/shared/components/SettingsCard';
+import { SettingsList, SettingsListItem, SettingsPanel } from '~/components/@settings/shared/components/SettingsPanel';
 
 interface FeatureToggle {
   id: string;
@@ -17,93 +17,6 @@ interface FeatureToggle {
   experimental?: boolean;
   tooltip?: string;
 }
-
-const FeatureCard = memo(
-  ({
-    feature,
-    index,
-    onToggle,
-  }: {
-    feature: FeatureToggle;
-    index: number;
-    onToggle: (id: string, enabled: boolean) => void;
-  }) => (
-    <motion.div
-      key={feature.id}
-      layoutId={feature.id}
-      className={classNames(
-        'relative group cursor-pointer',
-        'bg-codinit-elements-background-depth-2',
-        'hover:bg-codinit-elements-background-depth-3',
-        'transition-colors duration-200',
-        'rounded-lg overflow-hidden',
-      )}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-    >
-      <div className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className={classNames(feature.icon, 'w-5 h-5 text-codinit-elements-textSecondary')} />
-            <div className="flex items-center gap-2">
-              <h4 className="font-medium text-codinit-elements-textPrimary">{feature.title}</h4>
-              {feature.beta && (
-                <span className="px-2 py-0.5 text-xs rounded-full bg-blue-500/10 text-blue-500 font-medium">Beta</span>
-              )}
-              {feature.experimental && (
-                <span className="px-2 py-0.5 text-xs rounded-full bg-orange-500/10 text-orange-500 font-medium">
-                  Experimental
-                </span>
-              )}
-            </div>
-          </div>
-          <Switch checked={feature.enabled} onCheckedChange={(checked) => onToggle(feature.id, checked)} />
-        </div>
-        <p className="mt-2 text-sm text-codinit-elements-textSecondary">{feature.description}</p>
-        {feature.tooltip && <p className="mt-1 text-xs text-codinit-elements-textTertiary">{feature.tooltip}</p>}
-      </div>
-    </motion.div>
-  ),
-);
-
-const FeatureSection = memo(
-  ({
-    title,
-    features,
-    icon,
-    description,
-    onToggleFeature,
-  }: {
-    title: string;
-    features: FeatureToggle[];
-    icon: string;
-    description: string;
-    onToggleFeature: (id: string, enabled: boolean) => void;
-  }) => (
-    <motion.div
-      layout
-      className="flex flex-col gap-4"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="flex items-center gap-3">
-        <div className={classNames(icon, 'text-xl text-blue-500')} />
-        <div>
-          <h3 className="text-lg font-medium text-codinit-elements-textPrimary">{title}</h3>
-          <p className="text-sm text-codinit-elements-textSecondary">{description}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {features.map((feature, index) => (
-          <FeatureCard key={feature.id} feature={feature} index={index} onToggle={onToggleFeature} />
-        ))}
-      </div>
-    </motion.div>
-  ),
-);
 
 export default function FeaturesTab() {
   const {
@@ -120,7 +33,7 @@ export default function FeaturesTab() {
   } = useSettings();
 
   // Enable features by default on first load
-  React.useEffect(() => {
+  useCallback(() => {
     // Only set defaults if values are undefined
     if (isLatestBranch === undefined) {
       enableLatestBranch(false); // Default: OFF - Don't auto-update from main branch
@@ -177,7 +90,7 @@ export default function FeaturesTab() {
     [enableLatestBranch, setAutoSelectTemplate, enableContextOptimization, setEventLogs],
   );
 
-  const features = {
+  const features: { stable: FeatureToggle[]; beta: FeatureToggle[] } = {
     stable: [
       {
         id: 'latestBranch',
@@ -216,80 +129,183 @@ export default function FeaturesTab() {
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <FeatureSection
+    <div className="space-y-8">
+      <SettingsSection
         title="Core Features"
-        features={features.stable}
-        icon="i-ph:check-circle"
         description="Essential features that are enabled by default for optimal performance"
-        onToggleFeature={handleToggleFeature}
-      />
+        icon="i-ph:check-circle"
+        delay={0.1}
+      >
+        <SettingsPanel variant="section" className="p-6">
+          <SettingsList>
+            {features.stable.map((feature, _index) => (
+              <SettingsListItem key={feature.id}>
+                <div className="flex items-start gap-4 flex-1 min-w-0">
+                  <div
+                    className={classNames(
+                      'flex-shrink-0 w-12 h-12 rounded-xl',
+                      'bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/20',
+                      'flex items-center justify-center',
+                      'ring-2 ring-blue-200/30 dark:ring-blue-800/20',
+                      'transition-all duration-300',
+                    )}
+                  >
+                    <div className={classNames(feature.icon, 'w-6 h-6 text-blue-600 dark:text-blue-400')} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-codinit-elements-textPrimary text-base leading-tight">
+                        {feature.title}
+                      </h4>
+                      {feature.beta && (
+                        <span className="px-2 py-0.5 text-xs rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium shadow-sm">
+                          Beta
+                        </span>
+                      )}
+                      {feature.experimental && (
+                        <span className="px-2 py-0.5 text-xs rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium shadow-sm">
+                          Experimental
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-codinit-elements-textSecondary leading-relaxed mb-2">
+                      {feature.description}
+                    </p>
+                    {feature.tooltip && (
+                      <div className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/30 dark:border-blue-800/20">
+                        <span className="text-xs">💡</span>
+                        <span className="text-xs text-codinit-elements-textTertiary">{feature.tooltip}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex-shrink-0 ml-4">
+                  <Switch
+                    checked={feature.enabled}
+                    onCheckedChange={(checked) => handleToggleFeature(feature.id, checked)}
+                  />
+                </div>
+              </SettingsListItem>
+            ))}
+          </SettingsList>
+        </SettingsPanel>
+      </SettingsSection>
 
       {features.beta.length > 0 && (
-        <FeatureSection
+        <SettingsSection
           title="Beta Features"
-          features={features.beta}
-          icon="i-ph:test-tube"
           description="New features that are ready for testing but may have some rough edges"
-          onToggleFeature={handleToggleFeature}
-        />
+          icon="i-ph:test-tube"
+          delay={0.2}
+        >
+          <SettingsPanel variant="subsection" className="p-6">
+            <SettingsList>
+              {features.beta.map((feature, _index) => (
+                <SettingsListItem key={feature.id}>
+                  <div className="flex items-start gap-4 flex-1 min-w-0">
+                    <div
+                      className={classNames(
+                        'flex-shrink-0 w-12 h-12 rounded-xl',
+                        'bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/20',
+                        'flex items-center justify-center',
+                        'ring-2 ring-orange-200/30 dark:ring-orange-800/20',
+                        'transition-all duration-300',
+                      )}
+                    >
+                      <div className={classNames(feature.icon, 'w-6 h-6 text-orange-600 dark:text-orange-400')} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold text-codinit-elements-textPrimary text-base leading-tight">
+                          {feature.title}
+                        </h4>
+                        {feature.beta && (
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium shadow-sm">
+                            Beta
+                          </span>
+                        )}
+                        {feature.experimental && (
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium shadow-sm">
+                            Experimental
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-codinit-elements-textSecondary leading-relaxed mb-2">
+                        {feature.description}
+                      </p>
+                      {feature.tooltip && (
+                        <div className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/30 dark:border-orange-800/20">
+                          <span className="text-xs">💡</span>
+                          <span className="text-xs text-codinit-elements-textTertiary">{feature.tooltip}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0 ml-4">
+                    <Switch
+                      checked={feature.enabled}
+                      onCheckedChange={(checked) => handleToggleFeature(feature.id, checked)}
+                    />
+                  </div>
+                </SettingsListItem>
+              ))}
+            </SettingsList>
+          </SettingsPanel>
+        </SettingsSection>
       )}
 
-      <motion.div
-        layout
-        className={classNames(
-          'bg-codinit-elements-background-depth-2',
-          'hover:bg-codinit-elements-background-depth-3',
-          'transition-all duration-200',
-          'rounded-lg p-4',
-          'group',
-        )}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
+      <SettingsSection
+        title="Prompt Library"
+        description="Choose a prompt template to customize your AI interactions"
+        icon="i-ph:book"
+        delay={0.3}
       >
-        <div className="flex items-center gap-4">
-          <div
-            className={classNames(
-              'p-2 rounded-lg text-xl',
-              'bg-codinit-elements-background-depth-3 group-hover:bg-codinit-elements-background-depth-4',
-              'transition-colors duration-200',
-              'text-blue-500',
-            )}
-          >
-            <div className="i-ph:book" />
+        <SettingsPanel variant="highlight" className="p-6">
+          <div className="flex items-center gap-6">
+            <div
+              className={classNames(
+                'flex-shrink-0 w-16 h-16 rounded-2xl',
+                'bg-gradient-to-br from-blue-500 to-purple-600',
+                'flex items-center justify-center',
+                'shadow-lg',
+              )}
+            >
+              <div className="i-ph:book w-8 h-8 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-lg font-semibold text-codinit-elements-textPrimary mb-1">System Prompt Template</h4>
+              <p className="text-sm text-codinit-elements-textSecondary">
+                Choose a prompt from the library to use as the system prompt for AI interactions
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <select
+                value={promptId}
+                onChange={(e) => {
+                  setPromptId(e.target.value);
+                  toast.success('Prompt template updated');
+                }}
+                className={classNames(
+                  'px-4 py-3 rounded-xl text-sm font-medium min-w-[240px]',
+                  'bg-white dark:bg-[#0F0F0F]',
+                  'border-2 border-gray-200 dark:border-[#2A2A2A]',
+                  'text-codinit-elements-textPrimary',
+                  'focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400',
+                  'hover:border-gray-300 dark:hover:border-[#3A3A3A]',
+                  'transition-all duration-200',
+                  'shadow-sm hover:shadow-md',
+                )}
+              >
+                {PromptLibrary.getList().map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="flex-1">
-            <h4 className="text-sm font-medium text-codinit-elements-textPrimary group-hover:text-blue-500 transition-colors">
-              Prompt Library
-            </h4>
-            <p className="text-xs text-codinit-elements-textSecondary mt-0.5">
-              Choose a prompt from the library to use as the system prompt
-            </p>
-          </div>
-          <select
-            value={promptId}
-            onChange={(e) => {
-              setPromptId(e.target.value);
-              toast.success('Prompt template updated');
-            }}
-            className={classNames(
-              'p-2 rounded-lg text-sm min-w-[200px]',
-              'bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor',
-              'text-codinit-elements-textPrimary',
-              'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
-              'group-hover:border-blue-500/30',
-              'transition-all duration-200',
-            )}
-          >
-            {PromptLibrary.getList().map((x) => (
-              <option key={x.id} value={x.id}>
-                {x.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </motion.div>
+        </SettingsPanel>
+      </SettingsSection>
     </div>
   );
 }

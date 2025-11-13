@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { classNames } from '~/utils/classNames';
 import { Switch } from '~/components/ui/Switch';
+import { SettingsSection } from '~/components/@settings/shared/components/SettingsCard';
+import { SettingsGroup, SettingsPanel } from '~/components/@settings/shared/components/SettingsPanel';
 import type { UserProfile } from '~/components/@settings/core/types';
 import { isMac } from '~/utils/os';
 
@@ -60,156 +61,159 @@ export default function SettingsTab() {
   }, [settings]);
 
   return (
-    <div className="space-y-4">
-      {/* Language & Notifications */}
-      <motion.div
-        className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow-sm dark:shadow-none p-4 space-y-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+    <div className="space-y-8">
+      <SettingsSection
+        title="Preferences"
+        description="Customize your application experience"
+        icon="i-ph:palette-fill"
+        delay={0.1}
       >
-        <div className="flex items-center gap-2 mb-4">
-          <div className="i-ph:palette-fill w-4 h-4 text-blue-500" />
-          <span className="text-sm font-medium text-codinit-elements-textPrimary">Preferences</span>
-        </div>
-
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="i-ph:translate-fill w-4 h-4 text-codinit-elements-textSecondary" />
-            <label className="block text-sm text-codinit-elements-textSecondary">Language</label>
-          </div>
-          <select
-            value={settings.language}
-            onChange={(e) => setSettings((prev) => ({ ...prev, language: e.target.value }))}
-            className={classNames(
-              'w-full px-3 py-2 rounded-lg text-sm',
-              'bg-[#FAFAFA] dark:bg-[#0A0A0A]',
-              'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-              'text-codinit-elements-textPrimary',
-              'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
-              'transition-all duration-200',
-            )}
-          >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="it">Italiano</option>
-            <option value="pt">Português</option>
-            <option value="ru">Русский</option>
-            <option value="zh">中文</option>
-            <option value="ja">日本語</option>
-            <option value="ko">한국어</option>
-          </select>
-        </div>
-
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="i-ph:bell-fill w-4 h-4 text-codinit-elements-textSecondary" />
-            <label className="block text-sm text-codinit-elements-textSecondary">Notifications</label>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-codinit-elements-textSecondary">
-              {settings.notifications ? 'Notifications are enabled' : 'Notifications are disabled'}
-            </span>
-            <Switch
-              checked={settings.notifications}
-              onCheckedChange={(checked) => {
-                // Update local state
-                setSettings((prev) => ({ ...prev, notifications: checked }));
-
-                // Update localStorage immediately
-                const existingProfile = JSON.parse(localStorage.getItem('codinit_user_profile') || '{}');
-                const updatedProfile = {
-                  ...existingProfile,
-                  notifications: checked,
-                };
-                localStorage.setItem('codinit_user_profile', JSON.stringify(updatedProfile));
-
-                // Dispatch storage event for other components
-                window.dispatchEvent(
-                  new StorageEvent('storage', {
-                    key: 'codinit_user_profile',
-                    newValue: JSON.stringify(updatedProfile),
-                  }),
-                );
-
-                toast.success(`Notifications ${checked ? 'enabled' : 'disabled'}`);
-              }}
-            />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Timezone */}
-      <motion.div
-        className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow-sm dark:shadow-none p-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <div className="flex items-center gap-2 mb-4">
-          <div className="i-ph:clock-fill w-4 h-4 text-blue-500" />
-          <span className="text-sm font-medium text-codinit-elements-textPrimary">Time Settings</span>
-        </div>
-
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="i-ph:globe-fill w-4 h-4 text-codinit-elements-textSecondary" />
-            <label className="block text-sm text-codinit-elements-textSecondary">Timezone</label>
-          </div>
-          <select
-            value={settings.timezone}
-            onChange={(e) => setSettings((prev) => ({ ...prev, timezone: e.target.value }))}
-            className={classNames(
-              'w-full px-3 py-2 rounded-lg text-sm',
-              'bg-[#FAFAFA] dark:bg-[#0A0A0A]',
-              'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-              'text-codinit-elements-textPrimary',
-              'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
-              'transition-all duration-200',
-            )}
-          >
-            <option value={currentTimezone}>{currentTimezone}</option>
-          </select>
-        </div>
-      </motion.div>
-
-      {/* Simplified Keyboard Shortcuts */}
-      <motion.div
-        className="bg-white dark:bg-[#0A0A0A] rounded-lg shadow-sm dark:shadow-none p-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <div className="flex items-center gap-2 mb-4">
-          <div className="i-ph:keyboard-fill w-4 h-4 text-blue-500" />
-          <span className="text-sm font-medium text-codinit-elements-textPrimary">Keyboard Shortcuts</span>
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center justify-between p-2 rounded-lg bg-[#FAFAFA] dark:bg-[#1A1A1A]">
-            <div className="flex flex-col">
-              <span className="text-sm text-codinit-elements-textPrimary">Toggle Theme</span>
-              <span className="text-xs text-codinit-elements-textSecondary">Switch between light and dark mode</span>
+        <SettingsGroup layout="grid" columns={2}>
+          <SettingsPanel variant="section" className="p-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="i-ph:translate-fill w-5 h-5 text-blue-500" />
+                <label className="text-sm font-semibold text-codinit-elements-textPrimary">Language</label>
+              </div>
+              <select
+                value={settings.language}
+                onChange={(e) => setSettings((prev) => ({ ...prev, language: e.target.value }))}
+                className={classNames(
+                  'w-full px-4 py-3 rounded-xl text-sm font-medium',
+                  'bg-white dark:bg-[#0F0F0F]',
+                  'border-2 border-gray-200 dark:border-[#2A2A2A]',
+                  'text-codinit-elements-textPrimary',
+                  'focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400',
+                  'hover:border-gray-300 dark:hover:border-[#3A3A3A]',
+                  'transition-all duration-200',
+                  'shadow-sm',
+                )}
+              >
+                <option value="en">🇺🇸 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="it">🇮🇹 Italiano</option>
+                <option value="pt">🇵🇹 Português</option>
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ja">🇯🇵 日本語</option>
+                <option value="ko">🇰🇷 한국어</option>
+              </select>
             </div>
-            <div className="flex items-center gap-1">
-              <kbd className="px-2 py-1 text-xs font-semibold text-codinit-elements-textSecondary bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] rounded shadow-sm">
+          </SettingsPanel>
+
+          <SettingsPanel variant="section" className="p-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="i-ph:bell-fill w-5 h-5 text-blue-500" />
+                <label className="text-sm font-semibold text-codinit-elements-textPrimary">Notifications</label>
+              </div>
+              <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-200/50 dark:border-gray-700/30">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-codinit-elements-textPrimary">Push Notifications</span>
+                  <span className="text-xs text-codinit-elements-textSecondary">
+                    {settings.notifications ? 'Enabled' : 'Disabled'}
+                  </span>
+                </div>
+                <Switch
+                  checked={settings.notifications}
+                  onCheckedChange={(checked) => {
+                    setSettings((prev) => ({ ...prev, notifications: checked }));
+
+                    const existingProfile = JSON.parse(localStorage.getItem('codinit_user_profile') || '{}');
+                    const updatedProfile = {
+                      ...existingProfile,
+                      notifications: checked,
+                    };
+                    localStorage.setItem('codinit_user_profile', JSON.stringify(updatedProfile));
+                    window.dispatchEvent(
+                      new StorageEvent('storage', {
+                        key: 'codinit_user_profile',
+                        newValue: JSON.stringify(updatedProfile),
+                      }),
+                    );
+                    toast.success(`Notifications ${checked ? 'enabled' : 'disabled'}`);
+                  }}
+                />
+              </div>
+            </div>
+          </SettingsPanel>
+        </SettingsGroup>
+      </SettingsSection>
+
+      <SettingsSection
+        title="Time Settings"
+        description="Configure timezone and time-related preferences"
+        icon="i-ph:clock-fill"
+        delay={0.2}
+      >
+        <SettingsPanel variant="section" className="p-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="i-ph:globe-fill w-5 h-5 text-blue-500" />
+              <label className="text-sm font-semibold text-codinit-elements-textPrimary">Timezone</label>
+            </div>
+            <select
+              value={settings.timezone}
+              onChange={(e) => setSettings((prev) => ({ ...prev, timezone: e.target.value }))}
+              className={classNames(
+                'w-full px-4 py-3 rounded-xl text-sm font-medium',
+                'bg-white dark:bg-[#0F0F0F]',
+                'border-2 border-gray-200 dark:border-[#2A2A2A]',
+                'text-codinit-elements-textPrimary',
+                'focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400',
+                'hover:border-gray-300 dark:hover:border-[#3A3A3A]',
+                'transition-all duration-200',
+                'shadow-sm',
+              )}
+            >
+              <option value={currentTimezone}>🌍 {currentTimezone}</option>
+            </select>
+            <p className="text-xs text-codinit-elements-textSecondary">
+              Your timezone is automatically detected based on your system settings.
+            </p>
+          </div>
+        </SettingsPanel>
+      </SettingsSection>
+
+      <SettingsSection
+        title="Keyboard Shortcuts"
+        description="Essential shortcuts for quick actions"
+        icon="i-ph:keyboard-fill"
+        delay={0.3}
+      >
+        <SettingsPanel variant="highlight" className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <div className="i-ph:keyboard w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="text-base font-semibold text-codinit-elements-textPrimary">Toggle Theme</h4>
+                <p className="text-sm text-codinit-elements-textSecondary">Switch between light and dark mode</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-3 py-2 text-xs font-bold text-codinit-elements-textSecondary bg-white dark:bg-[#0F0F0F] border-2 border-gray-300 dark:border-[#2A2A2A] rounded-lg shadow-sm">
                 {getModifierSymbol('meta')}
               </kbd>
-              <kbd className="px-2 py-1 text-xs font-semibold text-codinit-elements-textSecondary bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] rounded shadow-sm">
+              <span className="text-codinit-elements-textSecondary font-medium">+</span>
+              <kbd className="px-3 py-2 text-xs font-bold text-codinit-elements-textSecondary bg-white dark:bg-[#0F0F0F] border-2 border-gray-300 dark:border-[#2A2A2A] rounded-lg shadow-sm">
                 {getModifierSymbol('alt')}
               </kbd>
-              <kbd className="px-2 py-1 text-xs font-semibold text-codinit-elements-textSecondary bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] rounded shadow-sm">
+              <span className="text-codinit-elements-textSecondary font-medium">+</span>
+              <kbd className="px-3 py-2 text-xs font-bold text-codinit-elements-textSecondary bg-white dark:bg-[#0F0F0F] border-2 border-gray-300 dark:border-[#2A2A2A] rounded-lg shadow-sm">
                 {getModifierSymbol('shift')}
               </kbd>
-              <kbd className="px-2 py-1 text-xs font-semibold text-codinit-elements-textSecondary bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] rounded shadow-sm">
+              <span className="text-codinit-elements-textSecondary font-medium">+</span>
+              <kbd className="px-3 py-2 text-xs font-bold text-codinit-elements-textSecondary bg-white dark:bg-[#0F0F0F] border-2 border-gray-300 dark:border-[#2A2A2A] rounded-lg shadow-sm">
                 D
               </kbd>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </SettingsPanel>
+      </SettingsSection>
     </div>
   );
 }

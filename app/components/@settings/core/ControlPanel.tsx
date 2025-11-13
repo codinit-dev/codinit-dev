@@ -6,6 +6,8 @@ import * as RadixDialog from '@radix-ui/react-dialog';
 import { classNames } from '~/utils/classNames';
 import { TabManagement } from '~/components/@settings/shared/components/TabManagement';
 import { TabTile } from '~/components/@settings/shared/components/TabTile';
+import { SearchInterface } from '~/components/@settings/shared/components/SearchInterface';
+import { initializeSearchIndex } from '~/components/@settings/shared/utils/settingsSearch';
 import { useUpdateCheck } from '~/lib/hooks/useUpdateCheck';
 import { useFeatures } from '~/lib/hooks/useFeatures';
 import { useNotifications } from '~/lib/hooks/useNotifications';
@@ -157,6 +159,7 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   const [activeTab, setActiveTab] = useState<TabType | null>(null);
   const [loadingTab, setLoadingTab] = useState<TabType | null>(null);
   const [showTabManagement, setShowTabManagement] = useState(false);
+  const [useSearchInterface, setUseSearchInterface] = useState(true); // Default to search
 
   // Store values
   const tabConfiguration = useStore(tabConfigurationStore);
@@ -271,10 +274,23 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
       setLoadingTab(null);
       setShowTabManagement(false);
     } else {
-      // When opening, set to null to show the main view
+      // When opening, initialize search index and set to null to show the main view
       setActiveTab(null);
+
+      // Initialize search index with current profile (convert to UserProfile format)
+      const userProfile = {
+        nickname: profile.username,
+        name: profile.username || '',
+        email: '',
+        avatar: profile.avatar,
+        theme: profile.preferences?.theme || 'system',
+        notifications: profile.preferences?.notifications ?? true,
+        language: profile.preferences?.language || 'en',
+        timezone: profile.preferences?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      };
+      initializeSearchIndex(userProfile);
     }
-  }, [open]);
+  }, [open, profile]);
 
   // Handle closing
   const handleClose = () => {
@@ -465,7 +481,23 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
                   </div>
 
                   <div className="flex items-center gap-6">
-                    {/* Mode Toggle */}
+                    {/* Interface Mode Toggle */}
+                    <div className="flex items-center gap-2 min-w-[120px] border-r border-gray-200 dark:border-gray-800 pr-6">
+                      <button
+                        onClick={() => setUseSearchInterface(!useSearchInterface)}
+                        className={classNames(
+                          'px-3 py-1.5 text-sm rounded-lg transition-all duration-200',
+                          'border border-gray-200 dark:border-gray-700',
+                          useSearchInterface
+                            ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                            : 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                        )}
+                      >
+                        {useSearchInterface ? '🔍 Search' : '📋 Tabs'}
+                      </button>
+                    </div>
+
+                    {/* Developer Mode Toggle */}
                     <div className="flex items-center gap-2 min-w-[140px] border-r border-gray-200 dark:border-gray-800 pr-6">
                       <AnimatedSwitch
                         id="developer-mode"
@@ -516,9 +548,28 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
                       <TabManagement />
                     ) : activeTab ? (
                       getTabComponent(activeTab)
+                    ) : useSearchInterface ? (
+                      <SearchInterface
+                        userProfile={{
+                          nickname: profile.username,
+                          name: profile.username || '',
+                          email: '',
+                          avatar: profile.avatar,
+                          theme: profile.preferences?.theme || 'system',
+                          notifications: profile.preferences?.notifications ?? true,
+                          language: profile.preferences?.language || 'en',
+                          timezone: profile.preferences?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        }}
+                        onSettingChange={(settingId, value) => {
+                          // Handle setting changes from search interface
+                          console.log('Setting changed:', settingId, value);
+
+                          // You could dispatch to stores here if needed
+                        }}
+                      />
                     ) : (
                       <motion.div
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative"
                         variants={gridLayoutVariants}
                         initial="hidden"
                         animate="visible"
