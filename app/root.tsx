@@ -57,12 +57,20 @@ const inlineThemeCode = stripIndents`
   }
 `;
 
+const amplitudeScript = stripIndents`
+  !function(){var e=window.amplitude=window.amplitude||[];e._q=[];function t(t){e[t]=function(){e._q.push([t].concat(Array.prototype.slice.call(arguments,0)))}}var i=["init","logEvent","logRevenue","setUserId","setUserProperties","setOptOut","setVersionName","setDomain","setDeviceId","setGlobalUserProperties","identify","clearUserProperties","setGroup","logRevenueV2","regenerateDeviceId","groupIdentify","onInit","logEventWithTimestamp","logEventWithGroups","setSessionId","resetSessionId"];for(var r=0;r<i.length;r++)t(i[r])}();
+  window.amplitude.init('7d559bd95c2dfb5a17653a383f8f2e21', {"autocapture":{"elementInteractions":true}});
+`;
+
 export const Head = createHead(() => (
   <>
     <meta charSet="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <Meta />
     <Links />
+    <script src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script>
+    <script src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.23.2-min.js.gz"></script>
+    <script dangerouslySetInnerHTML={{ __html: amplitudeScript }} />
     <script dangerouslySetInnerHTML={{ __html: inlineThemeCode }} />
   </>
 ));
