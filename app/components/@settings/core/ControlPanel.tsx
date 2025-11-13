@@ -25,6 +25,14 @@ import { TAB_LABELS, DEFAULT_TAB_CONFIG } from './constants';
 import { DialogTitle } from '~/components/ui/Dialog';
 import { AvatarDropdown } from './AvatarDropdown';
 import BackgroundRays from '~/components/ui/BackgroundRays';
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '~/components/ui/command';
 
 // Import all tab components
 import ProfileTab from '~/components/@settings/tabs/profile/ProfileTab';
@@ -160,6 +168,21 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   const [loadingTab, setLoadingTab] = useState<TabType | null>(null);
   const [showTabManagement, setShowTabManagement] = useState(false);
   const [useSearchInterface, setUseSearchInterface] = useState(true); // Default to search
+  const [commandOpen, setCommandOpen] = useState(false);
+
+  // Keyboard listener for command modal
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === '/') {
+        e.preventDefault();
+        setCommandOpen(true);
+      }
+    };
+
+    document.addEventListener('keydown', down);
+
+    return () => document.removeEventListener('keydown', down);
+  }, []);
 
   // Store values
   const tabConfiguration = useStore(tabConfigurationStore);
@@ -427,180 +450,255 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   };
 
   return (
-    <RadixDialog.Root open={open}>
-      <RadixDialog.Portal>
-        <div className="fixed inset-0 flex items-center justify-center z-[100] modern-scrollbar">
-          <RadixDialog.Overlay asChild>
-            <motion.div
-              className="absolute inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            />
-          </RadixDialog.Overlay>
+    <>
+      <RadixDialog.Root open={open}>
+        <RadixDialog.Portal>
+          <div className="fixed inset-0 flex items-center justify-center z-[100] modern-scrollbar">
+            <RadixDialog.Overlay asChild>
+              <motion.div
+                className="absolute inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              />
+            </RadixDialog.Overlay>
 
-          <RadixDialog.Content
-            aria-describedby={undefined}
-            onEscapeKeyDown={handleClose}
-            onPointerDownOutside={handleClose}
-            className="relative z-[101]"
-          >
-            <motion.div
-              className={classNames(
-                'w-[1200px] h-[90vh]',
-                'bg-[#FAFAFA] dark:bg-[#0A0A0A]',
-                'rounded-2xl shadow-2xl',
-                'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-                'flex flex-col overflow-hidden',
-                'relative',
-              )}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.2 }}
+            <RadixDialog.Content
+              aria-describedby={undefined}
+              onEscapeKeyDown={handleClose}
+              onPointerDownOutside={handleClose}
+              className="relative z-[101]"
             >
-              <div className="absolute inset-0 overflow-hidden rounded-2xl">
-                <BackgroundRays />
-              </div>
-              <div className="relative z-10 flex flex-col h-full">
-                {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center space-x-4">
-                    {(activeTab || showTabManagement) && (
+              <motion.div
+                className={classNames(
+                  'w-[1200px] h-[90vh]',
+                  'bg-[#FAFAFA] dark:bg-[#0A0A0A]',
+                  'rounded-2xl shadow-2xl',
+                  'border border-[#E5E5E5] dark:border-[#1A1A1A]',
+                  'flex flex-col overflow-hidden',
+                  'relative',
+                )}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <div className="absolute inset-0 overflow-hidden rounded-2xl">
+                  <BackgroundRays />
+                </div>
+                <div className="relative z-10 flex flex-col h-full">
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center space-x-4">
+                      {(activeTab || showTabManagement) && (
+                        <button
+                          onClick={handleBack}
+                          className="flex items-center justify-center w-8 h-8 rounded-full bg-transparent hover:bg-blue-500/10 dark:hover:bg-blue-500/20 group transition-all duration-200"
+                        >
+                          <div className="i-ph:arrow-left w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
+                        </button>
+                      )}
+                      <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                        {showTabManagement ? 'Tab Management' : activeTab ? TAB_LABELS[activeTab] : 'Control Panel'}
+                      </DialogTitle>
+                    </div>
+
+                    <div className="flex items-center gap-6">
+                      {/* Interface Mode Toggle */}
+                      <div className="flex items-center gap-2 min-w-[120px] border-r border-gray-200 dark:border-gray-800 pr-6">
+                        <button
+                          onClick={() => setUseSearchInterface(!useSearchInterface)}
+                          className={classNames(
+                            'px-3 py-1.5 text-sm rounded-lg transition-all duration-200',
+                            'border border-gray-200 dark:border-gray-700',
+                            useSearchInterface
+                              ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                              : 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
+                          )}
+                        >
+                          {useSearchInterface ? '🔍 Search' : '📋 Tabs'}
+                        </button>
+                      </div>
+
+                      {/* Developer Mode Toggle */}
+                      <div className="flex items-center gap-2 min-w-[140px] border-r border-gray-200 dark:border-gray-800 pr-6">
+                        <AnimatedSwitch
+                          id="developer-mode"
+                          checked={developerMode}
+                          onCheckedChange={handleDeveloperModeChange}
+                          label={developerMode ? 'Developer Mode' : 'User Mode'}
+                        />
+                      </div>
+
+                      {/* Avatar and Dropdown */}
+                      <div className="border-l border-gray-200 dark:border-gray-800 pl-6">
+                        <AvatarDropdown onSelectTab={handleTabClick} />
+                      </div>
+
+                      {/* Close Button */}
                       <button
-                        onClick={handleBack}
+                        onClick={handleClose}
                         className="flex items-center justify-center w-8 h-8 rounded-full bg-transparent hover:bg-blue-500/10 dark:hover:bg-blue-500/20 group transition-all duration-200"
                       >
-                        <div className="i-ph:arrow-left w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
+                        <div className="i-ph:x w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
                       </button>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div
+                    className={classNames(
+                      'flex-1',
+                      'overflow-y-auto',
+                      'hover:overflow-y-auto',
+                      'scrollbar scrollbar-w-2',
+                      'scrollbar-track-transparent',
+                      'scrollbar-thumb-[#E5E5E5] hover:scrollbar-thumb-[#CCCCCC]',
+                      'dark:scrollbar-thumb-[#333333] dark:hover:scrollbar-thumb-[#444444]',
+                      'will-change-scroll',
+                      'touch-auto',
                     )}
-                    <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-white">
-                      {showTabManagement ? 'Tab Management' : activeTab ? TAB_LABELS[activeTab] : 'Control Panel'}
-                    </DialogTitle>
-                  </div>
-
-                  <div className="flex items-center gap-6">
-                    {/* Interface Mode Toggle */}
-                    <div className="flex items-center gap-2 min-w-[120px] border-r border-gray-200 dark:border-gray-800 pr-6">
-                      <button
-                        onClick={() => setUseSearchInterface(!useSearchInterface)}
-                        className={classNames(
-                          'px-3 py-1.5 text-sm rounded-lg transition-all duration-200',
-                          'border border-gray-200 dark:border-gray-700',
-                          useSearchInterface
-                            ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                            : 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-                        )}
-                      >
-                        {useSearchInterface ? '🔍 Search' : '📋 Tabs'}
-                      </button>
-                    </div>
-
-                    {/* Developer Mode Toggle */}
-                    <div className="flex items-center gap-2 min-w-[140px] border-r border-gray-200 dark:border-gray-800 pr-6">
-                      <AnimatedSwitch
-                        id="developer-mode"
-                        checked={developerMode}
-                        onCheckedChange={handleDeveloperModeChange}
-                        label={developerMode ? 'Developer Mode' : 'User Mode'}
-                      />
-                    </div>
-
-                    {/* Avatar and Dropdown */}
-                    <div className="border-l border-gray-200 dark:border-gray-800 pl-6">
-                      <AvatarDropdown onSelectTab={handleTabClick} />
-                    </div>
-
-                    {/* Close Button */}
-                    <button
-                      onClick={handleClose}
-                      className="flex items-center justify-center w-8 h-8 rounded-full bg-transparent hover:bg-blue-500/10 dark:hover:bg-blue-500/20 group transition-all duration-200"
-                    >
-                      <div className="i-ph:x w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div
-                  className={classNames(
-                    'flex-1',
-                    'overflow-y-auto',
-                    'hover:overflow-y-auto',
-                    'scrollbar scrollbar-w-2',
-                    'scrollbar-track-transparent',
-                    'scrollbar-thumb-[#E5E5E5] hover:scrollbar-thumb-[#CCCCCC]',
-                    'dark:scrollbar-thumb-[#333333] dark:hover:scrollbar-thumb-[#444444]',
-                    'will-change-scroll',
-                    'touch-auto',
-                  )}
-                >
-                  <motion.div
-                    key={activeTab || 'home'}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="p-6"
                   >
-                    {showTabManagement ? (
-                      <TabManagement />
-                    ) : activeTab ? (
-                      getTabComponent(activeTab)
-                    ) : useSearchInterface ? (
-                      <SearchInterface
-                        userProfile={{
-                          nickname: profile.username,
-                          name: profile.username || '',
-                          email: '',
-                          avatar: profile.avatar,
-                          theme: profile.preferences?.theme || 'system',
-                          notifications: profile.preferences?.notifications ?? true,
-                          language: profile.preferences?.language || 'en',
-                          timezone: profile.preferences?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-                        }}
-                        onSettingChange={(settingId, value) => {
-                          // Handle setting changes from search interface
-                          console.log('Setting changed:', settingId, value);
+                    <motion.div
+                      key={activeTab || 'home'}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="p-6"
+                    >
+                      {showTabManagement ? (
+                        <TabManagement />
+                      ) : activeTab ? (
+                        getTabComponent(activeTab)
+                      ) : useSearchInterface ? (
+                        <SearchInterface
+                          userProfile={{
+                            nickname: profile.username,
+                            name: profile.username || '',
+                            email: '',
+                            avatar: profile.avatar,
+                            theme: profile.preferences?.theme || 'system',
+                            notifications: profile.preferences?.notifications ?? true,
+                            language: profile.preferences?.language || 'en',
+                            timezone: profile.preferences?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+                          }}
+                          onSettingChange={(settingId, value) => {
+                            // Handle setting changes from search interface
+                            console.log('Setting changed:', settingId, value);
 
-                          // You could dispatch to stores here if needed
-                        }}
-                      />
-                    ) : (
-                      <motion.div
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative"
-                        variants={gridLayoutVariants}
-                        initial="hidden"
-                        animate="visible"
-                      >
-                        <AnimatePresence mode="popLayout">
-                          {(visibleTabs as TabWithDevType[]).map((tab: TabWithDevType) => (
-                            <motion.div key={tab.id} layout variants={itemVariants} className="aspect-[1.5/1]">
-                              <TabTile
-                                tab={tab}
-                                onClick={() => handleTabClick(tab.id as TabType)}
-                                isActive={activeTab === tab.id}
-                                hasUpdate={getTabUpdateStatus(tab.id)}
-                                statusMessage={getStatusMessage(tab.id)}
-                                description={TAB_DESCRIPTIONS[tab.id]}
-                                isLoading={loadingTab === tab.id}
-                                className="h-full relative"
-                              >
-                                {BETA_TABS.has(tab.id) && <BetaLabel />}
-                              </TabTile>
-                            </motion.div>
-                          ))}
-                        </AnimatePresence>
-                      </motion.div>
-                    )}
-                  </motion.div>
+                            // You could dispatch to stores here if needed
+                          }}
+                        />
+                      ) : (
+                        <motion.div
+                          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative"
+                          variants={gridLayoutVariants}
+                          initial="hidden"
+                          animate="visible"
+                        >
+                          <AnimatePresence mode="popLayout">
+                            {(visibleTabs as TabWithDevType[]).map((tab: TabWithDevType) => (
+                              <motion.div key={tab.id} layout variants={itemVariants} className="aspect-[1.5/1]">
+                                <TabTile
+                                  tab={tab}
+                                  onClick={() => handleTabClick(tab.id as TabType)}
+                                  isActive={activeTab === tab.id}
+                                  hasUpdate={getTabUpdateStatus(tab.id)}
+                                  statusMessage={getStatusMessage(tab.id)}
+                                  description={TAB_DESCRIPTIONS[tab.id]}
+                                  isLoading={loadingTab === tab.id}
+                                  className="h-full relative"
+                                >
+                                  {BETA_TABS.has(tab.id) && <BetaLabel />}
+                                </TabTile>
+                              </motion.div>
+                            ))}
+                          </AnimatePresence>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          </RadixDialog.Content>
-        </div>
-      </RadixDialog.Portal>
-    </RadixDialog.Root>
+              </motion.div>
+            </RadixDialog.Content>
+          </div>
+        </RadixDialog.Portal>
+      </RadixDialog.Root>
+
+      <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
+        <CommandInput placeholder="Type a command or search settings..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Settings">
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('profile');
+                setCommandOpen(false);
+              }}
+            >
+              <span>Profile Settings</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('settings');
+                setCommandOpen(false);
+              }}
+            >
+              <span>General Settings</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('notifications');
+                setCommandOpen(false);
+              }}
+            >
+              <span>Notifications</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('features');
+                setCommandOpen(false);
+              }}
+            >
+              <span>Features</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('connection');
+                setCommandOpen(false);
+              }}
+            >
+              <span>Connections</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('data');
+                setCommandOpen(false);
+              }}
+            >
+              <span>Data Management</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('debug');
+                setCommandOpen(false);
+              }}
+            >
+              <span>Debug</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                setActiveTab('update');
+                setCommandOpen(false);
+              }}
+            >
+              <span>Updates</span>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
+    </>
   );
 };
