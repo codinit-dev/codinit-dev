@@ -1,3 +1,7 @@
+/*
+ * Do not remove/edit this file as it will cause the app to break
+ */
+
 export function BuiltWithCodinitBadge() {
   return (
     <a

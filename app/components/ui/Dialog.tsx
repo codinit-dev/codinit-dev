@@ -105,7 +105,7 @@ export const Dialog = memo(({ children, className, showCloseButton = true, onClo
     <RadixDialog.Portal>
       <RadixDialog.Overlay asChild>
         <motion.div
-          className={classNames('fixed inset-0 z-[9999] bg-black/70 dark:bg-black/80 backdrop-blur-sm')}
+          className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm"
           initial="closed"
           animate="open"
           exit="closed"
@@ -116,7 +116,7 @@ export const Dialog = memo(({ children, className, showCloseButton = true, onClo
       <RadixDialog.Content asChild>
         <motion.div
           className={classNames(
-            'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-950 rounded-lg shadow-xl border border-codinit-elements-borderColor z-[9999] w-[520px] focus:outline-none',
+            'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl z-[9999] w-[520px] focus:outline-none',
             className,
           )}
           initial="closed"
@@ -130,7 +130,7 @@ export const Dialog = memo(({ children, className, showCloseButton = true, onClo
               <RadixDialog.Close asChild onClick={onClose}>
                 <IconButton
                   icon="i-ph:x"
-                  className="absolute top-3 right-3 text-codinit-elements-textTertiary hover:text-codinit-elements-textSecondary"
+                  className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
                 />
               </RadixDialog.Close>
             )}
@@ -208,7 +208,7 @@ export function ConfirmationDialog({
   return (
     <RadixDialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog showCloseButton={false}>
-        <div className="p-6 bg-white dark:bg-gray-950 relative z-10">
+        <div className="p-6 relative z-10">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="mb-4">{description}</DialogDescription>
           <div className="flex justify-end space-x-2">
@@ -221,8 +221,8 @@ export function ConfirmationDialog({
               disabled={isLoading}
               className={
                 variant === 'destructive'
-                  ? 'bg-red-500 text-white hover:bg-red-600'
-                  : 'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent hover:bg-codinit-elements-button-primary-backgroundHover'
+                  ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90'
               }
             >
               {isLoading ? (
@@ -346,9 +346,7 @@ export function SelectionDialog({
         key={item.id}
         className={classNames(
           'flex items-start space-x-3 p-2 rounded-md transition-colors',
-          selectedItems.includes(item.id)
-            ? 'bg-codinit-elements-item-backgroundAccent'
-            : 'bg-codinit-elements-bg-depth-2 hover:bg-codinit-elements-item-backgroundActive',
+          selectedItems.includes(item.id) ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50',
         )}
         style={{
           ...style,
@@ -362,18 +360,10 @@ export function SelectionDialog({
           onCheckedChange={() => handleToggleItem(item.id)}
         />
         <div className="grid gap-1.5 leading-none">
-          <Label
-            htmlFor={`item-${item.id}`}
-            className={classNames(
-              'text-sm font-medium cursor-pointer',
-              selectedItems.includes(item.id)
-                ? 'text-codinit-elements-item-contentAccent'
-                : 'text-codinit-elements-textPrimary',
-            )}
-          >
+          <Label htmlFor={`item-${item.id}`} className="text-sm font-medium cursor-pointer">
             {item.label}
           </Label>
-          {item.description && <p className="text-xs text-codinit-elements-textSecondary">{item.description}</p>}
+          {item.description && <p className="text-xs text-muted-foreground">{item.description}</p>}
         </div>
       </div>
     );
@@ -382,30 +372,25 @@ export function SelectionDialog({
   return (
     <RadixDialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog showCloseButton={false}>
-        <div className="p-6 bg-white dark:bg-gray-950 relative z-10">
+        <div className="p-6 relative z-10">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="mt-2 mb-4">
             Select the items you want to include and click{' '}
-            <span className="text-codinit-elements-item-contentAccent font-medium">{confirmLabel}</span>.
+            <span className="text-primary font-medium">{confirmLabel}</span>.
           </DialogDescription>
 
           <div className="py-4">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-codinit-elements-textSecondary">
+              <span className="text-sm font-medium text-muted-foreground">
                 {selectedItems.length} of {items.length} selected
               </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSelectAll}
-                className="text-xs h-8 px-2 text-codinit-elements-textPrimary hover:text-codinit-elements-item-contentAccent hover:bg-codinit-elements-item-backgroundAccent bg-codinit-elements-bg-depth-2 dark:bg-transparent"
-              >
+              <Button variant="ghost" size="sm" onClick={handleSelectAll} className="text-xs h-8 px-2">
                 {selectAll ? 'Deselect All' : 'Select All'}
               </Button>
             </div>
 
             <div
-              className="pr-2 border rounded-md border-codinit-elements-borderColor bg-codinit-elements-bg-depth-2"
+              className="pr-2 border rounded-md border-border bg-muted/50"
               style={{
                 maxHeight,
               }}
@@ -416,28 +401,24 @@ export function SelectionDialog({
                   width="100%"
                   itemCount={items.length}
                   itemSize={60}
-                  className="scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-codinit-elements-bg-depth-3"
+                  className="scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/30"
                 >
                   {ItemRenderer}
                 </FixedSizeList>
               ) : (
-                <div className="text-center py-4 text-sm text-codinit-elements-textTertiary">No items to display</div>
+                <div className="text-center py-4 text-sm text-muted-foreground">No items to display</div>
               )}
             </div>
           </div>
 
           <div className="flex justify-between mt-6">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="border-codinit-elements-borderColor text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive"
-            >
+            <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button
               onClick={handleConfirm}
               disabled={selectedItems.length === 0}
-              className="bg-accent-500 text-white hover:bg-accent-600 disabled:opacity-50 disabled:pointer-events-none"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:pointer-events-none"
             >
               {confirmLabel}
             </Button>
@@ -447,61 +428,3 @@ export function SelectionDialog({
     </RadixDialog.Root>
   );
 }
-
-const DialogTrigger = RadixDialog.Trigger;
-
-const DialogPortal = RadixDialog.Portal;
-
-const DialogOverlay = React.forwardRef<
-  React.ElementRef<typeof RadixDialog.Overlay>,
-  React.ComponentPropsWithoutRef<typeof RadixDialog.Overlay>
->(({ className, ...props }, ref) => (
-  <RadixDialog.Overlay
-    ref={ref}
-    className={classNames(
-      'fixed inset-0 z-[101] bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-      className,
-    )}
-    {...props}
-  />
-));
-DialogOverlay.displayName = RadixDialog.Overlay.displayName;
-
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof RadixDialog.Content>,
-  React.ComponentPropsWithoutRef<typeof RadixDialog.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <RadixDialog.Content
-      ref={ref}
-      className={classNames(
-        'fixed left-1/2 top-1/2 z-[101] grid max-h-[calc(100%-4rem)] w-full -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto border bg-background p-6 shadow-lg shadow-black/5 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:max-w-[400px] sm:rounded-xl',
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      <RadixDialog.Close className="group absolute right-3 top-3 flex size-7 items-center justify-center rounded-lg outline-offset-2 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none">
-        <div className="i-ph:x w-4 h-4 opacity-60 transition-opacity group-hover:opacity-100" />
-        <span className="sr-only">Close</span>
-      </RadixDialog.Close>
-    </RadixDialog.Content>
-  </DialogPortal>
-));
-DialogContent.displayName = RadixDialog.Content.displayName;
-
-const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={classNames('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...props} />
-);
-DialogHeader.displayName = 'DialogHeader';
-
-const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={classNames('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-3', className)}
-    {...props}
-  />
-);
-DialogFooter.displayName = 'DialogFooter';
-
-export { DialogContent, DialogHeader, DialogFooter, DialogOverlay, DialogPortal, DialogTrigger };
