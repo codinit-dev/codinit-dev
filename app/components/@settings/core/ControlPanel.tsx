@@ -25,14 +25,6 @@ import { TAB_LABELS, DEFAULT_TAB_CONFIG } from './constants';
 import { DialogTitle } from '~/components/ui/Dialog';
 import { AvatarDropdown } from './AvatarDropdown';
 import BackgroundRays from '~/components/ui/BackgroundRays';
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '~/components/ui/Command';
 
 // Import all tab components
 import ProfileTab from '~/components/@settings/tabs/profile/ProfileTab';
@@ -168,21 +160,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
   const [loadingTab, setLoadingTab] = useState<TabType | null>(null);
   const [showTabManagement, setShowTabManagement] = useState(false);
   const [useSearchInterface, setUseSearchInterface] = useState(true); // Default to search
-  const [commandOpen, setCommandOpen] = useState(false);
-
-  // Keyboard listener for command modal
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === '/') {
-        e.preventDefault();
-        setCommandOpen(true);
-      }
-    };
-
-    document.addEventListener('keydown', down);
-
-    return () => document.removeEventListener('keydown', down);
-  }, []);
 
   // Store values
   const tabConfiguration = useStore(tabConfigurationStore);
@@ -626,79 +603,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
           </div>
         </RadixDialog.Portal>
       </RadixDialog.Root>
-
-      <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
-        <CommandInput placeholder="Type a command or search settings..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Settings">
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('profile');
-                setCommandOpen(false);
-              }}
-            >
-              <span>Profile Settings</span>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('settings');
-                setCommandOpen(false);
-              }}
-            >
-              <span>General Settings</span>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('notifications');
-                setCommandOpen(false);
-              }}
-            >
-              <span>Notifications</span>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('features');
-                setCommandOpen(false);
-              }}
-            >
-              <span>Features</span>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('connection');
-                setCommandOpen(false);
-              }}
-            >
-              <span>Connections</span>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('data');
-                setCommandOpen(false);
-              }}
-            >
-              <span>Data Management</span>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('debug');
-                setCommandOpen(false);
-              }}
-            >
-              <span>Debug</span>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => {
-                setActiveTab('update');
-                setCommandOpen(false);
-              }}
-            >
-              <span>Updates</span>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
-      </CommandDialog>
     </>
   );
 };
