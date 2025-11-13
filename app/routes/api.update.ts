@@ -1,8 +1,8 @@
 import { json, type ActionFunction } from '@remix-run/cloudflare';
 
-// Current version from package.json
-const CURRENT_VERSION = '1.0.1';
-const GITHUB_REPO = 'Gerome-Elassaad/codinit-app'; // Update this with your actual GitHub repo
+// Current version - update this when releasing new versions
+const CURRENT_VERSION = '1.0.6';
+const GITHUB_REPO = 'Gerome-Elassaad/codinit-app';
 
 interface GitHubRelease {
   tag_name: string;
@@ -12,11 +12,16 @@ interface GitHubRelease {
 }
 
 export const action: ActionFunction = async ({ request }) => {
+  console.log('🚀 Update API called');
+
   if (request.method !== 'POST') {
+    console.log('❌ Invalid method:', request.method);
     return json({ error: 'Method not allowed' }, { status: 405 });
   }
 
   try {
+    console.log('📡 Fetching latest release from GitHub...');
+
     // Fetch the latest release from GitHub
     const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`, {
       headers: {
@@ -26,8 +31,11 @@ export const action: ActionFunction = async ({ request }) => {
     });
 
     if (!response.ok) {
+      console.log('⚠️ GitHub API response not ok:', response.status);
+
       // If no releases found or repo doesn't exist
       if (response.status === 404) {
+        console.log('📭 No releases found');
         return json({
           updateAvailable: false,
           currentVersion: CURRENT_VERSION,
@@ -40,9 +48,11 @@ export const action: ActionFunction = async ({ request }) => {
 
     const release = (await response.json()) as GitHubRelease;
     const latestVersion = release.tag_name.replace(/^v/, ''); // Remove 'v' prefix if present
+    console.log('📦 Latest version from GitHub:', latestVersion);
 
     // Compare versions
     const updateAvailable = compareVersions(latestVersion, CURRENT_VERSION) > 0;
+    console.log('🔍 Update available:', updateAvailable, `(current: ${CURRENT_VERSION}, latest: ${latestVersion})`);
 
     return json({
       updateAvailable,
@@ -53,7 +63,7 @@ export const action: ActionFunction = async ({ request }) => {
       publishedAt: release.published_at,
     });
   } catch (error) {
-    console.error('Error checking for updates:', error);
+    console.error('💥 Error checking for updates:', error);
     return json(
       {
         error: 'Failed to check for updates',

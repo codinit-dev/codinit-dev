@@ -57,7 +57,7 @@ publish:
   provider: github
   owner: Gerome-Elassaad
   repo: codinit-app
-  private: true
+  private: false
   releaseType: release
 
 electronDownload:

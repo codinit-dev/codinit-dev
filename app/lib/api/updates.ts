@@ -1,17 +1,32 @@
 export interface UpdateCheckResult {
   available: boolean;
   version: string;
+  currentVersion: string;
   releaseNotes?: string;
+  releaseUrl?: string;
+  publishedAt?: string;
   error?: {
     type: 'rate_limit' | 'network' | 'auth' | 'unknown';
     message: string;
   };
 }
 
-interface PackageJson {
-  version: string;
-  name: string;
-  [key: string]: unknown;
+interface GitHubRelease {
+  tag_name: string;
+  html_url: string;
+  body: string;
+  published_at: string;
+}
+
+interface ApiUpdateResponse {
+  updateAvailable: boolean;
+  currentVersion: string;
+  latestVersion?: string;
+  releaseUrl?: string;
+  releaseNotes?: string;
+  publishedAt?: string;
+  error?: string;
+  message?: string;
 }
 
 function compareVersions(v1: string, v2: string): number {
@@ -26,8 +41,12 @@ function compareVersions(v1: string, v2: string): number {
     const part1 = parts1[i] || 0;
     const part2 = parts2[i] || 0;
 
-    if (part1 !== part2) {
-      return part1 - part2;
+    if (part1 > part2) {
+      return 1;
+    }
+
+    if (part1 < part2) {
+      return -1;
     }
   }
 
@@ -36,48 +55,74 @@ function compareVersions(v1: string, v2: string): number {
 
 export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
   try {
-    // Get the current version from local package.json
-    const packageResponse = await fetch('/package.json');
+    // Get update info from the API route
+    const apiResponse = await fetch('/api/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    if (!packageResponse.ok) {
-      throw new Error('Failed to fetch local package.json');
+    if (!apiResponse.ok) {
+      throw new Error(`API request failed: ${apiResponse.status}`);
     }
 
-    const packageData = (await packageResponse.json()) as PackageJson;
+    const apiData = (await apiResponse.json()) as ApiUpdateResponse;
 
-    if (!packageData.version || typeof packageData.version !== 'string') {
-      throw new Error('Invalid package.json format: missing or invalid version');
+    if (apiData.error) {
+      throw new Error(apiData.message || 'API returned an error');
     }
 
-    const currentVersion = packageData.version;
+    const currentVersion = apiData.currentVersion;
 
-    /*
-     * Get the latest version from GitHub's main branch package.json
-     * Using raw.githubusercontent.com which doesn't require authentication
-     */
-    const latestPackageResponse = await fetch(
-      'https://raw.githubusercontent.com/gerome-elassaad/codinit-app/main/package.json',
-    );
+    // Fetch the latest release from GitHub
+    const response = await fetch(`https://api.github.com/repos/gerome-elassaad/codinit-app/releases/latest`, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'CodinIT-App',
+      },
+    });
 
-    if (!latestPackageResponse.ok) {
-      throw new Error(`Failed to fetch latest package.json: ${latestPackageResponse.status}`);
+    if (!response.ok) {
+      // If no releases found or repo doesn't exist
+      if (response.status === 404) {
+        return {
+          available: false,
+          version: currentVersion,
+          currentVersion,
+        };
+      }
+
+      // Check for rate limiting
+      if (response.status === 403) {
+        const resetTime = response.headers.get('X-RateLimit-Reset');
+        return {
+          available: false,
+          version: currentVersion,
+          currentVersion,
+          error: {
+            type: 'rate_limit',
+            message: `GitHub API rate limit exceeded. ${resetTime ? `Resets at ${new Date(parseInt(resetTime) * 1000).toLocaleTimeString()}` : ''}`,
+          },
+        };
+      }
+
+      throw new Error(`GitHub API returned ${response.status}`);
     }
 
-    const latestPackageData = (await latestPackageResponse.json()) as PackageJson;
+    const release = (await response.json()) as GitHubRelease;
+    const latestVersion = release.tag_name.replace(/^v/, ''); // Remove 'v' prefix if present
 
-    if (!latestPackageData.version || typeof latestPackageData.version !== 'string') {
-      throw new Error('Invalid remote package.json format: missing or invalid version');
-    }
-
-    const latestVersion = latestPackageData.version;
-
-    // Compare versions semantically
-    const hasUpdate = compareVersions(latestVersion, currentVersion) > 0;
+    // Compare versions
+    const updateAvailable = compareVersions(latestVersion, currentVersion) > 0;
 
     return {
-      available: hasUpdate,
+      available: updateAvailable,
       version: latestVersion,
-      releaseNotes: hasUpdate ? 'Update available. Check GitHub for release notes.' : undefined,
+      currentVersion,
+      releaseNotes: release.body,
+      releaseUrl: release.html_url,
+      publishedAt: release.published_at,
     };
   } catch (error) {
     console.error('Error checking for updates:', error);
@@ -85,13 +130,26 @@ export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
     // Determine error type
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     const isNetworkError =
-      errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('fetch');
+      errorMessage.toLowerCase().includes('network') ||
+      errorMessage.toLowerCase().includes('fetch') ||
+      errorMessage.toLowerCase().includes('failed to fetch');
+
+    let errorType: 'rate_limit' | 'network' | 'auth' | 'unknown' = 'unknown';
+
+    if (isNetworkError) {
+      errorType = 'network';
+    } else if (errorMessage.toLowerCase().includes('rate limit')) {
+      errorType = 'rate_limit';
+    } else if (errorMessage.toLowerCase().includes('auth') || errorMessage.toLowerCase().includes('403')) {
+      errorType = 'auth';
+    }
 
     return {
       available: false,
       version: 'unknown',
+      currentVersion: 'unknown',
       error: {
-        type: isNetworkError ? 'network' : 'unknown',
+        type: errorType,
         message: `Failed to check for updates: ${errorMessage}`,
       },
     };

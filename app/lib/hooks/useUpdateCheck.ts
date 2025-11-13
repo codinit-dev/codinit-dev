@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { checkForUpdates, acknowledgeUpdate } from '~/lib/api/updates';
 
 const LAST_ACKNOWLEDGED_VERSION_KEY = 'codinit_last_acknowledged_version';
@@ -6,6 +7,11 @@ const LAST_ACKNOWLEDGED_VERSION_KEY = 'codinit_last_acknowledged_version';
 export const useUpdateCheck = () => {
   const [hasUpdate, setHasUpdate] = useState(false);
   const [currentVersion, setCurrentVersion] = useState<string>('');
+  const [latestVersion, setLatestVersion] = useState<string>('');
+  const [releaseNotes, setReleaseNotes] = useState<string>('');
+  const [releaseUrl, setReleaseUrl] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [lastAcknowledgedVersion, setLastAcknowledgedVersion] = useState<string | null>(() => {
     try {
       return localStorage.getItem(LAST_ACKNOWLEDGED_VERSION_KEY);
@@ -16,14 +22,57 @@ export const useUpdateCheck = () => {
 
   useEffect(() => {
     const checkUpdate = async () => {
+      console.log('🔄 Checking for updates...');
+      setIsLoading(true);
+      setError(null);
+
       try {
-        const { available, version } = await checkForUpdates();
-        setCurrentVersion(version);
+        const result = await checkForUpdates();
+        console.log('📦 Update check result:', result);
+
+        if (result.error) {
+          console.error('❌ Update check error:', result.error);
+          setError(result.error.message);
+          setHasUpdate(false);
+          return;
+        }
+
+        setCurrentVersion(result.currentVersion);
+        setLatestVersion(result.version);
+        setReleaseNotes(result.releaseNotes || '');
+        setReleaseUrl(result.releaseUrl || '');
 
         // Only show update if it's a new version and hasn't been acknowledged
-        setHasUpdate(available && version !== lastAcknowledgedVersion);
+        const shouldShowUpdate = result.available && result.version !== lastAcknowledgedVersion;
+        setHasUpdate(shouldShowUpdate);
+
+        if (result.available) {
+          console.log('✨ Update available:', result.version);
+
+          // Show toast notification for new updates
+          if (shouldShowUpdate) {
+            toast.info(
+              `New version v${result.version} available! Please update to get the latest features and improvements.`,
+              {
+                position: 'top-right',
+                autoClose: false,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                toastId: 'update-notification',
+              },
+            );
+          }
+        } else {
+          console.log('✅ App is up to date');
+        }
       } catch (error) {
-        console.error('Failed to check for updates:', error);
+        console.error('💥 Failed to check for updates:', error);
+        setError('Failed to check for updates');
+        setHasUpdate(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -36,23 +85,39 @@ export const useUpdateCheck = () => {
   }, [lastAcknowledgedVersion]);
 
   const handleAcknowledgeUpdate = async () => {
+    console.log('👆 Acknowledging update...');
+
     try {
-      const { version } = await checkForUpdates();
-      await acknowledgeUpdate(version);
+      const result = await checkForUpdates();
 
-      // Store in localStorage
-      try {
-        localStorage.setItem(LAST_ACKNOWLEDGED_VERSION_KEY, version);
-      } catch (error) {
-        console.error('Failed to persist acknowledged version:', error);
+      if (!result.error) {
+        await acknowledgeUpdate(result.version);
+        console.log('✅ Update acknowledged:', result.version);
+
+        // Store in localStorage
+        try {
+          localStorage.setItem(LAST_ACKNOWLEDGED_VERSION_KEY, result.version);
+        } catch (error) {
+          console.error('Failed to persist acknowledged version:', error);
+        }
+
+        setLastAcknowledgedVersion(result.version);
+        setHasUpdate(false);
+        toast.dismiss('update-notification');
       }
-
-      setLastAcknowledgedVersion(version);
-      setHasUpdate(false);
     } catch (error) {
-      console.error('Failed to acknowledge update:', error);
+      console.error('💥 Failed to acknowledge update:', error);
     }
   };
 
-  return { hasUpdate, currentVersion, acknowledgeUpdate: handleAcknowledgeUpdate };
+  return {
+    hasUpdate,
+    currentVersion,
+    latestVersion,
+    releaseNotes,
+    releaseUrl,
+    isLoading,
+    error,
+    acknowledgeUpdate: handleAcknowledgeUpdate,
+  };
 };
