@@ -34,6 +34,7 @@ export const useUpdateCheck = () => {
           console.error('❌ Update check error:', result.error);
           setError(result.error.message);
           setHasUpdate(false);
+
           return;
         }
 
