@@ -116,6 +116,7 @@ export const ChatImpl = memo(
     const [chatMode, setChatMode] = useState<'discuss' | 'build'>('build');
     const [selectedElement, setSelectedElement] = useState<ElementInfo | null>(null);
     const mcpSettings = useMCPStore((state) => state.settings);
+    const selectedMCP = useMCPStore((state) => state.selectedMCP);
 
     const {
       messages,
@@ -150,6 +151,7 @@ export const ChatImpl = memo(
         },
         maxLLMSteps: mcpSettings.maxLLMSteps,
         enableMCPTools: mcpSettings.enabled,
+        selectedMCP,
       },
       sendExtraMessageFields: true,
       onError: (e) => {
@@ -409,6 +411,32 @@ export const ChatImpl = memo(
       if (isLoading) {
         abort();
         return;
+      }
+
+      // Check for MCP commands
+      const mcpCommandMatch = messageContent.trim().match(/^\/mcp\s+(.+)$/i);
+
+      if (mcpCommandMatch) {
+        const serverName = mcpCommandMatch[1].trim();
+        const mcpStore = useMCPStore.getState();
+
+        // Check if the server exists
+        const serverExists = Object.keys(mcpStore.serverTools).includes(serverName);
+
+        if (serverExists) {
+          mcpStore.setSelectedMCP(serverName);
+          toast.success(`Selected MCP server: ${serverName}`);
+          setInput('');
+
+          return;
+        } else {
+          toast.error(
+            `MCP server "${serverName}" not found. Available servers: ${Object.keys(mcpStore.serverTools).join(', ')}`,
+          );
+          setInput('');
+
+          return;
+        }
       }
 
       let finalMessageContent = messageContent;

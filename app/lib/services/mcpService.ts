@@ -524,6 +524,22 @@ export class MCPService {
     return this._tools;
   }
 
+  getToolsForServer(serverName: string | null) {
+    if (!serverName) {
+      return this._tools;
+    }
+
+    const filteredTools: ToolSet = {};
+
+    for (const [toolName, tool] of Object.entries(this._tools)) {
+      if (this._toolNamesToServerNames.get(toolName) === serverName) {
+        filteredTools[toolName] = tool;
+      }
+    }
+
+    return filteredTools;
+  }
+
   get toolsWithoutExecute() {
     return this._toolsWithoutExecute;
   }

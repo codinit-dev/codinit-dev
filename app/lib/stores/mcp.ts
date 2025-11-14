@@ -67,6 +67,7 @@ type Store = {
   toolExecutions: MCPToolExecution[];
   toolMetrics: Record<string, MCPToolMetrics>;
   pendingApprovals: MCPToolExecution[];
+  selectedMCP: string | null;
 };
 
 type Actions = {
@@ -81,6 +82,7 @@ type Actions = {
   updateToolMetrics: (toolName: string, serverName: string, success: boolean, duration: number) => void;
   getToolExecutions: (toolName?: string) => MCPToolExecution[];
   getPendingApprovals: () => MCPToolExecution[];
+  setSelectedMCP: (serverName: string | null) => void;
 };
 
 export const useMCPStore = create<Store & Actions>((set, get) => ({
@@ -93,6 +95,7 @@ export const useMCPStore = create<Store & Actions>((set, get) => ({
   toolExecutions: [],
   toolMetrics: {},
   pendingApprovals: [],
+  selectedMCP: null,
   initialize: async () => {
     if (get().isInitialized) {
       return;
@@ -244,6 +247,10 @@ export const useMCPStore = create<Store & Actions>((set, get) => ({
 
   getPendingApprovals: () => {
     return get().pendingApprovals;
+  },
+
+  setSelectedMCP: (serverName: string | null) => {
+    set({ selectedMCP: serverName });
   },
 }));
 

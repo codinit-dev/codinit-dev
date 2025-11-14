@@ -22,6 +22,7 @@ export interface StreamingOptions extends Omit<Parameters<typeof _streamText>[0]
     };
   };
   enableMCPTools?: boolean;
+  selectedMCP?: string | null;
 }
 
 const logger = createScopedLogger('stream-text');
@@ -190,8 +191,10 @@ ${lockedFilesListString}
   if (options?.enableMCPTools) {
     try {
       const mcpService = MCPService.getInstance();
-      mcpTools = mcpService.tools;
-      logger.debug(`Loaded ${Object.keys(mcpTools).length} MCP tools`);
+      mcpTools = mcpService.getToolsForServer(options.selectedMCP || null);
+      logger.debug(
+        `Loaded ${Object.keys(mcpTools).length} MCP tools${options.selectedMCP ? ` for server: ${options.selectedMCP}` : ''}`,
+      );
     } catch (error) {
       logger.error('Failed to load MCP tools:', error);
     }
