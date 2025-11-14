@@ -192,7 +192,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
         <>
           <div>
             <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
-              Command <span className="text-red-500">*</span>
+              Command <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -249,7 +249,7 @@ export const McpServerForm = memo(({ initialData, onSave, onCancel, onTest }: Mc
         <>
           <div>
             <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
-              URL <span className="text-red-500">*</span>
+              URL <span className="text-red-600 dark:text-red-400">*</span>
             </label>
             <input
               type="url"

@@ -271,13 +271,13 @@ export const McpToolRegistry = memo(({ className }: McpToolRegistryProps) => {
               <div className="text-sm text-codinit-elements-textSecondary">Total Tools</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-green-500">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {tools.filter((t) => t.status === 'available').length}
               </div>
               <div className="text-sm text-codinit-elements-textSecondary">Available</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-red-500">
+              <div className="text-2xl font-bold text-red-600 dark:text-red-400">
                 {tools.filter((t) => t.status === 'unavailable').length}
               </div>
               <div className="text-sm text-codinit-elements-textSecondary">Unavailable</div>

@@ -189,7 +189,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
               {/* Server Name */}
               <div>
                 <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
-                  Server Name <span className="text-red-500">*</span>
+                  Server Name <span className="text-red-600 dark:text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -204,7 +204,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
               {template.requiredFields.map((field) => (
                 <div key={field.key}>
                   <label className="block text-sm font-medium text-codinit-elements-textPrimary mb-1.5">
-                    {field.label} {field.required && <span className="text-red-500">*</span>}
+                    {field.label} {field.required && <span className="text-red-600 dark:text-red-400">*</span>}
                   </label>
                   <input
                     type={field.type}

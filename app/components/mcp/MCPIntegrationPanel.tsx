@@ -53,7 +53,7 @@ const backdropVariants = {
   },
 } satisfies Variants;
 
-type TabType = 'integrations' | 'marketplace' | 'tools' | 'history' | 'secrets';
+type TabType = 'integrations' | 'marketplace' | 'tools' | 'history';
 
 export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPanelProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('integrations');
@@ -291,13 +291,6 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                     <i className="i-ph:clock-counter-clockwise" />
                     History
                   </button>
-                  <button
-                    onClick={() => setActiveTab('secrets')}
-                    className={activeTab === 'secrets' ? styles.active : ''}
-                  >
-                    <i className="i-ph:key" />
-                    Secrets
-                  </button>
                 </div>
               </div>
 
@@ -396,14 +389,6 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                       toast.info(`Retrying execution: ${execution.toolName}`);
                     }}
                   />
-                )}
-
-                {activeTab === 'secrets' && (
-                  <div className={styles.emptyState}>
-                    <i className="i-ph:key text-4xl text-codinit-elements-textTertiary mb-4" />
-                    <h3>Secrets Management</h3>
-                    <p>Manage your API keys and secrets securely. Coming soon.</p>
-                  </div>
                 )}
               </div>
             </motion.div>
