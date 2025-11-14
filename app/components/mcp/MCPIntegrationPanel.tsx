@@ -7,6 +7,8 @@ import { IconButton } from '~/components/ui/IconButton';
 import { AddMcpServerDialog } from './AddMcpServerDialog';
 import { McpMarketplace } from './MCPMarketplace';
 import { McpTemplateConfigDialog } from './MCPTemplateConfigDialog';
+import { McpToolRegistry } from './MCPToolRegistry';
+import { McpExecutionHistory } from './MCPExecutionHistory';
 import type { MCPServerConfig } from '~/lib/services/mcpService';
 import type { MCPTemplate } from './MCPMarketplace';
 import { toast } from 'react-toastify';
@@ -51,7 +53,7 @@ const backdropVariants = {
   },
 } satisfies Variants;
 
-type TabType = 'integrations' | 'marketplace' | 'secrets';
+type TabType = 'integrations' | 'marketplace' | 'tools' | 'history' | 'secrets';
 
 export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPanelProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('integrations');
@@ -67,6 +69,9 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
   const checkServersAvailabilities = useMCPStore((state) => state.checkServersAvailabilities);
   const updateSettings = useMCPStore((state) => state.updateSettings);
   const isCheckingServers = useMCPStore((state) => state.isCheckingServers);
+  const toolExecutions = useMCPStore((state) => state.toolExecutions);
+
+  const clearExecutionHistory = useMCPStore((state) => state.clearExecutionHistory);
 
   const serverEntries = useMemo(() => Object.entries(serverTools), [serverTools]);
 
@@ -83,26 +88,21 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
     }
 
     // Initial check
-    handleCheckServers();
+    checkServersAvailabilities();
 
     // Set up periodic checking every 30 seconds
     const interval = setInterval(() => {
-      handleCheckServers();
+      checkServersAvailabilities();
     }, 30000);
 
-    return (): void => {
+    return () => {
       clearInterval(interval);
     };
   }, [isInitialized, serverEntries.length]);
 
-  const handleCheckServers = async () => {
+  const handleCheckServers = () => {
     setError(null);
-
-    try {
-      await checkServersAvailabilities();
-    } catch (e) {
-      setError(`Failed to check server availability: ${e instanceof Error ? e.message : String(e)}`);
-    }
+    checkServersAvailabilities();
   };
 
   const handleAddServer = async (name: string, config: MCPServerConfig) => {
@@ -212,10 +212,6 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
   };
 
   const handleTestConnection = async (config: MCPServerConfig): Promise<{ success: boolean; error?: string }> => {
-    /*
-     * This would need a backend endpoint to test connection
-     * For now, just validate the config structure
-     */
     try {
       if (config.type === 'stdio' && !config.command) {
         return { success: false, error: 'Command is required for STDIO servers' };
@@ -283,6 +279,17 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                   >
                     <i className="i-ph:storefront" />
                     Marketplace
+                  </button>
+                  <button onClick={() => setActiveTab('tools')} className={activeTab === 'tools' ? styles.active : ''}>
+                    <i className="i-ph:wrench" />
+                    Tools
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('history')}
+                    className={activeTab === 'history' ? styles.active : ''}
+                  >
+                    <i className="i-ph:clock-counter-clockwise" />
+                    History
                   </button>
                   <button
                     onClick={() => setActiveTab('secrets')}
@@ -369,6 +376,28 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                   </>
                 )}
 
+                {activeTab === 'tools' && <McpToolRegistry className="p-4" />}
+
+                {activeTab === 'history' && (
+                  <McpExecutionHistory
+                    executions={toolExecutions}
+                    onClearHistory={clearExecutionHistory}
+                    onExportHistory={(executions) => {
+                      const dataStr = JSON.stringify(executions, null, 2);
+                      const blob = new Blob([dataStr], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'mcp-execution-history.json';
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    onRetryExecution={(execution) => {
+                      toast.info(`Retrying execution: ${execution.toolName}`);
+                    }}
+                  />
+                )}
+
                 {activeTab === 'secrets' && (
                   <div className={styles.emptyState}>
                     <i className="i-ph:key text-4xl text-codinit-elements-textTertiary mb-4" />
@@ -399,3 +428,5 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
     </>
   );
 });
+
+McpIntegrationPanel.displayName = 'McpIntegrationPanel';

@@ -93,7 +93,7 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
                 {dynamicTitle}
               </div>
               <div className="w-full w-full text-codinit-elements-textSecondary text-xs mt-0.5">
-                Click to open Workbench
+                Click to open Webview
               </div>
             </div>
           </button>

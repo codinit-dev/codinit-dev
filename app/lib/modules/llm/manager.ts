@@ -5,11 +5,19 @@ import * as providers from './registry';
 import { createScopedLogger } from '~/utils/logger';
 
 const logger = createScopedLogger('LLMManager');
+
+interface ErrorThrottleEntry {
+  lastLogged: number;
+  errorMessage: string;
+}
+
 export class LLMManager {
   private static _instance: LLMManager;
   private _providers: Map<string, BaseProvider> = new Map();
   private _modelList: ModelInfo[] = [];
   private readonly _env: any = {};
+  private _errorThrottleCache: Map<string, ErrorThrottleEntry> = new Map();
+  private readonly _errorThrottleMs = 5 * 60 * 1000; // 5 minutes
 
   private constructor(_env: Record<string, string>) {
     this._registerProvidersFromDirectory();
@@ -74,6 +82,75 @@ export class LLMManager {
     return this._modelList;
   }
 
+  private _shouldThrottleError(providerName: string, errorMessage: string): boolean {
+    const now = Date.now();
+    const cached = this._errorThrottleCache.get(`${providerName}:${errorMessage}`);
+
+    if (cached && now - cached.lastLogged < this._errorThrottleMs) {
+      return true; // Throttle this error
+    }
+
+    this._errorThrottleCache.set(`${providerName}:${errorMessage}`, { lastLogged: now, errorMessage });
+
+    return false; // Log this error
+  }
+
+  private _hasRequiredConfiguration(
+    provider: BaseProvider,
+    apiKeys?: Record<string, string>,
+    serverEnv?: Record<string, string>,
+  ): boolean {
+    // Check if provider has API key configuration
+    const config = provider.config;
+
+    if (config?.apiTokenKey) {
+      const hasApiKey = apiKeys?.[config.apiTokenKey] || serverEnv?.[config.apiTokenKey];
+
+      if (!hasApiKey) {
+        return false;
+      }
+    }
+
+    // For local providers like Ollama and LMStudio, check if baseUrl is configured
+    if (provider.name === 'Ollama' || provider.name === 'LMStudio') {
+      const baseUrlKey = provider.name === 'Ollama' ? 'OLLAMA_API_BASE_URL' : 'LMSTUDIO_API_BASE_URL';
+      const hasBaseUrl = apiKeys?.[baseUrlKey] || serverEnv?.[baseUrlKey];
+
+      if (!hasBaseUrl) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private _logProviderError(providerName: string, error: any, context?: string): void {
+    const errorMessage = error?.message || String(error);
+
+    if (this._shouldThrottleError(providerName, errorMessage)) {
+      logger.debug(`${providerName}: Error throttled (last logged recently): ${errorMessage}`);
+
+      return;
+    }
+
+    // Classify error types for better messaging
+    let logMessage = `Error getting dynamic models ${providerName}: ${errorMessage}`;
+
+    if (errorMessage.includes('fetch failed') || errorMessage.includes('ECONNREFUSED')) {
+      logMessage = `${providerName}: Connection failed - service may not be running`;
+    } else if (errorMessage.includes('Missing Api Key') || errorMessage.includes('No baseUrl found')) {
+      logMessage = `${providerName}: Configuration error - ${errorMessage}`;
+    } else if (errorMessage.includes('Unexpected API response')) {
+      logMessage = `${providerName}: API response format error - ${errorMessage}`;
+    }
+
+    if (context) {
+      logMessage += ` (${context})`;
+    }
+
+    logger.error(logMessage);
+  }
+
   async updateModelList(options: {
     apiKeys?: Record<string, string>;
     providerSettings?: Record<string, IProviderSetting>;
@@ -90,7 +167,14 @@ export class LLMManager {
     // Get dynamic models from all providers that support them
     const dynamicModels = await Promise.all(
       Array.from(this._providers.values())
-        .filter((provider) => enabledProviders.includes(provider.name))
+        .filter((provider) => {
+          if (!enabledProviders.includes(provider.name)) {
+            logger.debug(`Skipping ${provider.name}: provider disabled`);
+            return false;
+          }
+
+          return true;
+        })
         .filter(
           (provider): provider is BaseProvider & Required<Pick<ProviderInfo, 'getDynamicModels'>> =>
             !!provider.getDynamicModels,
@@ -99,11 +183,21 @@ export class LLMManager {
           const cachedModels = provider.getModelsFromCache(options);
 
           if (cachedModels) {
+            logger.debug(`Found ${cachedModels.length} cached models for ${provider.name}`);
             return cachedModels;
           }
 
+          // Check if provider has required configuration before attempting fetch
+          const providerConfig = providerSettings?.[provider.name];
+          const hasRequiredConfig = this._hasRequiredConfiguration(provider, apiKeys, serverEnv);
+
+          if (!hasRequiredConfig) {
+            logger.debug(`Skipping ${provider.name}: missing required configuration`);
+            return [];
+          }
+
           const dynamicModels = await provider
-            .getDynamicModels(apiKeys, providerSettings?.[provider.name], serverEnv)
+            .getDynamicModels(apiKeys, providerConfig, serverEnv)
             .then((models) => {
               logger.info(`Caching ${models.length} dynamic models for ${provider.name}`);
               provider.storeDynamicModels(options, models);
@@ -111,7 +205,7 @@ export class LLMManager {
               return models;
             })
             .catch((err) => {
-              logger.error(`Error getting dynamic models ${provider.name} :`, err);
+              this._logProviderError(provider.name, err, 'dynamic models fetch');
               return [];
             });
 
@@ -162,11 +256,20 @@ export class LLMManager {
     });
 
     if (cachedModels) {
-      logger.info(`Found ${cachedModels.length} cached models for ${provider.name}`);
+      logger.debug(`Found ${cachedModels.length} cached models for ${provider.name}`);
+
       return [...cachedModels, ...staticModels];
     }
 
-    logger.info(`Getting dynamic models for ${provider.name}`);
+    // Check if provider has required configuration before attempting fetch
+    const hasRequiredConfig = this._hasRequiredConfiguration(provider, apiKeys, serverEnv);
+
+    if (!hasRequiredConfig) {
+      logger.debug(`Skipping ${provider.name}: missing required configuration`);
+      return staticModels;
+    }
+
+    logger.debug(`Getting dynamic models for ${provider.name}`);
 
     const dynamicModels = await provider
       .getDynamicModels?.(apiKeys, providerSettings?.[provider.name], serverEnv)
@@ -177,7 +280,7 @@ export class LLMManager {
         return models;
       })
       .catch((err) => {
-        logger.error(`Error getting dynamic models ${provider.name} :`, err);
+        this._logProviderError(provider.name, err, 'dynamic models fetch');
         return [];
       });
     const dynamicModelsName = dynamicModels.map((d) => d.name);

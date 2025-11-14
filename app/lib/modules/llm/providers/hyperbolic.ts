@@ -72,6 +72,10 @@ export default class HyperbolicProvider extends BaseProvider {
 
     const res = (await response.json()) as any;
 
+    if (!res.data || !Array.isArray(res.data)) {
+      throw new Error(`Unexpected API response format: missing or invalid data array`);
+    }
+
     const data = res.data.filter((model: any) => model.object === 'model' && model.supports_chat);
 
     return data.map((m: any) => ({

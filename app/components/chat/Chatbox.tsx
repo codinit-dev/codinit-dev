@@ -18,8 +18,8 @@ import type { ProviderInfo } from '~/types/model';
 import { ColorSchemeDialog } from '~/components/chat/ColorSchemeDialog';
 import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
-import { McpTools } from './MCPTools';
-import { McpIntegrationPanel } from './MCPIntegrationPanel';
+import { McpTools } from '~/components/mcp/MCPTools';
+import { McpIntegrationPanel } from '~/components/mcp/MCPIntegrationPanel';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
