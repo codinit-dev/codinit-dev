@@ -7,7 +7,7 @@ import { IconButton } from '~/components/ui/IconButton';
 import { AddMcpServerDialog } from './AddMcpServerDialog';
 import { McpMarketplace } from './MCPMarketplace';
 import { McpTemplateConfigDialog } from './MCPTemplateConfigDialog';
-import { McpToolRegistry } from './MCPToolRegistry';
+
 import { McpExecutionHistory } from './MCPExecutionHistory';
 import type { MCPServerConfig } from '~/lib/services/mcpService';
 import type { MCPTemplate } from './MCPMarketplace';
@@ -53,7 +53,7 @@ const backdropVariants = {
   },
 } satisfies Variants;
 
-type TabType = 'integrations' | 'marketplace' | 'tools' | 'history';
+type TabType = 'integrations' | 'marketplace' | 'history';
 
 export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPanelProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('integrations');
@@ -280,10 +280,6 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                     <i className="i-ph:storefront" />
                     Marketplace
                   </button>
-                  <button onClick={() => setActiveTab('tools')} className={activeTab === 'tools' ? styles.active : ''}>
-                    <i className="i-ph:wrench" />
-                    Tools
-                  </button>
                   <button
                     onClick={() => setActiveTab('history')}
                     className={activeTab === 'history' ? styles.active : ''}
@@ -368,8 +364,6 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                     )}
                   </>
                 )}
-
-                {activeTab === 'tools' && <McpToolRegistry className="p-4" />}
 
                 {activeTab === 'history' && (
                   <McpExecutionHistory
