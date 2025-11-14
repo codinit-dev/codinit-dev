@@ -304,9 +304,11 @@ export class MCPService {
           };
         } catch (error) {
           logger.error(`Failed to get tools from server ${serverName}:`, error);
+
+          const errorMessage = this._formatConnectionError(error, serverName);
           this._mcpToolsPerServer[serverName] = {
             status: 'unavailable',
-            error: 'could not retrieve tools from server',
+            error: errorMessage,
             client,
             config: server.config,
           };
@@ -315,9 +317,11 @@ export class MCPService {
         logger.debug(`Checking MCP server "${serverName}" availability: end`);
       } catch (error) {
         logger.error(`Failed to connect to server ${serverName}:`, error);
+
+        const errorMessage = this._formatConnectionError(error, serverName);
         this._mcpToolsPerServer[serverName] = {
           status: 'unavailable',
-          error: 'could not connect to server',
+          error: errorMessage,
           client,
           config: server.config,
         };
@@ -327,6 +331,52 @@ export class MCPService {
     await Promise.allSettled(checkPromises);
 
     return this._mcpToolsPerServer;
+  }
+
+  private _formatConnectionError(error: any, serverName: string): string {
+    const config = this._config?.mcpServers[serverName];
+
+    if (!config) {
+      return 'Server configuration not found';
+    }
+
+    // Handle specific error types
+    if (error instanceof Error) {
+      if (error.message.includes('ECONNREFUSED') || error.message.includes('fetch failed')) {
+        return `Connection refused - server may be down or URL incorrect`;
+      }
+
+      if (error.message.includes('ENOTFOUND')) {
+        return `Host not found - check DNS and URL`;
+      }
+
+      if (error.message.includes('timeout')) {
+        return `Connection timeout - server may be slow or unreachable`;
+      }
+
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        return `Authentication failed - check API keys or credentials`;
+      }
+
+      if (error.message.includes('403') || error.message.includes('Forbidden')) {
+        return `Access forbidden - insufficient permissions`;
+      }
+
+      if (error.message.includes('404')) {
+        return `Endpoint not found - MCP server may not be available at this URL`;
+      }
+
+      if (error.message.includes('command not found') && config.type === 'stdio') {
+        return `Command not found: ${(config as any).command} - ensure MCP server is installed`;
+      }
+
+      if (error.message.includes('permission denied') && config.type === 'stdio') {
+        return `Permission denied - check file permissions for ${(config as any).command}`;
+      }
+    }
+
+    // Generic error message
+    return error instanceof Error ? error.message : 'Unknown connection error';
   }
 
   private async _closeClients(): Promise<void> {

@@ -31,7 +31,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     category: 'database',
     config: {
       type: 'sse',
-      url: 'https://api.supabase.com/mcp',
+      url: 'https://mcp.supabase.com/v1',
     },
     requiredFields: [
       {
@@ -53,8 +53,8 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     iconBgColor: '#1a1515',
     category: 'ai',
     config: {
-      type: 'sse',
-      url: 'https://api.anthropic.com/mcp',
+      type: 'stdio',
+      command: 'claude-code-mcp',
     },
     requiredFields: [{ key: 'apiKey', label: 'API Key', placeholder: 'sk-ant-...', type: 'password', required: true }],
   },
@@ -68,7 +68,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     category: 'payment',
     config: {
       type: 'streamable-http',
-      url: 'https://api.stripe.com/mcp',
+      url: 'https://mcp.stripe.com/v1',
     },
     requiredFields: [
       { key: 'apiKey', label: 'Secret Key', placeholder: 'sk_test_...', type: 'password', required: true },
@@ -84,7 +84,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     category: 'analytics',
     config: {
       type: 'streamable-http',
-      url: 'https://app.posthog.com/mcp',
+      url: 'https://mcp.posthog.com/v1',
     },
     requiredFields: [
       { key: 'projectApiKey', label: 'Project API Key', placeholder: 'phc_...', type: 'password', required: true },
@@ -101,7 +101,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     category: 'productivity',
     config: {
       type: 'streamable-http',
-      url: 'https://api.hubapi.com/mcp',
+      url: 'https://mcp.hubspot.com/v1',
     },
     requiredFields: [
       { key: 'accessToken', label: 'Access Token', placeholder: 'pat-na1-...', type: 'password', required: true },
@@ -116,8 +116,8 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     iconBgColor: '#181717',
     category: 'development',
     config: {
-      type: 'streamable-http',
-      url: 'https://api.github.com/mcp',
+      type: 'stdio',
+      command: 'mcp-server-github',
     },
     requiredFields: [
       { key: 'token', label: 'Personal Access Token', placeholder: 'ghp_...', type: 'password', required: true },
@@ -133,7 +133,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     category: 'development',
     config: {
       type: 'streamable-http',
-      url: 'https://api.vercel.com/mcp',
+      url: 'https://mcp.vercel.com/v1',
     },
     requiredFields: [
       { key: 'token', label: 'Access Token', placeholder: 'your-vercel-token', type: 'password', required: true },
@@ -148,8 +148,8 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     iconBgColor: '#4A154B',
     category: 'productivity',
     config: {
-      type: 'sse',
-      url: 'https://slack.com/api/mcp',
+      type: 'streamable-http',
+      url: 'https://mcp.slack.com/v1',
     },
     requiredFields: [
       { key: 'botToken', label: 'Bot Token', placeholder: 'xoxb-...', type: 'password', required: true },
@@ -165,7 +165,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     category: 'productivity',
     config: {
       type: 'streamable-http',
-      url: 'https://api.notion.com/mcp',
+      url: 'https://mcp.notion.so/v1',
     },
     requiredFields: [
       { key: 'token', label: 'Integration Token', placeholder: 'secret_...', type: 'password', required: true },
@@ -180,8 +180,8 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     iconBgColor: '#412991',
     category: 'ai',
     config: {
-      type: 'sse',
-      url: 'https://api.openai.com/mcp',
+      type: 'stdio',
+      command: 'mcp-server-openai',
     },
     requiredFields: [{ key: 'apiKey', label: 'API Key', placeholder: 'sk-...', type: 'password', required: true }],
   },
@@ -195,7 +195,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     category: 'development',
     config: {
       type: 'streamable-http',
-      url: 'https://api.21st.dev/mcp',
+      url: 'https://mcp.21st.dev/v1',
     },
     requiredFields: [
       { key: 'apiKey', label: 'API Key', placeholder: 'your-api-key', type: 'password', required: true },

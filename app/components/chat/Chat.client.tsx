@@ -149,11 +149,24 @@ export const ChatImpl = memo(
           },
         },
         maxLLMSteps: mcpSettings.maxLLMSteps,
+        enableMCPTools: mcpSettings.enabled,
       },
       sendExtraMessageFields: true,
       onError: (e) => {
         setFakeLoading(false);
         handleError(e, 'chat');
+      },
+      onToolCall: async ({ toolCall }) => {
+        logger.debug(`Tool call received: ${toolCall.toolName}`);
+
+        // Log tool call for analytics
+        logStore.logProvider('MCP tool called', {
+          component: 'Chat',
+          action: 'tool_call',
+          toolName: toolCall.toolName,
+          model,
+          provider: provider.name,
+        });
       },
       onFinish: (message, response) => {
         const usage = response.usage;

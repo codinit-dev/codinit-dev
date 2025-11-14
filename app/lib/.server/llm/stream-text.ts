@@ -8,6 +8,7 @@ import { allowedHTMLElements } from '~/utils/markdown';
 import { LLMManager } from '~/lib/modules/llm/manager';
 import { createScopedLogger } from '~/utils/logger';
 import { createFilesContext, extractPropertiesFromMessage } from './utils';
+import { MCPService } from '~/lib/services/mcpService';
 
 export type Messages = Message[];
 
@@ -20,6 +21,7 @@ export interface StreamingOptions extends Omit<Parameters<typeof _streamText>[0]
       supabaseUrl?: string;
     };
   };
+  enableMCPTools?: boolean;
 }
 
 const logger = createScopedLogger('stream-text');
@@ -182,7 +184,20 @@ ${lockedFilesListString}
 
   // console.log(systemPrompt, processedMessages);
 
-  return await _streamText({
+  // Get MCP tools if enabled
+  let mcpTools = {};
+
+  if (options?.enableMCPTools) {
+    try {
+      const mcpService = MCPService.getInstance();
+      mcpTools = mcpService.tools;
+      logger.debug(`Loaded ${Object.keys(mcpTools).length} MCP tools`);
+    } catch (error) {
+      logger.error('Failed to load MCP tools:', error);
+    }
+  }
+
+  const streamOptions = {
     model: provider.getModelInstance({
       model: modelDetails.name,
       serverEnv,
@@ -193,5 +208,17 @@ ${lockedFilesListString}
     maxTokens: dynamicMaxTokens,
     messages: convertToCoreMessages(processedMessages as any),
     ...options,
-  });
+  };
+
+  // Add MCP tools if available and enabled
+  if (options?.enableMCPTools && Object.keys(mcpTools).length > 0) {
+    streamOptions.tools = mcpTools;
+
+    // Don't override toolChoice if it's already set in options
+    if (!streamOptions.toolChoice) {
+      streamOptions.toolChoice = 'auto';
+    }
+  }
+
+  return await _streamText(streamOptions);
 }

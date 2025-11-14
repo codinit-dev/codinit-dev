@@ -55,7 +55,6 @@ type TabType = 'integrations' | 'marketplace' | 'secrets';
 
 export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPanelProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('integrations');
-  const [isCheckingServers, setIsCheckingServers] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<MCPTemplate | null>(null);
@@ -67,6 +66,9 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
   const initialize = useMCPStore((state) => state.initialize);
   const checkServersAvailabilities = useMCPStore((state) => state.checkServersAvailabilities);
   const updateSettings = useMCPStore((state) => state.updateSettings);
+  const isCheckingServers = useMCPStore((state) => state.isCheckingServers);
+
+  const serverEntries = useMemo(() => Object.entries(serverTools), [serverTools]);
 
   useEffect(() => {
     if (!isInitialized) {
@@ -74,38 +76,57 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
     }
   }, [isInitialized]);
 
-  const serverEntries = useMemo(() => Object.entries(serverTools), [serverTools]);
+  // Set up periodic connection checking
+  useEffect(() => {
+    if (!isInitialized || serverEntries.length === 0) {
+      return undefined;
+    }
+
+    // Initial check
+    handleCheckServers();
+
+    // Set up periodic checking every 30 seconds
+    const interval = setInterval(() => {
+      handleCheckServers();
+    }, 30000);
+
+    return (): void => {
+      clearInterval(interval);
+    };
+  }, [isInitialized, serverEntries.length]);
 
   const handleCheckServers = async () => {
-    setIsCheckingServers(true);
     setError(null);
 
     try {
       await checkServersAvailabilities();
     } catch (e) {
       setError(`Failed to check server availability: ${e instanceof Error ? e.message : String(e)}`);
-    } finally {
-      setIsCheckingServers(false);
     }
   };
 
   const handleAddServer = async (name: string, config: MCPServerConfig) => {
     try {
+      const isEditing = name.startsWith('edit-');
+      const actualName = isEditing ? name.replace('edit-', '') : name;
+
       const newConfig = {
         ...settings,
         mcpConfig: {
           mcpServers: {
             ...settings.mcpConfig.mcpServers,
-            [name]: config,
+            [actualName]: config,
           },
         },
       };
 
       await updateSettings(newConfig);
       setIsAddDialogOpen(false);
-      toast.success(`Server "${name}" added successfully`);
+      toast.success(`Server "${actualName}" ${isEditing ? 'updated' : 'added'} successfully`);
     } catch (error) {
-      toast.error(`Failed to add server: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(
+        `Failed to ${name.startsWith('edit-') ? 'update' : 'add'} server: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
       throw error;
     }
   };
@@ -131,8 +152,63 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
     }
   };
 
-  const handleEditServer = (_serverName: string) => {
-    toast.info('Edit functionality coming soon');
+  const handleEditServer = (serverName: string) => {
+    const serverConfig = settings.mcpConfig.mcpServers[serverName];
+
+    if (!serverConfig) {
+      toast.error(`Server "${serverName}" not found`);
+      return;
+    }
+
+    // Create a temporary template from existing server config
+    const editTemplate: MCPTemplate = {
+      id: `edit-${serverName}`,
+      name: serverName,
+      description: `Edit configuration for ${serverName}`,
+      icon: 'i-ph:gear',
+      iconColor: '#666666',
+      iconBgColor: '#f0f0f0',
+      category: 'development',
+      config: serverConfig,
+      requiredFields:
+        serverConfig.type === 'stdio'
+          ? [
+              { key: 'command', label: 'Command', placeholder: 'mcp-server-command', type: 'text', required: true },
+              {
+                key: 'args',
+                label: 'Arguments (optional)',
+                placeholder: '--arg1 --arg2',
+                type: 'text',
+                required: false,
+              },
+              {
+                key: 'cwd',
+                label: 'Working Directory (optional)',
+                placeholder: '/path/to/working/dir',
+                type: 'text',
+                required: false,
+              },
+            ]
+          : [
+              {
+                key: 'url',
+                label: 'Server URL',
+                placeholder: 'https://api.example.com/mcp',
+                type: 'url',
+                required: true,
+              },
+              {
+                key: 'headers',
+                label: 'Headers (JSON, optional)',
+                placeholder: '{"Authorization": "Bearer token"}',
+                type: 'text',
+                required: false,
+              },
+            ],
+    };
+
+    setSelectedTemplate(editTemplate);
+    setIsTemplateConfigOpen(true);
   };
 
   const handleTestConnection = async (config: MCPServerConfig): Promise<{ success: boolean; error?: string }> => {
@@ -227,7 +303,7 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                     {/* Description */}
                     <div className={styles.description}>
                       <p>
-                        Manage your connected MCP servers. Need a quick integration? Check out the Marketplace tab for
+                        Manage your connected MCP servers. Need a quick integration? Check out Marketplace tab for
                         pre-configured templates.
                       </p>
                     </div>
@@ -273,18 +349,21 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
                             server={server}
                             onDelete={handleDeleteServer}
                             onEdit={handleEditServer}
+                            isCheckingServers={isCheckingServers}
                           />
                         ))}
                       </div>
                     ) : (
                       <div className={styles.emptyState}>
-                        <div className={styles.emptyIcon}>
-                          <i className="i-ph:plug" />
-                        </div>
+                        <i className="i-ph:plug text-4xl text-codinit-elements-textTertiary mb-4" />
                         <h3>No MCP servers configured</h3>
-                        <p>
-                          Configure MCP servers in Settings → MCP Servers to enable additional tools and integrations.
-                        </p>
+                        <p>Add your first MCP server to get started with integrations.</p>
+                        <button
+                          onClick={() => setIsAddDialogOpen(true)}
+                          className="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-accent-500 text-white hover:bg-accent-600 transition-all"
+                        >
+                          Add Server
+                        </button>
                       </div>
                     )}
                   </>
@@ -292,11 +371,9 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
 
                 {activeTab === 'secrets' && (
                   <div className={styles.emptyState}>
-                    <div className={styles.emptyIcon}>
-                      <i className="i-ph:key" />
-                    </div>
+                    <i className="i-ph:key text-4xl text-codinit-elements-textTertiary mb-4" />
                     <h3>Secrets Management</h3>
-                    <p>Secure secrets management coming soon. Store API keys, tokens, and other sensitive data.</p>
+                    <p>Manage your API keys and secrets securely. Coming soon.</p>
                   </div>
                 )}
               </div>
@@ -305,7 +382,7 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
         )}
       </AnimatePresence>
 
-      {/* Add Server Dialog */}
+      {/* Dialogs */}
       <AddMcpServerDialog
         isOpen={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
@@ -313,13 +390,9 @@ export const McpIntegrationPanel = memo(({ isOpen, onClose }: McpIntegrationPane
         onTest={handleTestConnection}
       />
 
-      {/* Template Config Dialog */}
       <McpTemplateConfigDialog
         isOpen={isTemplateConfigOpen}
-        onClose={() => {
-          setIsTemplateConfigOpen(false);
-          setSelectedTemplate(null);
-        }}
+        onClose={() => setIsTemplateConfigOpen(false)}
         template={selectedTemplate}
         onSave={handleAddServer}
       />

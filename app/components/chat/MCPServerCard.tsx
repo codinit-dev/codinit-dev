@@ -8,9 +8,10 @@ interface MCPServerCardProps {
   server: MCPServer;
   onDelete?: (serverName: string) => void;
   onEdit?: (serverName: string) => void;
+  isCheckingServers?: boolean;
 }
 
-export const McpServerCard = memo(({ serverName, server, onDelete, onEdit }: MCPServerCardProps) => {
+export const McpServerCard = memo(({ serverName, server, onDelete, onEdit, isCheckingServers }: MCPServerCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const isAvailable = server.status === 'available';
   const serverTools = isAvailable ? Object.entries(server.tools) : [];
@@ -96,12 +97,21 @@ export const McpServerCard = memo(({ serverName, server, onDelete, onEdit }: MCP
             </button>
           )}
 
-          <button
-            disabled={!isAvailable}
-            className={classNames(styles.addButton, isAvailable ? styles.available : styles.unavailable)}
-          >
-            {isAvailable ? 'Connected' : 'Unavailable'}
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Connection status indicator */}
+            <div
+              className={classNames(
+                'w-2 h-2 rounded-full',
+                isCheckingServers ? 'bg-yellow-500 animate-pulse' : isAvailable ? 'bg-green-500' : 'bg-red-500',
+              )}
+            />
+            <button
+              disabled={!isAvailable || isCheckingServers}
+              className={classNames(styles.addButton, isAvailable ? styles.available : styles.unavailable)}
+            >
+              {isCheckingServers ? 'Checking...' : isAvailable ? 'Connected' : 'Unavailable'}
+            </button>
+          </div>
         </div>
       </div>
 

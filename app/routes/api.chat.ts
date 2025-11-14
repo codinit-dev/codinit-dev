@@ -11,6 +11,7 @@ import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
 import { WORK_DIR } from '~/utils/constants';
 import { createSummary } from '~/lib/.server/llm/create-summary';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
+import { MCPService } from '~/lib/services/mcpService';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -37,7 +38,14 @@ function parseCookies(cookieHeader: string): Record<string, string> {
 }
 
 async function chatAction({ context, request }: ActionFunctionArgs) {
-  const { messages, files, promptId, contextOptimization, supabase } = await request.json<{
+  const {
+    messages,
+    files,
+    promptId,
+    contextOptimization,
+    supabase,
+    enableMCPTools = false,
+  } = await request.json<{
     messages: Messages;
     files: any;
     promptId?: string;
@@ -50,6 +58,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         supabaseUrl?: string;
       };
     };
+    enableMCPTools?: boolean;
   }>();
 
   const cookieHeader = request.headers.get('Cookie');
@@ -189,7 +198,8 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
         const options: StreamingOptions = {
           supabaseConnection: supabase,
-          toolChoice: 'none',
+          enableMCPTools,
+          toolChoice: enableMCPTools ? 'auto' : 'none',
           onFinish: async ({ text: content, finishReason, usage }) => {
             logger.debug('usage', JSON.stringify(usage));
 
@@ -229,17 +239,17 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
             logger.info(`Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`);
 
-            const lastUserMessage = messages.filter((x) => x.role == 'user').slice(-1)[0];
+            const lastUserMessage = processedMessages.filter((x) => x.role == 'user').slice(-1)[0];
             const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
-            messages.push({ id: generateId(), role: 'assistant', content });
-            messages.push({
+            processedMessages.push({ id: generateId(), role: 'assistant', content });
+            processedMessages.push({
               id: generateId(),
               role: 'user',
               content: `[Model: ${model}]\n\n[Provider: ${provider}]\n\n${CONTINUE_PROMPT}`,
             });
 
             const result = await streamText({
-              messages,
+              messages: processedMessages,
               env: context.cloudflare?.env,
               options,
               apiKeys,
@@ -277,8 +287,21 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           message: 'Generating Response',
         } satisfies ProgressAnnotation);
 
+        // Process tool invocations if MCP tools are enabled
+        let processedMessages = messages;
+
+        if (enableMCPTools) {
+          try {
+            const mcpService = MCPService.getInstance();
+            processedMessages = await mcpService.processToolInvocations(messages, dataStream);
+            logger.debug('Processed MCP tool invocations');
+          } catch (error) {
+            logger.error('Failed to process MCP tool invocations:', error);
+          }
+        }
+
         const result = await streamText({
-          messages,
+          messages: processedMessages,
           env: context.cloudflare?.env,
           options,
           apiKeys,

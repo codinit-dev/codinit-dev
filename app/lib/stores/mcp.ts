@@ -7,10 +7,12 @@ const isBrowser = typeof window !== 'undefined';
 type MCPSettings = {
   mcpConfig: MCPConfig;
   maxLLMSteps: number;
+  enabled: boolean;
 };
 
 const defaultSettings = {
   maxLLMSteps: 5,
+  enabled: true,
   mcpConfig: {
     mcpServers: {},
   },
@@ -22,6 +24,7 @@ type Store = {
   serverTools: MCPServerTools;
   error: string | null;
   isUpdatingConfig: boolean;
+  isCheckingServers: boolean;
 };
 
 type Actions = {
@@ -36,6 +39,7 @@ export const useMCPStore = create<Store & Actions>((set, get) => ({
   serverTools: {},
   error: null,
   isUpdatingConfig: false,
+  isCheckingServers: false,
   initialize: async () => {
     if (get().isInitialized) {
       return;
@@ -84,17 +88,27 @@ export const useMCPStore = create<Store & Actions>((set, get) => ({
     }
   },
   checkServersAvailabilities: async () => {
-    const response = await fetch('/api/mcp-check', {
-      method: 'GET',
-    });
-
-    if (!response.ok) {
-      throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+    if (get().isCheckingServers) {
+      return;
     }
 
-    const serverTools = (await response.json()) as MCPServerTools;
+    try {
+      set(() => ({ isCheckingServers: true }));
 
-    set(() => ({ serverTools }));
+      const response = await fetch('/api/mcp-check', {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+      }
+
+      const serverTools = (await response.json()) as MCPServerTools;
+
+      set(() => ({ serverTools }));
+    } finally {
+      set(() => ({ isCheckingServers: false }));
+    }
   },
 }));
 

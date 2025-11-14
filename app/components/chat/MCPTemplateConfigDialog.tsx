@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { Dialog, DialogRoot, DialogTitle, DialogClose } from '~/components/ui/Dialog';
 import type { MCPServerConfig } from '~/lib/services/mcpService';
 import type { MCPTemplate } from './MCPMarketplace';
@@ -17,6 +17,45 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
   const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Initialize form when template changes
+  useEffect(() => {
+    if (template && template.id.startsWith('edit-')) {
+      // Editing existing server
+      setIsEditing(true);
+      setServerName(template.name);
+
+      // Pre-fill form with existing config
+      const initialValues: Record<string, string> = {};
+
+      if (template.config.type === 'stdio') {
+        initialValues.command = template.config.command || '';
+        initialValues.args = template.config.args?.join(' ') || '';
+        initialValues.cwd = template.config.cwd || '';
+      } else {
+        initialValues.url = template.config.url || '';
+
+        // Extract headers to field values
+        if (template.config.headers) {
+          const headers = template.config.headers;
+
+          if (headers.Authorization && headers.Authorization.startsWith('Bearer ')) {
+            initialValues.apiKey = headers.Authorization.substring(7);
+          } else if (headers['X-API-Key']) {
+            initialValues.projectApiKey = headers['X-API-Key'];
+          }
+        }
+      }
+
+      setFieldValues(initialValues);
+    } else {
+      // Adding new server
+      setIsEditing(false);
+      setServerName('');
+      setFieldValues({});
+    }
+  }, [template]);
 
   const handleFieldChange = (key: string, value: string) => {
     setFieldValues((prev) => ({ ...prev, [key]: value }));
@@ -48,8 +87,22 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
       // Build config based on template
       const config: MCPServerConfig = { ...template.config };
 
-      // Add headers for SSE/HTTP types with credentials
-      if (config.type === 'sse' || config.type === 'streamable-http') {
+      if (config.type === 'stdio') {
+        // Handle STDIO configuration
+        config.command = fieldValues.command?.trim() || '';
+
+        if (fieldValues.args?.trim()) {
+          config.args = fieldValues.args
+            .trim()
+            .split(/\s+/)
+            .filter((arg) => arg.length > 0);
+        }
+
+        if (fieldValues.cwd?.trim()) {
+          config.cwd = fieldValues.cwd.trim();
+        }
+      } else {
+        // Handle SSE/HTTP configuration
         const headers: Record<string, string> = {};
 
         // Map field values to headers
@@ -62,16 +115,21 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
               headers.Authorization = `Bearer ${value}`;
             } else if (field.key === 'projectApiKey') {
               headers['X-API-Key'] = value;
+            } else if (field.key === 'headers') {
+              try {
+                const customHeaders = JSON.parse(value);
+                Object.assign(headers, customHeaders);
+              } catch {
+                // Skip invalid JSON
+              }
             } else {
               headers[`X-${field.key}`] = value;
             }
           }
         }
 
-        // Update URL if host field is provided
-        if (fieldValues.host?.trim()) {
-          config.url = fieldValues.host.trim();
-        } else if (fieldValues.url?.trim()) {
+        // Update URL if provided
+        if (fieldValues.url?.trim()) {
           config.url = fieldValues.url.trim();
         }
 
@@ -188,7 +246,7 @@ export const McpTemplateConfigDialog = memo(({ isOpen, onClose, template, onSave
                 className="px-4 py-2 rounded-lg text-sm font-medium bg-accent-500 text-white hover:bg-accent-600 transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 {isSaving && <i className="i-svg-spinners:90-ring-with-bg animate-spin" />}
-                Add Integration
+                {isEditing ? 'Update Integration' : 'Add Integration'}
               </button>
             </div>
           </div>
