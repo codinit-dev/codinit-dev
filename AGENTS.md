@@ -1,13 +1,13 @@
 # Agent Guidelines for Codinit Repository
 
 ## Build/Lint/Test Commands
-- `npm run build` - Build the application
-- `npm run lint` - Run ESLint on app directory
-- `npm run lint:fix` - Fix linting issues and format with Prettier
-- `npm run typecheck` - Run TypeScript type checking
-- `npm run test` - Run all tests once
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test <filename>` - Run single test file (e.g., `npm run test utils.spec.ts`)
+- `pnpm run build` - Build the application
+- `pnpm run lint` - Run ESLint on app directory
+- `pnpm run lint:fix` - Fix linting issues and format with Prettier
+- `pnpm run typecheck` - Run TypeScript type checking
+- `pnpm run test` - Run all tests once
+- `pnpm run test:watch` - Run tests in watch mode
+- `pnpm run test <filename>` - Run single test file (e.g., `pnpm run test utils.spec.ts`)
 
 ## Code Style Guidelines
 

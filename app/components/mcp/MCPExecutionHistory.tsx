@@ -182,22 +182,22 @@ export const McpExecutionHistory = memo(
     };
 
     return (
-      <div className={classNames('space-y-6', className)}>
+      <div className={classNames('space-y-4', className)}>
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-codinit-elements-textPrimary">
+          <h2 className="text-lg font-semibold text-codinit-elements-textPrimary">
             Execution History ({filteredExecutions.length})
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             {onExportHistory && (
               <Button variant="outline" size="sm" onClick={() => onExportHistory(executions)}>
-                <i className="i-ph:download mr-2" />
+                <i className="i-ph:download mr-1" />
                 Export
               </Button>
             )}
             {onClearHistory && executions.length > 0 && (
               <Button variant="outline" size="sm" onClick={onClearHistory}>
-                <i className="i-ph:trash mr-2" />
+                <i className="i-ph:trash mr-1" />
                 Clear
               </Button>
             )}
@@ -205,26 +205,26 @@ export const McpExecutionHistory = memo(
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
+        <div className="flex flex-col gap-3">
+          <div className="w-full">
             <SearchInput
-              placeholder="Search executions by tool name, server, or result..."
+              placeholder="Search executions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-1">
             {statusOptions.map((status) => (
               <Button
                 key={status.value}
                 variant={selectedStatus === status.value ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedStatus(status.value)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1 text-xs"
               >
                 {status.label}
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs px-1 py-0">
                   {status.count}
                 </Badge>
               </Button>
@@ -235,10 +235,10 @@ export const McpExecutionHistory = memo(
         {/* Execution List */}
         {filteredExecutions.length === 0 ? (
           <Card>
-            <CardContent className="text-center py-8">
-              <i className="i-ph:clock-counter-clockwise text-4xl text-codinit-elements-textTertiary mb-4" />
-              <h3 className="text-lg font-medium text-codinit-elements-textPrimary mb-2">No execution history</h3>
-              <p className="text-codinit-elements-textSecondary">
+            <CardContent className="text-center py-6">
+              <i className="i-ph:clock-counter-clockwise text-3xl text-codinit-elements-textTertiary mb-3" />
+              <h3 className="text-base font-medium text-codinit-elements-textPrimary mb-2">No execution history</h3>
+              <p className="text-sm text-codinit-elements-textSecondary">
                 {executions.length === 0
                   ? 'Tool executions will appear here once you start using MCP tools.'
                   : 'No executions match your current filters.'}
@@ -246,30 +246,30 @@ export const McpExecutionHistory = memo(
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {filteredExecutions.map((execution) => (
-              <Card key={execution.id} className="hover:shadow-md transition-shadow">
-                <CardHeader>
+              <Card key={execution.id} className="hover:shadow-sm transition-shadow">
+                <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <i className={getServerIcon(execution.serverName)} />
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-medium text-codinit-elements-textPrimary">
+                          <h3 className="text-base font-medium text-codinit-elements-textPrimary truncate">
                             {execution.toolName}
                           </h3>
                           {getStatusBadge(execution.status)}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-codinit-elements-textSecondary">
-                          <Badge variant="outline" className="text-xs">
+                        <div className="flex items-center gap-2 text-xs text-codinit-elements-textSecondary mt-1">
+                          <Badge variant="outline" className="text-xs px-1 py-0">
                             {execution.serverName}
                           </Badge>
-                          <span>{execution.timestamp.toLocaleString()}</span>
+                          <span className="truncate">{execution.timestamp.toLocaleString()}</span>
                           {execution.duration > 0 && <span>{formatDuration(execution.duration)}</span>}
                         </div>
                       </div>
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => toggleExpanded(execution.id)} className="p-1">
+                    <Button variant="ghost" size="sm" onClick={() => toggleExpanded(execution.id)} className="p-1 ml-2">
                       <i
                         className={classNames(
                           'i-ph:caret-down transition-transform',
@@ -281,18 +281,18 @@ export const McpExecutionHistory = memo(
                 </CardHeader>
 
                 {expandedItems.has(execution.id) && (
-                  <CardContent className="border-t border-codinit-elements-borderColor">
-                    <div className="space-y-4">
+                  <CardContent className="border-t border-codinit-elements-borderColor pt-3">
+                    <div className="space-y-3">
                       {/* Parameters */}
                       {Object.keys(execution.parameters).length > 0 && (
                         <div>
                           <h4 className="text-sm font-medium text-codinit-elements-textPrimary mb-2">Parameters</h4>
-                          <div className="font-mono text-sm bg-codinit-elements-background-depth-1 p-3 rounded space-y-1">
+                          <div className="font-mono text-xs bg-codinit-elements-background-depth-1 p-2 rounded space-y-1 max-h-32 overflow-y-auto">
                             {Object.entries(execution.parameters).map(([key, value]) => (
-                              <div key={key} className="flex items-start gap-2">
-                                <span className="text-codinit-elements-textSecondary min-w-0 flex-1">{key}:</span>
-                                <span className="text-codinit-elements-textPrimary flex-1 break-all">
-                                  {JSON.stringify(value, null, 2)}
+                              <div key={key} className="flex gap-2">
+                                <span className="text-codinit-elements-textSecondary flex-shrink-0">{key}:</span>
+                                <span className="text-codinit-elements-textPrimary break-all">
+                                  {JSON.stringify(value)}
                                 </span>
                               </div>
                             ))}
@@ -310,7 +310,7 @@ export const McpExecutionHistory = memo(
                       {execution.error && (
                         <div>
                           <h4 className="text-sm font-medium text-red-600 dark:text-red-400 mb-2">Error</h4>
-                          <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 p-3 rounded">
+                          <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 p-2 rounded">
                             {execution.error}
                           </div>
                         </div>
@@ -320,7 +320,7 @@ export const McpExecutionHistory = memo(
                       <div className="flex gap-2">
                         {execution.status === 'failed' && onRetryExecution && (
                           <Button variant="outline" size="sm" onClick={() => onRetryExecution(execution)}>
-                            <i className="i-ph:arrow-counter-clockwise mr-2" />
+                            <i className="i-ph:arrow-counter-clockwise mr-1" />
                             Retry
                           </Button>
                         )}
@@ -331,8 +331,8 @@ export const McpExecutionHistory = memo(
                             navigator.clipboard.writeText(JSON.stringify(execution, null, 2));
                           }}
                         >
-                          <i className="i-ph:copy mr-2" />
-                          Copy Details
+                          <i className="i-ph:copy mr-1" />
+                          Copy
                         </Button>
                       </div>
                     </div>
