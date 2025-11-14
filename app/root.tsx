@@ -12,6 +12,7 @@ import { ClientOnly } from 'remix-utils/client-only';
 import { BuiltWithCodinitBadge } from './components/ui/BuiltWithCodinitBadge';
 import { ToastContainer } from 'react-toastify';
 import { AmplitudeProvider } from './components/AmplitudeProvider';
+import { GTMProvider } from './components/GTMProvider';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -78,6 +79,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <ClientOnly>{() => <AmplitudeProvider />}</ClientOnly>
+      <ClientOnly>{() => <GTMProvider />}</ClientOnly>
       <ClientOnly>{() => <DndProvider backend={HTML5Backend}>{children}</DndProvider>}</ClientOnly>
       <ClientOnly>{() => <BuiltWithCodinitBadge />}</ClientOnly>
       <ClientOnly>{() => <ToastContainer />}</ClientOnly>
