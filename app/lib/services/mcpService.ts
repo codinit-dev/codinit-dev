@@ -101,6 +101,10 @@ export type MCPServerUnavailable = {
 };
 export type MCPServer = MCPServerAvailable | MCPServerUnavailable;
 
+interface LogThrottleEntry {
+  lastLogged: number;
+}
+
 export class MCPService {
   private static _instance: MCPService;
   private _tools: ToolSet = {};
@@ -110,6 +114,8 @@ export class MCPService {
   private _config: MCPConfig = {
     mcpServers: {},
   };
+  private _availabilityCheckThrottleCache: Map<string, LogThrottleEntry> = new Map();
+  private readonly _logThrottleMs = 5 * 60 * 1000; // 5 minutes
 
   static getInstance(): MCPService {
     if (!MCPService._instance) {
@@ -117,6 +123,19 @@ export class MCPService {
     }
 
     return MCPService._instance;
+  }
+
+  private _shouldThrottleAvailabilityLog(serverName: string): boolean {
+    const now = Date.now();
+    const cached = this._availabilityCheckThrottleCache.get(serverName);
+
+    if (cached && now - cached.lastLogged < this._logThrottleMs) {
+      return true; // Throttle this log
+    }
+
+    this._availabilityCheckThrottleCache.set(serverName, { lastLogged: now });
+
+    return false; // Log this message
   }
 
   private _validateServerConfig(serverName: string, config: any): MCPServerConfig {
@@ -285,7 +304,9 @@ export class MCPService {
       let client = server.client;
 
       try {
-        logger.debug(`Checking MCP server "${serverName}" availability: start`);
+        if (!this._shouldThrottleAvailabilityLog(serverName)) {
+          logger.debug(`Checking MCP server "${serverName}" availability: start`);
+        }
 
         if (!client) {
           client = await this._createMCPClient(serverName, this._config?.mcpServers[serverName]);
@@ -314,7 +335,9 @@ export class MCPService {
           };
         }
 
-        logger.debug(`Checking MCP server "${serverName}" availability: end`);
+        if (!this._shouldThrottleAvailabilityLog(serverName)) {
+          logger.debug(`Checking MCP server "${serverName}" availability: end`);
+        }
       } catch (error) {
         logger.error(`Failed to connect to server ${serverName}:`, error);
 
