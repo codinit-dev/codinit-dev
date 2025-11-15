@@ -44,7 +44,7 @@ export const STARTER_TEMPLATES: Template[] = [
     name: 'Expo',
     label: 'Expo',
     description: 'Expo starter template for building cross-platform mobile apps with native code access',
-    githubRepo: 'codinit-dev/expo',
+    githubRepo: 'codinit-dev/expo-starter',
     icon: 'i-codinit:expo',
   },
   {
