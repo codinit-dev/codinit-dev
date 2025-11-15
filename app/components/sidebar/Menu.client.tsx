@@ -329,9 +329,9 @@ export const Menu = () => {
         initial="closed"
         animate={open ? 'open' : 'closed'}
         variants={menuVariants}
-        style={{ width: '340px' }}
+        style={{ width: '300px' }}
         className={classNames(
-          'flex selection-accent flex-col side-menu fixed top-0 h-full',
+          'flex selection-accent flex-col side-menu fixed top-0 left-0 h-full',
           'bg-white dark:bg-gray-950 border-r border-gray-100 dark:border-gray-800/50',
           'shadow-sm text-sm',
           isSettingsOpen ? 'z-40' : 'z-sidebar',
