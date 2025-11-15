@@ -11,7 +11,7 @@ import { path } from '~/utils/path';
 
 const logger = createScopedLogger('FileTree');
 
-const NODE_PADDING_LEFT = 8;
+const NODE_PADDING_LEFT = 6;
 const DEFAULT_HIDDEN_FILES = [/\/node_modules\//, /\/\.next/, /\/\.astro/];
 
 interface Props {
@@ -595,14 +595,14 @@ function Folder({ folder, collapsed, selected = false, onCopyPath, onCopyRelativ
     <FileContextMenu onCopyPath={onCopyPath} onCopyRelativePath={onCopyRelativePath} fullPath={folder.fullPath}>
       <NodeButton
         className={classNames('group', {
-          'bg-transparent text-codinit-elements-item-contentDefault hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive':
+          'bg-transparent text-codinit-elements-item-contentDefault hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive hover:shadow-sm':
             !selected,
-          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': selected,
+          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent shadow-sm': selected,
         })}
         depth={folder.depth}
         iconClasses={classNames({
-          'i-ph:caret-right scale-98': collapsed,
-          'i-ph:caret-down scale-98': !collapsed,
+          'i-ph:caret-right scale-90': collapsed,
+          'i-ph:caret-down scale-90': !collapsed,
         })}
         onClick={onClick}
       >
@@ -687,12 +687,12 @@ function File({
     <FileContextMenu onCopyPath={onCopyPath} onCopyRelativePath={onCopyRelativePath} fullPath={fullPath}>
       <NodeButton
         className={classNames('group', {
-          'bg-transparent hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-item-contentDefault':
+          'bg-transparent hover:bg-codinit-elements-item-backgroundActive hover:shadow-sm text-codinit-elements-item-contentDefault':
             !selected,
-          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': selected,
+          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent shadow-sm': selected,
         })}
         depth={depth}
-        iconClasses={classNames('i-ph:file-duotone scale-98', {
+        iconClasses={classNames('i-ph:file-duotone scale-90', {
           'group-hover:text-codinit-elements-item-contentActive': !selected,
         })}
         onClick={onClick}
@@ -736,7 +736,7 @@ function NodeButton({ depth, iconClasses, onClick, className, children }: Button
   return (
     <button
       className={classNames(
-        'flex items-center gap-1.5 w-full pr-2 border-2 border-transparent text-faded py-0.5',
+        'flex items-center gap-1.5 w-full pr-2 border-2 border-transparent text-faded py-0.25',
         className,
       )}
       style={{ paddingLeft: `${6 + depth * NODE_PADDING_LEFT}px` }}
