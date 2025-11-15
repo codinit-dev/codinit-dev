@@ -46,7 +46,7 @@ const sliderOptions: SliderOptions<WorkbenchViewType> = {
     value: 'code',
     text: (
       <>
-        <div className="i-ph:code mr-1" />
+        <div className="i-ph:code mr-1 text-blue-500 text-lg" />
       </>
     ),
   },
@@ -54,7 +54,7 @@ const sliderOptions: SliderOptions<WorkbenchViewType> = {
     value: 'diff',
     text: (
       <>
-        <div className="i-ph:git-diff mr-1" />
+        <div className="i-ph:git-diff mr-1 text-orange-500 text-lg" />
       </>
     ),
   },
@@ -62,7 +62,7 @@ const sliderOptions: SliderOptions<WorkbenchViewType> = {
     value: 'preview',
     text: (
       <>
-        <div className="i-ph:eye mr-1" />
+        <div className="i-ph:eye mr-1 text-green-500 text-lg" />
       </>
     ),
   },
