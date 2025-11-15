@@ -1,16 +1,16 @@
 :root {
   /* Base colors */
-  --cm-backgroundColor: #1b1b1d; /* editor background */
-  --cm-textColor: #e6e6e7; /* primary text */
+  --cm-backgroundColor: #0d1117; /* editor background */
+  --cm-textColor: #f0f6fc; /* primary text */
 
   /* Gutter */
-  --cm-gutter-backgroundColor: #1b1b1d;
-  --cm-gutter-textColor: #6b7280; /* muted gray */
-  --cm-gutter-activeLineTextColor: #d1d5db;
+  --cm-gutter-backgroundColor: #0d1117;
+  --cm-gutter-textColor: #8b949e; /* muted gray */
+  --cm-gutter-activeLineTextColor: #f0f6fc;
 
   /* Fold Gutter */
-  --cm-foldGutter-textColor: #6b7280;
-  --cm-foldGutter-textColorHover: #d1d5db;
+  --cm-foldGutter-textColor: #8b949e;
+  --cm-foldGutter-textColorHover: #f0f6fc;
 
   /* Active Line */
   --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.04); /* subtle */
@@ -33,8 +33,8 @@
   --cm-panels-borderColor: rgba(255, 255, 255, 0.06);
 
   /* Search */
-  --cm-search-backgroundColor: #1b1b1d;
-  --cm-search-textColor: #d1d5db;
+  --cm-search-backgroundColor: #0d1117;
+  --cm-search-textColor: #f0f6fc;
 
   --cm-search-closeButton-backgroundColor: transparent;
   --cm-search-closeButton-backgroundColorHover: rgba(255, 255, 255, 0.08);
@@ -59,8 +59,8 @@
   --cm-search-input-borderColorFocused: rgba(66, 180, 255, 0.9);
 
   /* Tooltip */
-  --cm-tooltip-backgroundColor: #262626;
-  --cm-tooltip-textColor: #e6e6e6;
+  --cm-tooltip-backgroundColor: #161b22;
+  --cm-tooltip-textColor: #f0f6fc;
 
   --cm-tooltip-backgroundColorSelected: rgba(66, 180, 255, 0.2);
   --cm-tooltip-textColorSelected: #ffffff;
@@ -147,5 +147,5 @@ html[data-theme='light'] {
 
 /* Dark theme overrides */
 html[data-theme='dark'] {
-  --cm-backgroundColor: #1b1b1d;
+  --cm-backgroundColor: #0d1117;
 }
