@@ -259,7 +259,7 @@ ${content}
                   )}
                 >
                   <div className="i-ph:chat-circle-duotone"></div>
-                  Ask CodinIT
+                  Fix
                 </button>
                 <button
                   onClick={clearAlert}
