@@ -1,5 +1,5 @@
 import type { ActionType, BoltAction, BoltActionData, FileAction, ShellAction, SupabaseAction } from '~/types/actions';
-import type { ExampleArtifactData } from '~/types/artifact';
+import type { ExampleArtifactData, ThinkingArtifactData } from '~/types/artifact';
 import type { ThinkingData } from '~/types/thinking';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
@@ -18,6 +18,10 @@ const CODINIT_ACTION_TAG_CLOSE = '</codinitAction>';
 // Thinking tags
 const THINKING_TAG_OPEN = '<codinitThinking';
 const THINKING_TAG_CLOSE = '</codinitThinking>';
+
+// Thinking artifact tags
+const THINKING_ARTIFACT_TAG_OPEN = '<thinkingArtifact';
+const THINKING_ARTIFACT_TAG_CLOSE = '</thinkingArtifact>';
 
 const logger = createScopedLogger('MessageParser');
 
@@ -39,6 +43,11 @@ export interface ThinkingCallbackData extends ThinkingData {
 export type ArtifactCallback = (data: ArtifactCallbackData) => void;
 export type ActionCallback = (data: ActionCallbackData) => void;
 export type ThinkingCallback = (data: ThinkingCallbackData) => void;
+export type ThinkingArtifactCallback = (data: ThinkingArtifactCallbackData) => void;
+
+export interface ThinkingArtifactCallbackData extends ThinkingArtifactData {
+  messageId: string;
+}
 
 export interface ParserCallbacks {
   onArtifactOpen?: ArtifactCallback;
@@ -48,6 +57,8 @@ export interface ParserCallbacks {
   onActionClose?: ActionCallback;
   onThinkingOpen?: ThinkingCallback;
   onThinkingClose?: ThinkingCallback;
+  onThinkingArtifactOpen?: ThinkingArtifactCallback;
+  onThinkingArtifactClose?: ThinkingArtifactCallback;
 }
 
 interface ElementFactoryProps {
@@ -59,6 +70,7 @@ type ElementFactory = (props: ElementFactoryProps) => string;
 export interface StreamingMessageParserOptions {
   callbacks?: ParserCallbacks;
   artifactElement?: ElementFactory;
+  thinkingArtifactElement?: ElementFactory;
 }
 
 interface MessageState {
@@ -66,10 +78,12 @@ interface MessageState {
   insideArtifact: boolean;
   insideAction: boolean;
   insideThinking: boolean;
-  currentArtifact?: ExampleArtifactData;
-  currentAction: BoltActionData;
-  currentThinking?: ThinkingData;
+  insideThinkingArtifact: boolean;
   actionId: number;
+  currentArtifact?: ExampleArtifactData;
+  currentAction?: BoltActionData;
+  currentThinking?: ThinkingData;
+  currentThinkingArtifact?: ThinkingArtifactData;
 }
 
 function cleanoutMarkdownSyntax(content: string) {
@@ -102,6 +116,7 @@ export class StreamingMessageParser {
         insideAction: false,
         insideArtifact: false,
         insideThinking: false,
+        insideThinkingArtifact: false,
         currentAction: { content: '' },
         actionId: 0,
       };
@@ -130,6 +145,10 @@ export class StreamingMessageParser {
           }
 
           const currentAction = state.currentAction;
+
+          if (!currentAction) {
+            break;
+          }
 
           if (closeIndex !== -1) {
             currentAction.content += input.slice(i, closeIndex);
@@ -198,6 +217,7 @@ export class StreamingMessageParser {
         } else {
           let actionOpenIndex = input.indexOf(ARTIFACT_ACTION_TAG_OPEN, i);
           let artifactCloseIndex = input.indexOf(ARTIFACT_TAG_CLOSE, i);
+          const thinkingArtifactCloseIndex = input.indexOf(THINKING_ARTIFACT_TAG_CLOSE, i);
 
           // Also check for legacy codinit tags
           const codinitActionOpenIndex = input.indexOf(CODINIT_ACTION_TAG_OPEN, i);
@@ -214,6 +234,14 @@ export class StreamingMessageParser {
             (artifactCloseIndex === -1 || codinitArtifactCloseIndex < artifactCloseIndex)
           ) {
             artifactCloseIndex = codinitArtifactCloseIndex;
+          }
+
+          // Use the earliest thinking artifact close tag found
+          if (
+            thinkingArtifactCloseIndex !== -1 &&
+            (artifactCloseIndex === -1 || thinkingArtifactCloseIndex < artifactCloseIndex)
+          ) {
+            artifactCloseIndex = thinkingArtifactCloseIndex;
           }
 
           if (actionOpenIndex !== -1 && (artifactCloseIndex === -1 || actionOpenIndex < artifactCloseIndex)) {
@@ -236,16 +264,57 @@ export class StreamingMessageParser {
               break;
             }
           } else if (artifactCloseIndex !== -1) {
-            this._options.callbacks?.onArtifactClose?.({ messageId, ...currentArtifact });
+            if (state.currentArtifact) {
+              this._options.callbacks?.onArtifactClose?.({ messageId, ...state.currentArtifact });
 
-            state.insideArtifact = false;
-            state.currentArtifact = undefined;
+              state.insideArtifact = false;
+              state.currentArtifact = undefined;
+            } else if (state.currentThinkingArtifact) {
+              // Process thinking artifact content to extract steps
+              const content = state.currentThinkingArtifact.content;
+              const lines = content.split('\n').filter((line) => line.trim());
+              const steps: string[] = [];
+
+              lines.forEach((line) => {
+                const trimmed = line.trim();
+
+                const numberedMatch = trimmed.match(/^\d+\.\s*(.+)$/);
+
+                if (numberedMatch) {
+                  steps.push(numberedMatch[1]);
+                  return;
+                }
+
+                const bulletMatch = trimmed.match(/^[-*]\s*(.+)$/);
+
+                if (bulletMatch) {
+                  steps.push(bulletMatch[1]);
+                  return;
+                }
+
+                if (trimmed.length > 0) {
+                  steps.push(trimmed);
+                }
+              });
+
+              const completedThinkingArtifact = {
+                ...state.currentThinkingArtifact,
+                steps,
+              };
+
+              this._options.callbacks?.onThinkingArtifactClose?.({ messageId, ...completedThinkingArtifact });
+
+              state.insideThinkingArtifact = false;
+              state.currentThinkingArtifact = undefined;
+            }
 
             // Determine which tag was found to get the correct length
             const closeTagLength =
               input.indexOf(ARTIFACT_TAG_CLOSE, i) === artifactCloseIndex
                 ? ARTIFACT_TAG_CLOSE.length
-                : CODINIT_ARTIFACT_TAG_CLOSE.length;
+                : input.indexOf(CODINIT_ARTIFACT_TAG_CLOSE, i) === artifactCloseIndex
+                  ? CODINIT_ARTIFACT_TAG_CLOSE.length
+                  : THINKING_ARTIFACT_TAG_CLOSE.length;
 
             i = artifactCloseIndex + closeTagLength;
           } else {
@@ -260,6 +329,7 @@ export class StreamingMessageParser {
           ARTIFACT_TAG_OPEN.length,
           CODINIT_ARTIFACT_TAG_OPEN.length,
           THINKING_TAG_OPEN.length,
+          THINKING_ARTIFACT_TAG_OPEN.length,
         );
 
         while (j < input.length && potentialTag.length < maxTagLength) {
@@ -268,6 +338,7 @@ export class StreamingMessageParser {
           const isExampleTag = potentialTag === ARTIFACT_TAG_OPEN;
           const isCodinitTag = potentialTag === CODINIT_ARTIFACT_TAG_OPEN;
           const isThinkingTag = potentialTag === THINKING_TAG_OPEN;
+          const isThinkingArtifactTag = potentialTag === THINKING_ARTIFACT_TAG_OPEN;
 
           if (isThinkingTag) {
             const nextChar = input[j + 1];
@@ -294,6 +365,54 @@ export class StreamingMessageParser {
               state.currentThinking = currentThinking;
 
               this._options.callbacks?.onThinkingOpen?.({ messageId, ...currentThinking });
+
+              i = openTagEnd + 1;
+            } else {
+              earlyBreak = true;
+            }
+
+            break;
+          } else if (isThinkingArtifactTag) {
+            const nextChar = input[j + 1];
+
+            if (nextChar && nextChar !== '>' && nextChar !== ' ') {
+              output += input.slice(i, j + 1);
+              i = j + 1;
+              break;
+            }
+
+            const openTagEnd = input.indexOf('>', j);
+
+            if (openTagEnd !== -1) {
+              const thinkingArtifactTag = input.slice(i, openTagEnd + 1);
+              const thinkingArtifactTitle = this.#extractAttribute(thinkingArtifactTag, 'title') as string;
+              const thinkingArtifactId = this.#extractAttribute(thinkingArtifactTag, 'id') as string;
+
+              if (!thinkingArtifactTitle) {
+                logger.warn('Thinking artifact title missing');
+              }
+
+              if (!thinkingArtifactId) {
+                logger.warn('Thinking artifact id missing');
+              }
+
+              state.insideThinkingArtifact = true;
+
+              const currentThinkingArtifact = {
+                id: thinkingArtifactId,
+                title: thinkingArtifactTitle,
+                type: 'thinking' as const,
+                steps: [],
+                content: '',
+              } satisfies ThinkingArtifactData;
+
+              state.currentThinkingArtifact = currentThinkingArtifact;
+
+              this._options.callbacks?.onThinkingArtifactOpen?.({ messageId, ...currentThinkingArtifact });
+
+              const thinkingArtifactFactory = this._options.thinkingArtifactElement ?? createThinkingArtifactElement;
+
+              output += thinkingArtifactFactory({ messageId });
 
               i = openTagEnd + 1;
             } else {
@@ -352,7 +471,8 @@ export class StreamingMessageParser {
           } else if (
             !ARTIFACT_TAG_OPEN.startsWith(potentialTag) &&
             !CODINIT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) &&
-            !THINKING_TAG_OPEN.startsWith(potentialTag)
+            !THINKING_TAG_OPEN.startsWith(potentialTag) &&
+            !THINKING_ARTIFACT_TAG_OPEN.startsWith(potentialTag)
           ) {
             output += input.slice(i, j + 1);
             i = j + 1;
@@ -366,7 +486,8 @@ export class StreamingMessageParser {
           j === input.length &&
           (ARTIFACT_TAG_OPEN.startsWith(potentialTag) ||
             CODINIT_ARTIFACT_TAG_OPEN.startsWith(potentialTag) ||
-            THINKING_TAG_OPEN.startsWith(potentialTag))
+            THINKING_TAG_OPEN.startsWith(potentialTag) ||
+            THINKING_ARTIFACT_TAG_OPEN.startsWith(potentialTag))
         ) {
           break;
         }
@@ -393,6 +514,24 @@ export class StreamingMessageParser {
           } else {
             output += input[i];
             i++;
+          }
+        } else if (state.insideThinkingArtifact) {
+          const closeIndex = input.indexOf(THINKING_ARTIFACT_TAG_CLOSE, i);
+
+          if (closeIndex !== -1) {
+            const content = input.slice(i, closeIndex);
+
+            if (state.currentThinkingArtifact) {
+              state.currentThinkingArtifact.content += content;
+            }
+
+            i = closeIndex;
+          } else {
+            if (state.currentThinkingArtifact) {
+              state.currentThinkingArtifact.content += input.slice(i);
+            }
+
+            break;
           }
         } else {
           if (state.currentThinking) {
@@ -474,6 +613,17 @@ export class StreamingMessageParser {
 const createArtifactElement: ElementFactory = (props) => {
   const elementProps = [
     'class="__exampleArtifact__"',
+    ...Object.entries(props).map(([key, value]) => {
+      return `data-${camelToDashCase(key)}=${JSON.stringify(value)}`;
+    }),
+  ];
+
+  return `<div ${elementProps.join(' ')}></div>`;
+};
+
+const createThinkingArtifactElement: ElementFactory = (props) => {
+  const elementProps = [
+    'class="__thinkingArtifact__"',
     ...Object.entries(props).map(([key, value]) => {
       return `data-${camelToDashCase(key)}=${JSON.stringify(value)}`;
     }),

@@ -1,7 +1,11 @@
 import { atom, map, type MapStore, type ReadableAtom, type WritableAtom } from 'nanostores';
 import type { EditorDocument, ScrollPosition } from '~/components/editor/codemirror/CodeMirrorEditor';
 import { ActionRunner } from '~/lib/runtime/action-runner';
-import type { ActionCallbackData, ArtifactCallbackData } from '~/lib/runtime/message-parser';
+import type {
+  ActionCallbackData,
+  ArtifactCallbackData,
+  ThinkingArtifactCallbackData,
+} from '~/lib/runtime/message-parser';
 import { webcontainer } from '~/lib/webcontainer';
 import type { ITerminal } from '~/types/terminal';
 import { unreachable } from '~/utils/unreachable';
@@ -29,7 +33,17 @@ export interface ArtifactState {
   runner: ActionRunner;
 }
 
+export interface ThinkingArtifactState {
+  id: string;
+  title: string;
+  type: 'thinking';
+  closed: boolean;
+  steps: string[];
+  content: string;
+}
+
 export type ArtifactUpdateState = Pick<ArtifactState, 'title' | 'closed'>;
+export type ThinkingArtifactUpdateState = Pick<ThinkingArtifactState, 'title' | 'closed'>;
 
 type Artifacts = MapStore<Record<string, ArtifactState>>;
 
@@ -44,6 +58,8 @@ export class WorkbenchStore {
   #reloadedMessages = new Set<string>();
 
   artifacts: Artifacts = import.meta.hot?.data.artifacts ?? map({});
+  thinkingArtifacts: MapStore<Record<string, ThinkingArtifactState>> =
+    import.meta.hot?.data.thinkingArtifacts ?? map({});
 
   showWorkbench: WritableAtom<boolean> = import.meta.hot?.data.showWorkbench ?? atom(false);
   currentView: WritableAtom<WorkbenchViewType> = import.meta.hot?.data.currentView ?? atom('code');
@@ -60,6 +76,7 @@ export class WorkbenchStore {
   constructor() {
     if (import.meta.hot) {
       import.meta.hot.data.artifacts = this.artifacts;
+      import.meta.hot.data.thinkingArtifacts = this.thinkingArtifacts;
       import.meta.hot.data.unsavedFiles = this.unsavedFiles;
       import.meta.hot.data.showWorkbench = this.showWorkbench;
       import.meta.hot.data.currentView = this.currentView;
@@ -513,6 +530,37 @@ export class WorkbenchStore {
     }
 
     this.artifacts.setKey(messageId, { ...artifact, ...state });
+  }
+
+  addThinkingArtifact({ messageId, title, id, type, steps, content }: ThinkingArtifactCallbackData) {
+    const thinkingArtifact = this.#getThinkingArtifact(messageId);
+
+    if (thinkingArtifact) {
+      return;
+    }
+
+    this.thinkingArtifacts.setKey(messageId, {
+      id,
+      title,
+      closed: false,
+      type,
+      steps,
+      content,
+    });
+  }
+
+  updateThinkingArtifact({ messageId }: ThinkingArtifactCallbackData, state: Partial<ThinkingArtifactUpdateState>) {
+    const thinkingArtifact = this.#getThinkingArtifact(messageId);
+
+    if (!thinkingArtifact) {
+      return;
+    }
+
+    this.thinkingArtifacts.setKey(messageId, { ...thinkingArtifact, ...state });
+  }
+
+  #getThinkingArtifact(messageId: string): ThinkingArtifactState | undefined {
+    return this.thinkingArtifacts.get()[messageId];
   }
   addAction(data: ActionCallbackData) {
     // this._addAction(data);

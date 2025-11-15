@@ -40,6 +40,16 @@ const messageParser = new StreamingMessageParser({
       logger.trace('onActionStream', data.action);
       workbenchStore.runAction(data, true);
     },
+    onThinkingArtifactOpen: (data) => {
+      logger.trace('onThinkingArtifactOpen', data);
+
+      workbenchStore.addThinkingArtifact(data);
+    },
+    onThinkingArtifactClose: (data) => {
+      logger.trace('onThinkingArtifactClose', data);
+
+      workbenchStore.updateThinkingArtifact(data, { closed: true });
+    },
   },
 });
 const extractTextContent = (message: Message) =>
