@@ -71,7 +71,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
 
   useEffect(() => {
     if (!props.chatStarted && props.input.length === 0 && showPlaceholder) {
-      const tipText = 'Tip: Select a framework for quicker start...';
+      const tipText = 'What would like to build?';
       let i = 0;
       const timer = setInterval(() => {
         if (i < tipText.length) {
