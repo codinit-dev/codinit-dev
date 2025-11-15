@@ -38,7 +38,7 @@ function getEditorTheme(settings: EditorSettings) {
       },
     },
     '.cm-line': {
-      padding: '0 0 0 4px',
+      padding: '0 0 0 8px',
     },
     '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground': {
       backgroundColor: 'var(--cm-selection-backgroundColorFocused) !important',
@@ -63,7 +63,7 @@ function getEditorTheme(settings: EditorSettings) {
       '&.cm-lineNumbers': {
         fontFamily: 'Roboto Mono, monospace',
         fontSize: settings.gutterFontSize ?? settings.fontSize ?? '12px',
-        minWidth: '40px',
+        minWidth: '32px',
       },
       '& .cm-activeLineGutter': {
         background: 'transparent',

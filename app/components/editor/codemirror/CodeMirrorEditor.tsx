@@ -311,7 +311,7 @@ export const CodeMirrorEditor = memo(
     }, [doc?.value, editable, doc?.filePath, autoFocusOnDocumentChange]);
 
     return (
-      <div className={classNames('relative h-full', className)}>
+      <div className={classNames('relative h-full rounded-md overflow-hidden', className)}>
         {doc?.isBinary && <BinaryContent />}
         <div className="h-full overflow-hidden" ref={containerRef} />
       </div>
