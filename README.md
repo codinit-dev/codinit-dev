@@ -3,9 +3,10 @@
     width="1650" 
     height="1033" 
     alt="1000027646" 
-    src="https://github.com/user-attachments/assets/36e18424-c1e8-47e7-b668-0b7493dba2dd"
+    src="https://github.com/user-attachments/assets/39ca8364-e755-46e2-81c5-5fdd76ed3907"
     style="border-radius: 16px;"
   />
+
 </p>
 
 <p align="center">
