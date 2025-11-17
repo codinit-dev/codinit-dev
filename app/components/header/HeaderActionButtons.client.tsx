@@ -53,7 +53,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
 
   return (
     <div className={classNames('flex gap-2', { 'gap-1': showChat })}>
-      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden">
+      <div className="flex rounded-md overflow-hidden">
         <IconButton
           title={
             !netlifyConn.user
@@ -114,8 +114,22 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             alt="cloudflare"
           />
         </IconButton>
+        <div className="w-[1px] bg-codinit-elements-borderColor" />
+        <IconButton
+          title="View on GitHub"
+          onClick={() => window.open('https://github.com/codinit-app/codinit', '_blank')}
+        >
+          <img
+            className="w-5 h-5"
+            height="20"
+            width="20"
+            crossOrigin="anonymous"
+            src="https://cdn.simpleicons.org/github"
+            alt="github"
+          />
+        </IconButton>
       </div>
-      <div className="flex border border-codinit-elements-borderColor rounded-md overflow-hidden">
+      <div className="flex rounded-md overflow-hidden">
         <Button
           active={showChat}
           disabled={!canHideChat || isSmallViewport} // expand button is disabled on mobile as it's not needed
