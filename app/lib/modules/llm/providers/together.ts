@@ -43,6 +43,141 @@ export default class TogetherProvider extends BaseProvider {
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
+
+    // Kimi K2 Thinking: 1T parameter MoE thinking agent, 256K context
+    {
+      name: 'moonshotai/Kimi-K2-Thinking',
+      label: 'Kimi K2 Thinking',
+      provider: 'Together',
+      maxTokenAllowed: 256000,
+      maxCompletionTokens: 32768,
+    },
+
+    // Gemma 3 27B: Lightweight model with vision-language input
+    {
+      name: 'google/gemma-3-27b-it',
+      label: 'Gemma 3 27B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Qwen3-Coder 480B A35B Instruct: 480B MoE coding model, 256K context
+    {
+      name: 'Qwen/Qwen3-Coder-480B-A35B-Instruct',
+      label: 'Qwen3-Coder 480B A35B Instruct',
+      provider: 'Together',
+      maxTokenAllowed: 256000,
+      maxCompletionTokens: 32768,
+    },
+
+    // DeepSeek-V3.2-Exp: 685B parameter experimental model, 128K context
+    {
+      name: 'deepseek-ai/DeepSeek-V3.2-Exp',
+      label: 'DeepSeek-V3.2-Exp',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemma 3n E4B Instruct: Selective parameter activation, multimodal
+    {
+      name: 'google/gemma-3n-4b-it',
+      label: 'Gemma 3n E4B Instruct',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Arcee AI Coder-Large: 32B Qwen-2.5-32B-Instruct based
+    {
+      name: 'arcee-ai/Arcee-Coder-Large',
+      label: 'Arcee AI Coder-Large',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Devstral Small 2505: 24B coding model
+    {
+      name: 'mistralai/Devstral-Small-2505',
+      label: 'Devstral Small 2505',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Magistral Small 2506: 24B reasoning model
+    {
+      name: 'mistralai/Magistral-Small-2506',
+      label: 'Magistral Small 2506',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Cogito V1 Preview Llama 70B: Best-in-class open-source LLM
+    {
+      name: 'cognitivecomputations/CogitoV1Preview-Llama-70B',
+      label: 'Cogito V1 Preview Llama 70B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Cogito V1 Preview Qwen 32B: Best-in-class open-source LLM
+    {
+      name: 'cognitivecomputations/CogitoV1Preview-Qwen-32B',
+      label: 'Cogito V1 Preview Qwen 32B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Cogito V1 Preview Qwen 14B: Best-in-class open-source LLM
+    {
+      name: 'cognitivecomputations/CogitoV1Preview-Qwen-14B',
+      label: 'Cogito V1 Preview Qwen 14B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemma 3 12B: Lightweight model with vision-language input
+    {
+      name: 'google/gemma-3-12b-it',
+      label: 'Gemma 3 12B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Cogito V1 Preview Llama 3B: Best-in-class open-source LLM
+    {
+      name: 'cognitivecomputations/CogitoV1Preview-Llama-3B',
+      label: 'Cogito V1 Preview Llama 3B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemma 3 1B: Most lightweight Gemma 3 model, 128K context
+    {
+      name: 'google/gemma-3-1b-it',
+      label: 'Gemma 3 1B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemma 3 4B: Lightweight model with vision-language input
+    {
+      name: 'google/gemma-3-4b-it',
+      label: 'Gemma 3 4B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
   ];
 
   async getDynamicModels(
