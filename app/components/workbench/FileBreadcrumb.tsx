@@ -97,7 +97,7 @@ export const FileBreadcrumb = memo<FileBreadcrumbProps>(({ files, pathSegments =
                   })}
                   onClick={() => handleSegmentClick(index)}
                 >
-                  {isLast && <div className="i-ph:file-duotone" />}
+                  {isLast && <div className="i-ph:file-duotone text-codinit-elements-textPrimary" />}
                   {segment}
                 </span>
               </DropdownMenu.Trigger>

@@ -258,7 +258,7 @@ ${content}
                     'flex items-center gap-1.5',
                   )}
                 >
-                  <div className="i-ph:chat-circle-duotone"></div>
+                  <div className="i-ph:chat-circle-duotone text-codinit-elements-textPrimary"></div>
                   Fix
                 </button>
                 <button

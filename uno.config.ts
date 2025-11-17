@@ -119,7 +119,23 @@ const COLOR_PRIMITIVES = {
 };
 
 export default defineConfig({
-  safelist: [...Object.keys(customIconCollection[collectionName] || {}).map((x) => `i-codinit:${x}`)],
+  safelist: [
+    ...Object.keys(customIconCollection[collectionName] || {}).map((x) => `i-codinit:${x}`),
+    // Add common Lucide icons to safelist
+    'i-lucide:eye',
+    'i-lucide:code',
+    'i-lucide:database',
+    'i-lucide:terminal',
+    'i-lucide:settings',
+    'i-lucide:rotate-cw',
+    'i-lucide:more-horizontal',
+    'i-lucide:external-link',
+    'i-lucide:monitor',
+    'i-lucide:download',
+    'i-lucide:cloud-download',
+    'i-lucide:git-branch',
+    'i-lucide:loader-2',
+  ],
   shortcuts: {
     'codinit-ease-cubic-bezier': 'ease-[cubic-bezier(0.4,0,0.2,1)]',
     'transition-theme': 'transition-[background-color,border-color,color] duration-150 codinit-ease-cubic-bezier',
@@ -260,9 +276,7 @@ export default defineConfig({
     }),
     presetIcons({
       warn: true,
-      collections: {
-        ...customIconCollection,
-      },
+      collections: customIconCollection,
       unit: 'em',
     }),
   ],

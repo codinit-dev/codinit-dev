@@ -19,39 +19,8 @@ body {
 }
 
 /* --------------------------------------- */
-/* GLOBAL COLOR SYSTEM MATCHING SCREENSHOT  */
+/* GLOBAL STYLES - Theme variables handled in variables.scss */
 /* --------------------------------------- */
-
-:root {
-  /* Main App Background (very dark neutral) */
-  --codinit-elements-bg-depth-1: #0d1117; /* page background */
-  --codinit-elements-bg-depth-2: #161b22; /* editor panel / content surfaces */
-
-  /* Text Colors */
-  --codinit-elements-textPrimary: #e0e0e0; /* Changed from #e6e6e7 */
-  --codinit-elements-textSecondary: #a0a0a0; /* Changed from #b3b3b5 */
-  --codinit-elements-textTertiary: #888888; /* Changed from #7a7a7d */
-
-  /* Borders */
-  --codinit-elements-borderColor: rgba(255, 255, 255, 0.06);
-  --codinit-elements-borderColorActive: rgba(66, 180, 255, 0.7);
-
-  /* Buttons & Actions */
-  --codinit-elements-item-backgroundDefault: #2c2c31;
-  --codinit-elements-item-backgroundActive: rgba(255, 255, 255, 0.08);
-  --codinit-elements-item-contentDefault: #d1d5db;
-  --codinit-elements-item-contentActive: #ffffff;
-
-  /* Scrollbar */
-  --modern-scrollbar-thumb-background: rgba(255, 255, 255, 0.18);
-  --modern-scrollbar-thumb-backgroundHover: rgba(255, 255, 255, 0.32);
-
-  /* Accent gradient colors (if used) */
-  --gradient-opacity: 0.8;
-  --primary-color: rgba(255, 138, 0, var(--gradient-opacity)); /* Orange */
-  --secondary-color: rgba(198, 58, 214, var(--gradient-opacity)); /* Purple */
-  --accent-color: rgba(255, 77, 210, var(--gradient-opacity)); /* Pink */
-}
 
 /* --------------------------------------- */
 /* MODERN SCROLLBAR                        */

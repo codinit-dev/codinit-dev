@@ -218,11 +218,11 @@ const ActionList = memo(({ actions }: ActionListProps) => {
                       {type !== 'start' ? (
                         <div className="i-svg-spinners:90-ring-with-bg"></div>
                       ) : (
-                        <div className="i-ph:terminal-window-duotone"></div>
+                        <div className="i-ph:terminal-window-duotone text-codinit-elements-textPrimary"></div>
                       )}
                     </>
                   ) : status === 'pending' ? (
-                    <div className="i-ph:circle-duotone"></div>
+                    <div className="i-ph:circle-duotone text-codinit-elements-textPrimary"></div>
                   ) : status === 'complete' ? (
                     <div className="i-ph:check"></div>
                   ) : status === 'failed' || status === 'aborted' ? (

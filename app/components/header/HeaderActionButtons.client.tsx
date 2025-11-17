@@ -93,11 +93,11 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             <div className="i-svg-spinners:90-ring-with-bg" />
           ) : (
             <img
-              className="w-5 h-5 bg-black p-1 rounded"
+              className="w-5 h-5"
               height="20"
               width="20"
               crossOrigin="anonymous"
-              src="https://cdn.simpleicons.org/vercel/white"
+              src="https://cdn.simpleicons.org/vercel"
               alt="vercel"
             />
           )}
@@ -139,7 +139,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             }
           }}
         >
-          <div className="i-codinit:chat text-sm" />
+          <div className="i-lucide:message-circle text-sm" />
         </Button>
         <div className="w-[1px] bg-codinit-elements-borderColor" />
         <Button
@@ -152,7 +152,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
             workbenchStore.showWorkbench.set(!showWorkbench);
           }}
         >
-          <div className="i-ph:code-bold" />
+          <div className="i-lucide:code" />
         </Button>
       </div>
     </div>

@@ -25,6 +25,7 @@
 
   &[data-resize-handle-state='hover']:after,
   &[data-resize-handle-state='drag']:after {
-    background-color: rgba(136, 136, 136, 0.5);
+    background-color: var(--codinit-elements-textTertiary);
+    opacity: 0.5;
   }
 }

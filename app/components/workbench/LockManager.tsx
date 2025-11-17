@@ -195,7 +195,7 @@ export function LockManager() {
       <div className="flex-1 overflow-auto modern-scrollbar px-1 py-1">
         {filteredAndSortedItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-codinit-elements-textTertiary text-xs gap-2">
-            <span className="i-ph:lock-open-duotone text-lg opacity-50" />
+            <span className="i-ph:lock-open-duotone text-lg opacity-50 text-codinit-elements-textTertiary" />
             <span>No locked items found</span>
           </div>
         ) : (

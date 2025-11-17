@@ -14,8 +14,7 @@ import {
   type OnScrollCallback as OnEditorScroll,
 } from '~/components/editor/codemirror/CodeMirrorEditor';
 import { IconButton } from '~/components/ui/IconButton';
-import { PanelHeaderButton } from '~/components/ui/PanelHeaderButton';
-import { Slider, type SliderOptions } from '~/components/ui/Slider';
+
 import { workbenchStore, type WorkbenchViewType } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
 import { cubicEasingFn } from '~/utils/easings';
@@ -24,9 +23,48 @@ import { EditorPanel } from './EditorPanel';
 import { Preview } from './Preview';
 import useViewport from '~/lib/hooks';
 import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { usePreviewStore } from '~/lib/stores/previews';
 import type { ElementInfo } from './Inspector';
+import { PreviewHeader } from './PreviewHeader';
+import { CodeModeHeader } from './CodeModeHeader';
+
+type WindowSize = {
+  name: string;
+  width: number;
+  height: number;
+  icon: string;
+  hasFrame?: boolean;
+  frameType?: 'mobile' | 'tablet' | 'laptop' | 'desktop';
+};
+
+const WINDOW_SIZES: WindowSize[] = [
+  { name: 'iPhone SE', width: 375, height: 667, icon: 'i-ph:device-mobile', hasFrame: true, frameType: 'mobile' },
+  { name: 'iPhone 12/13', width: 390, height: 844, icon: 'i-ph:device-mobile', hasFrame: true, frameType: 'mobile' },
+  {
+    name: 'iPhone 12/13 Pro Max',
+    width: 428,
+    height: 926,
+    icon: 'i-ph:device-mobile',
+    hasFrame: true,
+    frameType: 'mobile',
+  },
+  { name: 'iPad Mini', width: 768, height: 1024, icon: 'i-ph:device-tablet', hasFrame: true, frameType: 'tablet' },
+  { name: 'iPad Air', width: 820, height: 1180, icon: 'i-ph:device-tablet', hasFrame: true, frameType: 'tablet' },
+  { name: 'iPad Pro 11"', width: 834, height: 1194, icon: 'i-ph:device-tablet', hasFrame: true, frameType: 'tablet' },
+  {
+    name: 'iPad Pro 12.9"',
+    width: 1024,
+    height: 1366,
+    icon: 'i-ph:device-tablet',
+    hasFrame: true,
+    frameType: 'tablet',
+  },
+  { name: 'Small Laptop', width: 1280, height: 800, icon: 'i-ph:laptop', hasFrame: true, frameType: 'laptop' },
+  { name: 'Laptop', width: 1366, height: 768, icon: 'i-ph:laptop', hasFrame: true, frameType: 'laptop' },
+  { name: 'Large Laptop', width: 1440, height: 900, icon: 'i-ph:laptop', hasFrame: true, frameType: 'laptop' },
+  { name: 'Desktop', width: 1920, height: 1080, icon: 'i-ph:monitor', hasFrame: true, frameType: 'desktop' },
+  { name: '4K Display', width: 3840, height: 2160, icon: 'i-ph:monitor', hasFrame: true, frameType: 'desktop' },
+];
 
 interface WorkspaceProps {
   chatStarted?: boolean;
@@ -40,33 +78,6 @@ interface WorkspaceProps {
 }
 
 const viewTransition = { ease: cubicEasingFn };
-
-const sliderOptions: SliderOptions<WorkbenchViewType> = {
-  left: {
-    value: 'code',
-    text: (
-      <>
-        <div className="i-ph:code mr-1 text-blue-500 text-lg" />
-      </>
-    ),
-  },
-  middle: {
-    value: 'diff',
-    text: (
-      <>
-        <div className="i-ph:git-diff mr-1 text-orange-500 text-lg" />
-      </>
-    ),
-  },
-  right: {
-    value: 'preview',
-    text: (
-      <>
-        <div className="i-ph:eye mr-1 text-green-500 text-lg" />
-      </>
-    ),
-  },
-};
 
 const workbenchVariants = {
   closed: {
@@ -163,7 +174,9 @@ const FileModifiedDropdown = memo(
                                   {['yaml', 'yml'].includes(language) && <div className="i-ph:file-text" />}
                                   {language === 'sql' && <div className="i-ph:database" />}
                                   {language === 'dockerfile' && <div className="i-ph:cube" />}
-                                  {language === 'shell' && <div className="i-ph:terminal" />}
+                                  {language === 'shell' && (
+                                    <div className="i-lucide:terminal text-codinit-elements-textPrimary" />
+                                  )}
                                   {![
                                     'typescript',
                                     'javascript',
@@ -299,6 +312,206 @@ export const Workbench = memo(
     const [isPushDialogOpen, setIsPushDialogOpen] = useState(false);
     const [fileHistory, setFileHistory] = useState<Record<string, FileHistory>>({});
 
+    // Preview-related state
+    const [activePreviewIndex, setActivePreviewIndex] = useState(0);
+    const [displayPath, setDisplayPath] = useState('/');
+    const [isWindowSizeDropdownOpen, setIsWindowSizeDropdownOpen] = useState(false);
+    const [selectedWindowSize, setSelectedWindowSize] = useState(WINDOW_SIZES[0]);
+    const [isLandscape, setIsLandscape] = useState(false);
+    const [showDeviceFrame, setShowDeviceFrame] = useState(true);
+
+    // Terminal state
+    const showTerminal = useStore(workbenchStore.showTerminal);
+
+    // Preview-related functions
+    const previews = useStore(workbenchStore.previews);
+
+    const reloadPreview = () => {
+      // Implementation will be added
+    };
+
+    const setIframeUrl = (_url: string | undefined) => {
+      // Implementation will be added
+    };
+
+    const openInNewTab = () => {
+      const activePreview = previews[activePreviewIndex];
+
+      if (activePreview?.baseUrl) {
+        const match = activePreview.baseUrl.match(/^https?:\/\/([^.]+)\.local-credentialless\.webcontainer-api\.io/);
+
+        if (match) {
+          const previewId = match[1];
+          const previewUrl = `/webcontainer/preview/${previewId}`;
+          window.open(previewUrl, '_blank');
+        } else {
+          // Fallback to direct URL if regex doesn't match
+          window.open(activePreview.baseUrl, '_blank');
+        }
+      }
+    };
+
+    const openInNewWindow = (size: WindowSize) => {
+      const activePreview = previews[activePreviewIndex];
+
+      if (activePreview?.baseUrl) {
+        const match = activePreview.baseUrl.match(/^https?:\/\/([^.]+)\.local-credentialless\.webcontainer-api\.io/);
+
+        if (match) {
+          let width = size.width;
+          let height = size.height;
+
+          if (isLandscape && (size.frameType === 'mobile' || size.frameType === 'tablet')) {
+            width = size.height;
+            height = size.width;
+          }
+
+          if (showDeviceFrame && size.hasFrame) {
+            const frameWidth = size.frameType === 'mobile' ? (isLandscape ? 120 : 40) : 60;
+            const frameHeight = size.frameType === 'mobile' ? (isLandscape ? 80 : 80) : isLandscape ? 60 : 100;
+
+            const newWindow = window.open(
+              '',
+              '_blank',
+              `width=${width + frameWidth},height=${height + frameHeight + 40},menubar=no,toolbar=no,location=no,status=no`,
+            );
+
+            if (!newWindow) {
+              console.error('Failed to open new window');
+              return;
+            }
+
+            const frameColor = '#111';
+            const frameRadius = size.frameType === 'mobile' ? '36px' : '20px';
+            const framePadding =
+              size.frameType === 'mobile'
+                ? isLandscape
+                  ? '40px 60px'
+                  : '40px 20px'
+                : isLandscape
+                  ? '30px 50px'
+                  : '50px 30px';
+
+            const notchTop = isLandscape ? '50%' : '20px';
+            const notchLeft = isLandscape ? '30px' : '50%';
+            const notchTransform = isLandscape ? 'translateY(-50%)' : 'translateX(-50%)';
+            const notchWidth = isLandscape ? '8px' : size.frameType === 'mobile' ? '60px' : '80px';
+            const notchHeight = isLandscape ? (size.frameType === 'mobile' ? '60px' : '80px') : '8px';
+
+            const homeBottom = isLandscape ? '50%' : '15px';
+            const homeRight = isLandscape ? '30px' : '50%';
+            const homeTransform = isLandscape ? 'translateY(50%)' : 'translateX(50%)';
+            const homeWidth = isLandscape ? '4px' : '40px';
+            const homeHeight = isLandscape ? '40px' : '4px';
+
+            const htmlContent = `
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <meta charset="utf-8">
+                <title>${size.name} Preview</title>
+                <style>
+                  body {
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    background: #f0f0f0;
+                    overflow: hidden;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                  }
+
+                  .device-container {
+                    position: relative;
+                  }
+
+                  .device-name {
+                    position: absolute;
+                    top: -30px;
+                    left: 0;
+                    right: 0;
+                    text-align: center;
+                    font-size: 14px;
+                    color: #333;
+                  }
+
+                  .device-frame {
+                    position: relative;
+                    border-radius: ${frameRadius};
+                    background: ${frameColor};
+                    padding: ${framePadding};
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                    overflow: hidden;
+                  }
+
+                  .device-frame:before {
+                    content: '';
+                    position: absolute;
+                    top: ${notchTop};
+                    left: ${notchLeft};
+                    transform: ${notchTransform};
+                    width: ${notchWidth};
+                    height: ${notchHeight};
+                    background: #333;
+                    border-radius: 4px;
+                    z-index: 2;
+                  }
+
+                  .device-frame:after {
+                    content: '';
+                    position: absolute;
+                    bottom: ${homeBottom};
+                    right: ${homeRight};
+                    transform: ${homeTransform};
+                    width: ${homeWidth};
+                    height: ${homeHeight};
+                    background: #333;
+                    border-radius: 50%;
+                    z-index: 2;
+                  }
+
+                  iframe {
+                    border: none;
+                    width: ${width}px;
+                    height: ${height}px;
+                    background: white;
+                    display: block;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="device-container">
+                  <div class="device-name">${size.name} ${isLandscape ? '(Landscape)' : '(Portrait)'}</div>
+                  <div class="device-frame">
+                     <iframe src="${activePreview.baseUrl}" sandbox="allow-scripts allow-forms allow-popups allow-modals allow-storage-access-by-user-activation allow-same-origin"></iframe>
+                  </div>
+                </div>
+              </body>
+              </html>
+            `;
+
+            newWindow.document.open();
+            newWindow.document.write(htmlContent);
+            newWindow.document.close();
+          } else {
+            const newWindow = window.open(
+              activePreview.baseUrl,
+              '_blank',
+              `width=${width},height=${height},menubar=no,toolbar=no,location=no,status=no,resizable=yes`,
+            );
+
+            if (newWindow) {
+              newWindow.focus();
+            }
+          }
+        } else {
+          console.warn('[Preview] Invalid WebContainer URL:', activePreview.baseUrl);
+        }
+      }
+    };
+
     // const modifiedFiles = Array.from(useStore(workbenchStore.unsavedFiles).keys());
 
     const hasPreview = useStore(computed(workbenchStore.previews, (previews) => previews.length > 0));
@@ -395,88 +608,61 @@ export const Workbench = memo(
           >
             <div className="absolute inset-0 px-2 lg:px-6">
               <div className="h-full flex flex-col bg-codinit-elements-background-depth-1 overflow-hidden">
-                <div className="flex items-center px-2 py-1 border-b border-codinit-elements-borderColor gap-1">
-                  <Slider selected={selectedView} options={sliderOptions} setSelected={setSelectedView} />
-                  <div className="ml-auto" />
+                <div className="border-b border-codinit-elements-borderColor">
                   {selectedView === 'code' && (
-                    <div className="flex overflow-y-auto">
-                      <PanelHeaderButton
-                        className="mr-1 text-sm"
-                        onClick={() => {
-                          workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
-                        }}
-                      >
-                        <div className="i-ph:terminal" />
-                        Toggle Terminal
-                      </PanelHeaderButton>
-                      <DropdownMenu.Root>
-                        <DropdownMenu.Trigger className="text-sm flex items-center gap-1 text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md p-1 enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed">
-                          <div className="i-ph:box-arrow-up" />
-                          Sync & Export
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content
-                          className={classNames(
-                            'min-w-[240px] z-[250]',
-                            'bg-codinit-elements-background-depth-2 dark:bg-[#141414]',
-                            'rounded-lg shadow-xl',
-                            'border border-codinit-elements-borderColor',
-                            'animate-in fade-in-0 zoom',
-                          )}
-                          sideOffset={5}
-                          align="end"
-                        >
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={() => {
-                              workbenchStore.downloadZip();
-                            }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="i-ph:download-simple"></div>
-                              <span>Download Code</span>
-                            </div>
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={handleSyncFiles}
-                            disabled={isSyncing}
-                          >
-                            <div className="flex items-center gap-2">
-                              {isSyncing ? <div className="i-ph:spinner" /> : <div className="i-ph:cloud-arrow-down" />}
-                              <span>{isSyncing ? 'Syncing...' : 'Sync Files'}</span>
-                            </div>
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item
-                            className={classNames(
-                              'cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative',
-                            )}
-                            onClick={() => setIsPushDialogOpen(true)}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="i-ph:git-branch" />
-                              Push to GitHub
-                            </div>
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
-                    </div>
+                    <CodeModeHeader
+                      onTerminalToggle={() => {
+                        workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
+                      }}
+                      onDownloadZip={() => {
+                        workbenchStore.downloadZip();
+                      }}
+                      onSyncFiles={handleSyncFiles}
+                      onPushToGitHub={() => setIsPushDialogOpen(true)}
+                      isSyncing={isSyncing}
+                      setIsPushDialogOpen={setIsPushDialogOpen}
+                      showTerminal={showTerminal}
+                    />
+                  )}
+
+                  {selectedView === 'preview' && (
+                    <PreviewHeader
+                      previews={previews}
+                      activePreviewIndex={activePreviewIndex}
+                      setActivePreviewIndex={setActivePreviewIndex}
+                      displayPath={displayPath}
+                      setDisplayPath={setDisplayPath}
+                      setIframeUrl={setIframeUrl}
+                      reloadPreview={reloadPreview}
+                      setIsWindowSizeDropdownOpen={setIsWindowSizeDropdownOpen}
+                      isWindowSizeDropdownOpen={isWindowSizeDropdownOpen}
+                      openInNewTab={openInNewTab}
+                      openInNewWindow={openInNewWindow}
+                      windowSizes={WINDOW_SIZES}
+                      selectedWindowSize={selectedWindowSize}
+                      setSelectedWindowSize={setSelectedWindowSize}
+                      showDeviceFrame={showDeviceFrame}
+                      setShowDeviceFrame={setShowDeviceFrame}
+                      isLandscape={isLandscape}
+                      setIsLandscape={setIsLandscape}
+                      setIsPushDialogOpen={setIsPushDialogOpen}
+                    />
                   )}
 
                   {selectedView === 'diff' && (
-                    <FileModifiedDropdown fileHistory={fileHistory} onSelectFile={handleSelectFile} />
+                    <div className="flex items-center px-2 py-1 gap-1">
+                      <FileModifiedDropdown fileHistory={fileHistory} onSelectFile={handleSelectFile} />
+                      <div className="ml-auto" />
+                      <IconButton
+                        icon="i-ph:x-circle"
+                        className="-mr-1"
+                        size="xl"
+                        onClick={() => {
+                          workbenchStore.showWorkbench.set(false);
+                        }}
+                      />
+                    </div>
                   )}
-                  <IconButton
-                    icon="i-ph:x-circle"
-                    className="-mr-1"
-                    size="xl"
-                    onClick={() => {
-                      workbenchStore.showWorkbench.set(false);
-                    }}
-                  />
                 </div>
                 <div className="relative flex-1 overflow-hidden">
                   <View initial={{ x: '0%' }} animate={{ x: selectedView === 'code' ? '0%' : '-100%' }}>

@@ -1,11 +1,7 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
-import { IconButton } from '~/components/ui/IconButton';
-import { workbenchStore } from '~/lib/stores/workbench';
-import { PortDropdown } from './PortDropdown';
 import { ScreenshotSelector } from './ScreenshotSelector';
-import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
-import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
+import { workbenchStore } from '~/lib/stores/workbench';
 
 type ResizeSide = 'left' | 'right' | null;
 
@@ -50,20 +46,13 @@ const WINDOW_SIZES: WindowSize[] = [
 export const Preview = memo(() => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  const [activePreviewIndex, setActivePreviewIndex] = useState(0);
-  const [isPortDropdownOpen, setIsPortDropdownOpen] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const hasSelectedPreview = useRef(false);
   const previews = useStore(workbenchStore.previews);
-  const activePreview = previews[activePreviewIndex];
-  const [displayPath, setDisplayPath] = useState('/');
-  const [iframeUrl, setIframeUrl] = useState<string | undefined>();
+  const activePreview = previews[0]; // Use first preview as default
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
   // Toggle between responsive mode and device mode
-  const [isDeviceModeOn, setIsDeviceModeOn] = useState(false);
+  const [isDeviceModeOn] = useState(false);
 
   // Use percentage for width
   const [widthPercent, setWidthPercent] = useState<number>(37.5);
@@ -81,70 +70,9 @@ export const Preview = memo(() => {
   // Reduce scaling factor to make resizing less sensitive
   const SCALING_FACTOR = 1;
 
-  const [isWindowSizeDropdownOpen, setIsWindowSizeDropdownOpen] = useState(false);
-  const [selectedWindowSize, setSelectedWindowSize] = useState<WindowSize>(WINDOW_SIZES[0]);
-  const [isLandscape, setIsLandscape] = useState(false);
-  const [showDeviceFrame, setShowDeviceFrame] = useState(true);
+  const [selectedWindowSize] = useState<WindowSize>(WINDOW_SIZES[0]);
+  const [isLandscape] = useState(false);
   const [showDeviceFrameInPreview, setShowDeviceFrameInPreview] = useState(false);
-  const expoUrl = useStore(expoUrlAtom);
-  const [isExpoQrModalOpen, setIsExpoQrModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!activePreview) {
-      setIframeUrl(undefined);
-      setDisplayPath('/');
-
-      return;
-    }
-
-    const { baseUrl } = activePreview;
-    setIframeUrl(baseUrl);
-    setDisplayPath('/');
-  }, [activePreview]);
-
-  const findMinPortIndex = useCallback(
-    (minIndex: number, preview: { port: number }, index: number, array: { port: number }[]) => {
-      return preview.port < array[minIndex].port ? index : minIndex;
-    },
-    [],
-  );
-
-  useEffect(() => {
-    if (previews.length > 1 && !hasSelectedPreview.current) {
-      const minPortIndex = previews.reduce(findMinPortIndex, 0);
-      setActivePreviewIndex(minPortIndex);
-    }
-  }, [previews, findMinPortIndex]);
-
-  const reloadPreview = () => {
-    if (iframeRef.current) {
-      iframeRef.current.src = iframeRef.current.src;
-    }
-  };
-
-  const toggleFullscreen = async () => {
-    if (!isFullscreen && containerRef.current) {
-      await containerRef.current.requestFullscreen();
-    } else if (document.fullscreenElement) {
-      await document.exitFullscreen();
-    }
-  };
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, []);
-
-  const toggleDeviceMode = () => {
-    setIsDeviceModeOn((prev) => !prev);
-  };
 
   const startResizing = (e: React.PointerEvent, side: ResizeSide) => {
     if (!isDeviceModeOn) {
@@ -374,186 +302,6 @@ export const Preview = memo(() => {
     </div>
   );
 
-  const openInNewWindow = (size: WindowSize) => {
-    if (activePreview?.baseUrl) {
-      const match = activePreview.baseUrl.match(/^https?:\/\/([^.]+)\.local-credentialless\.webcontainer-api\.io/);
-
-      if (match) {
-        const previewId = match[1];
-        const previewUrl = `/webcontainer/preview/${previewId}`;
-
-        // Adjust dimensions for landscape mode if applicable
-        let width = size.width;
-        let height = size.height;
-
-        if (isLandscape && (size.frameType === 'mobile' || size.frameType === 'tablet')) {
-          // Swap width and height for landscape mode
-          width = size.height;
-          height = size.width;
-        }
-
-        // Create a window with device frame if enabled
-        if (showDeviceFrame && size.hasFrame) {
-          // Calculate frame dimensions
-          const frameWidth = size.frameType === 'mobile' ? (isLandscape ? 120 : 40) : 60; // Width padding on each side
-          const frameHeight = size.frameType === 'mobile' ? (isLandscape ? 80 : 80) : isLandscape ? 60 : 100; // Height padding on top and bottom
-
-          // Create a window with the correct dimensions first
-          const newWindow = window.open(
-            '',
-            '_blank',
-            `width=${width + frameWidth},height=${height + frameHeight + 40},menubar=no,toolbar=no,location=no,status=no`,
-          );
-
-          if (!newWindow) {
-            console.error('Failed to open new window');
-            return;
-          }
-
-          // Create the HTML content for the frame
-          const frameColor = getFrameColor();
-          const frameRadius = size.frameType === 'mobile' ? '36px' : '20px';
-          const framePadding =
-            size.frameType === 'mobile'
-              ? isLandscape
-                ? '40px 60px'
-                : '40px 20px'
-              : isLandscape
-                ? '30px 50px'
-                : '50px 30px';
-
-          // Position notch and home button based on orientation
-          const notchTop = isLandscape ? '50%' : '20px';
-          const notchLeft = isLandscape ? '30px' : '50%';
-          const notchTransform = isLandscape ? 'translateY(-50%)' : 'translateX(-50%)';
-          const notchWidth = isLandscape ? '8px' : size.frameType === 'mobile' ? '60px' : '80px';
-          const notchHeight = isLandscape ? (size.frameType === 'mobile' ? '60px' : '80px') : '8px';
-
-          const homeBottom = isLandscape ? '50%' : '15px';
-          const homeRight = isLandscape ? '30px' : '50%';
-          const homeTransform = isLandscape ? 'translateY(50%)' : 'translateX(50%)';
-          const homeWidth = isLandscape ? '4px' : '40px';
-          const homeHeight = isLandscape ? '40px' : '4px';
-
-          // Create HTML content for the wrapper page
-          const htmlContent = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-              <meta charset="utf-8">
-              <title>${size.name} Preview</title>
-              <style>
-                body {
-                  margin: 0;
-                  padding: 0;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  height: 100vh;
-                  background: #f0f0f0;
-                  overflow: hidden;
-                  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                }
-                
-                .device-container {
-                  position: relative;
-                }
-                
-                .device-name {
-                  position: absolute;
-                  top: -30px;
-                  left: 0;
-                  right: 0;
-                  text-align: center;
-                  font-size: 14px;
-                  color: #333;
-                }
-                
-                .device-frame {
-                  position: relative;
-                  border-radius: ${frameRadius};
-                  background: ${frameColor};
-                  padding: ${framePadding};
-                  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                  overflow: hidden;
-                }
-                
-                /* Notch */
-                .device-frame:before {
-                  content: '';
-                  position: absolute;
-                  top: ${notchTop};
-                  left: ${notchLeft};
-                  transform: ${notchTransform};
-                  width: ${notchWidth};
-                  height: ${notchHeight};
-                  background: #333;
-                  border-radius: 4px;
-                  z-index: 2;
-                }
-                
-                /* Home button */
-                .device-frame:after {
-                  content: '';
-                  position: absolute;
-                  bottom: ${homeBottom};
-                  right: ${homeRight};
-                  transform: ${homeTransform};
-                  width: ${homeWidth};
-                  height: ${homeHeight};
-                  background: #333;
-                  border-radius: 50%;
-                  z-index: 2;
-                }
-                
-                iframe {
-                  border: none;
-                  width: ${width}px;
-                  height: ${height}px;
-                  background: white;
-                  display: block;
-                }
-              </style>
-            </head>
-            <body>
-              <div class="device-container">
-                <div class="device-name">${size.name} ${isLandscape ? '(Landscape)' : '(Portrait)'}</div>
-                <div class="device-frame">
-                  <iframe src="${previewUrl}" sandbox="allow-scripts allow-forms allow-popups allow-modals allow-storage-access-by-user-activation allow-same-origin" allow="cross-origin-isolated"></iframe>
-                </div>
-              </div>
-            </body>
-            </html>
-          `;
-
-          // Write the HTML content to the new window
-          newWindow.document.open();
-          newWindow.document.write(htmlContent);
-          newWindow.document.close();
-        } else {
-          // Standard window without frame
-          const newWindow = window.open(
-            previewUrl,
-            '_blank',
-            `width=${width},height=${height},menubar=no,toolbar=no,location=no,status=no`,
-          );
-
-          if (newWindow) {
-            newWindow.focus();
-          }
-        }
-      } else {
-        console.warn('[Preview] Invalid WebContainer URL:', activePreview.baseUrl);
-      }
-    }
-  };
-
-  const openInNewTab = () => {
-    if (activePreview?.baseUrl) {
-      window.open(activePreview?.baseUrl, '_blank');
-    }
-  };
-
   // Function to get the correct frame padding based on orientation
   const getFramePadding = useCallback(() => {
     if (!selectedWindowSize) {
@@ -620,234 +368,6 @@ export const Preview = memo(() => {
 
   return (
     <div ref={containerRef} className={`w-full h-full flex flex-col relative`}>
-      {isPortDropdownOpen && (
-        <div className="z-iframe-overlay w-full h-full absolute" onClick={() => setIsPortDropdownOpen(false)} />
-      )}
-      <div className="bg-codinit-elements-background-depth-2 p-2 flex items-center gap-2">
-        <div className="flex items-center gap-2">
-          <IconButton icon="i-ph:arrow-clockwise" onClick={reloadPreview} />
-          <IconButton
-            icon="i-ph:selection"
-            onClick={() => setIsSelectionMode(!isSelectionMode)}
-            className={isSelectionMode ? 'bg-codinit-elements-background-depth-3' : ''}
-          />
-        </div>
-
-        <div className="flex-grow flex items-center gap-1 bg-codinit-elements-preview-addressBar-background border border-codinit-elements-borderColor text-codinit-elements-preview-addressBar-text rounded-full px-1 py-1 text-sm hover:bg-codinit-elements-preview-addressBar-backgroundHover hover:focus-within:bg-codinit-elements-preview-addressBar-backgroundActive focus-within:bg-codinit-elements-preview-addressBar-backgroundActive focus-within-border-codinit-elements-borderColorActive focus-within:text-codinit-elements-preview-addressBar-textActive">
-          <PortDropdown
-            activePreviewIndex={activePreviewIndex}
-            setActivePreviewIndex={setActivePreviewIndex}
-            isDropdownOpen={isPortDropdownOpen}
-            setHasSelectedPreview={(value) => (hasSelectedPreview.current = value)}
-            setIsDropdownOpen={setIsPortDropdownOpen}
-            previews={previews}
-          />
-          <input
-            title="URL Path"
-            ref={inputRef}
-            className="w-full bg-transparent outline-none"
-            type="text"
-            value={displayPath}
-            onChange={(event) => {
-              setDisplayPath(event.target.value);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && activePreview) {
-                let targetPath = displayPath.trim();
-
-                if (!targetPath.startsWith('/')) {
-                  targetPath = '/' + targetPath;
-                }
-
-                const fullUrl = activePreview.baseUrl + targetPath;
-                setIframeUrl(fullUrl);
-                setDisplayPath(targetPath);
-
-                if (inputRef.current) {
-                  inputRef.current.blur();
-                }
-              }
-            }}
-            disabled={!activePreview}
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <IconButton
-            icon="i-ph:devices"
-            onClick={toggleDeviceMode}
-            title={isDeviceModeOn ? 'Switch to Responsive Mode' : 'Switch to Device Mode'}
-          />
-
-          {expoUrl && <IconButton icon="i-ph:qr-code" onClick={() => setIsExpoQrModalOpen(true)} title="Show QR" />}
-
-          <ExpoQrModal open={isExpoQrModalOpen} onClose={() => setIsExpoQrModalOpen(false)} />
-
-          {isDeviceModeOn && (
-            <>
-              <IconButton
-                icon="i-ph:device-rotate"
-                onClick={() => setIsLandscape(!isLandscape)}
-                title={isLandscape ? 'Switch to Portrait' : 'Switch to Landscape'}
-              />
-              <IconButton
-                icon={showDeviceFrameInPreview ? 'i-ph:device-mobile' : 'i-ph:device-mobile-slash'}
-                onClick={() => setShowDeviceFrameInPreview(!showDeviceFrameInPreview)}
-                title={showDeviceFrameInPreview ? 'Hide Device Frame' : 'Show Device Frame'}
-              />
-            </>
-          )}
-
-          <IconButton
-            icon={isFullscreen ? 'i-ph:arrows-in' : 'i-ph:arrows-out'}
-            onClick={toggleFullscreen}
-            title={isFullscreen ? 'Exit Full Screen' : 'Full Screen'}
-          />
-
-          <div className="flex items-center relative">
-            <IconButton
-              icon="i-ph:list"
-              onClick={() => setIsWindowSizeDropdownOpen(!isWindowSizeDropdownOpen)}
-              title="New Window Options"
-            />
-
-            {isWindowSizeDropdownOpen && (
-              <>
-                <div className="fixed inset-0 z-50" onClick={() => setIsWindowSizeDropdownOpen(false)} />
-                <div className="absolute right-0 top-full mt-2 z-50 min-w-[240px] max-h-[400px] overflow-y-auto bg-white dark:bg-black rounded-xl shadow-2xl border border-[#E5E7EB] dark:border-[rgba(255,255,255,0.1)] overflow-hidden">
-                  <div className="p-3 border-b border-[#E5E7EB] dark:border-[rgba(255,255,255,0.1)]">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-[#111827] dark:text-gray-300">Window Options</span>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <button
-                        className={`flex w-full justify-between items-center text-start bg-transparent text-xs text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary`}
-                        onClick={() => {
-                          openInNewTab();
-                        }}
-                      >
-                        <span>Open in new tab</span>
-                        <div className="i-ph:arrow-square-out h-5 w-4" />
-                      </button>
-                      <button
-                        className={`flex w-full justify-between items-center text-start bg-transparent text-xs text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary`}
-                        onClick={() => {
-                          if (!activePreview?.baseUrl) {
-                            console.warn('[Preview] No active preview available');
-                            return;
-                          }
-
-                          const match = activePreview.baseUrl.match(
-                            /^https?:\/\/([^.]+)\.local-credentialless\.webcontainer-api\.io/,
-                          );
-
-                          if (!match) {
-                            console.warn('[Preview] Invalid WebContainer URL:', activePreview.baseUrl);
-                            return;
-                          }
-
-                          const previewId = match[1];
-                          const previewUrl = `/webcontainer/preview/${previewId}`;
-
-                          // Open in a new window with simple parameters
-                          window.open(
-                            previewUrl,
-                            `preview-${previewId}`,
-                            'width=1280,height=720,menubar=no,toolbar=no,location=no,status=no,resizable=yes',
-                          );
-                        }}
-                      >
-                        <span>Open in new window</span>
-                        <div className="i-ph:browser h-5 w-4" />
-                      </button>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-codinit-elements-textTertiary">Show Device Frame</span>
-                        <button
-                          className={`w-10 h-5 rounded-full transition-colors duration-200 ${
-                            showDeviceFrame ? 'bg-[#6D28D9]' : 'bg-gray-300 dark:bg-gray-700'
-                          } relative`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowDeviceFrame(!showDeviceFrame);
-                          }}
-                        >
-                          <span
-                            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
-                              showDeviceFrame ? 'transform translate-x-5' : ''
-                            }`}
-                          />
-                        </button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-codinit-elements-textTertiary">Landscape Mode</span>
-                        <button
-                          className={`w-10 h-5 rounded-full transition-colors duration-200 ${
-                            isLandscape ? 'bg-[#6D28D9]' : 'bg-gray-300 dark:bg-gray-700'
-                          } relative`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsLandscape(!isLandscape);
-                          }}
-                        >
-                          <span
-                            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
-                              isLandscape ? 'transform translate-x-5' : ''
-                            }`}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {WINDOW_SIZES.map((size) => (
-                    <button
-                      key={size.name}
-                      className="w-full px-4 py-3.5 text-left text-[#111827] dark:text-gray-300 text-sm whitespace-nowrap flex items-center gap-3 group hover:bg-[#F5EEFF] dark:hover:bg-gray-900 bg-white dark:bg-black"
-                      onClick={() => {
-                        setSelectedWindowSize(size);
-                        setIsWindowSizeDropdownOpen(false);
-                        openInNewWindow(size);
-                      }}
-                    >
-                      <div
-                        className={`${size.icon} w-5 h-5 text-[#6B7280] dark:text-gray-400 group-hover:text-[#6D28D9] dark:group-hover:text-[#6D28D9] transition-colors duration-200`}
-                      />
-                      <div className="flex-grow flex flex-col">
-                        <span className="font-medium group-hover:text-[#6D28D9] dark:group-hover:text-[#6D28D9] transition-colors duration-200">
-                          {size.name}
-                        </span>
-                        <span className="text-xs text-[#6B7280] dark:text-gray-400 group-hover:text-[#6D28D9] dark:group-hover:text-[#6D28D9] transition-colors duration-200">
-                          {isLandscape && (size.frameType === 'mobile' || size.frameType === 'tablet')
-                            ? `${size.height} × ${size.width}`
-                            : `${size.width} × ${size.height}`}
-                          {size.hasFrame && showDeviceFrame ? ' (with frame)' : ''}
-                        </span>
-                      </div>
-                      {selectedWindowSize.name === size.name && (
-                        <div className="text-[#6D28D9] dark:text-[#6D28D9]">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
       <div className="flex-1 border-t border-codinit-elements-borderColor flex justify-center items-center overflow-auto">
         <div
           style={{
@@ -861,7 +381,7 @@ export const Preview = memo(() => {
             alignItems: 'center',
           }}
         >
-          {activePreview ? (
+          {activePreview && activePreview.baseUrl ? (
             <>
               {isDeviceModeOn && showDeviceFrameInPreview ? (
                 <div
@@ -939,7 +459,7 @@ export const Preview = memo(() => {
                         background: 'white',
                         display: 'block',
                       }}
-                      src={iframeUrl}
+                      src={activePreview?.baseUrl}
                       sandbox="allow-scripts allow-forms allow-popups allow-modals allow-storage-access-by-user-activation allow-same-origin"
                       allow="cross-origin-isolated"
                     />
@@ -950,7 +470,7 @@ export const Preview = memo(() => {
                   ref={iframeRef}
                   title="preview"
                   className="border-none w-full h-full bg-codinit-elements-background-depth-1"
-                  src={iframeUrl}
+                  src={activePreview?.baseUrl}
                   sandbox="allow-scripts allow-forms allow-popups allow-modals allow-storage-access-by-user-activation allow-same-origin"
                   allow="geolocation; ch-ua-full-version-list; cross-origin-isolated; screen-wake-lock; publickey-credentials-get; shared-storage-select-url; ch-ua-arch; bluetooth; compute-pressure; ch-prefers-reduced-transparency; deferred-fetch; usb; ch-save-data; publickey-credentials-create; shared-storage; deferred-fetch-minimal; run-ad-auction; ch-ua-form-factors; ch-downlink; otp-credentials; payment; ch-ua; ch-ua-model; ch-ect; autoplay; camera; private-state-token-issuance; accelerometer; ch-ua-platform-version; idle-detection; private-aggregation; interest-cohort; ch-viewport-height; local-fonts; ch-ua-platform; midi; ch-ua-full-version; xr-spatial-tracking; clipboard-read; gamepad; display-capture; keyboard-map; join-ad-interest-group; ch-width; ch-prefers-reduced-motion; browsing-topics; encrypted-media; gyroscope; serial; ch-rtt; ch-ua-mobile; window-management; unload; ch-dpr; ch-prefers-color-scheme; ch-ua-wow64; attribution-reporting; fullscreen; identity-credentials-get; private-state-token-redemption; hid; ch-ua-bitness; storage-access; sync-xhr; ch-device-memory; ch-viewport-width; picture-in-picture; magnetometer; clipboard-write; microphone"
                 />
@@ -961,9 +481,23 @@ export const Preview = memo(() => {
                 containerRef={iframeRef}
               />
             </>
+          ) : activePreview ? (
+            <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary">
+              <div className="text-center">
+                <div className="text-lg font-medium mb-2">Preview Starting...</div>
+                <div className="text-sm text-codinit-elements-textSecondary">
+                  Waiting for development server to start
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary">
-              No preview available
+              <div className="text-center">
+                <div className="text-lg font-medium mb-2">No Preview Available</div>
+                <div className="text-sm text-codinit-elements-textSecondary">
+                  Start a development server to see your app
+                </div>
+              </div>
             </div>
           )}
 

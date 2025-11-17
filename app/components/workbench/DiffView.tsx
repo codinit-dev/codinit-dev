@@ -43,7 +43,7 @@ const FullscreenButton = memo(({ onClick, isFullscreen }: FullscreenButtonProps)
     className="ml-4 p-1 rounded hover:bg-codinit-elements-background-depth-3 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary transition-colors"
     title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
   >
-    <div className={isFullscreen ? 'i-ph:corners-in' : 'i-ph:corners-out'} />
+    <div className={isFullscreen ? 'i-lucide:minimize-2' : 'i-lucide:maximize-2'} />
   </button>
 ));
 
@@ -334,7 +334,7 @@ const changeColorStyles = {
 const renderContentWarning = (type: 'binary' | 'error') => (
   <div className="h-full flex items-center justify-center p-4">
     <div className="text-center text-codinit-elements-textTertiary">
-      <div className={`i-ph:${type === 'binary' ? 'file-x' : 'warning-circle'} text-4xl text-red-400 mb-2 mx-auto`} />
+      <div className={`i-lucide:${type === 'binary' ? 'file-x' : 'alert-circle'} text-4xl text-red-400 mb-2 mx-auto`} />
       <p className="font-medium text-codinit-elements-textPrimary">
         {type === 'binary' ? 'Binary file detected' : 'Error processing file'}
       </p>
@@ -359,7 +359,7 @@ const NoChangesView = memo(
   }) => (
     <div className="h-full flex flex-col items-center justify-center p-4">
       <div className="text-center text-codinit-elements-textTertiary">
-        <div className="i-ph:files text-4xl text-green-400 mb-2 mx-auto" />
+        <div className="i-lucide:files text-4xl text-green-400 mb-2 mx-auto" />
         <p className="font-medium text-codinit-elements-textPrimary">Files are identical</p>
         <p className="text-sm mt-1">Both versions match exactly</p>
       </div>
@@ -518,7 +518,7 @@ const FileInfo = memo(
 
     return (
       <div className="flex items-center bg-codinit-elements-background-depth-1 p-2 text-sm text-codinit-elements-textPrimary shrink-0">
-        <div className="i-ph:file mr-2 h-4 w-4 shrink-0" />
+        <div className="i-lucide:file mr-2 h-4 w-4 shrink-0" />
         <span className="truncate">{filename}</span>
         <span className="ml-auto shrink-0 flex items-center gap-2">
           {hasChanges ? (
@@ -746,7 +746,7 @@ export const DiffView = memo(({ fileHistory, setFileHistory }: DiffViewProps) =>
     return (
       <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-red-400">
         <div className="text-center">
-          <div className="i-ph:warning-circle text-4xl mb-2" />
+          <div className="i-lucide:alert-circle text-4xl mb-2" />
           <p>Failed to render diff view</p>
         </div>
       </div>

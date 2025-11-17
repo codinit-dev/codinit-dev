@@ -106,7 +106,7 @@ export const TerminalTabs = memo(() => {
                       )}
                       onClick={() => setActiveTerminal(index)}
                     >
-                      <div className="i-ph:terminal-window-duotone text-lg" />
+                      <div className="i-lucide:terminal text-lg text-codinit-elements-textPrimary" />
                       CodinIT Terminal
                     </button>
                   ) : (
@@ -124,7 +124,7 @@ export const TerminalTabs = memo(() => {
                         )}
                         onClick={() => setActiveTerminal(index)}
                       >
-                        <div className="i-ph:terminal-window-duotone text-lg" />
+                        <div className="i-lucide:terminal text-lg text-codinit-elements-textPrimary" />
                         Terminal {terminalCount > 1 && index}
                       </button>
                     </React.Fragment>

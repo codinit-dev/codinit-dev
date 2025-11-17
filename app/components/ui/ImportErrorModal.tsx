@@ -330,7 +330,7 @@ Please analyze these errors and suggest how to resolve the import issues.
                   onClick={handleAskAI}
                   className="bg-codinit-elements-button-primary-background text-codinit-elements-button-primary-text hover:bg-codinit-elements-button-primary-backgroundHover flex items-center gap-1.5"
                 >
-                  <div className="i-ph:chat-circle-duotone"></div>
+                  <div className="i-ph:chat-circle-duotone text-codinit-elements-textPrimary"></div>
                   Ask AI to Fix
                 </Button>
               )}

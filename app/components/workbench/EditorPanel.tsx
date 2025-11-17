@@ -156,11 +156,11 @@ export const EditorPanel = memo(
                     {activeFileUnsaved && (
                       <div className="flex gap-1 ml-auto -mr-1.5">
                         <PanelHeaderButton onClick={onFileSave}>
-                          <div className="i-ph:floppy-disk-duotone" />
+                          <div className="i-ph:floppy-disk-duotone text-codinit-elements-textPrimary" />
                           Save
                         </PanelHeaderButton>
                         <PanelHeaderButton onClick={onFileReset}>
-                          <div className="i-ph:clock-counter-clockwise-duotone" />
+                          <div className="i-ph:clock-counter-clockwise-duotone text-codinit-elements-textPrimary" />
                           Reset
                         </PanelHeaderButton>
                       </div>
