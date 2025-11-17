@@ -121,6 +121,7 @@ const COLOR_PRIMITIVES = {
 export default defineConfig({
   safelist: [
     ...Object.keys(customIconCollection[collectionName] || {}).map((x) => `i-codinit:${x}`),
+
     // Add common Lucide icons to safelist
     'i-lucide:eye',
     'i-lucide:code',
