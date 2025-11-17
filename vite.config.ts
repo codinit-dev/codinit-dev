@@ -94,17 +94,6 @@ export default defineConfig((config) => {
     build: {
       target: 'esnext',
     },
-    resolve: {
-      alias: {
-        // Map crypto and crypto-browserify to node:crypto for SSR builds
-        ...(config.isSsrBuild
-          ? {
-              crypto: 'node:crypto',
-              'crypto-browserify': 'node:crypto',
-            }
-          : {}),
-      },
-    },
     plugins: [
       nodePolyfills({
         include: ['buffer', 'process', 'util', 'stream', 'path'], // Exclude 'crypto' from polyfills

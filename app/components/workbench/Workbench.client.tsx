@@ -395,7 +395,7 @@ export const Workbench = memo(
           >
             <div className="absolute inset-0 px-2 lg:px-6">
               <div className="h-full flex flex-col bg-codinit-elements-background-depth-1 overflow-hidden">
-                <div className="flex items-center px-3 py-2 border-b border-codinit-elements-borderColor gap-1">
+                <div className="flex items-center px-2 py-1 border-b border-codinit-elements-borderColor gap-1">
                   <Slider selected={selectedView} options={sliderOptions} setSelected={setSelectedView} />
                   <div className="ml-auto" />
                   {selectedView === 'code' && (
