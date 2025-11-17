@@ -34,6 +34,109 @@ export default class GoogleProvider extends BaseProvider {
       maxTokenAllowed: 1000000,
       maxCompletionTokens: 8192,
     },
+
+    // Gemini 2.5 Flash Preview 05-20
+    {
+      name: 'models/gemini-2.5-flash-preview-05-20',
+      label: 'Gemini 2.5 Flash Preview 05-20',
+      provider: 'Google',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemini 2.5 Pro Preview 05-06
+    {
+      name: 'models/gemini-2.5-pro-preview-05-06',
+      label: 'Gemini 2.5 Pro Preview 05-06',
+      provider: 'Google',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemini 2.0 Flash
+    {
+      name: 'models/gemini-2.0-flash',
+      label: 'Gemini 2.0 Flash',
+      provider: 'Google',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemini 2.0 Flash Lite
+    {
+      name: 'models/gemini-2.0-flash-lite',
+      label: 'Gemini 2.0 Flash Lite',
+      provider: 'Google',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemini 1.5 Pro
+    {
+      name: 'models/gemini-1.5-pro',
+      label: 'Gemini 1.5 Pro',
+      provider: 'Google',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Gemini 1.5 Flash
+    {
+      name: 'models/gemini-1.5-flash',
+      label: 'Gemini 1.5 Flash',
+      provider: 'Google',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Vertex AI models
+    {
+      name: 'gemini-2.5-flash-preview-05-20',
+      label: 'Gemini 2.5 Flash Preview 05-20',
+      provider: 'Google Vertex AI',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
+
+    {
+      name: 'gemini-2.5-pro-preview-05-06',
+      label: 'Gemini 2.5 Pro Preview 05-06',
+      provider: 'Google Vertex AI',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 8192,
+    },
+
+    {
+      name: 'gemini-2.0-flash-001',
+      label: 'Gemini 2.0 Flash',
+      provider: 'Google Vertex AI',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
+
+    {
+      name: 'gemini-2.0-flash-lite-001',
+      label: 'Gemini 2.0 Flash Lite',
+      provider: 'Google Vertex AI',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
+
+    {
+      name: 'gemini-1.5-pro-002',
+      label: 'Gemini 1.5 Pro',
+      provider: 'Google Vertex AI',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 8192,
+    },
+
+    {
+      name: 'gemini-1.5-flash-002',
+      label: 'Gemini 1.5 Flash',
+      provider: 'Google Vertex AI',
+      maxTokenAllowed: 1000000,
+      maxCompletionTokens: 8192,
+    },
   ];
 
   async getDynamicModels(

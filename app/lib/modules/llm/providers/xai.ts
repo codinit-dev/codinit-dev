@@ -27,8 +27,20 @@ export default class XAIProvider extends BaseProvider {
       maxTokenAllowed: 256000,
     },
     {
+      name: 'grok-3',
+      label: 'xAI Grok 3',
+      provider: 'xAI',
+      maxTokenAllowed: 131000,
+    },
+    {
       name: 'grok-3-mini',
       label: 'xAI Grok 3 Mini',
+      provider: 'xAI',
+      maxTokenAllowed: 131000,
+    },
+    {
+      name: 'grok-3-fast',
+      label: 'xAI Grok 3 Fast',
       provider: 'xAI',
       maxTokenAllowed: 131000,
     },

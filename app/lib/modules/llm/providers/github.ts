@@ -13,11 +13,6 @@ export default class GithubProvider extends BaseProvider {
     apiTokenKey: 'GITHUB_API_KEY',
   };
 
-  /*
-   * GitHub Models - Available models through GitHub's native API
-   * Updated for the new GitHub Models API at https://models.github.ai
-   * Model IDs use the format: publisher/model-name
-   */
   staticModels: ModelInfo[] = [
     {
       name: 'openai/gpt-4o',

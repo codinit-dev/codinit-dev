@@ -34,6 +34,33 @@ export default class GroqProvider extends BaseProvider {
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
+
+    // GPT OSS 120B
+    {
+      name: 'openai/gpt-oss-120b',
+      label: 'GPT OSS 120B',
+      provider: 'Groq',
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 8192,
+    },
+
+    // Kimi K2 Instruct
+    {
+      name: 'moonshotai/kimi-k2-instruct',
+      label: 'Kimi K2 Instruct',
+      provider: 'Groq',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
+
+    // Qwen3 32B
+    {
+      name: 'qwen/qwen3-32b',
+      label: 'Qwen3 32B',
+      provider: 'Groq',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
   ];
 
   async getDynamicModels(

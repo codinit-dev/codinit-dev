@@ -61,6 +61,108 @@ export default class OpenAIProvider extends BaseProvider {
       maxTokenAllowed: 128000,
       maxCompletionTokens: 65000,
     },
+
+    // GPT-5 series
+    {
+      name: 'gpt-5',
+      label: 'GPT-5',
+      provider: 'OpenAI',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 100000,
+    },
+
+    {
+      name: 'gpt-5-mini',
+      label: 'GPT-5 Mini',
+      provider: 'OpenAI',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 100000,
+    },
+
+    {
+      name: 'gpt-5-nano',
+      label: 'GPT-5 Nano',
+      provider: 'OpenAI',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 100000,
+    },
+
+    // o3 series
+    {
+      name: 'o3',
+      label: 'o3',
+      provider: 'OpenAI',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 100000,
+    },
+
+    {
+      name: 'o3-mini',
+      label: 'o3-mini',
+      provider: 'OpenAI',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 100000,
+    },
+
+    {
+      name: 'o4-mini',
+      label: 'o4-mini',
+      provider: 'OpenAI',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 100000,
+    },
+
+    // GPT-4.1 series
+    {
+      name: 'gpt-4.1',
+      label: 'GPT-4.1',
+      provider: 'OpenAI',
+      maxTokenAllowed: 1048576,
+      maxCompletionTokens: 32768,
+    },
+
+    {
+      name: 'gpt-4.1-mini',
+      label: 'GPT-4.1 mini',
+      provider: 'OpenAI',
+      maxTokenAllowed: 1048576,
+      maxCompletionTokens: 32768,
+    },
+
+    {
+      name: 'gpt-4.1-nano',
+      label: 'GPT-4.1 nano',
+      provider: 'OpenAI',
+      maxTokenAllowed: 1048576,
+      maxCompletionTokens: 32768,
+    },
+
+    // GPT-4.5 preview
+    {
+      name: 'gpt-4.5-preview',
+      label: 'GPT-4.5 (preview)',
+      provider: 'OpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 4096,
+    },
+
+    // o1
+    {
+      name: 'o1',
+      label: 'o1',
+      provider: 'OpenAI',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 100000,
+    },
+
+    // GPT-4 Turbo
+    {
+      name: 'gpt-4-turbo',
+      label: 'GPT-4 Turbo',
+      provider: 'OpenAI',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 4096,
+    },
   ];
 
   async getDynamicModels(

@@ -34,6 +34,15 @@ export default class TogetherProvider extends BaseProvider {
       maxTokenAllowed: 32000,
       maxCompletionTokens: 8192,
     },
+
+    // Llama 3.1 70B
+    {
+      name: 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo',
+      label: 'Llama 3.1 70B',
+      provider: 'Together',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 8192,
+    },
   ];
 
   async getDynamicModels(
