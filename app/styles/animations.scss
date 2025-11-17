@@ -306,3 +306,13 @@
     background-position: 100% 50%;
   }
 }
+
+// Text shimmer animation
+@keyframes shimmer {
+  0% {
+    background-position: -250% center;
+  }
+  100% {
+    background-position: 250% center;
+  }
+}

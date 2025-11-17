@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import type { ProgressAnnotation } from '~/types/context';
 import { classNames } from '~/utils/classNames';
 import { cubicEasingFn } from '~/utils/easings';
+import { TextShimmer } from '~/components/ui/text-shimmer';
 
 export default function ProgressCompilation({ data }: { data?: ProgressAnnotation[] }) {
   const [progressList, setProgressList] = React.useState<ProgressAnnotation[]>([]);
@@ -104,7 +105,13 @@ const ProgressItem = ({ progress }: { progress: ProgressAnnotation }) => {
         </div>
         {/* {x.label} */}
       </div>
-      {progress.message}
+      {progress.status === 'in-progress' ? (
+        <TextShimmer className="font-medium" duration={1.5}>
+          {progress.message}
+        </TextShimmer>
+      ) : (
+        progress.message
+      )}
     </motion.div>
   );
 };

@@ -22,8 +22,7 @@ import type { ActionAlert, SupabaseAlert, DeployAlert, LlmErrorAlertType } from 
 import DeployChatAlert from '~/components/deploy/DeployAlert';
 import ChatAlert from './ChatAlert';
 import type { ModelInfo } from '~/lib/modules/llm/types';
-import ProgressCompilation from './ProgressCompilation';
-import type { ProgressAnnotation } from '~/types/context';
+
 import { SupabaseChatAlert } from '~/components/chat/SupabaseAlert';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { useStore } from '@nanostores/react';
@@ -140,7 +139,10 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
     const [transcript, setTranscript] = useState('');
     const [isModelLoading, setIsModelLoading] = useState<string | undefined>('all');
-    const [progressAnnotations, setProgressAnnotations] = useState<ProgressAnnotation[]>([]);
+    const [actions, setActions] = useState<Array<{ id: string; action: string; target: string; timestamp: number }>>(
+      [],
+    );
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const expoUrl = useStore(expoUrlAtom);
     const [qrModalOpen, setQrModalOpen] = useState(false);
 
@@ -152,10 +154,13 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
     useEffect(() => {
       if (data) {
-        const progressList = data.filter(
-          (x) => typeof x === 'object' && (x as any).type === 'progress',
-        ) as ProgressAnnotation[];
-        setProgressAnnotations(progressList);
+        const actionItems = data.filter((x) => typeof x === 'object' && (x as any).type === 'action') as Array<{
+          id: string;
+          action: string;
+          target: string;
+          timestamp: number;
+        }>;
+        setActions(actionItems);
       }
     }, [data]);
     useEffect(() => {
@@ -521,6 +526,9 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                         provider={provider}
                         model={model}
                         addToolResult={addToolResult}
+                        actions={actions}
+                        isDropdownOpen={isDropdownOpen}
+                        setIsDropdownOpen={setIsDropdownOpen}
                       />
                     ) : null;
                   }}
@@ -565,7 +573,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   )}
                   {llmErrorAlert && <LlmErrorAlert alert={llmErrorAlert} clearAlert={() => clearLlmErrorAlert?.()} />}
                 </div>
-                {progressAnnotations && <ProgressCompilation data={progressAnnotations} />}
+
                 <ChatBox
                   isModelSettingsCollapsed={isModelSettingsCollapsed}
                   setIsModelSettingsCollapsed={setIsModelSettingsCollapsed}

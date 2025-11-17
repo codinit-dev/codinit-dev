@@ -13,6 +13,16 @@ import { forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
 import type { ProviderInfo } from '~/types/model';
 
+import { ActionsDropdown } from '~/components/ui/actions-dropdown';
+import { AnimatedCounter } from '~/components/ui/animated-counter';
+
+interface ActionItem {
+  id: string;
+  action: string;
+  target: string;
+  timestamp: number;
+}
+
 interface MessagesProps {
   id?: string;
   className?: string;
@@ -24,11 +34,15 @@ interface MessagesProps {
   provider?: ProviderInfo;
   model?: string;
   addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
+
+  actions?: ActionItem[];
+  isDropdownOpen?: boolean;
+  setIsDropdownOpen?: (open: boolean) => void;
 }
 
 export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
   (props: MessagesProps, ref: ForwardedRef<HTMLDivElement> | undefined) => {
-    const { id, isStreaming = false, messages = [] } = props;
+    const { id, isStreaming = false, messages = [], actions = [], isDropdownOpen = false, setIsDropdownOpen } = props;
     const location = useLocation();
     const profile = useStore(profileStore);
 
@@ -54,6 +68,30 @@ export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
 
     return (
       <div id={id} className={props.className} ref={ref}>
+        {isStreaming && actions.length > 0 && (
+          <div className="flex gap-4 p-6 py-5 w-full rounded-[calc(0.75rem-1px)] mt-4">
+            <div className="flex items-center justify-center w-[40px] h-[40px] overflow-hidden bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent rounded-full shrink-0 self-start">
+              <div className="i-ph:cpu text-xl" />
+            </div>
+            <div className="grid grid-col-1 w-full">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm font-medium text-codinit-elements-textSecondary">Assistant</span>
+                <AnimatedCounter
+                  value={actions.length}
+                  isInteractive={true}
+                  onClick={() => setIsDropdownOpen?.(!isDropdownOpen)}
+                />
+              </div>
+              <div className="text-codinit-elements-textPrimary">
+                <ActionsDropdown
+                  actions={actions}
+                  isOpen={isDropdownOpen}
+                  onToggle={() => setIsDropdownOpen?.(!isDropdownOpen)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
         {messages.length > 0
           ? messages.map((message, index) => {
               const { role, content, id: messageId, annotations } = message;

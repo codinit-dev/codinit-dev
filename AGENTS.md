@@ -1,47 +1,55 @@
-# Agent Guidelines for Codinit Repository
+# Build/Lint/Test Commands
 
-## Build/Lint/Test Commands
-- `pnpm run build` - Build the application
-- `pnpm run lint` - Run ESLint on app directory
-- `pnpm run lint:fix` - Fix linting issues and format with Prettier
-- `pnpm run typecheck` - Run TypeScript type checking
-- `pnpm run test` - Run all tests once
-- `pnpm run test:watch` - Run tests in watch mode
-- `pnpm run test <filename>` - Run single test file (e.g., `pnpm run test utils.spec.ts`)
+## Build Commands
+- `npm run build` - Production build with Remix Vite
+- `npm run dev` - Development server with hot reload
+- `npm run typecheck` - TypeScript type checking
 
-## Code Style Guidelines
+## Test Commands
+- `npm run test` - Run all tests once with Vitest
+- `npm run test:watch` - Run tests in watch mode
+- `vitest --run path/to/test.spec.ts` - Run single test file
 
-### Imports
-- Use absolute imports with `~/` prefix instead of relative imports
-- Example: `import { utils } from '~/lib/utils'` instead of `import { utils } from '../lib/utils'`
-- Group imports: React first, then external libraries, then internal modules
+## Lint Commands
+- `npm run lint` - ESLint check with caching
+- `npm run lint:fix` - Auto-fix ESLint + Prettier formatting
 
-### Formatting
-- 2 space indentation, no tabs
-- 120 character line length
+# Code Style Guidelines
+
+## Formatting (Prettier)
+- Print width: 120 characters
 - Single quotes for strings
+- 2 spaces for indentation (no tabs)
 - Semicolons required
-- Trailing commas in multi-line structures
+- Bracket spacing enabled
 
-### TypeScript
+## TypeScript
 - Strict mode enabled
-- Use type annotations for function parameters and return types
-- Prefer `interface` for object shapes, `type` for unions/primitives
-- Use `cn()` utility for className merging (from `~/lib/utils`)
+- ESNext target with JSX transform (react-jsx)
+- Path aliases: `~/*` maps to `./app/*`
+- Explicit return types for functions
+- Interface definitions for component props
 
-### Naming Conventions
-- Components: PascalCase (e.g., `Button.tsx`)
-- Functions/variables: camelCase
-- Constants: UPPER_SNAKE_CASE
-- Files: kebab-case for utilities, PascalCase for components
+## Imports
+- Organize imports automatically (Biome)
+- Group imports: React, third-party, local
+- Use absolute imports with `~/` prefix
+- No unused imports (error level)
 
-### Error Handling
+## Naming Conventions
+- camelCase: variables, functions, hooks
+- PascalCase: components, types, interfaces
+- UPPER_SNAKE_CASE: constants
+- kebab-case: file names
+
+## Error Handling
 - Use try-catch blocks for async operations
-- Return consistent error types with Zod validation
-- Log errors appropriately without exposing sensitive data
+- Log errors with createScopedLogger
+- Return error objects instead of throwing
+- Handle loading/error states in components
 
-### React Patterns
-- Use functional components with hooks
-- Prefer `classNames()` utility for conditional classes
-- Follow existing component patterns (see `app/components/ui/`)
-- Use class-variance-authority (cva) for component variants
+## Testing
+- Vitest with jsdom environment
+- Coverage thresholds: 70% for all metrics
+- Test files: `*.test.ts`, `*.spec.ts`
+- Setup file: `__tests__/config/setup.ts`

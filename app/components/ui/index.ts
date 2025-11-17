@@ -18,6 +18,7 @@ export * from './ThemeSwitch';
 // Loading components
 export * from './LoadingDots';
 export * from './LoadingOverlay';
+export * from './text-shimmer';
 
 // New components
 export * from './Breadcrumbs';

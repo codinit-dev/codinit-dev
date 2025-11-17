@@ -35,15 +35,6 @@ export default class OpenAIProvider extends BaseProvider {
       maxCompletionTokens: 4096,
     },
 
-    // GPT-3.5-turbo: 16k context, fast and cost-effective
-    {
-      name: 'gpt-3.5-turbo',
-      label: 'GPT-3.5 Turbo',
-      provider: 'OpenAI',
-      maxTokenAllowed: 16000,
-      maxCompletionTokens: 4096,
-    },
-
     // o1-preview: 128k context, 32k output limit (reasoning model)
     {
       name: 'o1-preview',
@@ -205,14 +196,12 @@ export default class OpenAIProvider extends BaseProvider {
       // OpenAI provides context_length in their API response
       if (m.context_length) {
         contextWindow = m.context_length;
-      } else if (m.id?.includes('gpt-4o')) {
+      } else if (m.id?.includes('gpt-5')) {
         contextWindow = 128000; // GPT-4o has 128k context
       } else if (m.id?.includes('gpt-4-turbo') || m.id?.includes('gpt-4-1106')) {
         contextWindow = 128000; // GPT-4 Turbo has 128k context
-      } else if (m.id?.includes('gpt-4')) {
+      } else if (m.id?.includes('gpt-4o')) {
         contextWindow = 8192; // Standard GPT-4 has 8k context
-      } else if (m.id?.includes('gpt-3.5-turbo')) {
-        contextWindow = 16385; // GPT-3.5-turbo has 16k context
       }
 
       // Determine completion token limits based on model type (accurate 2025 limits)
@@ -230,8 +219,6 @@ export default class OpenAIProvider extends BaseProvider {
         maxCompletionTokens = 4096; // GPT-4o standard: 4K (64K with long output mode)
       } else if (m.id?.includes('gpt-4')) {
         maxCompletionTokens = 8192; // Standard GPT-4: 8K output limit
-      } else if (m.id?.includes('gpt-3.5-turbo')) {
-        maxCompletionTokens = 4096; // GPT-3.5-turbo: 4K output limit
       }
 
       return {
