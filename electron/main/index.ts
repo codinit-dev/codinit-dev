@@ -187,9 +187,118 @@ declare global {
     setInterval(() => win.webContents.send('ping', `hello from main! ${count++}`), 60 * 1000);
     ipcMain.handle('ipcTest', (event, ...args) => console.log('ipc: renderer -> main', { event, ...args }));
 
+    // Cookie synchronization handlers
+    ipcMain.handle('cookie-set', async (_, name: string, value: string, options?: any) => {
+      const cookieDetails: Electron.CookiesSetDetails = {
+        name,
+        value,
+        path: options?.path || '/',
+        domain: options?.domain,
+        secure: options?.secure || false,
+        httpOnly: options?.httpOnly || false,
+        expirationDate: options?.expires ? Math.floor(new Date(options.expires).getTime() / 1000) : undefined,
+        url: `http://localhost:${DEFAULT_PORT}`,
+        sameSite: 'lax',
+      };
+
+      try {
+        await session.defaultSession.cookies.set(cookieDetails);
+        console.log('Cookie set in Electron session:', name);
+
+        return true;
+      } catch (error) {
+        console.error('Failed to set cookie in Electron session:', error);
+        return false;
+      }
+    });
+
+    ipcMain.handle('cookie-get', async (_, name: string) => {
+      try {
+        const cookies = await session.defaultSession.cookies.get({ name, url: `http://localhost:${DEFAULT_PORT}` });
+        return cookies.length > 0 ? cookies[0].value : null;
+      } catch (error) {
+        console.error('Failed to get cookie from Electron session:', error);
+        return null;
+      }
+    });
+
+    ipcMain.handle('cookie-get-all', async (_) => {
+      try {
+        const cookies = await session.defaultSession.cookies.get({});
+        return cookies.map((cookie) => ({
+          name: cookie.name,
+          value: cookie.value,
+          path: cookie.path,
+          domain: cookie.domain,
+          secure: cookie.secure,
+          httpOnly: cookie.httpOnly,
+          expirationDate: cookie.expirationDate,
+        }));
+      } catch (error) {
+        console.error('Failed to get all cookies from Electron session:', error);
+        return [];
+      }
+    });
+
+    ipcMain.handle('cookie-remove', async (_, name: string) => {
+      try {
+        await session.defaultSession.cookies.remove(`http://localhost:${DEFAULT_PORT}`, name);
+        console.log('Cookie removed from Electron session:', name);
+
+        return true;
+      } catch (error) {
+        console.error('Failed to remove cookie from Electron session:', error);
+        return false;
+      }
+    });
+
+    ipcMain.handle('cookie-get', async (_, name: string) => {
+      try {
+        const cookies = await session.defaultSession.cookies.get({ name });
+        return cookies.length > 0 ? cookies[0].value : null;
+      } catch (error) {
+        console.error('Failed to get cookie from Electron session:', error);
+        return null;
+      }
+    });
+
+    ipcMain.handle('cookie-get-all', async (_) => {
+      try {
+        const cookies = await session.defaultSession.cookies.get({});
+        return cookies.map((cookie) => ({
+          name: cookie.name,
+          value: cookie.value,
+          path: cookie.path,
+          domain: cookie.domain,
+          secure: cookie.secure,
+          httpOnly: cookie.httpOnly,
+          expirationDate: cookie.expirationDate,
+        }));
+      } catch (error) {
+        console.error('Failed to get all cookies from Electron session:', error);
+        return [];
+      }
+    });
+
+    ipcMain.handle('cookie-remove', async (_, name: string) => {
+      try {
+        await session.defaultSession.cookies.remove('http://localhost', name);
+        console.log('Cookie removed from Electron session:', name);
+
+        return true;
+      } catch (error) {
+        console.error('Failed to remove cookie from Electron session:', error);
+        return false;
+      }
+    });
+
     return win;
   })
-  .then((win) => setupMenu(win));
+  .then((win) => {
+    // Sync Electron session cookies to renderer document.cookie
+    syncCookiesToRenderer(win);
+    return setupMenu(win);
+  });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -199,3 +308,28 @@ app.on('window-all-closed', () => {
 
 reloadOnChange();
 setupAutoUpdater();
+
+// Function to sync Electron session cookies to renderer document.cookie
+async function syncCookiesToRenderer(win: BrowserWindow) {
+  try {
+    const cookies = await session.defaultSession.cookies.get({});
+
+    // Send cookies to renderer to sync with document.cookie
+    win.webContents.send(
+      'sync-cookies',
+      cookies.map((cookie) => ({
+        name: cookie.name,
+        value: cookie.value,
+        path: cookie.path,
+        domain: cookie.domain,
+        secure: cookie.secure,
+        httpOnly: cookie.httpOnly,
+        expirationDate: cookie.expirationDate,
+      })),
+    );
+
+    console.log(`Synced ${cookies.length} cookies to renderer`);
+  } catch (error) {
+    console.error('Failed to sync cookies to renderer:', error);
+  }
+}

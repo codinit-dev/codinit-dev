@@ -19,4 +19,20 @@ const ipc = {
   },
 };
 
+const cookies = {
+  set: (name: string, value: string, options?: any) => {
+    return ipcRenderer.invoke('cookie-set', name, value, options);
+  },
+  get: (name: string) => {
+    return ipcRenderer.invoke('cookie-get', name);
+  },
+  getAll: () => {
+    return ipcRenderer.invoke('cookie-get-all');
+  },
+  remove: (name: string) => {
+    return ipcRenderer.invoke('cookie-remove', name);
+  },
+};
+
 contextBridge.exposeInMainWorld('ipc', ipc);
+contextBridge.exposeInMainWorld('electronCookies', cookies);
