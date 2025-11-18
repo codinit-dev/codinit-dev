@@ -96,42 +96,17 @@ export const PreviewHeader = memo(
         {/* Toggle Buttons Section */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
-            <button
-              aria-label="Preview"
-              aria-pressed="true"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundActive transition-colors"
+            <IconButton
+              icon="i-lucide:eye"
+              className="w-8 h-8"
+              title="Preview"
               onClick={() => setSelectedView('preview')}
-            >
-              <span className="i-lucide:eye size-4"></span>
-            </button>
-            <button
-              aria-label="Code"
-              aria-pressed="false"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive transition-colors"
-              onClick={() => setSelectedView('code')}
-            >
-              <span className="i-lucide:code size-4"></span>
-            </button>
-            <button
-              aria-label="Database - Connected"
-              aria-pressed="false"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive transition-colors"
-            >
-              <span className="i-lucide:database size-4"></span>
-            </button>
+            />
+            <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
+            <IconButton icon="i-lucide:database" className="w-8 h-8" title="Database - Connected" />
           </div>
           <div className="flex items-center">
-            <button
-              type="button"
-              aria-haspopup="menu"
-              aria-expanded="false"
-              className="bg-transparent p-0"
-              aria-label="More Options"
-            >
-              <div className="flex items-center bg-transparent text-sm px-2 py-1 rounded-full relative text-codinit-elements-item-contentDefault hover:text-codinit-elements-item-contentActive pl-1 pr-1.5 h-5 opacity-90 hover:opacity-100">
-                <span className="i-lucide:settings text-current w-4 h-4"></span>
-              </div>
-            </button>
+            <IconButton icon="i-lucide:settings" className="w-8 h-8" title="More Options" />
           </div>
         </div>
 
