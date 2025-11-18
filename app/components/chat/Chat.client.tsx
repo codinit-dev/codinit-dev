@@ -23,7 +23,7 @@ import { logStore } from '~/lib/stores/logs';
 import { streamingState } from '~/lib/stores/streaming';
 import { filesToArtifacts } from '~/utils/fileUtils';
 import { supabaseConnection } from '~/lib/stores/supabase';
-import { defaultDesignScheme, type DesignScheme } from '~/types/design-scheme';
+
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
 import { useMCPStore } from '~/lib/stores/mcp';
@@ -92,7 +92,7 @@ export const ChatImpl = memo(
     const [searchParams, setSearchParams] = useSearchParams();
     const [fakeLoading, setFakeLoading] = useState(false);
     const files = useStore(workbenchStore.files);
-    const [designScheme, setDesignScheme] = useState<DesignScheme>(defaultDesignScheme);
+
     const actionAlert = useStore(workbenchStore.alert);
     const deployAlert = useStore(workbenchStore.deployAlert);
     const supabaseConn = useStore(supabaseConnection);
@@ -140,7 +140,7 @@ export const ChatImpl = memo(
         promptId,
         contextOptimization: contextOptimizationEnabled,
         chatMode,
-        designScheme,
+
         supabase: {
           isConnected: supabaseConn.isConnected,
           hasSelectedProject: !!selectedProject,
@@ -700,8 +700,6 @@ export const ChatImpl = memo(
         chatMode={chatMode}
         setChatMode={setChatMode}
         append={append}
-        designScheme={designScheme}
-        setDesignScheme={setDesignScheme}
         selectedElement={selectedElement}
         setSelectedElement={setSelectedElement}
         addToolResult={addToolResult}

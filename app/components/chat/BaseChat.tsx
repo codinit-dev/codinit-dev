@@ -28,7 +28,7 @@ import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { useStore } from '@nanostores/react';
 import { StickToBottom, useStickToBottomContext } from '~/lib/hooks';
 import { ChatBox } from './Chatbox';
-import type { DesignScheme } from '~/types/design-scheme';
+
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import LlmErrorAlert from './LLMApiAlert';
 
@@ -74,8 +74,7 @@ interface BaseChatProps {
   chatMode?: 'discuss' | 'build';
   setChatMode?: (mode: 'discuss' | 'build') => void;
   append?: (message: Message) => void;
-  designScheme?: DesignScheme;
-  setDesignScheme?: (scheme: DesignScheme) => void;
+
   selectedElement?: ElementInfo | null;
   setSelectedElement?: (element: ElementInfo | null) => void;
   addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
@@ -121,8 +120,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       chatMode,
       setChatMode,
       append,
-      designScheme,
-      setDesignScheme,
+
       selectedElement,
       setSelectedElement,
       addToolResult = () => {
@@ -611,8 +609,6 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   handleFileUpload={handleFileUpload}
                   chatMode={chatMode}
                   setChatMode={setChatMode}
-                  designScheme={designScheme}
-                  setDesignScheme={setDesignScheme}
                   selectedElement={selectedElement}
                   setSelectedElement={setSelectedElement}
                 />

@@ -15,8 +15,7 @@ import { SupabaseConnection } from './SupabaseConnection';
 import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import styles from './BaseChat.module.scss';
 import type { ProviderInfo } from '~/types/model';
-import { ColorSchemeDialog } from '~/components/chat/ColorSchemeDialog';
-import type { DesignScheme } from '~/types/design-scheme';
+
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from '~/components/mcp/MCPTools';
 import { McpIntegrationPanel } from '~/components/mcp/MCPIntegrationPanel';
@@ -58,8 +57,7 @@ interface ChatBoxProps {
   enhancePrompt?: (() => void) | undefined;
   chatMode?: 'discuss' | 'build';
   setChatMode?: (mode: 'discuss' | 'build') => void;
-  designScheme?: DesignScheme;
-  setDesignScheme?: (scheme: DesignScheme) => void;
+
   selectedElement?: ElementInfo | null;
   setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
 }
@@ -296,7 +294,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         </ClientOnly>
         <div className="flex justify-between items-center text-sm p-4 pt-2">
           <div className="flex gap-1 items-center">
-            <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
             <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
               <div className="i-ph:paperclip text-xl"></div>
             </IconButton>

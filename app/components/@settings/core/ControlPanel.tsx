@@ -442,11 +442,13 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
             </RadixDialog.Overlay>
 
             <RadixDialog.Content
-              aria-describedby={undefined}
               onEscapeKeyDown={handleClose}
               onPointerDownOutside={handleClose}
               className="relative z-[101]"
             >
+              <RadixDialog.Description className="sr-only">
+                Application settings and configuration panel
+              </RadixDialog.Description>
               <motion.div
                 className={classNames(
                   'w-[1200px] h-[90vh]',

@@ -43,6 +43,9 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
           <Dialog.Title className="text-lg font-medium text-codinit-elements-textPrimary mb-4">
             Create New Branch
           </Dialog.Title>
+          <Dialog.Description className="text-sm text-codinit-elements-textSecondary mb-4">
+            Create a new branch from the current commit
+          </Dialog.Description>
 
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">

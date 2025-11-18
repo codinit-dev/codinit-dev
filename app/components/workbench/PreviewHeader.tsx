@@ -310,7 +310,7 @@ export const PreviewHeader = memo(
               onClick={() => setIsDeployDialogOpen(true)}
               title="More Deploy Options"
             >
-              <span className="i-lucide:plus size-4"></span>
+              <span className="i-lucide:cloud size-4"></span>
             </button>
 
             <button
@@ -320,7 +320,7 @@ export const PreviewHeader = memo(
               onClick={() => setIsPushDialogOpen(true)}
               title="Publish"
             >
-              <span className="i-lucide:upload size-4"></span>
+              <span className="i-lucide:github size-4"></span>
             </button>
           </div>
         </div>

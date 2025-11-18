@@ -198,6 +198,7 @@ export function WorkspaceModal({ isOpen, onClose, children }: WorkspaceModalProp
             className="w-[90vw] h-[90vh] max-w-7xl"
           >
             <Dialog.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl w-full h-full flex overflow-hidden">
+              <Dialog.Description className="sr-only">Workspace settings and configuration</Dialog.Description>
               {/* Sidebar */}
               <div className="w-full md:w-[240px] border-r border-gray-200 dark:border-gray-700 flex flex-col">
                 <div className="flex-1 overflow-y-auto">

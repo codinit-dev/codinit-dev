@@ -128,7 +128,7 @@ export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
                   {deployingTo === 'netlify' ? 'Deploying...' : 'Deploy to Netlify'}
                 </div>
                 <div className="text-sm text-codinit-elements-textSecondary">
-                  {!netlifyConn.user ? 'Connect your Netlify account first' : 'Fast, global CDN deployment'}
+                  {!netlifyConn.user ? 'Add your Netlify API key first in settings' : 'Fast, global CDN deployment'}
                 </div>
               </div>
             </button>
@@ -165,7 +165,7 @@ export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
                   {deployingTo === 'vercel' ? 'Deploying...' : 'Deploy to Vercel'}
                 </div>
                 <div className="text-sm text-codinit-elements-textSecondary">
-                  {!vercelConn.user ? 'Connect your Vercel account first' : 'Optimized for frontend frameworks'}
+                  {!vercelConn.user ? 'Add your Vercel API key first in settings' : 'Optimized for frontend frameworks'}
                 </div>
               </div>
             </button>
@@ -210,14 +210,16 @@ export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
                   {deployingTo === 'cloudflare' ? 'Deploying...' : 'Deploy to Cloudflare'}
                 </div>
                 <div className="text-sm text-codinit-elements-textSecondary">
-                  {!cloudflareConn.user ? 'Connect your Cloudflare account first' : 'Global CDN with edge computing'}
+                  {!cloudflareConn.user
+                    ? 'Add your Clouflare API key first in settings'
+                    : 'Global CDN with edge computing'}
                 </div>
               </div>
             </button>
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-codinit-elements-borderColor flex justify-end">
+          <div className="px-6 py-4 border-t border-codinit-elements-borderColor bg-codinit-elements-background-depth-4 flex justify-end">
             <button
               onClick={onClose}
               className="px-4 py-2 text-sm font-medium text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary transition-colors"
