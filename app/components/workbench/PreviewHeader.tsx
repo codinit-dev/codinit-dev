@@ -218,7 +218,7 @@ export const PreviewHeader = memo(
                 {isDeployingVercel ? (
                   <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
                 ) : (
-                  <img className="w-4 h-4" src="https://cdn.simpleicons.org/vercel" alt="Vercel" />
+                  <img className="w-4 h-4 dark:invert" src="~/icons/vercel-icon-light.svg" alt="Vercel" />
                 )}
               </button>
 
@@ -237,7 +237,7 @@ export const PreviewHeader = memo(
                 {isDeployingNetlify ? (
                   <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
                 ) : (
-                  <img className="w-4 h-4" src="https://cdn.simpleicons.org/netlify" alt="Netlify" />
+                  <img className="w-4 h-4" src="~/icons/netlify.svg" alt="Netlify" />
                 )}
               </button>
 
