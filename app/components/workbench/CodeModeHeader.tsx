@@ -10,7 +10,6 @@ interface CodeModeHeaderProps {
   onPushToGitHub: () => void;
   isSyncing: boolean;
   setIsPushDialogOpen: (open: boolean) => void;
-  showTerminal: boolean;
 }
 
 export const CodeModeHeader = memo(
@@ -21,7 +20,6 @@ export const CodeModeHeader = memo(
     onPushToGitHub,
     isSyncing,
     setIsPushDialogOpen,
-    showTerminal,
   }: CodeModeHeaderProps) => {
     const setSelectedView = (view: WorkbenchViewType) => {
       workbenchStore.currentView.set(view);
@@ -32,56 +30,19 @@ export const CodeModeHeader = memo(
         {/* Toggle Buttons Section */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <button
-              aria-label="Preview"
-              aria-pressed="false"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive transition-colors"
+            <IconButton
+              icon="i-lucide:eye"
+              className="w-8 h-8"
+              title="Preview"
               onClick={() => setSelectedView('preview')}
-            >
-              <span className="i-lucide:eye size-4"></span>
-            </button>
-            <button
-              aria-label="Code"
-              aria-pressed="true"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundActive transition-colors"
-              onClick={() => setSelectedView('code')}
-            >
-              <span className="i-lucide:code size-4"></span>
-            </button>
-            <button
-              aria-label="Database - Connected"
-              aria-pressed="false"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive transition-colors"
-            >
-              <span className="i-lucide:database size-4"></span>
-            </button>
-            <button
-              aria-label="Terminal"
-              aria-pressed={showTerminal}
-              className={`flex items-center justify-center w-8 h-8 rounded-md transition-colors ${
-                showTerminal
-                  ? 'text-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundActive'
-                  : 'text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive'
-              }`}
-              onClick={onTerminalToggle}
-            >
-              <span className="i-lucide:terminal size-4"></span>
-            </button>
+            />
+            <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
+            <IconButton icon="i-lucide:terminal" className="w-8 h-8" title="Terminal" onClick={onTerminalToggle} />
           </div>
           <div className="flex items-center">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button
-                  type="button"
-                  aria-haspopup="menu"
-                  aria-expanded="false"
-                  className="bg-transparent p-0"
-                  aria-label="More Options"
-                >
-                  <div className="flex items-center bg-transparent text-sm px-2 py-1 rounded-full relative text-codinit-elements-item-contentDefault hover:text-codinit-elements-item-contentActive pl-1 pr-1.5 h-5 opacity-90 hover:opacity-100">
-                    <span className="i-lucide:settings text-current w-4 h-4"></span>
-                  </div>
-                </button>
+                <IconButton icon="i-lucide:settings" title="More Options" />
               </DropdownMenu.Trigger>
               <DropdownMenu.Content
                 className="min-w-[240px] z-[250] bg-codinit-elements-background-depth-2 dark:bg-[#141414] rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"

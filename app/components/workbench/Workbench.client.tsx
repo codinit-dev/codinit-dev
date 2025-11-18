@@ -321,7 +321,6 @@ export const Workbench = memo(
     const [showDeviceFrame, setShowDeviceFrame] = useState(true);
 
     // Terminal state
-    const showTerminal = useStore(workbenchStore.showTerminal);
 
     // Preview-related functions
     const previews = useStore(workbenchStore.previews);
@@ -621,7 +620,6 @@ export const Workbench = memo(
                       onPushToGitHub={() => setIsPushDialogOpen(true)}
                       isSyncing={isSyncing}
                       setIsPushDialogOpen={setIsPushDialogOpen}
-                      showTerminal={showTerminal}
                     />
                   )}
 

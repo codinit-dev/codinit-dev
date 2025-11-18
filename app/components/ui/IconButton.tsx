@@ -46,7 +46,10 @@ export const IconButton = memo(
         <button
           ref={ref}
           className={classNames(
-            'flex items-center text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md p-1 enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-500/50',
+            'flex items-center justify-center text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-500/50',
+
+            // Only add padding if no explicit width/height is set
+            !className?.includes('w-') && !className?.includes('h-') ? 'p-1' : '',
             {
               [classNames('opacity-30', disabledClassName)]: disabled,
             },
