@@ -256,7 +256,7 @@ export const PreviewHeader = memo(
                 {isDeployingCloudflare ? (
                   <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
                 ) : (
-                  <img className="w-4 h-4" src="https://cdn.simpleicons.org/cloudflare" alt="Cloudflare" />
+                  <img className="w-4 h-4" src="~/icons/cloudflare.svg" alt="Cloudflare" />
                 )}
               </button>
             </div>
