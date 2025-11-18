@@ -317,20 +317,22 @@ export const PreviewHeader = memo(
 
             {/* Deploy Dialog Button */}
             <button
-              className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive hover:bg-codinit-elements-item-backgroundAccent text-codinit-elements-textPrimary border border-codinit-elements-borderColor flex gap-1.7 shrink-0 h-8 text-sm px-3"
+              className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive hover:bg-codinit-elements-item-backgroundAccent text-codinit-elements-textPrimary border border-codinit-elements-borderColor flex gap-1.7 shrink-0 w-8 h-8 text-sm"
               type="button"
               onClick={() => setIsDeployDialogOpen(true)}
+              title="More Deploy Options"
             >
-              More Deploy
+              <span className="i-lucide:plus size-4"></span>
             </button>
 
             <button
-              className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1 flex gap-1.7 shrink-0 h-8 text-sm px-3"
+              className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1 flex gap-1.7 shrink-0 w-8 h-8 text-sm"
               type="button"
               aria-controls="publish-menu"
               onClick={() => setIsPushDialogOpen(true)}
+              title="Publish"
             >
-              Publish
+              <span className="i-lucide:upload size-4"></span>
             </button>
           </div>
         </div>
