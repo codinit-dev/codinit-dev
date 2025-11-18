@@ -610,9 +610,6 @@ export const Workbench = memo(
                 <div className="border-b border-codinit-elements-borderColor">
                   {selectedView === 'code' && (
                     <CodeModeHeader
-                      onTerminalToggle={() => {
-                        workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
-                      }}
                       onDownloadZip={() => {
                         workbenchStore.downloadZip();
                       }}

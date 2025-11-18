@@ -4,7 +4,6 @@ import { IconButton } from '~/components/ui/IconButton';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 interface CodeModeHeaderProps {
-  onTerminalToggle: () => void;
   onDownloadZip: () => void;
   onSyncFiles: () => void;
   onPushToGitHub: () => void;
@@ -13,14 +12,7 @@ interface CodeModeHeaderProps {
 }
 
 export const CodeModeHeader = memo(
-  ({
-    onTerminalToggle,
-    onDownloadZip,
-    onSyncFiles,
-    onPushToGitHub,
-    isSyncing,
-    setIsPushDialogOpen,
-  }: CodeModeHeaderProps) => {
+  ({ onDownloadZip, onSyncFiles, onPushToGitHub, isSyncing, setIsPushDialogOpen }: CodeModeHeaderProps) => {
     const setSelectedView = (view: WorkbenchViewType) => {
       workbenchStore.currentView.set(view);
     };
@@ -37,7 +29,6 @@ export const CodeModeHeader = memo(
               onClick={() => setSelectedView('preview')}
             />
             <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
-            <IconButton icon="i-lucide:terminal" className="w-8 h-8" title="Terminal" onClick={onTerminalToggle} />
           </div>
           <div className="flex items-center">
             <DropdownMenu.Root>
