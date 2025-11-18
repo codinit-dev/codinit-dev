@@ -12,6 +12,7 @@ import { useCloudflareDeploy } from '~/components/deploy/CloudflareDeploy.client
 import { netlifyConnection } from '~/lib/stores/netlify';
 import { vercelConnection } from '~/lib/stores/vercel';
 import { cloudflareConnection } from '~/lib/stores/cloudflare';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 interface PreviewHeaderProps {
   previews: any[];
@@ -106,7 +107,50 @@ export const PreviewHeader = memo(
             <IconButton icon="i-lucide:database" className="w-8 h-8" title="Database - Connected" />
           </div>
           <div className="flex items-center">
-            <IconButton icon="i-lucide:settings" className="w-8 h-8" title="More Options" />
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive transition-colors"
+                  title="More Options"
+                >
+                  <span className="i-lucide:settings size-4"></span>
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content
+                className="min-w-[240px] z-[250] bg-codinit-elements-background-depth-2 dark:bg-[#141414] rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"
+                sideOffset={5}
+                align="start"
+              >
+                <DropdownMenu.Item
+                  className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+                  onClick={reloadPreview}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="i-lucide:rotate-cw text-current" />
+                    <span>Reload Preview</span>
+                  </div>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+                  onClick={() => setIsDeployDialogOpen(true)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="i-lucide:rocket text-current" />
+                    <span>Deploy Options</span>
+                  </div>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+                  onClick={() => setIsPushDialogOpen(true)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="i-lucide:git-branch text-current" />
+                    <span>Push to GitHub</span>
+                  </div>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Root>
           </div>
         </div>
 
