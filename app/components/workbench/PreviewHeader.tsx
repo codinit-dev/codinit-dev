@@ -95,63 +95,59 @@ export const PreviewHeader = memo(
     return (
       <div className="flex relative items-center gap-2 py-2 min-h-[var(--panel-header-height)] pl-0 bg-codinit-elements-background-depth-2">
         {/* Toggle Buttons Section */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1">
-            <IconButton
-              icon="i-lucide:eye"
-              className="w-8 h-8"
-              title="Preview"
-              onClick={() => setSelectedView('preview')}
-            />
-            <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
-            <IconButton icon="i-lucide:database" className="w-8 h-8" title="Database - Connected" />
-          </div>
-          <div className="flex items-center">
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
-                <button
-                  type="button"
-                  className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive transition-colors"
-                  title="More Options"
-                >
-                  <span className="i-lucide:settings size-4"></span>
-                </button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content
-                className="min-w-[240px] z-[250] bg-codinit-elements-background-depth-2 dark:bg-[#141414] rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"
-                sideOffset={5}
-                align="start"
+        <div className="flex items-center gap-1">
+          <IconButton
+            icon="i-lucide:eye"
+            className="w-8 h-8"
+            title="Preview"
+            onClick={() => setSelectedView('preview')}
+          />
+          <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
+          <IconButton icon="i-lucide:database" className="w-8 h-8" title="Database - Connected" />
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button
+                type="button"
+                className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive transition-colors"
+                title="More Options"
               >
-                <DropdownMenu.Item
-                  className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
-                  onClick={reloadPreview}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="i-lucide:rotate-cw text-current" />
-                    <span>Reload Preview</span>
-                  </div>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
-                  onClick={() => setIsDeployDialogOpen(true)}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="i-lucide:rocket text-current" />
-                    <span>Deploy Options</span>
-                  </div>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item
-                  className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
-                  onClick={() => setIsPushDialogOpen(true)}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="i-lucide:git-branch text-current" />
-                    <span>Push to GitHub</span>
-                  </div>
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Root>
-          </div>
+                <span className="i-lucide:settings size-4"></span>
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content
+              className="min-w-[240px] z-[250] bg-codinit-elements-background-depth-2 dark:bg-[#141414] rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"
+              sideOffset={5}
+              align="start"
+            >
+              <DropdownMenu.Item
+                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+                onClick={reloadPreview}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="i-lucide:rotate-cw text-current" />
+                  <span>Reload Preview</span>
+                </div>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+                onClick={() => setIsDeployDialogOpen(true)}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="i-lucide:rocket text-current" />
+                  <span>Deploy Options</span>
+                </div>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
+                onClick={() => setIsPushDialogOpen(true)}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="i-lucide:git-branch text-current" />
+                  <span>Push to GitHub</span>
+                </div>
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
         </div>
 
         {/* Address Bar */}
