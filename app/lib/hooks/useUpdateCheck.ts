@@ -70,7 +70,22 @@ export const useUpdateCheck = () => {
         }
       } catch (error) {
         console.error('💥 Failed to check for updates:', error);
-        setError('Failed to check for updates');
+
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+
+        // Provide more user-friendly error messages
+        if (errorMessage.includes('500')) {
+          setError('Update service temporarily unavailable. Please try again later.');
+        } else if (errorMessage.includes('rate limit') || errorMessage.includes('Rate limited')) {
+          setError(
+            'GitHub API rate limit exceeded. Update checks are limited to 60 per hour for unauthenticated requests.',
+          );
+        } else if (errorMessage.includes('network') || errorMessage.includes('fetch')) {
+          setError('Network error while checking for updates. Please check your internet connection.');
+        } else {
+          setError(`Failed to check for updates: ${errorMessage}`);
+        }
+
         setHasUpdate(false);
       } finally {
         setIsLoading(false);
