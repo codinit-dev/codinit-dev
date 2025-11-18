@@ -108,7 +108,7 @@ export const PreviewHeader = memo(
             <DropdownMenu.Trigger asChild>
               <button
                 type="button"
-                className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive transition-colors"
+                className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-500/50 transition-colors"
                 title="More Options"
               >
                 <span className="i-lucide:settings size-4"></span>
