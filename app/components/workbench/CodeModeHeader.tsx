@@ -42,7 +42,13 @@ export const CodeModeHeader = memo(
           <div className="flex items-center">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <IconButton icon="i-lucide:settings" className="w-8 h-8" title="More Options" />
+                <button
+                  type="button"
+                  className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive transition-colors"
+                  title="More Options"
+                >
+                  <span className="i-lucide:settings size-4"></span>
+                </button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content
                 className="min-w-[240px] z-[250] bg-codinit-elements-background-depth-2 dark:bg-[#141414] rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"
