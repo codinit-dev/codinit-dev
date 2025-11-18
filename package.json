@@ -217,7 +217,7 @@
     "vite-plugin-copy": "^0.1.6",
     "vite-plugin-optimize-css-modules": "^1.2.0",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^3.1.0",
+    "vitest": "^3.2.4",
     "wrangler": "^4.42.0"
   },
   "resolutions": {

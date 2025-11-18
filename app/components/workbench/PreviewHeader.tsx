@@ -6,6 +6,12 @@ import { workbenchStore, type WorkbenchViewType } from '~/lib/stores/workbench';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import { DeployDialog } from './DeployDialog';
+import { useVercelDeploy } from '~/components/deploy/VercelDeploy.client';
+import { useNetlifyDeploy } from '~/components/deploy/NetlifyDeploy.client';
+import { useCloudflareDeploy } from '~/components/deploy/CloudflareDeploy.client';
+import { netlifyConnection } from '~/lib/stores/netlify';
+import { vercelConnection } from '~/lib/stores/vercel';
+import { cloudflareConnection } from '~/lib/stores/cloudflare';
 
 interface PreviewHeaderProps {
   previews: any[];
@@ -57,9 +63,32 @@ export const PreviewHeader = memo(
     const [isExpoQrModalOpen, setIsExpoQrModalOpen] = useState(false);
     const [isDeployDialogOpen, setIsDeployDialogOpen] = useState(false);
 
+    // Deployment hooks
+    const { isDeploying: isDeployingVercel, handleVercelDeploy } = useVercelDeploy();
+    const { isDeploying: isDeployingNetlify, handleNetlifyDeploy } = useNetlifyDeploy();
+    const { isDeploying: isDeployingCloudflare, handleCloudflareDeploy } = useCloudflareDeploy();
+
+    // Connection states
+    const netlifyConn = useStore(netlifyConnection);
+    const vercelConn = useStore(vercelConnection);
+    const cloudflareConn = useStore(cloudflareConnection);
+
     const activePreview = previews[activePreviewIndex];
     const setSelectedView = (view: WorkbenchViewType) => {
       workbenchStore.currentView.set(view);
+    };
+
+    // Deployment handlers
+    const handleDeployToVercel = async () => {
+      await handleVercelDeploy();
+    };
+
+    const handleDeployToNetlify = async () => {
+      await handleNetlifyDeploy();
+    };
+
+    const handleDeployToCloudflare = async () => {
+      await handleCloudflareDeploy();
     };
 
     return (
@@ -171,13 +200,76 @@ export const PreviewHeader = memo(
                 className="text-codinit-elements-item-contentDefault bg-transparent rounded-md disabled:cursor-not-allowed enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive p-1 relative w-8 h-8"
               />
             </div>
+
+            {/* Deployment Buttons */}
+            <div className="flex gap-1">
+              {/* Vercel Deploy Button */}
+              <button
+                className={`items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent flex gap-1.7 shrink-0 h-8 text-sm px-2 ${
+                  vercelConn.user && !isDeployingVercel
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white border border-blue-600'
+                    : 'bg-gray-400 text-gray-200 border border-gray-400 cursor-not-allowed'
+                }`}
+                type="button"
+                onClick={handleDeployToVercel}
+                disabled={!vercelConn.user || isDeployingVercel}
+                title={vercelConn.user ? 'Deploy to Vercel' : 'Connect Vercel account first'}
+              >
+                {isDeployingVercel ? (
+                  <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
+                ) : (
+                  <img className="w-4 h-4" src="https://cdn.simpleicons.org/vercel" alt="Vercel" />
+                )}
+              </button>
+
+              {/* Netlify Deploy Button */}
+              <button
+                className={`items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent flex gap-1.7 shrink-0 h-8 text-sm px-2 ${
+                  netlifyConn.user && !isDeployingNetlify
+                    ? 'bg-green-600 hover:bg-green-700 text-white border border-green-600'
+                    : 'bg-gray-400 text-gray-200 border border-gray-400 cursor-not-allowed'
+                }`}
+                type="button"
+                onClick={handleDeployToNetlify}
+                disabled={!netlifyConn.user || isDeployingNetlify}
+                title={netlifyConn.user ? 'Deploy to Netlify' : 'Connect Netlify account first'}
+              >
+                {isDeployingNetlify ? (
+                  <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
+                ) : (
+                  <img className="w-4 h-4" src="https://cdn.simpleicons.org/netlify" alt="Netlify" />
+                )}
+              </button>
+
+              {/* Cloudflare Deploy Button */}
+              <button
+                className={`items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent flex gap-1.7 shrink-0 h-8 text-sm px-2 ${
+                  cloudflareConn.user && !isDeployingCloudflare
+                    ? 'bg-orange-600 hover:bg-orange-700 text-white border border-orange-600'
+                    : 'bg-gray-400 text-gray-200 border border-gray-400 cursor-not-allowed'
+                }`}
+                type="button"
+                onClick={handleDeployToCloudflare}
+                disabled={!cloudflareConn.user || isDeployingCloudflare}
+                title={cloudflareConn.user ? 'Deploy to Cloudflare' : 'Connect Cloudflare account first'}
+              >
+                {isDeployingCloudflare ? (
+                  <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
+                ) : (
+                  <img className="w-4 h-4" src="https://cdn.simpleicons.org/cloudflare" alt="Cloudflare" />
+                )}
+              </button>
+            </div>
+
+            {/* Deploy Dialog Button */}
             <button
               className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive hover:bg-codinit-elements-item-backgroundAccent text-codinit-elements-textPrimary border border-codinit-elements-borderColor flex gap-1.7 shrink-0 h-8 text-sm px-3"
               type="button"
               onClick={() => setIsDeployDialogOpen(true)}
             >
-              Deploy
+              More Deploy
             </button>
+
             <button
               className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1 flex gap-1.7 shrink-0 h-8 text-sm px-3"
               type="button"

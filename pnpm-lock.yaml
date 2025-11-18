@@ -516,7 +516,7 @@ importers:
         specifier: ^4.3.2
         version: 4.3.2(typescript@5.9.3)(vite@5.4.21(@types/node@22.18.12)(sass-embedded@1.93.2)(sass@1.93.2))
       vitest:
-        specifier: ^3.1.0
+        specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.12)(@vitest/browser@3.2.4)(jsdom@26.1.0)(sass-embedded@1.93.2)(sass@1.93.2)
       wrangler:
         specifier: ^4.42.1

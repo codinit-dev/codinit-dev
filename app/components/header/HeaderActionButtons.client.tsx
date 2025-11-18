@@ -3,14 +3,17 @@ import useViewport from '~/lib/hooks';
 import { chatStore } from '~/lib/stores/chat';
 import { netlifyConnection } from '~/lib/stores/netlify';
 import { vercelConnection } from '~/lib/stores/vercel';
+import { cloudflareConnection } from '~/lib/stores/cloudflare';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
 import { useState } from 'react';
 import { streamingState } from '~/lib/stores/streaming';
 import { NetlifyDeploymentLink } from '~/components/chat/NetlifyDeploymentLink.client';
 import { VercelDeploymentLink } from '~/components/chat/VercelDeploymentLink.client';
+import { CloudflareDeploymentLink } from '~/components/chat/CloudflareDeploymentLink.client';
 import { useVercelDeploy } from '~/components/deploy/VercelDeploy.client';
 import { useNetlifyDeploy } from '~/components/deploy/NetlifyDeploy.client';
+import { useCloudflareDeploy } from '~/components/deploy/CloudflareDeploy.client';
 
 interface HeaderActionButtonsProps {}
 
@@ -19,15 +22,17 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   const { showChat } = useStore(chatStore);
   const netlifyConn = useStore(netlifyConnection);
   const vercelConn = useStore(vercelConnection);
+  const cloudflareConn = useStore(cloudflareConnection);
   const [activePreviewIndex] = useState(0);
   const previews = useStore(workbenchStore.previews);
   const activePreview = previews[activePreviewIndex];
-  const [deployingTo, setDeployingTo] = useState<'netlify' | 'vercel' | null>(null);
+  const [deployingTo, setDeployingTo] = useState<'netlify' | 'vercel' | 'cloudflare' | null>(null);
   const isSmallViewport = useViewport(1024);
   const canHideChat = showWorkbench || !showChat;
   const isStreaming = useStore(streamingState);
   const { handleVercelDeploy } = useVercelDeploy();
   const { handleNetlifyDeploy } = useNetlifyDeploy();
+  const { handleCloudflareDeploy } = useCloudflareDeploy();
 
   const onVercelDeploy = async () => {
     setDeployingTo('vercel');
@@ -44,6 +49,16 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
 
     try {
       await handleNetlifyDeploy();
+    } finally {
+      setDeployingTo(null);
+    }
+  };
+
+  const onCloudflareDeploy = async () => {
+    setDeployingTo('cloudflare');
+
+    try {
+      await handleCloudflareDeploy();
     } finally {
       setDeployingTo(null);
     }
@@ -104,15 +119,31 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           {vercelConn.user && <VercelDeploymentLink />}
         </IconButton>
         <div className="w-[1px] bg-codinit-elements-borderColor" />
-        <IconButton title="Deploy to Cloudflare (Coming Soon)" disabled>
-          <img
-            className="w-5 h-5"
-            height="20"
-            width="20"
-            crossOrigin="anonymous"
-            src="https://cdn.simpleicons.org/cloudflare"
-            alt="cloudflare"
-          />
+        <IconButton
+          title={
+            !cloudflareConn.user
+              ? 'Connect Cloudflare Account'
+              : deployingTo === 'cloudflare'
+                ? 'Deploying...'
+                : 'Deploy to Cloudflare'
+          }
+          disabled={isDeploying || !activePreview || !cloudflareConn.user || isStreaming}
+          onClick={onCloudflareDeploy}
+          active={deployingTo === 'cloudflare'}
+        >
+          {deployingTo === 'cloudflare' ? (
+            <div className="i-svg-spinners:90-ring-with-bg" />
+          ) : (
+            <img
+              className="w-5 h-5"
+              height="20"
+              width="20"
+              crossOrigin="anonymous"
+              src="https://cdn.simpleicons.org/cloudflare"
+              alt="cloudflare"
+            />
+          )}
+          {cloudflareConn.user && <CloudflareDeploymentLink />}
         </IconButton>
         <div className="w-[1px] bg-codinit-elements-borderColor" />
         <IconButton

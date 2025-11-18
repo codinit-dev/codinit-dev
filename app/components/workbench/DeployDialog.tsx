@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { netlifyConnection } from '~/lib/stores/netlify';
 import { vercelConnection } from '~/lib/stores/vercel';
+import { cloudflareConnection } from '~/lib/stores/cloudflare';
 import { streamingState } from '~/lib/stores/streaming';
 import { useVercelDeploy } from '~/components/deploy/VercelDeploy.client';
 import { useNetlifyDeploy } from '~/components/deploy/NetlifyDeploy.client';
+import { useCloudflareDeploy } from '~/components/deploy/CloudflareDeploy.client';
 import { classNames } from '~/utils/classNames';
 
 interface DeployDialogProps {
@@ -15,10 +17,12 @@ interface DeployDialogProps {
 export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
   const netlifyConn = useStore(netlifyConnection);
   const vercelConn = useStore(vercelConnection);
+  const cloudflareConn = useStore(cloudflareConnection);
   const isStreaming = useStore(streamingState);
-  const [deployingTo, setDeployingTo] = useState<'netlify' | 'vercel' | null>(null);
+  const [deployingTo, setDeployingTo] = useState<'netlify' | 'vercel' | 'cloudflare' | null>(null);
   const { handleVercelDeploy } = useVercelDeploy();
   const { handleNetlifyDeploy } = useNetlifyDeploy();
+  const { handleCloudflareDeploy } = useCloudflareDeploy();
 
   const onVercelDeploy = async () => {
     setDeployingTo('vercel');
@@ -36,6 +40,17 @@ export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
 
     try {
       await handleNetlifyDeploy();
+      onClose();
+    } finally {
+      setDeployingTo(null);
+    }
+  };
+
+  const onCloudflareDeploy = async () => {
+    setDeployingTo('cloudflare');
+
+    try {
+      await handleCloudflareDeploy();
       onClose();
     } finally {
       setDeployingTo(null);
@@ -122,16 +137,33 @@ export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
               </div>
             </button>
 
-            {/* Cloudflare - Coming Soon */}
-            <div className="w-full flex items-center gap-3 p-4 rounded-lg border border-codinit-elements-borderColor bg-codinit-elements-background-depth-3 opacity-50">
+            {/* Cloudflare */}
+            <button
+              onClick={onCloudflareDeploy}
+              disabled={isDeploying || !cloudflareConn.user || isStreaming}
+              className={classNames(
+                'w-full flex items-center gap-3 p-4 rounded-lg border transition-colors',
+                !isDeploying && cloudflareConn.user && !isStreaming
+                  ? 'border-codinit-elements-borderColor bg-codinit-elements-background-depth-2 hover:bg-codinit-elements-item-backgroundActive'
+                  : 'border-codinit-elements-borderColor bg-codinit-elements-background-depth-3 opacity-50 cursor-not-allowed',
+              )}
+            >
               <div className="flex-shrink-0">
-                <img className="w-6 h-6 opacity-50" src="https://cdn.simpleicons.org/cloudflare" alt="Cloudflare" />
+                {deployingTo === 'cloudflare' ? (
+                  <div className="i-svg-spinners:90-ring-with-bg w-6 h-6" />
+                ) : (
+                  <img className="w-6 h-6" src="https://cdn.simpleicons.org/cloudflare" alt="Cloudflare" />
+                )}
               </div>
               <div className="flex-1 text-left">
-                <div className="font-medium text-codinit-elements-textSecondary">Deploy to Cloudflare</div>
-                <div className="text-sm text-codinit-elements-textTertiary">Coming Soon</div>
+                <div className="font-medium text-codinit-elements-textPrimary">
+                  {deployingTo === 'cloudflare' ? 'Deploying...' : 'Deploy to Cloudflare'}
+                </div>
+                <div className="text-sm text-codinit-elements-textSecondary">
+                  {!cloudflareConn.user ? 'Connect your Cloudflare account first' : 'Global CDN with edge computing'}
+                </div>
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Footer */}
