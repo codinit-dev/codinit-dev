@@ -1,7 +1,7 @@
 import { json, type ActionFunction } from '@remix-run/cloudflare';
 
 // Current version - update this when releasing new versions
-const CURRENT_VERSION = '1.0.8';
+const CURRENT_VERSION = '1.0.9';
 const GITHUB_REPO = 'Gerome-Elassaad/codinit-app';
 
 interface GitHubRelease {

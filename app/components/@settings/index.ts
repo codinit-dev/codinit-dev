@@ -1,5 +1,6 @@
 // Core exports
 export { ControlPanel } from './core/ControlPanel';
+export { ControlPanelDialog } from './core/ControlPanelDialog';
 export type { TabType, TabVisibilityConfig } from './core/types';
 
 // Constants
