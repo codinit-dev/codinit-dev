@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogDescription, DialogRoot } from '~/components/ui/Dialog';
 import { Button } from '~/components/ui/Button';
-import { IconButton } from '~/components/ui/IconButton';
+
 import type { DesignScheme } from '~/types/design-scheme';
-import { defaultDesignScheme, designFeatures, designFonts, paletteRoles } from '~/types/design-scheme';
+import {
+  defaultDesignScheme,
+  designFeatures,
+  designFonts,
+  paletteRoles,
+  borderRadiusOptions,
+  shadowOptions,
+  spacingOptions,
+} from '~/types/design-scheme';
 
 export interface ColorSchemeDialogProps {
   designScheme?: DesignScheme;
@@ -11,33 +19,59 @@ export interface ColorSchemeDialogProps {
 }
 
 export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignScheme, designScheme }) => {
-  const [palette, setPalette] = useState<{ [key: string]: string }>(() => {
+  const [palette, setPalette] = useState(() => {
     if (designScheme?.palette) {
-      return { ...defaultDesignScheme.palette, ...designScheme.palette };
+      return {
+        light: { ...defaultDesignScheme.palette.light, ...designScheme.palette.light },
+        dark: { ...defaultDesignScheme.palette.dark, ...designScheme.palette.dark },
+      };
     }
 
     return defaultDesignScheme.palette;
   });
 
+  const [mode, setMode] = useState<'light' | 'dark'>(designScheme?.mode || defaultDesignScheme.mode);
   const [features, setFeatures] = useState<string[]>(designScheme?.features || defaultDesignScheme.features);
   const [font, setFont] = useState<string[]>(designScheme?.font || defaultDesignScheme.font);
+  const [borderRadius, setBorderRadius] = useState<string>(
+    designScheme?.borderRadius || defaultDesignScheme.borderRadius,
+  );
+  const [shadow, setShadow] = useState<string>(designScheme?.shadow || defaultDesignScheme.shadow);
+  const [spacing, setSpacing] = useState<string>(designScheme?.spacing || defaultDesignScheme.spacing);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<'colors' | 'typography' | 'features'>('colors');
+  const [activeSection, setActiveSection] = useState<'colors' | 'typography' | 'features' | 'styling'>('colors');
 
   useEffect(() => {
     if (designScheme) {
-      setPalette(() => ({ ...defaultDesignScheme.palette, ...designScheme.palette }));
+      setPalette(() => ({
+        light: { ...defaultDesignScheme.palette.light, ...designScheme.palette.light },
+        dark: { ...defaultDesignScheme.palette.dark, ...designScheme.palette.dark },
+      }));
+      setMode(designScheme.mode || defaultDesignScheme.mode);
       setFeatures(designScheme.features || defaultDesignScheme.features);
       setFont(designScheme.font || defaultDesignScheme.font);
+      setBorderRadius(designScheme.borderRadius || defaultDesignScheme.borderRadius);
+      setShadow(designScheme.shadow || defaultDesignScheme.shadow);
+      setSpacing(designScheme.spacing || defaultDesignScheme.spacing);
     } else {
       setPalette(defaultDesignScheme.palette);
+      setMode(defaultDesignScheme.mode);
       setFeatures(defaultDesignScheme.features);
       setFont(defaultDesignScheme.font);
+      setBorderRadius(defaultDesignScheme.borderRadius);
+      setShadow(defaultDesignScheme.shadow);
+      setSpacing(defaultDesignScheme.spacing);
     }
   }, [designScheme]);
 
   const handleColorChange = (role: string, value: string) => {
-    setPalette((prev) => ({ ...prev, [role]: value }));
+    setPalette((prev) => ({
+      ...prev,
+      [mode]: {
+        ...prev[mode],
+        [role]: value,
+      },
+    }));
   };
 
   const handleFeatureToggle = (key: string) => {
@@ -49,14 +83,18 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
   };
 
   const handleSave = () => {
-    setDesignScheme?.({ palette, features, font });
+    setDesignScheme?.({ palette, features, font, mode, borderRadius, shadow, spacing });
     setIsDialogOpen(false);
   };
 
   const handleReset = () => {
     setPalette(defaultDesignScheme.palette);
+    setMode(defaultDesignScheme.mode);
     setFeatures(defaultDesignScheme.features);
     setFont(defaultDesignScheme.font);
+    setBorderRadius(defaultDesignScheme.borderRadius);
+    setShadow(defaultDesignScheme.shadow);
+    setSpacing(defaultDesignScheme.spacing);
   };
 
   const renderColorSection = () => (
@@ -84,7 +122,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             <div className="relative flex-shrink-0">
               <div
                 className="w-12 h-12 rounded-xl shadow-md cursor-pointer transition-all duration-200 hover:scale-110 ring-2 ring-transparent hover:ring-codinit-elements-borderColorActive"
-                style={{ backgroundColor: palette[role.key] }}
+                style={{ backgroundColor: palette[mode][role.key] }}
                 onClick={() => document.getElementById(`color-input-${role.key}`)?.click()}
                 role="button"
                 tabIndex={0}
@@ -93,7 +131,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
               <input
                 id={`color-input-${role.key}`}
                 type="color"
-                value={palette[role.key]}
+                value={palette[mode][role.key]}
                 onChange={(e) => handleColorChange(role.key, e.target.value)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 tabIndex={-1}
@@ -108,7 +146,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 {role.description}
               </div>
               <div className="text-xs text-codinit-elements-textTertiary font-mono mt-1 px-2 py-1 bg-codinit-elements-bg-depth-1 rounded-md inline-block">
-                {palette[role.key]}
+                {palette[mode][role.key]}
               </div>
             </div>
           </div>
@@ -274,15 +312,100 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
     </div>
   );
 
+  const renderStylingSection = () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-codinit-elements-textPrimary flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-codinit-elements-item-contentAccent"></div>
+        Design Styling
+      </h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Border Radius */}
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-codinit-elements-textPrimary">Border Radius</label>
+          <div className="grid grid-cols-2 gap-2">
+            {borderRadiusOptions.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setBorderRadius(option.key)}
+                className={`p-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
+                  borderRadius === option.key
+                    ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-codinit-elements-item-contentAccent'
+                    : 'bg-codinit-elements-bg-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
+                }`}
+              >
+                <div className="text-center space-y-1">
+                  <div
+                    className={`w-6 h-6 mx-auto rounded-${option.key === 'none' ? 'none' : option.key === 'sm' ? 'sm' : option.key === 'md' ? 'md' : option.key === 'lg' ? 'lg' : option.key === 'xl' ? 'xl' : 'full'} bg-current opacity-80`}
+                  />
+                  <div className="text-xs font-medium">{option.label}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Shadow */}
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-codinit-elements-textPrimary">Shadow</label>
+          <div className="grid grid-cols-2 gap-2">
+            {shadowOptions.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setShadow(option.key)}
+                className={`p-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
+                  shadow === option.key
+                    ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-codinit-elements-item-contentAccent'
+                    : 'bg-codinit-elements-bg-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
+                } ${option.key === 'none' ? '' : option.key === 'sm' ? 'shadow-sm' : option.key === 'md' ? 'shadow-md' : option.key === 'lg' ? 'shadow-lg' : 'shadow-xl'}`}
+              >
+                <div className="text-center space-y-1">
+                  <div className="w-6 h-6 mx-auto bg-current rounded opacity-80" />
+                  <div className="text-xs font-medium">{option.label}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Spacing */}
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-codinit-elements-textPrimary">Spacing</label>
+          <div className="grid grid-cols-2 gap-2">
+            {spacingOptions.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setSpacing(option.key)}
+                className={`p-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
+                  spacing === option.key
+                    ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-codinit-elements-item-contentAccent'
+                    : 'bg-codinit-elements-bg-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
+                }`}
+              >
+                <div className="text-center space-y-1">
+                  <div className="flex justify-center space-x-1">
+                    <div className="w-2 h-6 bg-current rounded opacity-80" />
+                    <div className="w-2 h-6 bg-current rounded opacity-80" />
+                    <div className="w-2 h-6 bg-current rounded opacity-80" />
+                  </div>
+                  <div className="text-xs font-medium">{option.label}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div>
-      <IconButton title="Design Palette" className="transition-all" onClick={() => setIsDialogOpen(!isDialogOpen)}>
-        <div className="i-ph:palette text-xl"></div>
-      </IconButton>
-
       <DialogRoot open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <Dialog>
-          <div className="py-4 px-4 min-w-[480px] max-w-[90vw] max-h-[85vh] flex flex-col gap-6 overflow-hidden">
+        <Dialog className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-large">
+          <div className="w-[54rem] max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-4rem)] overflow-hidden">
             <div className="">
               <DialogTitle className="text-2xl font-bold text-codinit-elements-textPrimary">
                 Design Palette & Features
@@ -299,6 +422,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
                 { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
                 { key: 'features', label: 'Features', icon: 'i-ph:magic-wand' },
+                { key: 'styling', label: 'Styling', icon: 'i-ph:gear' },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -320,6 +444,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
               {activeSection === 'colors' && renderColorSection()}
               {activeSection === 'typography' && renderTypographySection()}
               {activeSection === 'features' && renderFeaturesSection()}
+              {activeSection === 'styling' && renderStylingSection()}
             </div>
 
             {/* Action Buttons */}

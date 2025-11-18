@@ -85,12 +85,14 @@ export function GitHubAuthDialog({ isOpen, onClose }: GitHubAuthDialogProps) {
           >
             <Dialog.Content className="bg-white dark:bg-[#1A1A1A] rounded-lg shadow-xl max-w-sm w-full mx-4 overflow-hidden">
               <div className="p-4 space-y-3">
-                <h2 className="text-lg font-semibold text-[#111111] dark:text-white">Access Private Repositories</h2>
+                <Dialog.Title className="text-lg font-semibold text-[#111111] dark:text-white">
+                  Access Private Repositories
+                </Dialog.Title>
 
-                <p className="text-sm text-[#666666] dark:text-[#999999]">
+                <Dialog.Description className="text-sm text-[#666666] dark:text-[#999999]">
                   To access private repositories, you need to connect your GitHub account by providing a personal access
                   token.
-                </p>
+                </Dialog.Description>
 
                 <div className="bg-[#F9F9F9] dark:bg-[#252525] p-4 rounded-lg space-y-3">
                   <h3 className="text-base font-medium text-[#111111] dark:text-white">Connect with GitHub Token</h3>

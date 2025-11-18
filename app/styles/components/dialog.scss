@@ -1,0 +1,45 @@
+@use '../variables.scss';
+
+:root {
+  /* Secondary color scale for dialogs and popovers */
+  --secondary-1: hsl(var(--secondary));
+  --secondary-2: hsl(var(--secondary) / 0.8);
+  --secondary-3: hsl(var(--secondary) / 0.6);
+  --secondary-4: hsl(var(--secondary) / 0.4);
+  --secondary-5: hsl(var(--secondary) / 0.3);
+  --secondary-6: hsl(var(--secondary) / 0.2);
+  --secondary-7: hsl(var(--secondary) / 0.15);
+  --secondary-8: hsl(var(--secondary) / 0.1);
+  --secondary-9: hsl(var(--secondary) / 0.05);
+  --secondary-10: hsl(var(--secondary) / 0.03);
+  --secondary-11: hsl(var(--secondary-foreground) / 0.8);
+  --secondary-12: hsl(var(--secondary-foreground));
+
+  /* Secondary alpha variants */
+  --secondary-a1: hsl(var(--secondary) / 0.05);
+  --secondary-a2: hsl(var(--secondary) / 0.1);
+  --secondary-a3: hsl(var(--secondary) / 0.15);
+  --secondary-a4: hsl(var(--secondary) / 0.2);
+  --secondary-a5: hsl(var(--secondary) / 0.3);
+  --secondary-a6: hsl(var(--secondary) / 0.4);
+  --secondary-a7: hsl(var(--secondary) / 0.5);
+  --secondary-a8: hsl(var(--secondary) / 0.6);
+  --secondary-a9: hsl(var(--secondary) / 0.7);
+  --secondary-a10: hsl(var(--secondary) / 0.8);
+  --secondary-a11: hsl(var(--secondary) / 0.9);
+  --secondary-a12: hsl(var(--secondary) / 0.95);
+}
+
+/* Dialog specific styles */
+.dialog-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.dialog-content {
+  background-color: var(--secondary-1);
+  border: 1px solid var(--secondary-a4);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}

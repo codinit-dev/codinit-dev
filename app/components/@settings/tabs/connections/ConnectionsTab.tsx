@@ -8,6 +8,7 @@ import VercelConnection from './VercelConnection';
 // Use React.lazy for dynamic imports
 const GitHubConnection = React.lazy(() => import('./GithubConnection'));
 const NetlifyConnection = React.lazy(() => import('./NetlifyConnection'));
+const CloudflareConnection = React.lazy(() => import('./CloudflareConnection'));
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -158,6 +159,9 @@ export default function ConnectionsTab() {
         </Suspense>
         <Suspense fallback={<LoadingFallback />}>
           <VercelConnection />
+        </Suspense>
+        <Suspense fallback={<LoadingFallback />}>
+          <CloudflareConnection />
         </Suspense>
       </div>
 

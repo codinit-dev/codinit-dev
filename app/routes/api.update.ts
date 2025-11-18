@@ -1,7 +1,7 @@
 import { json, type ActionFunction } from '@remix-run/cloudflare';
 
 // Current version - update this when releasing new versions
-const CURRENT_VERSION = '1.0.6';
+const CURRENT_VERSION = '1.0.9';
 const GITHUB_REPO = 'Gerome-Elassaad/codinit-app';
 
 interface GitHubRelease {
@@ -43,6 +43,23 @@ export const action: ActionFunction = async ({ request }) => {
         });
       }
 
+      // Handle rate limiting
+      if (response.status === 403 || response.status === 429) {
+        const resetTime = response.headers.get('X-RateLimit-Reset');
+        const resetDate = resetTime ? new Date(parseInt(resetTime) * 1000) : null;
+        console.log('🚫 Rate limited by GitHub API');
+
+        return json(
+          {
+            updateAvailable: false,
+            currentVersion: CURRENT_VERSION,
+            error: 'Rate limited',
+            message: `GitHub API rate limit exceeded. ${resetDate ? `Resets at ${resetDate.toLocaleTimeString()}` : 'Please try again later.'}`,
+          },
+          { status: 429 },
+        );
+      }
+
       throw new Error(`GitHub API returned ${response.status}`);
     }
 
@@ -64,13 +81,19 @@ export const action: ActionFunction = async ({ request }) => {
     });
   } catch (error) {
     console.error('💥 Error checking for updates:', error);
+
+    // Determine error type for better user experience
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    const isRateLimit = errorMessage.includes('403') || errorMessage.includes('rate limit');
+    const isNetworkError = errorMessage.includes('fetch') || errorMessage.includes('network');
+
     return json(
       {
-        error: 'Failed to check for updates',
+        error: isRateLimit ? 'Rate limited' : isNetworkError ? 'Network error' : 'Failed to check for updates',
         currentVersion: CURRENT_VERSION,
-        message: error instanceof Error ? error.message : 'Unknown error occurred',
+        message: errorMessage,
       },
-      { status: 500 },
+      { status: isRateLimit ? 429 : 500 },
     );
   }
 };

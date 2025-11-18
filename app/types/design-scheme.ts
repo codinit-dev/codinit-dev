@@ -1,25 +1,52 @@
 export interface DesignScheme {
-  palette: { [key: string]: string }; // Changed from string[] to object
+  palette: {
+    light: { [key: string]: string };
+    dark: { [key: string]: string };
+  };
   features: string[];
   font: string[];
+  mode: 'light' | 'dark';
+  borderRadius: string;
+  shadow: string;
+  spacing: string;
+  theme?: string;
 }
 
 export const defaultDesignScheme: DesignScheme = {
   palette: {
-    primary: '#9E7FFF',
-    secondary: '#38bdf8',
-    accent: '#f472b6',
-    background: '#171717',
-    surface: '#262626',
-    text: '#FFFFFF',
-    textSecondary: '#A3A3A3',
-    border: '#2F2F2F',
-    success: '#10b981',
-    warning: '#f59e0b',
-    error: '#ef4444',
+    light: {
+      primary: '#7c3aed',
+      secondary: '#06b6d4',
+      accent: '#ec4899',
+      background: '#ffffff',
+      surface: '#f8fafc',
+      text: '#0f172a',
+      textSecondary: '#64748b',
+      border: '#e2e8f0',
+      success: '#10b981',
+      warning: '#f59e0b',
+      error: '#ef4444',
+    },
+    dark: {
+      primary: '#9E7FFF',
+      secondary: '#38bdf8',
+      accent: '#f472b6',
+      background: '#171717',
+      surface: '#262626',
+      text: '#FFFFFF',
+      textSecondary: '#A3A3A3',
+      border: '#2F2F2F',
+      success: '#10b981',
+      warning: '#f59e0b',
+      error: '#ef4444',
+    },
   },
   features: ['rounded'],
-  font: ['sans-serif'],
+  font: ['Inter'],
+  mode: 'dark',
+  borderRadius: 'md',
+  shadow: 'sm',
+  spacing: 'normal',
 };
 
 export const paletteRoles = [
@@ -85,9 +112,76 @@ export const designFeatures = [
 ];
 
 export const designFonts = [
-  { key: 'sans-serif', label: 'Sans Serif', preview: 'Aa' },
-  { key: 'serif', label: 'Serif', preview: 'Aa' },
-  { key: 'monospace', label: 'Monospace', preview: 'Aa' },
-  { key: 'cursive', label: 'Cursive', preview: 'Aa' },
-  { key: 'fantasy', label: 'Fantasy', preview: 'Aa' },
+  { key: 'Inter', label: 'Inter', preview: 'Aa' },
+  { key: 'Roboto', label: 'Roboto', preview: 'Aa' },
+  { key: 'Open Sans', label: 'Open Sans', preview: 'Aa' },
+  { key: 'Montserrat', label: 'Montserrat', preview: 'Aa' },
+  { key: 'Poppins', label: 'Poppins', preview: 'Aa' },
+  { key: 'Lato', label: 'Lato', preview: 'Aa' },
+  { key: 'JetBrains Mono', label: 'JetBrains Mono', preview: 'Aa' },
+  { key: 'Raleway', label: 'Raleway', preview: 'Aa' },
+  { key: 'Lora', label: 'Lora', preview: 'Aa' },
+];
+
+export const borderRadiusOptions = [
+  { key: 'none', label: 'None' },
+  { key: 'sm', label: 'Small' },
+  { key: 'md', label: 'Medium' },
+  { key: 'lg', label: 'Large' },
+  { key: 'xl', label: 'Extra Large' },
+  { key: 'full', label: 'Full' },
+];
+
+export const shadowOptions = [
+  { key: 'none', label: 'None' },
+  { key: 'sm', label: 'Small' },
+  { key: 'md', label: 'Medium' },
+  { key: 'lg', label: 'Large' },
+  { key: 'xl', label: 'Extra Large' },
+];
+
+export const spacingOptions = [
+  { key: 'tight', label: 'Tight' },
+  { key: 'normal', label: 'Normal' },
+  { key: 'relaxed', label: 'Relaxed' },
+  { key: 'loose', label: 'Loose' },
+];
+
+export const presetThemes = [
+  { key: 'minimal', label: 'Minimal', image: '/style_presets/minimal.webp' },
+  { key: 'modern', label: 'Modern', image: '/style_presets/modern.webp' },
+  { key: 'carbon', label: 'Carbon', image: '/style_presets/carbon.webp' },
+  { key: 'material', label: 'Material', image: '/style_presets/material.webp' },
+  { key: 'flat', label: 'Flat', image: '/style_presets/flat.webp' },
+  { key: 'neobrutalism', label: 'Neobrutalism', image: '/style_presets/neobrutalism.webp' },
+  { key: 'glassmorphism', label: 'Glassmorphism', image: '/style_presets/glassmorphism.webp' },
+  { key: 'claymorphism', label: 'Claymorphism', image: '/style_presets/claymorphism.webp' },
+  { key: 'retro', label: 'Retro', image: '/style_presets/retro.webp' },
+  { key: 'neumorphism', label: 'Neumorphism', image: '/style_presets/neumorphism.webp' },
+  { key: 'cyberpunk', label: 'Cyberpunk', image: '/style_presets/cyberpunk.webp' },
+];
+
+export const predefinedColors = [
+  { key: 'red', label: 'Red', value: '#ef4444' },
+  { key: 'orange', label: 'Orange', value: '#f97316' },
+  { key: 'amber', label: 'Amber', value: '#f59e0b' },
+  { key: 'yellow', label: 'Yellow', value: '#eab308' },
+  { key: 'lime', label: 'Lime', value: '#84cc16' },
+  { key: 'green', label: 'Green', value: '#22c55e' },
+  { key: 'emerald', label: 'Emerald', value: '#10b981' },
+  { key: 'teal', label: 'Teal', value: '#14b8a6' },
+  { key: 'cyan', label: 'Cyan', value: '#06b6d4' },
+  { key: 'sky', label: 'Sky', value: '#0ea5e9' },
+  { key: 'blue', label: 'Blue', value: '#3b82f6' },
+  { key: 'indigo', label: 'Indigo', value: '#6366f1' },
+  { key: 'violet', label: 'Violet', value: '#8b5cf6' },
+  { key: 'purple', label: 'Purple', value: '#a855f7' },
+  { key: 'fuchsia', label: 'Fuchsia', value: '#d946ef' },
+  { key: 'pink', label: 'Pink', value: '#ec4899' },
+  { key: 'rose', label: 'Rose', value: '#f43f5e' },
+  { key: 'slate', label: 'Slate', value: '#64748b' },
+  { key: 'gray', label: 'Gray', value: '#6b7280' },
+  { key: 'zinc', label: 'Zinc', value: '#71717a' },
+  { key: 'neutral', label: 'Neutral', value: '#737373' },
+  { key: 'stone', label: 'Stone', value: '#78716c' },
 ];

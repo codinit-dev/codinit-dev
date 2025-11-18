@@ -321,7 +321,6 @@ export const Workbench = memo(
     const [showDeviceFrame, setShowDeviceFrame] = useState(true);
 
     // Terminal state
-    const showTerminal = useStore(workbenchStore.showTerminal);
 
     // Preview-related functions
     const previews = useStore(workbenchStore.previews);
@@ -611,9 +610,6 @@ export const Workbench = memo(
                 <div className="border-b border-codinit-elements-borderColor">
                   {selectedView === 'code' && (
                     <CodeModeHeader
-                      onTerminalToggle={() => {
-                        workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
-                      }}
                       onDownloadZip={() => {
                         workbenchStore.downloadZip();
                       }}
@@ -621,7 +617,6 @@ export const Workbench = memo(
                       onPushToGitHub={() => setIsPushDialogOpen(true)}
                       isSyncing={isSyncing}
                       setIsPushDialogOpen={setIsPushDialogOpen}
-                      showTerminal={showTerminal}
                     />
                   )}
 

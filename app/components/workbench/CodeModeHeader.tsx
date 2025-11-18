@@ -4,25 +4,15 @@ import { IconButton } from '~/components/ui/IconButton';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 interface CodeModeHeaderProps {
-  onTerminalToggle: () => void;
   onDownloadZip: () => void;
   onSyncFiles: () => void;
   onPushToGitHub: () => void;
   isSyncing: boolean;
   setIsPushDialogOpen: (open: boolean) => void;
-  showTerminal: boolean;
 }
 
 export const CodeModeHeader = memo(
-  ({
-    onTerminalToggle,
-    onDownloadZip,
-    onSyncFiles,
-    onPushToGitHub,
-    isSyncing,
-    setIsPushDialogOpen,
-    showTerminal,
-  }: CodeModeHeaderProps) => {
+  ({ onDownloadZip, onSyncFiles, onPushToGitHub, isSyncing, setIsPushDialogOpen }: CodeModeHeaderProps) => {
     const setSelectedView = (view: WorkbenchViewType) => {
       workbenchStore.currentView.set(view);
     };
@@ -32,55 +22,23 @@ export const CodeModeHeader = memo(
         {/* Toggle Buttons Section */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <button
-              aria-label="Preview"
-              aria-pressed="false"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive transition-colors"
+            <IconButton
+              icon="i-lucide:eye"
+              className="w-8 h-8"
+              title="Preview"
               onClick={() => setSelectedView('preview')}
-            >
-              <span className="i-lucide:eye size-4"></span>
-            </button>
-            <button
-              aria-label="Code"
-              aria-pressed="true"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundActive transition-colors"
-              onClick={() => setSelectedView('code')}
-            >
-              <span className="i-lucide:code size-4"></span>
-            </button>
-            <button
-              aria-label="Database - Connected"
-              aria-pressed="false"
-              className="flex items-center justify-center w-8 h-8 rounded-md text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive transition-colors"
-            >
-              <span className="i-lucide:database size-4"></span>
-            </button>
-            <button
-              aria-label="Terminal"
-              aria-pressed={showTerminal}
-              className={`flex items-center justify-center w-8 h-8 rounded-md transition-colors ${
-                showTerminal
-                  ? 'text-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-item-backgroundActive'
-                  : 'text-codinit-elements-icon-secondary hover:text-codinit-elements-item-contentActive hover:bg-codinit-elements-item-backgroundActive'
-              }`}
-              onClick={onTerminalToggle}
-            >
-              <span className="i-lucide:terminal size-4"></span>
-            </button>
+            />
+            <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
           </div>
           <div className="flex items-center">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button
                   type="button"
-                  aria-haspopup="menu"
-                  aria-expanded="false"
-                  className="bg-transparent p-0"
-                  aria-label="More Options"
+                  className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive transition-colors"
+                  title="More Options"
                 >
-                  <div className="flex items-center bg-transparent text-sm px-2 py-1 rounded-full relative text-codinit-elements-item-contentDefault hover:text-codinit-elements-item-contentActive pl-1 pr-1.5 h-5 opacity-90 hover:opacity-100">
-                    <span className="i-lucide:settings text-current w-4 h-4"></span>
-                  </div>
+                  <span className="i-lucide:settings size-4"></span>
                 </button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content
@@ -129,12 +87,6 @@ export const CodeModeHeader = memo(
         <div className="ml-auto">
           <div className="flex gap-3">
             <div className="flex gap-1 empty:hidden"></div>
-            <div className="flex gap-1">
-              <IconButton
-                icon="i-codinit:stars"
-                className="text-codinit-elements-item-contentDefault bg-transparent rounded-md disabled:cursor-not-allowed enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive p-1 relative w-8 h-8"
-              />
-            </div>
             <button
               className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-ds-brandHighlight bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1 flex gap-1.7 shrink-0 h-8 text-sm px-3"
               type="button"

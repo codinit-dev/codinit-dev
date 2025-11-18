@@ -170,10 +170,7 @@ const UpdateTab = () => {
             )}
             <button
               onClick={() => {
-                /*
-                 * The hook automatically checks for updates on mount and periodically
-                 * We can trigger a manual check by refreshing the page or we could add a manual trigger
-                 */
+                // Trigger a manual update check by calling the hook's internal logic
                 window.location.reload();
               }}
               className={classNames(
@@ -186,6 +183,11 @@ const UpdateTab = () => {
                 'disabled:opacity-50 disabled:cursor-not-allowed',
               )}
               disabled={isLoading}
+              title={
+                error?.includes('rate limit')
+                  ? 'Rate limited by GitHub API. Try again later.'
+                  : 'Check for updates manually'
+              }
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
@@ -196,6 +198,11 @@ const UpdateTab = () => {
                   />
                   Checking...
                 </div>
+              ) : error?.includes('rate limit') ? (
+                <>
+                  <div className="i-ph:clock w-4 h-4" />
+                  Rate Limited
+                </>
               ) : (
                 <>
                   <div className="i-ph:arrows-clockwise w-4 h-4" />
@@ -261,7 +268,18 @@ const UpdateTab = () => {
         )}
 
         {error && (
-          <div className="mt-4 p-4 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded">{error}</div>
+          <div className="mt-4 p-4 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="i-ph:warning-circle-fill w-5 h-5" />
+              <span className="font-medium">Update Check Failed</span>
+            </div>
+            <p className="text-sm">{error}</p>
+            {error.includes('rate limit') && (
+              <p className="text-xs mt-2 text-red-600 dark:text-red-300">
+                💡 Tip: GitHub limits unauthenticated API requests. The limit resets hourly.
+              </p>
+            )}
+          </div>
         )}
       </motion.div>
 

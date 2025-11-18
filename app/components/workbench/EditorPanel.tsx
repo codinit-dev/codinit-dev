@@ -85,7 +85,7 @@ export const EditorPanel = memo(
         <Panel defaultSize={showTerminal ? DEFAULT_EDITOR_SIZE : 100} minSize={15}>
           <PanelGroup direction="horizontal">
             <Panel
-              defaultSize={18}
+              defaultSize={20}
               minSize={13}
               collapsible
               className="border-r border-codinit-elements-borderColor shadow-sm"

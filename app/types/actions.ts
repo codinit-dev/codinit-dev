@@ -65,7 +65,7 @@ export interface DeployAlert {
   stage?: 'building' | 'deploying' | 'complete';
   buildStatus?: 'pending' | 'running' | 'complete' | 'failed';
   deployStatus?: 'pending' | 'running' | 'complete' | 'failed';
-  source?: 'vercel' | 'netlify' | 'github' | 'gitlab';
+  source?: 'vercel' | 'netlify' | 'github' | 'gitlab' | 'cloudflare';
 }
 
 export interface LlmErrorAlertType {

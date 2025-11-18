@@ -1,18 +1,18 @@
 # Build/Lint/Test Commands
 
 ## Build Commands
-- `npm run build` - Production build with Remix Vite
-- `npm run dev` - Development server with hot reload
-- `npm run typecheck` - TypeScript type checking
+- `pnpm run build` - Production build with Remix Vite
+- `pnpm run dev` - Development server with hot reload
+- `pnpm run typecheck` - TypeScript type checking
 
 ## Test Commands
-- `npm run test` - Run all tests once with Vitest
-- `npm run test:watch` - Run tests in watch mode
+- `pnpm run test` - Run all tests once with Vitest
+- `pnpm run test:watch` - Run tests in watch mode
 - `vitest --run path/to/test.spec.ts` - Run single test file
 
 ## Lint Commands
-- `npm run lint` - ESLint check with caching
-- `npm run lint:fix` - Auto-fix ESLint + Prettier formatting
+- `pnpm run lint` - ESLint check with caching
+- `pnpm run lint:fix` - Auto-fix ESLint + Prettier formatting
 
 # Code Style Guidelines
 
