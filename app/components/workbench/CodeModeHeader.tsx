@@ -87,12 +87,6 @@ export const CodeModeHeader = memo(
         <div className="ml-auto">
           <div className="flex gap-3">
             <div className="flex gap-1 empty:hidden"></div>
-            <div className="flex gap-1">
-              <IconButton
-                icon="i-codinit:stars"
-                className="text-codinit-elements-item-contentDefault bg-transparent rounded-md disabled:cursor-not-allowed enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive p-1 relative w-8 h-8"
-              />
-            </div>
             <button
               className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-ds-brandHighlight bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1 flex gap-1.7 shrink-0 h-8 text-sm px-3"
               type="button"

@@ -103,7 +103,6 @@ export const PreviewHeader = memo(
             onClick={() => setSelectedView('preview')}
           />
           <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
-          <IconButton icon="i-lucide:database" className="w-8 h-8" title="Database - Connected" />
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
               <button
@@ -208,13 +207,6 @@ export const PreviewHeader = memo(
         <div className="ml-auto">
           <div className="flex gap-3">
             <div className="flex gap-1 empty:hidden"></div>
-
-            <div className="flex gap-1">
-              <IconButton
-                icon="i-codinit:stars"
-                className="text-codinit-elements-item-contentDefault bg-transparent rounded-md disabled:cursor-not-allowed enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive p-1 relative w-8 h-8"
-              />
-            </div>
 
             {/* Deployment Buttons */}
             <div className="flex gap-1">
