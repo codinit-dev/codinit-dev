@@ -63,20 +63,47 @@ export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
       },
     });
 
-    if (!apiResponse.ok) {
-      throw new Error(`API request failed: ${apiResponse.status}`);
-    }
-
     const apiData = (await apiResponse.json()) as ApiUpdateResponse;
 
-    if (apiData.error) {
-      throw new Error(apiData.message || 'API returned an error');
+    // Check for HTTP errors after parsing JSON
+    if (!apiResponse.ok) {
+      // For rate limiting (429), we still have valid JSON data to process
+      if (apiResponse.status !== 429) {
+        throw new Error(`API request failed: ${apiResponse.status}`);
+      }
     }
 
+    // If the API route successfully got update info, use it
+    if (!apiData.error && apiData.updateAvailable !== undefined) {
+      return {
+        available: apiData.updateAvailable,
+        version: apiData.latestVersion || apiData.currentVersion,
+        currentVersion: apiData.currentVersion,
+        releaseNotes: apiData.releaseNotes,
+        releaseUrl: apiData.releaseUrl,
+        publishedAt: apiData.publishedAt,
+      };
+    }
+
+    // If API returned an error, handle it
+    if (apiData.error) {
+      const errorType = apiData.error === 'Rate limited' ? 'rate_limit' : 'network';
+      return {
+        available: false,
+        version: apiData.currentVersion,
+        currentVersion: apiData.currentVersion,
+        error: {
+          type: errorType as 'rate_limit' | 'network',
+          message: apiData.message || 'Failed to check for updates',
+        },
+      };
+    }
+
+    // Fallback: API didn't provide update info, try direct GitHub call
     const currentVersion = apiData.currentVersion;
 
     // Fetch the latest release from GitHub
-    const response = await fetch(`https://api.github.com/repos/gerome-elassaad/codinit-app/releases/latest`, {
+    const response = await fetch(`https://api.github.com/repos/Gerome-Elassaad/codinit-app/releases/latest`, {
       headers: {
         Accept: 'application/vnd.github.v3+json',
         'User-Agent': 'CodinIT-App',
@@ -94,7 +121,7 @@ export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
       }
 
       // Check for rate limiting
-      if (response.status === 403) {
+      if (response.status === 403 || response.status === 429) {
         const resetTime = response.headers.get('X-RateLimit-Reset');
         return {
           available: false,
@@ -138,7 +165,7 @@ export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
 
     if (isNetworkError) {
       errorType = 'network';
-    } else if (errorMessage.toLowerCase().includes('rate limit')) {
+    } else if (errorMessage.toLowerCase().includes('rate limit') || errorMessage.toLowerCase().includes('429')) {
       errorType = 'rate_limit';
     } else if (errorMessage.toLowerCase().includes('auth') || errorMessage.toLowerCase().includes('403')) {
       errorType = 'auth';
