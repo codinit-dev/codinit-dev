@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { classNames } from '~/utils/classNames';
-import type { MCPServer } from '~/lib/types/mcp';
+import type { MCPServer } from '~/types/mcp';
 import styles from './MCPServerCard.module.scss';
 
 interface MCPServerCardProps {
