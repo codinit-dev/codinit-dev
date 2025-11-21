@@ -25,8 +25,6 @@ import useViewport from '~/lib/hooks';
 import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
 import { usePreviewStore } from '~/lib/stores/previews';
 import type { ElementInfo } from './Inspector';
-import { PreviewHeader } from './PreviewHeader';
-import { CodeModeHeader } from './CodeModeHeader';
 
 type WindowSize = {
   name: string;
@@ -75,6 +73,7 @@ interface WorkspaceProps {
   };
   updateChatMestaData?: (metadata: any) => void;
   setSelectedElement?: (element: ElementInfo | null) => void;
+  renderHeader?: (headerProps: any) => React.ReactNode;
 }
 
 const viewTransition = { ease: cubicEasingFn };
@@ -305,7 +304,7 @@ const FileModifiedDropdown = memo(
 );
 
 export const Workbench = memo(
-  ({ chatStarted, isStreaming, actionRunner, metadata, updateChatMestaData }: WorkspaceProps) => {
+  ({ chatStarted, isStreaming, actionRunner, metadata, updateChatMestaData, renderHeader }: WorkspaceProps) => {
     renderLogger.trace('Workbench');
 
     const [isSyncing, setIsSyncing] = useState(false);
@@ -607,58 +606,6 @@ export const Workbench = memo(
           >
             <div className="absolute inset-0 px-2 lg:px-6">
               <div className="h-full flex flex-col bg-codinit-elements-background-depth-1 overflow-hidden">
-                <div className="border-b border-codinit-elements-borderColor">
-                  {selectedView === 'code' && (
-                    <CodeModeHeader
-                      onDownloadZip={() => {
-                        workbenchStore.downloadZip();
-                      }}
-                      onSyncFiles={handleSyncFiles}
-                      onPushToGitHub={() => setIsPushDialogOpen(true)}
-                      isSyncing={isSyncing}
-                      setIsPushDialogOpen={setIsPushDialogOpen}
-                    />
-                  )}
-
-                  {selectedView === 'preview' && (
-                    <PreviewHeader
-                      previews={previews}
-                      activePreviewIndex={activePreviewIndex}
-                      setActivePreviewIndex={setActivePreviewIndex}
-                      displayPath={displayPath}
-                      setDisplayPath={setDisplayPath}
-                      setIframeUrl={setIframeUrl}
-                      reloadPreview={reloadPreview}
-                      setIsWindowSizeDropdownOpen={setIsWindowSizeDropdownOpen}
-                      isWindowSizeDropdownOpen={isWindowSizeDropdownOpen}
-                      openInNewTab={openInNewTab}
-                      openInNewWindow={openInNewWindow}
-                      windowSizes={WINDOW_SIZES}
-                      selectedWindowSize={selectedWindowSize}
-                      setSelectedWindowSize={setSelectedWindowSize}
-                      showDeviceFrame={showDeviceFrame}
-                      setShowDeviceFrame={setShowDeviceFrame}
-                      isLandscape={isLandscape}
-                      setIsLandscape={setIsLandscape}
-                      setIsPushDialogOpen={setIsPushDialogOpen}
-                    />
-                  )}
-
-                  {selectedView === 'diff' && (
-                    <div className="flex items-center px-2 py-1 gap-1">
-                      <FileModifiedDropdown fileHistory={fileHistory} onSelectFile={handleSelectFile} />
-                      <div className="ml-auto" />
-                      <IconButton
-                        icon="i-ph:x-circle"
-                        className="-mr-1"
-                        size="xl"
-                        onClick={() => {
-                          workbenchStore.showWorkbench.set(false);
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
                 <div className="relative flex-1 overflow-hidden">
                   <View initial={{ x: '0%' }} animate={{ x: selectedView === 'code' ? '0%' : '-100%' }}>
                     <EditorPanel
