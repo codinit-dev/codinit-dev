@@ -10,6 +10,9 @@
   background-color: var(--codinit-elements-bg-depth-2);
   color: var(--codinit-elements-textPrimary);
   border: 1px solid var(--codinit-elements-borderColor);
+  box-shadow:
+    0 10px 15px -3px rgba(26, 29, 42, 0.3),
+    0 4px 6px -2px rgba(26, 29, 42, 0.1);
 }
 
 .Toastify__close-button {
