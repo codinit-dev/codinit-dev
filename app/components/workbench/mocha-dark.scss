@@ -1,8 +1,6 @@
-@charset "utf-8";
-
 body {
   margin: 0;
-  background-color: #191919; /* Matches app depth-1 */
+  background-color: var(--codinit-elements-bg-depth-1);
 }
 
 #mocha {
@@ -12,7 +10,7 @@ body {
     Arial,
     sans-serif;
   margin: 60px 50px;
-  color: #ffffff; /* White text for dark mode */
+  color: var(--codinit-elements-textPrimary);
 }
 
 #mocha ul,
@@ -95,7 +93,7 @@ body {
   font-size: 9px;
   margin-left: 5px;
   padding: 2px 5px;
-  color: #fff;
+  color: var(--codinit-elements-textPrimary);
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -124,7 +122,7 @@ body {
 }
 
 #mocha .test.fail pre {
-  color: #ffffff; /* White text for dark mode */
+  color: var(--codinit-elements-textPrimary);
 }
 
 #mocha .test.fail::before {
@@ -156,13 +154,13 @@ body {
     monospace;
   margin: 5px;
   padding: 15px;
-  border: 1px solid #333333; /* Matches app border color */
+  border: 1px solid var(--codinit-elements-borderColor);
   max-width: 85%; /*(1)*/
   max-width: calc(100% - 42px); /*(2)*/
   word-wrap: break-word;
-  border-bottom-color: #444444; /* Darker border for depth */
-  background-color: #1f1f1f; /* Matches app depth-2 */
-  color: #ffffff; /* White text for dark mode */
+  border-bottom-color: #444444;
+  background-color: var(--codinit-elements-bg-depth-2);
+  color: var(--codinit-elements-textPrimary);
   -webkit-border-radius: 3px;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   -moz-border-radius: 3px;
@@ -180,13 +178,12 @@ body {
   top: 3px;
   right: 0;
   text-decoration: none;
-  vertical-align: middle;
   display: block;
   width: 15px;
   height: 15px;
   line-height: 15px;
   text-align: center;
-  background: #2a2a2a; /* Matches app depth-4 */
+  background: var(--codinit-elements-bg-depth-4);
   font-size: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
@@ -194,7 +191,7 @@ body {
   -moz-transition: opacity 200ms;
   transition: opacity 200ms;
   opacity: 0.3;
-  color: #cccccc; /* Neutral gray text */
+  color: var(--codinit-elements-textSecondary);
 }
 
 #mocha .test:hover a.replay {
@@ -230,7 +227,7 @@ body {
   right: 10px;
   font-size: 12px;
   margin: 0;
-  color: #cccccc; /* Neutral gray text */
+  color: var(--codinit-elements-textSecondary);
   z-index: 1;
 }
 
@@ -240,7 +237,7 @@ body {
 }
 
 #mocha-stats em {
-  color: #ffffff; /* White text for emphasis */
+  color: var(--codinit-elements-textPrimary);
 }
 
 #mocha-stats a {
@@ -249,7 +246,7 @@ body {
 }
 
 #mocha-stats a:hover {
-  border-bottom: 1px solid #444444; /* Dark border for hover */
+  border-bottom: 1px solid #444444;
 }
 
 #mocha-stats li {
@@ -266,19 +263,19 @@ body {
 
 #mocha code .comment {
   color: #888888;
-} /* Darker comments for dark mode */
+}
 #mocha code .init {
   color: #60a5fa;
-} /* Lighter blue for dark mode */
+}
 #mocha code .string {
   color: #93c5fd;
-} /* Lighter blue for strings */
+}
 #mocha code .keyword {
   color: #fbbf24;
-} /* Yellow for keywords */
+}
 #mocha code .number {
   color: #60a5fa;
-} /* Blue for numbers */
+}
 
 @media screen and (max-device-width: 480px) {
   #mocha {

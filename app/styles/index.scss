@@ -7,6 +7,7 @@
 @use 'components/editor.scss';
 @use 'components/toast.scss';
 @use 'components/dialog.scss';
+@use '../../app/components/workbench/mocha-dark.scss';
 @use '../../app/components/chat/BaseChat.module.scss';
 @use '../../app/components/chat/CodeBlock.module.scss';
 @use '../../app/components/chat/Markdown.module.scss';
