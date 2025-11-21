@@ -1,6 +1,6 @@
 import { memo, useState, useEffect } from 'react';
 import { Dialog, DialogRoot, DialogTitle, DialogClose } from '~/components/ui/Dialog';
-import type { MCPServerConfig } from '~/lib/types/mcp';
+import type { MCPServerConfig } from '~/types/mcp';
 import type { MCPTemplate } from './MCPMarketplace';
 import { IconButton } from '~/components/ui/IconButton';
 import { classNames } from '~/utils/classNames';
