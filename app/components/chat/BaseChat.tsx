@@ -151,10 +151,24 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     // Workbench header state
     const selectedView = useStore(workbenchStore.currentView);
     const [isSyncing, setIsSyncing] = useState(false);
-    const [isPushDialogOpen, setIsPushDialogOpen] = useState(false);
     const previews = useStore(workbenchStore.previews);
     const [activePreviewIndex, setActivePreviewIndex] = useState(0);
     const [displayPath, setDisplayPath] = useState('/');
+
+    // Preview header state
+    const [isWindowSizeDropdownOpen, setIsWindowSizeDropdownOpen] = useState(false);
+    const [selectedWindowSize, setSelectedWindowSize] = useState({
+      name: 'Desktop',
+      width: 1920,
+      height: 1080,
+      icon: 'i-ph:monitor',
+    });
+    const [showDeviceFrame, setShowDeviceFrame] = useState(true);
+    const [isLandscape, setIsLandscape] = useState(false);
+
+    const setIsPushDialogOpen = (_open: boolean) => {
+      // Push dialog is handled by Workbench component
+    };
 
     useEffect(() => {
       if (expoUrl) {
@@ -350,6 +364,61 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       }
     };
 
+    const handleSetIframeUrl = (url: string | undefined) => {
+      // Update display path based on URL
+      if (url) {
+        try {
+          const urlObj = new URL(url);
+          setDisplayPath(urlObj.pathname || '/');
+        } catch {
+          setDisplayPath('/');
+        }
+      } else {
+        setDisplayPath('/');
+      }
+    };
+
+    const handleReloadPreview = () => {
+      const activePreview = previews[activePreviewIndex];
+
+      if (activePreview?.baseUrl) {
+        // Access the previews store through workbench store
+        const previewId = activePreview.baseUrl.match(
+          /^https?:\/\/([^.]+)\.local-credentialless\.webcontainer-api\.io/,
+        )?.[1];
+
+        if (previewId) {
+          // Trigger preview refresh by updating the preview state
+          const updatedPreviews = [...previews];
+
+          if (updatedPreviews[activePreviewIndex]) {
+            updatedPreviews[activePreviewIndex] = { ...updatedPreviews[activePreviewIndex], ready: false };
+
+            // Force re-render by setting ready back to true after a brief delay
+            setTimeout(() => {
+              updatedPreviews[activePreviewIndex] = { ...updatedPreviews[activePreviewIndex], ready: true };
+            }, 100);
+          }
+        }
+      }
+    };
+
+    const handleOpenInNewTab = () => {
+      const activePreview = previews[activePreviewIndex];
+
+      if (activePreview?.baseUrl) {
+        window.open(activePreview.baseUrl, '_blank');
+      }
+    };
+
+    const handleOpenInNewWindow = () => {
+      const activePreview = previews[activePreviewIndex];
+
+      if (activePreview?.baseUrl) {
+        window.open(activePreview.baseUrl, '_blank', 'width=1200,height=800');
+      }
+    };
+
     const baseChat = (
       <div
         ref={ref}
@@ -387,19 +456,19 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   setActivePreviewIndex={setActivePreviewIndex}
                   displayPath={displayPath}
                   setDisplayPath={setDisplayPath}
-                  setIframeUrl={() => {}}
-                  reloadPreview={() => {}}
-                  setIsWindowSizeDropdownOpen={() => {}}
-                  isWindowSizeDropdownOpen={false}
-                  openInNewTab={() => {}}
-                  openInNewWindow={() => {}}
+                  setIframeUrl={handleSetIframeUrl}
+                  reloadPreview={handleReloadPreview}
+                  setIsWindowSizeDropdownOpen={setIsWindowSizeDropdownOpen}
+                  isWindowSizeDropdownOpen={isWindowSizeDropdownOpen}
+                  openInNewTab={handleOpenInNewTab}
+                  openInNewWindow={handleOpenInNewWindow}
                   windowSizes={[]}
-                  selectedWindowSize={{ name: 'Desktop', width: 1920, height: 1080, icon: 'i-ph:monitor' }}
-                  setSelectedWindowSize={() => {}}
-                  showDeviceFrame={true}
-                  setShowDeviceFrame={() => {}}
-                  isLandscape={false}
-                  setIsLandscape={() => {}}
+                  selectedWindowSize={selectedWindowSize}
+                  setSelectedWindowSize={setSelectedWindowSize}
+                  showDeviceFrame={showDeviceFrame}
+                  setShowDeviceFrame={setShowDeviceFrame}
+                  isLandscape={isLandscape}
+                  setIsLandscape={setIsLandscape}
                   setIsPushDialogOpen={setIsPushDialogOpen}
                 />
               )}
