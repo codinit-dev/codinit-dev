@@ -25,7 +25,7 @@
 
   &[data-resize-handle-state='hover']:after,
   &[data-resize-handle-state='drag']:after {
-    background-color: rgba(107, 133, 255, 0.4); /* Subtle blue undertone */
+    background-color: rgba(204, 204, 204, 0.4); /* Neutral gray */
     opacity: 0.6;
   }
 }
