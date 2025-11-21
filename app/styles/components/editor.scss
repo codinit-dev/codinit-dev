@@ -147,12 +147,12 @@ html[data-theme='light'] {
 
 /* Dark theme overrides - pure neutral gray */
 html[data-theme='dark'] {
-  --cm-backgroundColor: #191919; /* Matches depth-1 */
-  --cm-gutter-backgroundColor: #191919; /* Consistent with background */
+  --cm-backgroundColor: #1f1f1f; /* Matches depth-2 for distinction from main background */
+  --cm-gutter-backgroundColor: #1f1f1f; /* Consistent with editor background */
   --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.08); /* Subtle neutral highlight */
   --cm-selection-backgroundColorFocused: #cccccc; /* Neutral gray selection */
   --cm-selection-backgroundOpacityFocused: 0.25;
-  --cm-tooltip-backgroundColor: #1f1f1f; /* Matches depth-2 */
+  --cm-tooltip-backgroundColor: #252525; /* Matches depth-3 */
   --cm-tooltip-borderColor: rgba(153, 153, 153, 0.2); /* Neutral border */
   --cm-panels-borderColor: rgba(153, 153, 153, 0.1); /* Neutral panel borders */
 }
