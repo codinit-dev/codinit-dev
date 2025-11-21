@@ -74,6 +74,7 @@ type Actions = {
   initialize: () => Promise<void>;
   updateSettings: (settings: MCPSettings) => Promise<void>;
   checkServersAvailabilities: () => Promise<void>;
+  retryServerConnection: (serverName: string) => Promise<void>;
   addToolExecution: (execution: MCPToolExecution) => void;
   updateToolExecution: (id: string, updates: Partial<MCPToolExecution>) => void;
   approveToolExecution: (id: string) => void;
@@ -164,6 +165,32 @@ export const useMCPStore = create<Store & Actions>((set, get) => ({
       set(() => ({ serverTools }));
     } finally {
       set(() => ({ isCheckingServers: false }));
+    }
+  },
+  retryServerConnection: async (serverName: string) => {
+    try {
+      const response = await fetch('/api/mcp-retry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ serverName }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+      }
+
+      // Refresh server statuses after retry
+      const checkResponse = await fetch('/api/mcp-check', {
+        method: 'GET',
+      });
+
+      if (checkResponse.ok) {
+        const serverTools = (await checkResponse.json()) as MCPServerTools;
+        set(() => ({ serverTools }));
+      }
+    } catch (error) {
+      console.error(`Failed to retry connection for server ${serverName}:`, error);
+      throw error;
     }
   },
 
