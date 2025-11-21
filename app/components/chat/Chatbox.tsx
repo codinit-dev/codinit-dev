@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
-import { PROVIDER_LIST, getProviderList } from '~/utils/constants';
+import { PROVIDER_LIST } from '~/utils/constants';
 import { ModelSelector } from '~/components/chat/ModelSelector';
 import { APIKeyManager } from './APIKeyManager';
 import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
@@ -15,14 +15,11 @@ import { SupabaseConnection } from './SupabaseConnection';
 import { ExpoQrModal } from '~/components/workbench/ExpoQrModal';
 import styles from './BaseChat.module.scss';
 import type { ProviderInfo } from '~/types/model';
-
+import { ColorSchemeDialog } from '~/components/chat/ColorSchemeDialog';
+import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from '~/components/mcp/MCPTools';
 import { MCPDialog } from '~/components/mcp/MCPDialog';
-import { ColorSchemeDialog } from './ColorSchemeDialog';
-import { useStore } from '@nanostores/react';
-import { designSchemeStore, updateDesignScheme } from '~/lib/stores/design-scheme';
-import type { DesignScheme } from '~/types/design-scheme';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -61,18 +58,16 @@ interface ChatBoxProps {
   enhancePrompt?: (() => void) | undefined;
   chatMode?: 'discuss' | 'build';
   setChatMode?: (mode: 'discuss' | 'build') => void;
-
-  selectedElement?: ElementInfo | null;
-  setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
   designScheme?: DesignScheme;
   setDesignScheme?: (scheme: DesignScheme) => void;
+  selectedElement?: ElementInfo | null;
+  setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
   const [placeholderText, setPlaceholderText] = useState('');
   const [showPlaceholder, setShowPlaceholder] = useState(true);
-  const designScheme = useStore(designSchemeStore);
 
   useEffect(() => {
     if (!props.chatStarted && props.input.length === 0 && showPlaceholder) {
@@ -154,10 +149,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                   modelList={props.modelList}
                   provider={props.provider}
                   setProvider={props.setProvider}
-                  providerList={
-                    props.providerList ||
-                    ((PROVIDER_LIST.length > 0 ? PROVIDER_LIST : getProviderList()) as ProviderInfo[])
-                  }
+                  providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
                   apiKeys={props.apiKeys}
                   modelLoading={props.isModelLoading}
                 />
@@ -304,6 +296,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         </ClientOnly>
         <div className="flex justify-between items-center text-sm p-4 pt-2">
           <div className="flex gap-1 items-center">
+            <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
             <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
               <div className="i-ph:paperclip text-xl"></div>
             </IconButton>
@@ -322,13 +315,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 <div className="i-codinit:stars text-xl"></div>
               )}
             </IconButton>
-            <ColorSchemeDialog
-              designScheme={designScheme}
-              setDesignScheme={(scheme) => {
-                updateDesignScheme(scheme);
-                props.setDesignScheme?.(scheme);
-              }}
-            />
 
             <SpeechRecognitionButton
               isListening={props.isListening}

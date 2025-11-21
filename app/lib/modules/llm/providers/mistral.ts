@@ -77,50 +77,6 @@ export default class MistralProvider extends BaseProvider {
       maxTokenAllowed: 8000,
       maxCompletionTokens: 8192,
     },
-
-    // Magistral series
-    {
-      name: 'magistral-medium-latest',
-      label: 'Magistral Medium',
-      provider: 'Mistral',
-      maxTokenAllowed: 32000,
-      maxCompletionTokens: 8192,
-    },
-
-    {
-      name: 'magistral-small-latest',
-      label: 'Magistral Small',
-      provider: 'Mistral',
-      maxTokenAllowed: 32000,
-      maxCompletionTokens: 8192,
-    },
-
-    // Mistral Medium
-    {
-      name: 'mistral-medium-latest',
-      label: 'Mistral Medium',
-      provider: 'Mistral',
-      maxTokenAllowed: 32000,
-      maxCompletionTokens: 8192,
-    },
-
-    // Pixtral Large
-    {
-      name: 'pixtral-large-latest',
-      label: 'Pixtral Large',
-      provider: 'Mistral',
-      maxTokenAllowed: 32000,
-      maxCompletionTokens: 8192,
-    },
-
-    // Devstral Small
-    {
-      name: 'devstral-small-latest',
-      label: 'Devstral Small',
-      provider: 'Mistral',
-      maxTokenAllowed: 32000,
-      maxCompletionTokens: 8192,
-    },
   ];
 
   getModelInstance(options: {

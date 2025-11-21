@@ -2,6 +2,7 @@ import type { LanguageModelV1 } from 'ai';
 import type { ProviderInfo, ProviderConfig, ModelInfo } from './types';
 import type { IProviderSetting } from '~/types/model';
 import { createOpenAI } from '@ai-sdk/openai';
+import { LLMManager } from './manager';
 
 export abstract class BaseProvider implements ProviderInfo {
   abstract name: string;
@@ -25,11 +26,7 @@ export abstract class BaseProvider implements ProviderInfo {
   }) {
     const { apiKeys, providerSettings, serverEnv, defaultBaseUrlKey, defaultApiTokenKey } = options;
     let settingsBaseUrl = providerSettings?.baseUrl;
-
-    // Lazy import to avoid circular dependency
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { LLMManager: LLM_MANAGER_CLASS } = require('./manager');
-    const manager = LLM_MANAGER_CLASS.getInstance();
+    const manager = LLMManager.getInstance();
 
     if (settingsBaseUrl && settingsBaseUrl.length == 0) {
       settingsBaseUrl = undefined;
@@ -60,10 +57,10 @@ export abstract class BaseProvider implements ProviderInfo {
     apiKeys?: Record<string, string>;
     providerSettings?: Record<string, IProviderSetting>;
     serverEnv?: Record<string, string>;
-  }): ModelInfo[] | undefined {
+  }): ModelInfo[] | null {
     if (!this.cachedDynamicModels) {
       // console.log('no dynamic models',this.name);
-      return undefined;
+      return null;
     }
 
     const cacheKey = this.cachedDynamicModels.cacheId;
@@ -72,7 +69,7 @@ export abstract class BaseProvider implements ProviderInfo {
     if (cacheKey !== generatedCacheKey) {
       // console.log('cache key mismatch',this.name,cacheKey,generatedCacheKey);
       this.cachedDynamicModels = undefined;
-      return undefined;
+      return null;
     }
 
     return this.cachedDynamicModels.models;
@@ -83,7 +80,7 @@ export abstract class BaseProvider implements ProviderInfo {
     serverEnv?: Record<string, string>;
   }) {
     return JSON.stringify({
-      apiKeys: this.config.apiTokenKey ? options.apiKeys?.[this.config.apiTokenKey] : options.apiKeys?.[this.name],
+      apiKeys: options.apiKeys?.[this.name],
       providerSettings: options.providerSettings?.[this.name],
       serverEnv: options.serverEnv,
     });

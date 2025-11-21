@@ -1,21 +1,20 @@
 import { useStore } from '@nanostores/react';
-import { ClientOnly } from 'remix-utils/client-only';
 import { chatStore } from '~/lib/stores/chat';
 import { classNames } from '~/utils/classNames';
-import { ChatDescription } from '~/lib/persistence/ChatDescription.client';
 
 export function Header() {
   const chat = useStore(chatStore);
 
-  // Show action buttons when chat has started
-  const showActionButtons = chat.started;
+  // Only show when chat has NOT started
+  if (chat.started) {
+    return null;
+  }
 
   return (
     <header
-      className={classNames('flex items-center p-3 h-12', {
-        'border-b border-transparent': !chat.started,
-        'border-codinit-elements-borderColor': chat.started,
-      })}
+      className={classNames(
+        'flex items-center p-3 h-12 flex-1 bg-codinit-elements-background-depth-1 border-b border-transparent',
+      )}
     >
       <div className="flex items-center gap-2 z-logo text-codinit-elements-textPrimary cursor-pointer">
         <div className="i-ph:sidebar-simple-duotone text-xl" />
@@ -24,14 +23,6 @@ export function Header() {
           <img src="/logo-light-styled.png" alt="logo" className="w-[90px] inline-block hidden dark:block" />
         </a>
       </div>
-      {chat.started && ( // Display ChatDescription and HeaderActionButtons only when the chat has started.
-        <>
-          <span className="flex-1 px-4 truncate text-center text-codinit-elements-textPrimary">
-            <ClientOnly>{() => <ChatDescription />}</ClientOnly>
-          </span>
-          {showActionButtons && <ClientOnly>{() => <div className="mr-1"></div>}</ClientOnly>}
-        </>
-      )}
     </header>
   );
 }

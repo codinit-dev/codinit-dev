@@ -7,7 +7,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 export default class GoogleProvider extends BaseProvider {
   name = 'Google';
   getApiKeyLink = 'https://aistudio.google.com/app/apikey';
-  icon = '/thirdparty/logos/gemini.svg';
+  icon = '/thirdparty/logos/google.svg';
 
   config = {
     apiTokenKey: 'GOOGLE_GENERATIVE_AI_API_KEY',
@@ -15,97 +15,22 @@ export default class GoogleProvider extends BaseProvider {
 
   staticModels: ModelInfo[] = [
     /*
-     * Latest Gemini 3.0 models - cutting edge capabilities
-     * Gemini 3.0: Advanced multimodal reasoning, 2M+ context, enhanced performance
+     * Essential fallback models - only the most reliable/stable ones
+     * Gemini 1.5 Pro: 2M context, 8K output limit (verified from API docs)
      */
     {
-      name: 'gemini-3.0-pro-preview',
-      label: 'Gemini 3.0 Pro Preview',
-      provider: 'Google',
-      maxTokenAllowed: 2000000,
-      maxCompletionTokens: 8192,
-    },
-
-    // Gemini 2.5 Flash Preview 05-20
-    {
-      name: 'models/gemini-2.5-flash-preview-05-20',
-      label: 'Gemini 2.5 Flash Preview 05-20',
-      provider: 'Google',
-      maxTokenAllowed: 1000000,
-      maxCompletionTokens: 8192,
-    },
-
-    // Gemini 2.5 Pro Preview 05-06
-    {
-      name: 'models/gemini-2.5-pro-preview-05-06',
-      label: 'Gemini 2.5 Pro Preview 05-06',
-      provider: 'Google',
-      maxTokenAllowed: 2000000,
-      maxCompletionTokens: 8192,
-    },
-
-    // Gemini 2.0 Flash
-    {
-      name: 'models/gemini-2.0-flash',
-      label: 'Gemini 2.0 Flash',
-      provider: 'Google',
-      maxTokenAllowed: 1000000,
-      maxCompletionTokens: 8192,
-    },
-
-    // Gemini 2.0 Flash Lite
-    {
-      name: 'models/gemini-2.0-flash-lite',
-      label: 'Gemini 2.0 Flash Lite',
-      provider: 'Google',
-      maxTokenAllowed: 1000000,
-      maxCompletionTokens: 8192,
-    },
-
-    {
-      name: 'gemini-2.5-flash-preview-05-20',
-      label: 'Gemini 2.5 Flash Preview 05-20',
-      provider: 'Google Vertex AI',
-      maxTokenAllowed: 1000000,
-      maxCompletionTokens: 8192,
-    },
-
-    {
-      name: 'gemini-2.5-pro-preview-05-06',
-      label: 'Gemini 2.5 Pro Preview 05-06',
-      provider: 'Google Vertex AI',
-      maxTokenAllowed: 2000000,
-      maxCompletionTokens: 8192,
-    },
-
-    {
-      name: 'gemini-2.0-flash-001',
-      label: 'Gemini 2.0 Flash',
-      provider: 'Google Vertex AI',
-      maxTokenAllowed: 1000000,
-      maxCompletionTokens: 8192,
-    },
-
-    {
-      name: 'gemini-2.0-flash-lite-001',
-      label: 'Gemini 2.0 Flash Lite',
-      provider: 'Google Vertex AI',
-      maxTokenAllowed: 1000000,
-      maxCompletionTokens: 8192,
-    },
-
-    {
-      name: 'gemini-1.5-pro-002',
+      name: 'gemini-1.5-pro',
       label: 'Gemini 1.5 Pro',
-      provider: 'Google Vertex AI',
+      provider: 'Google',
       maxTokenAllowed: 2000000,
       maxCompletionTokens: 8192,
     },
 
+    // Gemini 1.5 Flash: 1M context, 8K output limit, fast and cost-effective
     {
-      name: 'gemini-1.5-flash-002',
-      label: 'Gemini 1.5 Flash',
-      provider: 'Google Vertex AI',
+      name: 'gemini-2.0-flash',
+      label: 'Gemini 2.0 Flash',
+      provider: 'Google',
       maxTokenAllowed: 1000000,
       maxCompletionTokens: 8192,
     },
@@ -161,16 +86,12 @@ export default class GoogleProvider extends BaseProvider {
       if (m.inputTokenLimit && m.outputTokenLimit) {
         // Use the input limit as the primary context window (typically larger)
         contextWindow = m.inputTokenLimit;
-      } else if (modelName.includes('gemini-3.0')) {
-        contextWindow = 2000000; // Gemini 3.0 has 2M+ context
-      } else if (modelName.includes('gemini-2.5')) {
-        contextWindow = 2000000; // Gemini 2.5 has 2M context
-      } else if (modelName.includes('gemini-2.0-flash')) {
-        contextWindow = 1000000; // Gemini 2.0 Flash has 1M context
       } else if (modelName.includes('gemini-1.5-pro')) {
         contextWindow = 2000000; // Gemini 1.5 Pro has 2M context
       } else if (modelName.includes('gemini-1.5-flash')) {
         contextWindow = 1000000; // Gemini 1.5 Flash has 1M context
+      } else if (modelName.includes('gemini-2.0-flash')) {
+        contextWindow = 1000000; // Gemini 2.0 Flash has 1M context
       } else if (modelName.includes('gemini-pro')) {
         contextWindow = 32000; // Gemini Pro has 32k context
       } else if (modelName.includes('gemini-flash')) {

@@ -43,69 +43,6 @@ export default class AnthropicProvider extends BaseProvider {
       maxTokenAllowed: 200000,
       maxCompletionTokens: 32000,
     },
-
-    // Claude Sonnet 4.5
-    {
-      name: 'claude-sonnet-4-5-20250929',
-      label: 'Claude Sonnet 4.5',
-      provider: 'Anthropic',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 64000,
-    },
-
-    // Claude Opus 4.1
-    {
-      name: 'claude-opus-4-1-20250805',
-      label: 'Claude Opus 4.1',
-      provider: 'Anthropic',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 32000,
-    },
-
-    // Claude Opus 4
-    {
-      name: 'claude-opus-4-20250514',
-      label: 'Claude Opus 4',
-      provider: 'Anthropic',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 32000,
-    },
-
-    // Claude Sonnet 4
-    {
-      name: 'claude-sonnet-4-20250514',
-      label: 'Claude Sonnet 4',
-      provider: 'Anthropic',
-      maxTokenAllowed: 1000000,
-      maxCompletionTokens: 64000,
-    },
-
-    // Claude Sonnet 3.7
-    {
-      name: 'claude-3-7-sonnet-latest',
-      label: 'Claude Sonnet 3.7',
-      provider: 'Anthropic',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 128000,
-    },
-
-    // Claude Sonnet 3.5
-    {
-      name: 'claude-3-5-sonnet-latest',
-      label: 'Claude Sonnet 3.5',
-      provider: 'Anthropic',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 128000,
-    },
-
-    // Claude Haiku 3.5
-    {
-      name: 'claude-3-5-haiku-latest',
-      label: 'Claude Haiku 3.5',
-      provider: 'Anthropic',
-      maxTokenAllowed: 200000,
-      maxCompletionTokens: 128000,
-    },
   ];
 
   async getDynamicModels(

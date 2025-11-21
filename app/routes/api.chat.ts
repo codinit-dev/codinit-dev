@@ -7,7 +7,7 @@ import SwitchableStream from '~/lib/.server/llm/switchable-stream';
 import type { IProviderSetting } from '~/types/model';
 import { createScopedLogger } from '~/utils/logger';
 import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
-import type { ContextAnnotation } from '~/types/context';
+import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
 import { WORK_DIR } from '~/utils/constants';
 import { createSummary } from '~/lib/.server/llm/create-summary';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
@@ -75,6 +75,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     totalTokens: 0,
   };
   const encoder: TextEncoder = new TextEncoder();
+  let progressCounter: number = 1;
 
   try {
     const totalMessageContent = messages.reduce((acc, message) => acc + message.content, '');
@@ -96,12 +97,12 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         if (filePaths.length > 0 && contextOptimization) {
           logger.debug('Generating Chat Summary');
           dataStream.writeData({
-            type: 'action',
-            id: generateId(),
-            action: 'analyzed',
-            target: 'chat summary',
-            timestamp: Date.now(),
-          });
+            type: 'progress',
+            label: 'summary',
+            status: 'in-progress',
+            order: progressCounter++,
+            message: 'Analysing Request',
+          } satisfies ProgressAnnotation);
 
           // Create a summary of the chat
           console.log(`Messages count: ${messages.length}`);
@@ -122,6 +123,13 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               }
             },
           });
+          dataStream.writeData({
+            type: 'progress',
+            label: 'summary',
+            status: 'complete',
+            order: progressCounter++,
+            message: 'Analysis Complete',
+          } satisfies ProgressAnnotation);
 
           dataStream.writeMessageAnnotation({
             type: 'chatSummary',
@@ -132,12 +140,12 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           // Update context buffer
           logger.debug('Updating Context Buffer');
           dataStream.writeData({
-            type: 'action',
-            id: generateId(),
-            action: 'processed',
-            target: `${Object.keys(files || {}).length} context files`,
-            timestamp: Date.now(),
-          });
+            type: 'progress',
+            label: 'context',
+            status: 'in-progress',
+            order: progressCounter++,
+            message: 'Determining Files to Read',
+          } satisfies ProgressAnnotation);
 
           // Select context files
           console.log(`Messages count: ${messages.length}`);
@@ -177,6 +185,14 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             }),
           } as ContextAnnotation);
 
+          dataStream.writeData({
+            type: 'progress',
+            label: 'context',
+            status: 'complete',
+            order: progressCounter++,
+            message: 'Code Files Selected',
+          } satisfies ProgressAnnotation);
+
           // logger.debug('Code Files Selected');
         }
 
@@ -202,6 +218,13 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                   totalTokens: cumulativeUsage.totalTokens,
                 },
               });
+              dataStream.writeData({
+                type: 'progress',
+                label: 'response',
+                status: 'complete',
+                order: progressCounter++,
+                message: 'Response Generated',
+              } satisfies ProgressAnnotation);
               await new Promise((resolve) => setTimeout(resolve, 0));
 
               // stream.close();
@@ -257,12 +280,12 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         };
 
         dataStream.writeData({
-          type: 'action',
-          id: generateId(),
-          action: 'wrote',
-          target: 'AI response',
-          timestamp: Date.now(),
-        });
+          type: 'progress',
+          label: 'response',
+          status: 'in-progress',
+          order: progressCounter++,
+          message: 'Generating Response',
+        } satisfies ProgressAnnotation);
 
         // Process tool invocations if MCP tools are enabled
         let processedMessages = messages;
@@ -272,13 +295,6 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             const mcpService = MCPService.getInstance();
             processedMessages = await mcpService.processToolInvocations(messages, dataStream);
             logger.debug('Processed MCP tool invocations');
-            dataStream.writeData({
-              type: 'action',
-              id: generateId(),
-              action: 'processed',
-              target: 'MCP tools',
-              timestamp: Date.now(),
-            });
           } catch (error) {
             logger.error('Failed to process MCP tool invocations:', error);
           }
