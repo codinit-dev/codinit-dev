@@ -5,7 +5,7 @@ import { McpTemplateConfigDialog } from '~/components/mcp/MCPTemplateConfigDialo
 import type { MCPTemplate } from '~/components/mcp/MCPMarketplace';
 import { useMCPStore } from '~/lib/stores/mcp';
 import { toast } from 'react-toastify';
-import type { MCPServerConfig } from '~/lib/types/mcp';
+import type { MCPServerConfig } from '~/types/mcp';
 
 function MCPMarketplaceTab() {
   const [selectedTemplate, setSelectedTemplate] = useState<MCPTemplate | null>(null);
