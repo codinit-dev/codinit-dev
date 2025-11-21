@@ -1,0 +1,148 @@
+// Styles for MCP Server Card component
+.serverItem {
+  border-bottom: 1px solid var(--codinit-elements-borderColor);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .serverRow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--codinit-elements-bg-depth-3);
+    }
+
+    .serverIcon {
+      flex-shrink: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      background: var(--codinit-elements-bg-depth-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      i {
+        font-size: 1.25rem;
+        color: var(--codinit-elements-textSecondary);
+      }
+    }
+
+    .serverContent {
+      flex: 1;
+      min-width: 0;
+
+      h3 {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--codinit-elements-textPrimary);
+        margin: 0 0 0.25rem;
+      }
+
+      .description {
+        font-size: 0.75rem;
+        color: var(--codinit-elements-textTertiary);
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: transparent;
+        border: none;
+        padding: 0;
+      }
+
+      .errorMessage {
+        font-size: 0.75rem;
+        color: var(--codinit-elements-button-danger-text);
+        margin: 0.25rem 0 0;
+      }
+
+      .toolsToggle {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        color: var(--codinit-elements-button-primary-text);
+        background: none;
+        border: none;
+        padding: 0;
+        margin-top: 0.25rem;
+        cursor: pointer;
+        transition: color 0.15s ease;
+
+        &:hover {
+          color: var(--codinit-elements-borderColorActive);
+        }
+
+        i {
+          font-size: 0.75rem;
+          transition: transform 0.2s ease;
+
+          &.expanded {
+            transform: rotate(180deg);
+          }
+        }
+      }
+    }
+
+    .addButton {
+      flex-shrink: 0;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &.available {
+        background: var(--codinit-elements-borderColorActive);
+        color: var(--codinit-elements-button-primary-text);
+
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+
+      &.unavailable {
+        background: var(--codinit-elements-bg-depth-3);
+        color: var(--codinit-elements-textTertiary);
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .toolsList {
+    padding: 0 1rem 1rem 4.5rem;
+
+    .toolItem {
+      font-size: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 0.375rem;
+      background: var(--codinit-elements-bg-depth-3);
+      border: 1px solid var(--codinit-elements-borderColor);
+      margin-bottom: 0.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .toolName {
+        font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+        color: var(--codinit-elements-textPrimary);
+        margin: 0 0 0.25rem;
+      }
+
+      .toolDescription {
+        color: var(--codinit-elements-textSecondary);
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+  }
+}
