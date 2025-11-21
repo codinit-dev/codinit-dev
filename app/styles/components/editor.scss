@@ -145,14 +145,14 @@ html[data-theme='light'] {
   --cm-searchMatch-backgroundColor: rgba(245, 101, 101, 0.4);
 }
 
-/* Dark theme overrides - compatible with neutral gray undertone */
+/* Dark theme overrides - pure neutral gray */
 html[data-theme='dark'] {
-  --cm-backgroundColor: #1a1d2a; /* Matches depth-1 */
-  --cm-gutter-backgroundColor: #1a1d2a; /* Consistent with background */
-  --cm-activeLineBackgroundColor: rgba(107, 133, 255, 0.08); /* Subtle blue undertone */
-  --cm-selection-backgroundColorFocused: #6b85ff; /* Softer blue selection */
+  --cm-backgroundColor: #191919; /* Matches depth-1 */
+  --cm-gutter-backgroundColor: #191919; /* Consistent with background */
+  --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.08); /* Subtle neutral highlight */
+  --cm-selection-backgroundColorFocused: #cccccc; /* Neutral gray selection */
   --cm-selection-backgroundOpacityFocused: 0.25;
-  --cm-tooltip-backgroundColor: #1f2232; /* Matches depth-2 */
-  --cm-tooltip-borderColor: rgba(107, 133, 255, 0.2); /* Subtle border */
-  --cm-panels-borderColor: rgba(107, 133, 255, 0.1); /* Subtle panel borders */
+  --cm-tooltip-backgroundColor: #1f1f1f; /* Matches depth-2 */
+  --cm-tooltip-borderColor: rgba(153, 153, 153, 0.2); /* Neutral border */
+  --cm-panels-borderColor: rgba(153, 153, 153, 0.1); /* Neutral panel borders */
 }
