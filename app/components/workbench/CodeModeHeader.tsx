@@ -18,9 +18,9 @@ export const CodeModeHeader = memo(
     };
 
     return (
-      <div className="flex relative items-center gap-2 py-2 min-h-[var(--panel-header-height)] pl-0 bg-codinit-elements-background-depth-2">
+      <div className="flex relative items-center gap-2 py-2 h-12 pl-2 pr-3">
         {/* Toggle Buttons Section */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-8">
           <div className="flex items-center gap-1">
             <IconButton
               icon="i-lucide:eye"
