@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
-import { PROVIDER_LIST } from '~/utils/constants';
+import { PROVIDER_LIST, getProviderList } from '~/utils/constants';
 import { ModelSelector } from '~/components/chat/ModelSelector';
 import { APIKeyManager } from './APIKeyManager';
 import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
@@ -19,6 +19,10 @@ import type { ProviderInfo } from '~/types/model';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from '~/components/mcp/MCPTools';
 import { MCPDialog } from '~/components/mcp/MCPDialog';
+import { ColorSchemeDialog } from './ColorSchemeDialog';
+import { useStore } from '@nanostores/react';
+import { designSchemeStore, updateDesignScheme } from '~/lib/stores/design-scheme';
+import type { DesignScheme } from '~/types/design-scheme';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -60,12 +64,15 @@ interface ChatBoxProps {
 
   selectedElement?: ElementInfo | null;
   setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
+  designScheme?: DesignScheme;
+  setDesignScheme?: (scheme: DesignScheme) => void;
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
   const [placeholderText, setPlaceholderText] = useState('');
   const [showPlaceholder, setShowPlaceholder] = useState(true);
+  const designScheme = useStore(designSchemeStore);
 
   useEffect(() => {
     if (!props.chatStarted && props.input.length === 0 && showPlaceholder) {
@@ -147,7 +154,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                   modelList={props.modelList}
                   provider={props.provider}
                   setProvider={props.setProvider}
-                  providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+                  providerList={
+                    props.providerList ||
+                    ((PROVIDER_LIST.length > 0 ? PROVIDER_LIST : getProviderList()) as ProviderInfo[])
+                  }
                   apiKeys={props.apiKeys}
                   modelLoading={props.isModelLoading}
                 />
@@ -312,6 +322,13 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 <div className="i-codinit:stars text-xl"></div>
               )}
             </IconButton>
+            <ColorSchemeDialog
+              designScheme={designScheme}
+              setDesignScheme={(scheme) => {
+                updateDesignScheme(scheme);
+                props.setDesignScheme?.(scheme);
+              }}
+            />
 
             <SpeechRecognitionButton
               isListening={props.isListening}
