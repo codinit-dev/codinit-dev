@@ -1,6 +1,6 @@
 import { memo, useState, useMemo } from 'react';
 import { classNames } from '~/utils/classNames';
-import type { MCPServerConfig } from '~/lib/types/mcp';
+import type { MCPServerConfig } from '~/types/mcp';
 
 export interface MCPTemplate {
   id: string;
