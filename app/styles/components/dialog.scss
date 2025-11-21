@@ -1,24 +1,24 @@
 @use '../variables.scss';
 
 :root {
-  /* Secondary color scale for dialogs and popovers - compatible with undertone */
-  --secondary-1: #1f2232; /* Matches depth-2 for dialog background */
-  --secondary-2: #242742; /* Matches depth-3 for dialog elements */
-  --secondary-3: #292c52; /* Matches depth-4 for interactive elements */
-  --secondary-4: #2a2d4a; /* Border color */
-  --secondary-5: rgba(107, 133, 255, 0.1); /* Subtle accent */
-  --secondary-6: rgba(107, 133, 255, 0.15); /* Medium accent */
-  --secondary-7: rgba(107, 133, 255, 0.2); /* Stronger accent */
-  --secondary-8: rgba(107, 133, 255, 0.25); /* Active accent */
-  --secondary-9: rgba(107, 133, 255, 0.3); /* Hover accent */
-  --secondary-10: rgba(107, 133, 255, 0.4); /* Focus accent */
-  --secondary-11: #cbd2d9; /* Text color */
-  --secondary-12: #f5f7fa; /* Primary text color */
+  /* Secondary color scale for dialogs and popovers - neutral gray */
+  --secondary-1: #1f1f1f; /* Matches depth-2 for dialog background */
+  --secondary-2: #252525; /* Matches depth-3 for dialog elements */
+  --secondary-3: #2a2a2a; /* Matches depth-4 for interactive elements */
+  --secondary-4: #333333; /* Border color */
+  --secondary-5: rgba(204, 204, 204, 0.1); /* Subtle accent */
+  --secondary-6: rgba(204, 204, 204, 0.15); /* Medium accent */
+  --secondary-7: rgba(204, 204, 204, 0.2); /* Stronger accent */
+  --secondary-8: rgba(204, 204, 204, 0.25); /* Active accent */
+  --secondary-9: rgba(204, 204, 204, 0.3); /* Hover accent */
+  --secondary-10: rgba(204, 204, 204, 0.4); /* Focus accent */
+  --secondary-11: #cccccc; /* Text color */
+  --secondary-12: #ffffff; /* Primary text color */
 }
 
-/* Dialog specific styles - compatible with undertone */
+/* Dialog specific styles - neutral gray */
 .dialog-overlay {
-  background-color: rgba(26, 29, 42, 0.7); /* Matches depth-1 with opacity */
+  background-color: rgba(25, 25, 25, 0.7); /* Matches depth-1 with opacity */
   backdrop-filter: blur(4px);
 }
 
@@ -26,6 +26,6 @@
   background-color: var(--secondary-1);
   border: 1px solid var(--secondary-4);
   box-shadow:
-    0 20px 25px -5px rgba(26, 29, 42, 0.3),
-    0 10px 10px -5px rgba(26, 29, 42, 0.1);
+    0 20px 25px -5px rgba(25, 25, 25, 0.3),
+    0 10px 10px -5px rgba(25, 25, 25, 0.1);
 }
