@@ -108,68 +108,68 @@
 /* Color Tokens Dark Theme */
 :root,
 :root[data-theme='dark'] {
-  /* Increased contrast for backgrounds and borders */
-  --codinit-elements-borderColor: #21262d; /* Darker border */
-  --codinit-elements-borderColorActive: #79c0ff; /* Brighter active border */
+  /* Neutral gray with faint dark blue undertone */
+  --codinit-elements-borderColor: #2a2d4a; /* Border with undertone */
+  --codinit-elements-borderColorActive: #6b85ff; /* Softer blue accent */
 
-  --codinit-elements-bg-depth-1: #0d1117; /* Slightly lighter page background */
-  --codinit-elements-bg-depth-2: #0d1117; /* Darker content surfaces */
-  --codinit-elements-bg-depth-3: #161b22; /* Slightly lighter for distinction */
-  --codinit-elements-bg-depth-4: #21262d; /* Slightly lighter for distinction */
+  --codinit-elements-bg-depth-1: #1a1d2a; /* Main background with subtle blue undertone */
+  --codinit-elements-bg-depth-2: #1f2232; /* Content surfaces with undertone */
+  --codinit-elements-bg-depth-3: #242742; /* Distinction elements with undertone */
+  --codinit-elements-bg-depth-4: #292c52; /* Buttons/inputs with undertone */
 
-  /* Increased contrast for text */
-  --codinit-elements-textPrimary: #f0f6fc; /* Remains bright white */
-  --codinit-elements-textSecondary: #c9d1d9; /* Remains bright */
+  /* Optimized contrast for text with warmer tones */
+  --codinit-elements-textPrimary: #f5f7fa; /* Slightly warmer white for better readability */
+  --codinit-elements-textSecondary: #cbd2d9; /* Muted but clear */
   --codinit-elements-textTertiary: #8b949e; /* Remains subtle */
 
   --codinit-elements-code-background: #0d1117; /* Darker code background */
   --codinit-elements-code-text: #f0f6fc; /* Bright code text */
 
-  /* Primary Button - Higher contrast */
-  --codinit-elements-button-primary-background: #0270dd; /* Brighter blue */
-  --codinit-elements-button-primary-backgroundHover: rgb(220, 220, 220); /* Even brighter on hover */
+  /* Primary Button - Compatible with neutral gray undertone */
+  --codinit-elements-button-primary-background: #4a5fd9; /* Balanced blue for undertone theme */
+  --codinit-elements-button-primary-backgroundHover: #5a6fff; /* Brighter on hover */
   --codinit-elements-button-primary-text: #ffffff; /* White text for max contrast */
 
-  /* Secondary Button - Subtle but clear */
-  --codinit-elements-button-secondary-background: #21262d;
-  --codinit-elements-button-secondary-backgroundHover: #30363d;
-  --codinit-elements-button-secondary-text: #c9d1d9;
+  /* Secondary Button - Subtle undertone */
+  --codinit-elements-button-secondary-background: #242742; /* Matches depth-3 */
+  --codinit-elements-button-secondary-backgroundHover: #292c52; /* Matches depth-4 */
+  --codinit-elements-button-secondary-text: #cbd2d9;
 
   /* Danger Button - Remains prominent */
   --codinit-elements-button-danger-background: rgba(248, 81, 73, 0.1);
   --codinit-elements-button-danger-backgroundHover: rgba(248, 81, 73, 0.2);
   --codinit-elements-button-danger-text: #f85149;
 
-  /* Item backgrounds and content */
+  /* Item backgrounds and content - compatible with undertone */
   --codinit-elements-item-contentDefault: #8b949e;
-  --codinit-elements-item-contentActive: #ffffff; /* White for active */
-  --codinit-elements-item-contentAccent: #79c0ff; /* Brighter accent */
+  --codinit-elements-item-contentActive: #f5f7fa; /* Warmer white for active */
+  --codinit-elements-item-contentAccent: #6b85ff; /* Softer blue accent */
   --codinit-elements-item-contentDanger: #f85149; /* Remains prominent */
-  --codinit-elements-item-backgroundDefault: #0d1117; /* Darker default background */
-  --codinit-elements-item-backgroundActive: #21262d; /* Darker active background */
-  --codinit-elements-item-backgroundAccent: rgba(115, 190, 255, 0.1); /* Brighter accent background */
+  --codinit-elements-item-backgroundDefault: #1a1d2a; /* Matches depth-1 */
+  --codinit-elements-item-backgroundActive: #242742; /* Matches depth-3 */
+  --codinit-elements-item-backgroundAccent: rgba(107, 133, 255, 0.1); /* Softer accent background */
   --codinit-elements-item-backgroundDanger: rgba(248, 81, 73, 0.1);
 
   /* Loader - Higher contrast */
   --codinit-elements-loader-background: rgba(255, 255, 255, 0.1); /* Slightly more opaque */
   --codinit-elements-loader-progress: #79c0ff; /* Brighter progress color */
 
-  /* Artifacts - Darker backgrounds */
-  --codinit-elements-artifacts-background: #0d1117; /* Darker artifact background */
-  --codinit-elements-artifacts-backgroundHover: rgba(240, 246, 252, 0.05); /* Subtle hover */
+  /* Artifacts - Compatible with undertone */
+  --codinit-elements-artifacts-background: #1a1d2a; /* Matches depth-1 */
+  --codinit-elements-artifacts-backgroundHover: rgba(245, 247, 250, 0.05); /* Subtle hover */
   --codinit-elements-artifacts-borderColor: var(--codinit-elements-borderColor);
-  --codinit-elements-artifacts-inlineCode-background: #161b22;
-  --codinit-elements-artifacts-inlineCode-text: #f0f6fc;
+  --codinit-elements-artifacts-inlineCode-background: #1f2232; /* Matches depth-2 */
+  --codinit-elements-artifacts-inlineCode-text: #f5f7fa;
 
-  /* Actions - Darker backgrounds */
-  --codinit-elements-actions-background: #0d1117; /* Darker action background */
-  --codinit-elements-actions-code-background: #161b22;
+  /* Actions - Compatible with undertone */
+  --codinit-elements-actions-background: #1a1d2a; /* Matches depth-1 */
+  --codinit-elements-actions-code-background: #1f2232; /* Matches depth-2 */
 
-  /* Messages - Darker backgrounds */
-  --codinit-elements-messages-background: #0d1117; /* Darker message background */
-  --codinit-elements-messages-linkColor: #79c0ff; /* Brighter link color */
-  --codinit-elements-messages-code-background: #010409; /* Darkest code background */
-  --codinit-elements-messages-inlineCode-background: #161b22; /* Darker inline code background */
+  /* Messages - Compatible with undertone */
+  --codinit-elements-messages-background: #1a1d2a; /* Matches depth-1 */
+  --codinit-elements-messages-linkColor: #6b85ff; /* Softer blue accent */
+  --codinit-elements-messages-code-background: #161b22; /* Darker code background with undertone */
+  --codinit-elements-messages-inlineCode-background: #1f2232; /* Matches depth-2 */
   --codinit-elements-messages-inlineCode-text: var(--codinit-elements-textPrimary);
 
   /* Icons - Adjusted for dark theme contrast */
@@ -183,13 +183,13 @@
 
   --codinit-elements-prompt-background: rgba(15, 15, 15, 0.8); /* Remains similar */
 
-  /* Sidebar - Higher contrast */
+  /* Sidebar - Compatible with undertone */
   --codinit-elements-sidebar-dropdownShadow: rgba(0, 0, 0, 0.5); /* Darker shadow */
-  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(115, 190, 255, 0.1); /* Brighter accent background */
-  --codinit-elements-sidebar-buttonBackgroundHover: rgba(115, 190, 255, 0.2); /* Brighter hover */
-  --codinit-elements-sidebar-buttonText: #79c0ff; /* Brighter text */
+  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(107, 133, 255, 0.1); /* Softer accent background */
+  --codinit-elements-sidebar-buttonBackgroundHover: rgba(107, 133, 255, 0.15); /* Softer hover */
+  --codinit-elements-sidebar-buttonText: #6b85ff; /* Softer blue accent */
 
-  /* Preview Address Bar - Higher contrast */
+  /* Preview Address Bar - Compatible with undertone */
   --codinit-elements-preview-addressBar-background: var(
     --codinit-elements-bg-depth-2
   ); /* Use depth-2 for consistency */
@@ -200,25 +200,25 @@
   --codinit-elements-preview-addressBar-text: var(--codinit-elements-textSecondary);
   --codinit-elements-preview-addressBar-textActive: var(--codinit-elements-textPrimary);
 
-  /* Terminals - Darker backgrounds */
+  /* Terminals - Compatible with undertone */
   --codinit-elements-terminals-background: var(--codinit-elements-bg-depth-1); /* Use depth-1 for terminal background */
   --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-3); /* Use depth-3 for buttons */
 
   --codinit-elements-cta-background: rgba(255, 255, 255, 0.08); /* Slightly more opaque CTA */
-  --codinit-elements-cta-text: #ffffff;
+  --codinit-elements-cta-text: #f5f7fa;
 
-  /* Terminal Colors - Adjusted for higher contrast */
+  /* Terminal Colors - Compatible with neutral gray undertone */
   --codinit-terminal-background: var(--codinit-elements-terminals-background); /* Inherit from terminal background */
-  --codinit-terminal-foreground: #f0f6fc; /* Bright white foreground */
-  --codinit-terminal-selection-background: rgba(115, 190, 255, 0.2); /* Brighter selection */
-  --codinit-terminal-black: #010409; /* Very dark black */
+  --codinit-terminal-foreground: #f5f7fa; /* Warmer white foreground */
+  --codinit-terminal-selection-background: rgba(107, 133, 255, 0.2); /* Softer blue selection */
+  --codinit-terminal-black: #161b22; /* Dark with undertone */
   --codinit-terminal-red: #ff7b72; /* Brighter red */
   --codinit-terminal-green: #76d974; /* Brighter green */
   --codinit-terminal-yellow: #e2e27a; /* Brighter yellow */
   --codinit-terminal-blue: #63a3ff; /* Brighter blue */
   --codinit-terminal-magenta: #ff79c6; /* Brighter magenta */
   --codinit-terminal-cyan: #98d4ca; /* Brighter cyan */
-  --codinit-terminal-white: #f0f6fc; /* Bright white */
+  --codinit-terminal-white: #f5f7fa; /* Warmer white */
   --codinit-terminal-brightBlack: #686868; /* Subtle bright black */
   --codinit-terminal-brightRed: #ff7b72; /* Brighter red */
   --codinit-terminal-brightGreen: #76d974; /* Brighter green */
@@ -226,9 +226,9 @@
   --codinit-terminal-brightBlue: #63a3ff; /* Brighter blue */
   --codinit-terminal-brightMagenta: #ff79c6; /* Brighter magenta */
   --codinit-terminal-brightCyan: #98d4ca; /* Brighter cyan */
-  --codinit-terminal-brightWhite: #f0f6fc; /* Bright white */
-  --modern-scrollbar-thumb-background: rgba(255, 255, 255, 0.25); /* Slightly more opaque thumb */
-  --modern-scrollbar-thumb-backgroundHover: rgba(255, 255, 255, 0.4); /* More opaque on hover */
+  --codinit-terminal-brightWhite: #f5f7fa; /* Warmer white */
+  --modern-scrollbar-thumb-background: rgba(107, 133, 255, 0.2); /* Subtle blue undertone thumb */
+  --modern-scrollbar-thumb-backgroundHover: rgba(107, 133, 255, 0.3); /* More opaque on hover */
 }
 
 /*
