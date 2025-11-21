@@ -55,7 +55,7 @@ $code-font-size: 13px;
 
   h6 {
     font-size: 0.85em;
-    color: #6a737d;
+    color: var(--codinit-elements-textTertiary);
   }
 
   p {
@@ -161,11 +161,11 @@ $code-font-size: 13px;
 
     :is(th, td) {
       padding: 6px 13px;
-      border: 1px solid #dfe2e5;
+      border: 1px solid var(--codinit-elements-borderColor);
     }
 
     tr:nth-child(2n) {
-      background-color: #f6f8fa;
+      background-color: rgba(107, 133, 255, 0.03);
     }
   }
 }
