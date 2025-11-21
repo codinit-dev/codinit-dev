@@ -33,6 +33,7 @@ import { ChatHeader } from '~/components/header/ChatHeader';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import LlmErrorAlert from './LLMApiAlert';
 import { designSchemeStore } from '~/lib/stores/design-scheme';
+import { providersStore } from '~/lib/stores/settings';
 
 const TEXTAREA_MIN_HEIGHT = 76;
 
@@ -220,8 +221,30 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
         fetch('/api/models')
           .then((response) => response.json())
           .then((data) => {
-            const typedData = data as { modelList: ModelInfo[] };
+            const typedData = data as {
+              modelList: ModelInfo[];
+              providers: ProviderInfo[];
+              defaultProvider: ProviderInfo;
+            };
             setModelList(typedData.modelList);
+
+            // Update provider settings with the fetched providers
+            if (typedData.providers && typedData.providers.length > 0) {
+              const providerSettings: Record<string, any> = {};
+              typedData.providers.forEach((provider) => {
+                providerSettings[provider.name] = {
+                  ...provider,
+                  settings: {
+                    enabled: true, // Enable all providers by default when loaded from server
+                  },
+                };
+              });
+
+              // Update the providers store
+              Object.entries(providerSettings).forEach(([providerName, providerConfig]) => {
+                providersStore.setKey(providerName, providerConfig);
+              });
+            }
           })
           .catch((error) => {
             console.error('Error fetching model list:', error);

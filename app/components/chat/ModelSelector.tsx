@@ -192,7 +192,8 @@ export const ModelSelector = ({
       return;
     }
 
-    if (provider && !providerList.some((p) => p.name === provider.name)) {
+    // If no provider is selected or the current provider is not in the list, select the first available provider
+    if (!provider || !providerList.some((p) => p.name === provider.name)) {
       const firstEnabledProvider = providerList[0];
       setProvider?.(firstEnabledProvider);
 
