@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { classNames } from '~/utils/classNames';
-import type { MCPServerConfig } from '~/lib/types/mcp';
+import type { MCPServerConfig } from '~/types/mcp';
 
 type ServerType = 'stdio' | 'sse' | 'streamable-http';
 
