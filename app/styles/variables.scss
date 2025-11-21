@@ -108,9 +108,9 @@
 /* Color Tokens Dark Theme */
 :root,
 :root[data-theme='dark'] {
-  /* Pure neutral gray */
+  /* Pure neutral gray with blue accents */
   --codinit-elements-borderColor: #333333; /* Neutral gray border */
-  --codinit-elements-borderColorActive: #666666; /* Neutral gray active border */
+  --codinit-elements-borderColorActive: #3b82f6; /* Blue active border */
 
   --codinit-elements-bg-depth-1: #191919; /* Main background - pure neutral */
   --codinit-elements-bg-depth-2: #1f1f1f; /* Content surfaces - neutral */
@@ -125,9 +125,9 @@
   --codinit-elements-code-background: #0d1117; /* Darker code background */
   --codinit-elements-code-text: #f0f6fc; /* Bright code text */
 
-  /* Primary Button - Neutral gray */
-  --codinit-elements-button-primary-background: #555555; /* Neutral gray */
-  --codinit-elements-button-primary-backgroundHover: #666666; /* Lighter on hover */
+  /* Primary Button - Blue accent */
+  --codinit-elements-button-primary-background: #3b82f6; /* Blue background */
+  --codinit-elements-button-primary-backgroundHover: #2563eb; /* Darker blue on hover */
   --codinit-elements-button-primary-text: #ffffff; /* White text for max contrast */
 
   /* Secondary Button - Neutral gray */
@@ -183,11 +183,10 @@
 
   --codinit-elements-prompt-background: rgba(15, 15, 15, 0.8); /* Remains similar */
 
-  /* Sidebar - Neutral gray */
-  --codinit-elements-sidebar-dropdownShadow: rgba(0, 0, 0, 0.5); /* Darker shadow */
-  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(204, 204, 204, 0.1); /* Neutral accent background */
-  --codinit-elements-sidebar-buttonBackgroundHover: rgba(204, 204, 204, 0.15); /* Neutral hover */
-  --codinit-elements-sidebar-buttonText: #cccccc; /* Neutral gray accent */
+  /* Sidebar - Blue accent */
+  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(59, 130, 246, 0.1); /* Blue accent background */
+  --codinit-elements-sidebar-buttonBackgroundHover: rgba(59, 130, 246, 0.15); /* Blue hover */
+  --codinit-elements-sidebar-buttonText: #3b82f6; /* Blue accent */
 
   /* Preview Address Bar - Compatible with undertone */
   --codinit-elements-preview-addressBar-background: var(
