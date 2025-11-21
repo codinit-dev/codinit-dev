@@ -62,3 +62,4 @@ publish:
 
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
+  
