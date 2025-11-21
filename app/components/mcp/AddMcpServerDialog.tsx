@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Dialog, DialogRoot, DialogTitle, DialogClose } from '~/components/ui/Dialog';
 import { McpServerForm } from './McpServerForm';
-import type { MCPServerConfig } from '~/lib/services/mcpService';
+import type { MCPServerConfig } from '~/lib/types/mcp';
 import { IconButton } from '~/components/ui/IconButton';
 
 interface AddMcpServerDialogProps {
