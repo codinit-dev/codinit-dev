@@ -99,7 +99,14 @@ export type MCPServerUnavailable = {
   client: MCPClient | null;
   config: MCPServerConfig;
 };
-export type MCPServer = MCPServerAvailable | MCPServerUnavailable;
+export type MCPServer = MCPServerAvailable | MCPServerUnavailable | MCPServerConnecting;
+
+export type MCPServerConnecting = {
+  status: 'connecting';
+  config: MCPServerConfig;
+  retryCount: number;
+  lastAttempt: Date;
+};
 
 interface LogThrottleEntry {
   lastLogged: number;
@@ -116,6 +123,9 @@ export class MCPService {
   };
   private _availabilityCheckThrottleCache: Map<string, LogThrottleEntry> = new Map();
   private readonly _logThrottleMs = 5 * 60 * 1000; // 5 minutes
+  private _retryAttempts: Map<string, { count: number; lastAttempt: Date }> = new Map();
+  private readonly _maxRetryAttempts = 3;
+  private readonly _retryDelayMs = 5000; // 5 seconds
 
   static getInstance(): MCPService {
     if (!MCPService._instance) {
@@ -136,6 +146,54 @@ export class MCPService {
     this._availabilityCheckThrottleCache.set(serverName, { lastLogged: now });
 
     return false; // Log this message
+  }
+
+  private _shouldRetryConnection(serverName: string): boolean {
+    const retryInfo = this._retryAttempts.get(serverName);
+
+    if (!retryInfo) {
+      return true; // First attempt
+    }
+
+    const now = Date.now();
+    const timeSinceLastAttempt = now - retryInfo.lastAttempt.getTime();
+
+    // Exponential backoff: 5s, 10s, 20s
+    const backoffDelay = this._retryDelayMs * Math.pow(2, retryInfo.count);
+
+    return retryInfo.count < this._maxRetryAttempts && timeSinceLastAttempt >= backoffDelay;
+  }
+
+  private _recordRetryAttempt(serverName: string, success: boolean): void {
+    if (success) {
+      this._retryAttempts.delete(serverName);
+    } else {
+      const current = this._retryAttempts.get(serverName) || { count: 0, lastAttempt: new Date() };
+      this._retryAttempts.set(serverName, {
+        count: current.count + 1,
+        lastAttempt: new Date(),
+      });
+    }
+  }
+
+  validateServerConfig(
+    serverName: string,
+    config: any,
+  ): { isValid: boolean; error?: string; config?: MCPServerConfig } {
+    try {
+      const validatedConfig = mcpServerConfigSchema.parse(config);
+      return { isValid: true, config: validatedConfig };
+    } catch (validationError) {
+      if (validationError instanceof z.ZodError) {
+        const errorMessages = validationError.errors.map((err) => `${err.path.join('.')}: ${err.message}`).join('; ');
+        return { isValid: false, error: `Invalid configuration for server "${serverName}": ${errorMessages}` };
+      }
+
+      return {
+        isValid: false,
+        error: `Configuration validation failed: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+      };
+    }
   }
 
   private _validateServerConfig(serverName: string, config: any): MCPServerConfig {
@@ -301,6 +359,24 @@ export class MCPService {
     this._toolNamesToServerNames.clear();
 
     const checkPromises = Object.entries(this._mcpToolsPerServer).map(async ([serverName, server]) => {
+      // Skip servers that are currently connecting
+      if (server.status === 'connecting') {
+        return;
+      }
+
+      // Check if we should retry this connection
+      if (server.status === 'unavailable' && !this._shouldRetryConnection(serverName)) {
+        return; // Skip retry, not enough time has passed
+      }
+
+      // Mark as connecting
+      this._mcpToolsPerServer[serverName] = {
+        status: 'connecting',
+        config: server.config,
+        retryCount: this._retryAttempts.get(serverName)?.count || 0,
+        lastAttempt: new Date(),
+      };
+
       let client = server.client;
 
       try {
@@ -323,6 +399,8 @@ export class MCPService {
             tools,
             config: server.config,
           };
+
+          this._recordRetryAttempt(serverName, true); // Success
         } catch (error) {
           logger.error(`Failed to get tools from server ${serverName}:`, error);
 
@@ -333,6 +411,8 @@ export class MCPService {
             client,
             config: server.config,
           };
+
+          this._recordRetryAttempt(serverName, false); // Failed
         }
 
         if (!this._shouldThrottleAvailabilityLog(serverName)) {
@@ -348,6 +428,8 @@ export class MCPService {
           client,
           config: server.config,
         };
+
+        this._recordRetryAttempt(serverName, false); // Failed
       }
     });
 
@@ -363,48 +445,64 @@ export class MCPService {
       return 'Server configuration not found';
     }
 
-    // Handle specific error types
+    // Handle specific error types with user-friendly messages
     if (error instanceof Error) {
-      if (error.message.includes('ECONNREFUSED') || error.message.includes('fetch failed')) {
-        return `Connection refused - server may be down or URL incorrect`;
+      const message = error.message.toLowerCase();
+
+      if (message.includes('econnrefused') || message.includes('fetch failed') || message.includes('failed to fetch')) {
+        return config.type === 'stdio'
+          ? `Cannot start MCP server. Check that the command is correct and the server is installed.`
+          : `Cannot connect to MCP server. Check that the URL is correct and the server is running.`;
       }
 
-      if (error.message.includes('ENOTFOUND')) {
-        return `Host not found - check DNS and URL`;
+      if (message.includes('enotfound') || message.includes('name resolution failure')) {
+        return `Cannot resolve hostname. Check the URL and network connection.`;
       }
 
-      if (error.message.includes('timeout')) {
-        return `Connection timeout - server may be slow or unreachable`;
+      if (message.includes('timeout') || message.includes('etimedout')) {
+        return `Connection timed out. The MCP server may be slow or unreachable.`;
       }
 
-      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
-        return `Authentication failed - check API keys or credentials`;
+      if (message.includes('401') || message.includes('unauthorized')) {
+        return `Authentication failed. Check your API keys or credentials.`;
       }
 
-      if (error.message.includes('403') || error.message.includes('Forbidden')) {
-        return `Access forbidden - insufficient permissions`;
+      if (message.includes('403') || message.includes('forbidden')) {
+        return `Access denied. Check your permissions and authentication.`;
       }
 
-      if (error.message.includes('404')) {
-        return `Endpoint not found - MCP server may not be available at this URL`;
+      if (message.includes('404') || message.includes('not found')) {
+        return config.type === 'stdio'
+          ? `MCP server command not found. Install the server or check the command path.`
+          : `MCP server endpoint not found. Check the URL and server configuration.`;
       }
 
-      if (error.message.includes('command not found') && config.type === 'stdio') {
-        return `Command not found: ${(config as any).command} - ensure MCP server is installed`;
+      if (message.includes('command not found') && config.type === 'stdio') {
+        return `Command "${(config as any).command}" not found. Install the MCP server or check your PATH.`;
       }
 
-      if (error.message.includes('permission denied') && config.type === 'stdio') {
-        return `Permission denied - check file permissions for ${(config as any).command}`;
+      if (message.includes('permission denied') || message.includes('eacces')) {
+        return config.type === 'stdio'
+          ? `Permission denied. Check file permissions for "${(config as any).command}".`
+          : `Permission denied. Check your authentication credentials.`;
+      }
+
+      if (message.includes('certificate') || message.includes('ssl') || message.includes('tls')) {
+        return `SSL/TLS certificate error. Check your certificate configuration.`;
+      }
+
+      if (message.includes('invalid configuration')) {
+        return `Invalid server configuration. Check your settings and try again.`;
       }
     }
 
-    // Generic error message
-    return error instanceof Error ? error.message : 'Unknown connection error';
+    // Generic error message with fallback
+    return error instanceof Error ? error.message : 'Unknown connection error occurred';
   }
 
   private async _closeClients(): Promise<void> {
     const closePromises = Object.entries(this._mcpToolsPerServer).map(async ([serverName, server]) => {
-      if (!server.client) {
+      if (server.status === 'connecting' || !server.client) {
         return;
       }
 
