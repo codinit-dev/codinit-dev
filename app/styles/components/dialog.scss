@@ -1,45 +1,31 @@
 @use '../variables.scss';
 
 :root {
-  /* Secondary color scale for dialogs and popovers */
-  --secondary-1: hsl(var(--secondary));
-  --secondary-2: hsl(var(--secondary) / 0.8);
-  --secondary-3: hsl(var(--secondary) / 0.6);
-  --secondary-4: hsl(var(--secondary) / 0.4);
-  --secondary-5: hsl(var(--secondary) / 0.3);
-  --secondary-6: hsl(var(--secondary) / 0.2);
-  --secondary-7: hsl(var(--secondary) / 0.15);
-  --secondary-8: hsl(var(--secondary) / 0.1);
-  --secondary-9: hsl(var(--secondary) / 0.05);
-  --secondary-10: hsl(var(--secondary) / 0.03);
-  --secondary-11: hsl(var(--secondary-foreground) / 0.8);
-  --secondary-12: hsl(var(--secondary-foreground));
-
-  /* Secondary alpha variants */
-  --secondary-a1: hsl(var(--secondary) / 0.05);
-  --secondary-a2: hsl(var(--secondary) / 0.1);
-  --secondary-a3: hsl(var(--secondary) / 0.15);
-  --secondary-a4: hsl(var(--secondary) / 0.2);
-  --secondary-a5: hsl(var(--secondary) / 0.3);
-  --secondary-a6: hsl(var(--secondary) / 0.4);
-  --secondary-a7: hsl(var(--secondary) / 0.5);
-  --secondary-a8: hsl(var(--secondary) / 0.6);
-  --secondary-a9: hsl(var(--secondary) / 0.7);
-  --secondary-a10: hsl(var(--secondary) / 0.8);
-  --secondary-a11: hsl(var(--secondary) / 0.9);
-  --secondary-a12: hsl(var(--secondary) / 0.95);
+  /* Secondary color scale for dialogs and popovers - compatible with undertone */
+  --secondary-1: #1f2232; /* Matches depth-2 for dialog background */
+  --secondary-2: #242742; /* Matches depth-3 for dialog elements */
+  --secondary-3: #292c52; /* Matches depth-4 for interactive elements */
+  --secondary-4: #2a2d4a; /* Border color */
+  --secondary-5: rgba(107, 133, 255, 0.1); /* Subtle accent */
+  --secondary-6: rgba(107, 133, 255, 0.15); /* Medium accent */
+  --secondary-7: rgba(107, 133, 255, 0.2); /* Stronger accent */
+  --secondary-8: rgba(107, 133, 255, 0.25); /* Active accent */
+  --secondary-9: rgba(107, 133, 255, 0.3); /* Hover accent */
+  --secondary-10: rgba(107, 133, 255, 0.4); /* Focus accent */
+  --secondary-11: #cbd2d9; /* Text color */
+  --secondary-12: #f5f7fa; /* Primary text color */
 }
 
-/* Dialog specific styles */
+/* Dialog specific styles - compatible with undertone */
 .dialog-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(26, 29, 42, 0.7); /* Matches depth-1 with opacity */
   backdrop-filter: blur(4px);
 }
 
 .dialog-content {
   background-color: var(--secondary-1);
-  border: 1px solid var(--secondary-a4);
+  border: 1px solid var(--secondary-4);
   box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    0 20px 25px -5px rgba(26, 29, 42, 0.3),
+    0 10px 10px -5px rgba(26, 29, 42, 0.1);
 }
