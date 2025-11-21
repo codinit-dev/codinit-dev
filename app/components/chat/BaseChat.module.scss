@@ -125,11 +125,11 @@
 }
 
 ._PromptContainer_1k1wl_1 {
-  background: radial-gradient(circle at 4% -40%, #3b82f6 0%, transparent 30%);
+  background: radial-gradient(circle at 4% -40%, #6b85ff 0%, transparent 30%);
 }
 
 ._GradientBorder_1k1wl_5 {
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(107, 133, 255, 0.2);
 }
 
 @supports (-webkit-mask-composite: xor) {
@@ -142,7 +142,7 @@
   ._GradientBorder_1k1wl_5:before {
     position: absolute;
     padding: 1px;
-    background: linear-gradient(180deg, #2ba6ff, #fff3);
+    background: linear-gradient(180deg, #6b85ff, #fff3);
     border-radius: inherit;
     content: '';
     inset: 0;
@@ -157,21 +157,21 @@
   }
 
   [data-theme='light'] ._GradientBorder_1k1wl_5:before {
-    background: linear-gradient(180deg, #2ba6ff, #0003);
+    background: linear-gradient(180deg, #6b85ff, #0003);
   }
 }
 
 ._LiquidGlassButton_16cym_1 {
   min-height: 40px;
   overflow: visible;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+  background: linear-gradient(135deg, rgba(107, 133, 255, 0.1), rgba(107, 133, 255, 0.05));
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.1),
     inset 0 -1px rgba(0, 0, 0, 0.1),
     0 8px 32px -8px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(59, 130, 246, 0.1);
+    0 0 0 1px rgba(107, 133, 255, 0.1);
   transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform, box-shadow;
   backface-visibility: hidden;
@@ -209,12 +209,12 @@
 }
 
 ._LiquidGlassButton_16cym_1:hover {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+  background: linear-gradient(135deg, rgba(107, 133, 255, 0.15), rgba(107, 133, 255, 0.08));
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.1),
     inset 0 -1px rgba(0, 0, 0, 0.15),
     0 12px 40px -8px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(59, 130, 246, 0.15);
+    0 0 0 1px rgba(107, 133, 255, 0.15);
 }
 
 ._LiquidGlassButton_16cym_1:hover:before {
@@ -227,11 +227,11 @@
     inset 0 1px rgba(255, 255, 255, 0.2),
     inset 0 -1px rgba(0, 0, 0, 0.1),
     0 4px 20px -8px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(59, 130, 246, 0.05);
+    0 0 0 1px rgba(107, 133, 255, 0.05);
 }
 
 [data-theme='light'] ._LiquidGlassButton_16cym_1 {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.7), rgba(59, 130, 246, 0.5));
+  background: linear-gradient(135deg, rgba(107, 133, 255, 0.7), rgba(107, 133, 255, 0.5));
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 0.9),
     inset 0 -1px rgba(0, 0, 0, 0.05),
@@ -249,7 +249,7 @@
 }
 
 [data-theme='light'] ._LiquidGlassButton_16cym_1:hover {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(59, 130, 246, 0.85));
+  background: linear-gradient(135deg, rgba(107, 133, 255, 0.95), rgba(107, 133, 255, 0.85));
   box-shadow:
     inset 0 1px rgba(255, 255, 255, 1),
     inset 0 -1px rgba(0, 0, 0, 0.08),
@@ -271,9 +271,9 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(59, 130, 246, 0.8) 20%,
+    rgba(107, 133, 255, 0.8) 20%,
     rgba(147, 51, 234, 0.8) 50%,
-    rgba(59, 130, 246, 0.8) 80%,
+    rgba(107, 133, 255, 0.8) 80%,
     transparent 100%
   );
   opacity: 0.6;
@@ -287,7 +287,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(147, 51, 234, 0.8) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(107, 133, 255, 0.8) 50%, transparent 100%);
   animation: _shimmer_16cym_1 3s ease-in-out infinite;
 }
 
