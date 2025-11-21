@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useMCPStore } from '~/lib/stores/mcp';
 import { McpServerCard } from '~/components/mcp/MCPServerCard';
 import { AddMcpServerDialog } from '~/components/mcp/AddMcpServerDialog';
-import type { MCPServerConfig } from '~/lib/types/mcp';
+import type { MCPServerConfig } from '~/types/mcp';
 import { toast } from 'react-toastify';
 
 function MCPIntegrationsTab() {
