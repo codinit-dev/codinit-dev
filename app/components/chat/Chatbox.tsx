@@ -18,7 +18,7 @@ import type { ProviderInfo } from '~/types/model';
 
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from '~/components/mcp/MCPTools';
-import { McpIntegrationPanel } from '~/components/mcp/MCPIntegrationPanel';
+import { MCPDialog } from '~/components/mcp/MCPDialog';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -358,7 +358,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
       </div>
 
       {/* MCP Integration Panel */}
-      <McpIntegrationPanel isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} />
+      <MCPDialog isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} />
     </>
   );
 };
