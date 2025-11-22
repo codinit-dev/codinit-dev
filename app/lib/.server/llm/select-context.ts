@@ -7,7 +7,7 @@ import {
   createFilesContext,
   extractCurrentContext,
   extractPropertiesFromMessage,
-  simplifyExampleActions,
+  simplifyCodinitActions,
 } from './utils';
 import { createScopedLogger } from '~/utils/logger';
 import { LLMManager } from '~/lib/modules/llm/manager';
@@ -41,7 +41,7 @@ export async function selectContext(props: {
     } else if (message.role == 'assistant') {
       let content = message.content;
 
-      content = simplifyExampleActions(content);
+      content = simplifyCodinitActions(content);
 
       content = content.replace(/<div class=\\"__codinitThought__\\">.*?<\/div>/s, '');
       content = content.replace(/<think>.*?<\/think>/s, '');

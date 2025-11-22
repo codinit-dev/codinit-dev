@@ -16,29 +16,29 @@ export default class AnthropicProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Claude 3.5 Sonnet: 200k context, excellent for complex reasoning and coding
+     * Claude Sonnet 4.5: 200k context, 64k output, best balance of intelligence and speed
      */
     {
-      name: 'claude-3-5-sonnet-20241022',
-      label: 'Claude 3.5 Sonnet',
+      name: 'claude-sonnet-4-5-20250929',
+      label: 'Claude Sonnet 4.5',
       provider: 'Anthropic',
       maxTokenAllowed: 200000,
-      maxCompletionTokens: 128000,
+      maxCompletionTokens: 64000,
     },
 
-    // Claude 3 Haiku: 200k context, fastest and most cost-effective
+    // Claude Haiku 4.5: 200k context, 64k output, fastest model with near-frontier intelligence
     {
-      name: 'claude-3-haiku-20240307',
-      label: 'Claude 3 Haiku',
+      name: 'claude-haiku-4-5-20251001',
+      label: 'Claude Haiku 4.5',
       provider: 'Anthropic',
       maxTokenAllowed: 200000,
-      maxCompletionTokens: 128000,
+      maxCompletionTokens: 64000,
     },
 
-    // Claude Opus 4: 200k context, 32k output limit (latest flagship model)
+    // Claude Opus 4.1: 200k context, 32k output, exceptional for specialized reasoning tasks
     {
-      name: 'claude-opus-4-20250514',
-      label: 'Claude 4 Opus',
+      name: 'claude-opus-4-1-20250805',
+      label: 'Claude Opus 4.1',
       provider: 'Anthropic',
       maxTokenAllowed: 200000,
       maxCompletionTokens: 32000,
@@ -94,10 +94,18 @@ export default class AnthropicProvider extends BaseProvider {
       // Determine completion token limits based on specific model
       let maxCompletionTokens = 128000; // default for older Claude 3 models
 
-      if (m.id?.includes('claude-opus-4')) {
+      if (m.id?.includes('claude-sonnet-4-5') || m.id?.includes('claude-haiku-4-5')) {
+        maxCompletionTokens = 64000; // Claude 4.5 Sonnet/Haiku: 64K output limit
+      } else if (m.id?.includes('claude-opus-4-1') || m.id?.includes('claude-opus-4')) {
         maxCompletionTokens = 32000; // Claude 4 Opus: 32K output limit
       } else if (m.id?.includes('claude-sonnet-4')) {
         maxCompletionTokens = 64000; // Claude 4 Sonnet: 64K output limit
+      } else if (m.id?.includes('claude-3-7-sonnet')) {
+        maxCompletionTokens = 128000; // Claude 3.7 Sonnet: 128K output limit (beta)
+      } else if (m.id?.includes('claude-3-5-haiku')) {
+        maxCompletionTokens = 8000; // Claude 3.5 Haiku: 8K output limit
+      } else if (m.id?.includes('claude-3-haiku')) {
+        maxCompletionTokens = 4000; // Claude 3 Haiku: 4K output limit
       } else if (m.id?.includes('claude-4')) {
         maxCompletionTokens = 32000; // Other Claude 4 models: conservative 32K limit
       }

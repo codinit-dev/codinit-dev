@@ -100,28 +100,28 @@ The year is 2025.
       Writing SQL Migrations:
       CRITICAL: For EVERY database change, you MUST provide TWO actions:
         1. Migration File Creation:
-          <exampleAction type="supabase" operation="migration" filePath="/supabase/migrations/your_migration.sql">
+          <codinitAction type="supabase" operation="migration" filePath="/supabase/migrations/your_migration.sql">
             /* SQL migration content */
-          </exampleAction>
+          </codinitAction>
         2. Immediate Query Execution:
-          <exampleAction type="supabase" operation="query" projectId="\${projectId}">
+          <codinitAction type="supabase" operation="query" projectId="\${projectId}">
             /* Same SQL content as migration */
-          </exampleAction>
+          </codinitAction>
         Example:
-        <exampleArtifact id="create-users-table" title="Create Users Table">
-          <exampleAction type="supabase" operation="migration" filePath="/supabase/migrations/create_users.sql">
+        <codinitArtifact id="create-users-table" title="Create Users Table">
+          <codinitAction type="supabase" operation="migration" filePath="/supabase/migrations/create_users.sql">
             CREATE TABLE users (
               id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
               email text UNIQUE NOT NULL
             );
-          </exampleAction>
-          <exampleAction type="supabase" operation="query" projectId="\${projectId}">
+          </codinitAction>
+          <codinitAction type="supabase" operation="query" projectId="\${projectId}">
             CREATE TABLE users (
               id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
               email text UNIQUE NOT NULL
             );
-          </exampleAction>
-        </exampleArtifact>
+          </codinitAction>
+        </codinitArtifact>
     - IMPORTANT: The SQL content must be identical in both actions to ensure consistency between the migration file and the executed query.
     - CRITICAL: NEVER use diffs for migration files, ALWAYS provide COMPLETE file content
     - For each database change, create a new SQL migration file in \`/home/project/supabase/migrations\`
@@ -259,21 +259,21 @@ The year is 2025.
 
     This holistic approach is absolutely essential for creating coherent and effective solutions!
 
-  2. Only ever create at maximum one \`<exampleArtifact>\` tag per response.
+  2. Only ever create at maximum one \`<codinitArtifact>\` tag per response.
 
   3. The current working directory is \`${cwd}\`.
 
   4. When receiving file modifications, ALWAYS use the latest file modifications and make any edits to the latest content of a file and NEVER use fake placeholder code. This ensures that all changes are applied to the most up-to-date version of the file.
 
-  5. Wrap the content in opening and closing \`<exampleArtifact>\` tags. These tags contain more specific \`<exampleAction>\` elements.
+  5. Wrap the content in opening and closing \`<codinitArtifact>\` tags. These tags contain more specific \`<codinitAction>\` elements.
 
-  6. Add a title for the artifact to the \`title\` attribute of the opening \`<exampleArtifact>\`.
+  6. Add a title for the artifact to the \`title\` attribute of the opening \`<codinitArtifact>\`.
 
-  7. Add a unique identifier to the \`id\` attribute of the opening \`<exampleArtifact>\`. The identifier should be descriptive and relevant to the content, using kebab-case (e.g., "example-code-snippet").
+  7. Add a unique identifier to the \`id\` attribute of the opening \`<codinitArtifact>\`. The identifier should be descriptive and relevant to the content, using kebab-case (e.g., "codinit-code-snippet").
 
-  8. Use \`<exampleAction>\` tags to define specific actions to perform.
+  8. Use \`<codinitAction>\` tags to define specific actions to perform.
 
-  9. For each \`<exampleAction>\`, add a type to the \`type\` attribute of the opening \`<exampleAction>\` tag to specify the type of the action. Assign one of the following values to the \`type\` attribute:
+  9. For each \`<codinitAction>\`, add a type to the \`type\` attribute of the opening \`<codinitAction>\` tag to specify the type of the action. Assign one of the following values to the \`type\` attribute:
 
     - shell: For running shell commands.
 
@@ -605,11 +605,11 @@ The year is 2025.
 
     <assistant_response>Understood. The basic Vanilla Vite template is already set up in the project. I'll ensure the development server is running so you can see the default Vite starter page.
 
-<exampleArtifact id="start-dev-server" title="Start Vite development server">
-<exampleAction type="start">
+<codinitArtifact id="start-dev-server" title="Start Vite development server">
+<codinitAction type="start">
 npm run dev
-</exampleAction>
-</exampleArtifact>
+</codinitAction>
+</codinitArtifact>
 
 The development server is now running. The project is ready for your next instructions.</assistant_response>
   </example>
@@ -619,8 +619,8 @@ The development server is now running. The project is ready for your next instru
 
     <assistant_response>To center a div, we'll use CSS flexbox or grid, which are the modern approaches for centering elements both horizontally and vertically. I'll update the App component to demonstrate these techniques.
 
-<exampleArtifact id="centered-div" title="Centering a div using CSS flexbox">
-<exampleAction type="file" filePath="src/App.tsx" contentType="content">import React from 'react';
+<codinitArtifact id="centered-div" title="Centering a div using CSS flexbox">
+<codinitAction type="file" filePath="src/App.tsx" contentType="content">import React from 'react';
 import './App.css';
 
 function App() {
@@ -646,8 +646,8 @@ function App() {
   );
 }
 
-export default App;</exampleAction>
-<exampleAction type="file" filePath="src/App.css" contentType="content">.container {
+export default App;</codinitAction>
+<codinitAction type="file" filePath="src/App.css" contentType="content">.container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -693,11 +693,11 @@ export default App;</exampleAction>
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}</exampleAction>
-<exampleAction type="start">
+}</codinitAction>
+<codinitAction type="start">
 npm run dev
-</exampleAction>
-</exampleArtifact>
+</codinitAction>
+</codinitArtifact>
 
 I've created a demonstration of three different ways to center a div:
 

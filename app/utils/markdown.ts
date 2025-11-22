@@ -84,7 +84,7 @@ const rehypeSanitizeOptions: RehypeSanitizeOptions = {
     div: [
       ...(defaultSchema.attributes?.div ?? []),
       'data*',
-      ['className', '__exampleArtifact__', '__codinitThought__'],
+      ['className', '__codinitArtifact__', '__codinitThought__'],
 
       // ['className', '__codinitThought__']
     ],

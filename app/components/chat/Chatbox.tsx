@@ -361,7 +361,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
       </div>
 
       {/* MCP Integration Panel */}
-      <MCPDialog isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} />
+      <MCPDialog isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} initialTab="marketplace" />
     </>
   );
 };
