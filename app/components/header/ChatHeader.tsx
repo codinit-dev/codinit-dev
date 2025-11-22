@@ -19,7 +19,8 @@ export function ChatHeader() {
           className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent [&:hover:where(:not(:disabled))]:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary text-sm px-2"
           type="button"
         >
-          <img src="/icon.svg" alt="app icon" className="w-6 h-6" />
+          <img src="/icon-light.png" alt="app icon" className="w-6 h-6 inline-block dark:hidden" />
+          <img src="/icon-dark.png" alt="app icon" className="w-6 h-6 hidden dark:block" />
         </button>
       </a>
       <span className="text-codinit-elements-textPrimary opacity-[.12] text-xl antialiased mx-1">/</span>
