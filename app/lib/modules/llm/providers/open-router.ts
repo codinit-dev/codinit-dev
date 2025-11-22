@@ -30,21 +30,32 @@ export default class OpenRouterProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Claude 3.5 Sonnet via OpenRouter: 200k context
+     * Claude Sonnet 4.5 via OpenRouter: 200k context
      */
     {
-      name: 'anthropic/claude-3.5-sonnet',
-      label: 'Claude 3.5 Sonnet',
+      name: 'anthropic/claude-sonnet-4-5',
+      label: 'Claude Sonnet 4.5',
       provider: 'OpenRouter',
       maxTokenAllowed: 200000,
+      maxCompletionTokens: 64000,
     },
 
-    // GPT-4o via OpenRouter: 128k context
+    // GPT-5.1 via OpenRouter: 128k context
     {
-      name: 'openai/gpt-4o',
-      label: 'GPT-4o',
+      name: 'openai/gpt-5.1',
+      label: 'GPT-5.1',
       provider: 'OpenRouter',
       maxTokenAllowed: 128000,
+      maxCompletionTokens: 16384,
+    },
+
+    // DeepSeek-R1 via OpenRouter: 128k context
+    {
+      name: 'deepseek/deepseek-r1',
+      label: 'DeepSeek-R1',
+      provider: 'OpenRouter',
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 32768,
     },
   ];
 
