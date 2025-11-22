@@ -33,10 +33,21 @@ export abstract class BaseProvider implements ProviderInfo {
     }
 
     const baseUrlKey = this.config.baseUrlKey || defaultBaseUrlKey;
+
+    /*
+     * Priority order for baseUrl:
+     * 1. User settings (UI)
+     * 2. process.env (Node.js/Electron environment)
+     * 3. serverEnv (Cloudflare/server environment)
+     * 4. manager.env (passed at initialization)
+     * 5. Config defaults
+     *
+     * In Electron, process.env is prioritized over serverEnv for better compatibility
+     */
     let baseUrl =
       settingsBaseUrl ||
+      (typeof process !== 'undefined' && process?.env?.[baseUrlKey]) ||
       serverEnv?.[baseUrlKey] ||
-      process?.env?.[baseUrlKey] ||
       manager.env?.[baseUrlKey] ||
       this.config.baseUrl;
 
@@ -45,8 +56,21 @@ export abstract class BaseProvider implements ProviderInfo {
     }
 
     const apiTokenKey = this.config.apiTokenKey || defaultApiTokenKey;
+
+    /*
+     * Priority order for API key:
+     * 1. Cookies (user input in UI)
+     * 2. process.env (Node.js/Electron environment)
+     * 3. serverEnv (Cloudflare/server environment)
+     * 4. manager.env (passed at initialization)
+     *
+     * In Electron, process.env is prioritized for better compatibility
+     */
     const apiKey =
-      apiKeys?.[this.name] || serverEnv?.[apiTokenKey] || process?.env?.[apiTokenKey] || manager.env?.[apiTokenKey];
+      apiKeys?.[this.name] ||
+      (typeof process !== 'undefined' && process?.env?.[apiTokenKey]) ||
+      serverEnv?.[apiTokenKey] ||
+      manager.env?.[apiTokenKey];
 
     return {
       baseUrl,
