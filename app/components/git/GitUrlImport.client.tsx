@@ -7,7 +7,7 @@ import { BaseChat } from '~/components/chat/BaseChat';
 import { Chat } from '~/components/chat/Chat.client';
 import { useGit } from '~/lib/hooks/useGit';
 import { useChatHistory } from '~/lib/persistence';
-import { createCommandsMessage, detectProjectCommands, escapeExampleTags } from '~/utils/projectCommands';
+import { createCommandsMessage, detectProjectCommands, escapeCodinitTags } from '~/utils/projectCommands';
 import { LoadingOverlay } from '~/components/ui/LoadingOverlay';
 import { ImportErrorModal } from '~/components/ui/ImportErrorModal';
 
@@ -77,16 +77,16 @@ export function GitUrlImport() {
           const filesMessage: Message = {
             role: 'assistant',
             content: `Cloning the repo ${repoUrl} into ${workdir}
-<exampleArtifact id="imported-files" title="Git Cloned Files"  type="bundled">
+<codinitArtifact id="imported-files" title="Git Cloned Files"  type="bundled">
 ${fileContents
   .map(
     (file) =>
-      `<exampleAction type="file" filePath="${file.path}">
-${escapeExampleTags(file.content)}
-</exampleAction>`,
+      `<codinitAction type="file" filePath="${file.path}">
+${escapeCodinitTags(file.content)}
+</codinitAction>`,
   )
   .join('\n')}
-</exampleArtifact>`,
+</codinitArtifact>`,
             id: generateId(),
             createdAt: new Date(),
           };
