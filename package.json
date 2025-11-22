@@ -1,14 +1,14 @@
 {
-  "name": "codinit-dev",
+  "name": "codinit",
   "description": "An AI-Powered Development Platform",
   "private": true,
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "author": {
     "name": "Gerome-Elassaad",
-    "email": "gerome@codinit.dev"
+    "email": "gerome.e24@gmail.com"
   },
   "scripts": {
     "deploy": "npm run build && wrangler pages deploy",
@@ -179,7 +179,7 @@
     "@iconify-json/ph": "^1.2.2",
     "@iconify-json/simple-icons": "^1.2.54",
     "@iconify/types": "^2.0.0",
-    "@remix-run/dev": "^2.17.2",
+    "@remix-run/dev": "^2.17.1",
     "@remix-run/serve": "^2.17.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
@@ -226,13 +226,13 @@
   "pnpm": {
     "overrides": {
       "wrangler": "^4.42.1",
-      "jsondiffpatch": "^0.7.2",
-      "glob": "^11.1.0"
+      "jsondiffpatch": "^0.7.2"
     },
     "peerDependencyRules": {
       "allowedVersions": {
         "wrangler": "4"
       }
     }
-  }
+  },
+  "packageManager": "pnpm@9.15.9"
 }
