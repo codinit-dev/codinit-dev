@@ -244,16 +244,16 @@ export async function getTemplates(templateName: string, title?: string) {
 
   const assistantMessage = `
 CodinIT is initializing your project with the required files using the ${template.name} template.
-<exampleArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
+<codinitArtifact id="imported-files" title="${title || 'Create initial files'}" type="bundled">
 ${filesToImport.files
   .map(
     (file: { path: string; content: string }) =>
-      `<exampleAction type="file" filePath="${file.path}">
+      `<codinitAction type="file" filePath="${file.path}">
 ${file.content}
-</exampleAction>`,
+</codinitAction>`,
   )
   .join('\n')}
-</exampleArtifact>
+</codinitArtifact>
 `;
   let userMessage = ``;
   const templatePromptFile = files
