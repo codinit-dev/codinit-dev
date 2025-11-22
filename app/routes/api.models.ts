@@ -51,7 +51,15 @@ export async function loader({
     };
   };
 }): Promise<Response> {
-  const llmManager = LLMManager.getInstance(context.cloudflare?.env);
+  /*
+   * In Electron, context.cloudflare?.env will be undefined
+   * Fall back to process.env (Node.js environment)
+   */
+  const serverEnv =
+    context.cloudflare?.env ||
+    (typeof process !== 'undefined' && process?.env ? (process.env as Record<string, string>) : {});
+
+  const llmManager = LLMManager.getInstance(serverEnv);
 
   // Get client side maintained API keys and provider settings from cookies
   const cookieHeader = request.headers.get('Cookie');
@@ -70,7 +78,7 @@ export async function loader({
       modelList = await llmManager.getModelListFromProvider(provider, {
         apiKeys,
         providerSettings,
-        serverEnv: context.cloudflare?.env,
+        serverEnv,
       });
     }
   } else {
@@ -78,7 +86,7 @@ export async function loader({
     modelList = await llmManager.updateModelList({
       apiKeys,
       providerSettings,
-      serverEnv: context.cloudflare?.env,
+      serverEnv,
     });
   }
 
