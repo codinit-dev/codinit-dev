@@ -16,23 +16,32 @@ export default class TogetherProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Llama 3.2 90B Vision: 128k context, multimodal capabilities
+     * DeepSeek-R1: 128k context, reasoning model with strong performance
      */
     {
-      name: 'meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo',
-      label: 'Llama 3.2 90B Vision',
+      name: 'deepseek-ai/DeepSeek-R1',
+      label: 'DeepSeek-R1',
       provider: 'Together',
-      maxTokenAllowed: 128000,
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 32768,
+    },
+
+    // Llama 4 Maverick: 128k context, SOTA 128-expert MoE
+    {
+      name: 'meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8',
+      label: 'Llama 4 Maverick',
+      provider: 'Together',
+      maxTokenAllowed: 131072,
       maxCompletionTokens: 8192,
     },
 
-    // Mixtral 8x7B: 32k context, strong performance
+    // Qwen3 235B: 256k context, large MoE model
     {
-      name: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
-      label: 'Mixtral 8x7B Instruct',
+      name: 'Qwen/Qwen3-235B-A22B-Instruct-2507-FP8',
+      label: 'Qwen3 235B',
       provider: 'Together',
-      maxTokenAllowed: 32000,
-      maxCompletionTokens: 8192,
+      maxTokenAllowed: 262144,
+      maxCompletionTokens: 16384,
     },
   ];
 
@@ -69,7 +78,7 @@ export default class TogetherProvider extends BaseProvider {
       name: m.id,
       label: `${m.display_name} - in:$${m.pricing.input.toFixed(2)} out:$${m.pricing.output.toFixed(2)} - context ${Math.floor(m.context_length / 1000)}k`,
       provider: this.name,
-      maxTokenAllowed: 8000,
+      maxTokenAllowed: Math.min(m.context_length || 8192, 262144),
       maxCompletionTokens: 8192,
     }));
   }
