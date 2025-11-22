@@ -14,35 +14,34 @@ export default class XAIProvider extends BaseProvider {
   };
 
   staticModels: ModelInfo[] = [
+    /*
+     * Essential fallback models - only the most stable/reliable ones
+     * Grok-2: 128k context, latest reasoning model
+     */
     {
-      name: 'grok-4',
-      label: 'xAI Grok 4',
+      name: 'grok-2-1212',
+      label: 'Grok-2',
       provider: 'xAI',
-      maxTokenAllowed: 256000,
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 32768,
     },
+
+    // Grok-2 mini: 128k context, faster model
     {
-      name: 'grok-4-07-09',
-      label: 'xAI Grok 4 (07-09)',
+      name: 'grok-2-mini',
+      label: 'Grok-2 Mini',
       provider: 'xAI',
-      maxTokenAllowed: 256000,
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 16384,
     },
+
+    // Grok-1.5: 128k context, previous generation
     {
-      name: 'grok-3-mini',
-      label: 'xAI Grok 3 Mini',
+      name: 'grok-1.5',
+      label: 'Grok-1.5',
       provider: 'xAI',
-      maxTokenAllowed: 131000,
-    },
-    {
-      name: 'grok-3-mini-fast',
-      label: 'xAI Grok 3 Mini Fast',
-      provider: 'xAI',
-      maxTokenAllowed: 131000,
-    },
-    {
-      name: 'grok-code-fast-1',
-      label: 'xAI Grok Code Fast 1',
-      provider: 'xAI',
-      maxTokenAllowed: 131000,
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 8192,
     },
   ];
 
