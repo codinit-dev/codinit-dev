@@ -170,11 +170,11 @@ declare global {
 
   console.log('Using renderer URL:', rendererURL);
 
-  const win = await createWindow(rendererURL);
+  const win = createWindow(rendererURL);
 
-  app.on('activate', async () => {
+  app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      await createWindow(rendererURL);
+      createWindow(rendererURL);
     }
   });
 
