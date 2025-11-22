@@ -79,38 +79,21 @@ jobs:
           fi
         shell: bash
 
-      # Upload artifacts
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      # Create Release
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: ${{ runner.os }}-build
-          path: |
+          # Use the workflow_dispatch input tag if available, else use the Git ref name.
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+          # Only branch pushes remain drafts. For workflow_dispatch and tag pushes the release is published.
+          draft: ${{ github.event_name != 'workflow_dispatch' && github.ref_type == 'branch' }}
+          # For tag pushes, name the release as "Release <tagname>", otherwise "Electron Release".
+          name: ${{ (github.event_name == 'push' && github.ref_type == 'tag') && format('Release {0}', github.ref_name) || 'Electron Release' }}
+          files: |
             dist/*.exe
             dist/*.dmg
             dist/*.deb
             dist/*.AppImage
             dist/*.zip
-          if-no-files-found: ignore
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
-
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-          merge-multiple: true
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
-          draft: false
-          name: ${{ (github.event_name == 'push' && github.ref_type == 'tag') && format('Release {0}', github.ref_name) || 'Electron Release' }}
-          files: |
-            artifacts/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
