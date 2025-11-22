@@ -8,7 +8,6 @@ import { allowedHTMLElements } from '~/utils/markdown';
 import { LLMManager } from '~/lib/modules/llm/manager';
 import { createScopedLogger } from '~/utils/logger';
 import { createFilesContext, extractPropertiesFromMessage } from './utils';
-import { MCPService } from '~/lib/services/mcpService';
 
 export type Messages = Message[];
 
@@ -21,8 +20,6 @@ export interface StreamingOptions extends Omit<Parameters<typeof _streamText>[0]
       supabaseUrl?: string;
     };
   };
-  enableMCPTools?: boolean;
-  selectedMCP?: string | null;
 }
 
 const logger = createScopedLogger('stream-text');
@@ -69,7 +66,7 @@ export async function streamText(props: {
       content = content.replace(/<codinitThinking[^>]*>.*?<\/codinitThinking>/gs, '');
 
       content = content.replace(
-        /<exampleAction type="file" filePath="package-lock\.json">[\s\S]*?<\/exampleAction>/g,
+        /<codinitAction type="file" filePath="package-lock\.json">[\s\S]*?<\/codinitAction>/g,
         '[package-lock.json content removed]',
       );
 
@@ -185,22 +182,7 @@ ${lockedFilesListString}
 
   // console.log(systemPrompt, processedMessages);
 
-  // Get MCP tools if enabled
-  let mcpTools = {};
-
-  if (options?.enableMCPTools) {
-    try {
-      const mcpService = MCPService.getInstance();
-      mcpTools = mcpService.getToolsForServer(options.selectedMCP || null);
-      logger.debug(
-        `Loaded ${Object.keys(mcpTools).length} MCP tools${options.selectedMCP ? ` for server: ${options.selectedMCP}` : ''}`,
-      );
-    } catch (error) {
-      logger.error('Failed to load MCP tools:', error);
-    }
-  }
-
-  const streamOptions = {
+  return await _streamText({
     model: provider.getModelInstance({
       model: modelDetails.name,
       serverEnv,
@@ -211,17 +193,5 @@ ${lockedFilesListString}
     maxTokens: dynamicMaxTokens,
     messages: convertToCoreMessages(processedMessages as any),
     ...options,
-  };
-
-  // Add MCP tools if available and enabled
-  if (options?.enableMCPTools && Object.keys(mcpTools).length > 0) {
-    streamOptions.tools = mcpTools;
-
-    // Don't override toolChoice if it's already set in options
-    if (!streamOptions.toolChoice) {
-      streamOptions.toolChoice = 'auto';
-    }
-  }
-
-  return await _streamText(streamOptions);
+  });
 }
