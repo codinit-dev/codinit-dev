@@ -158,11 +158,25 @@ export class LLMManager {
   }): Promise<ModelInfo[]> {
     const { apiKeys, providerSettings, serverEnv } = options;
 
+    logger.debug('updateModelList called', {
+      hasApiKeys: !!apiKeys && Object.keys(apiKeys).length > 0,
+      hasServerEnv: !!serverEnv && Object.keys(serverEnv).length > 0,
+      registeredProviders: this._providers.size,
+    });
+
+    if (this._providers.size === 0) {
+      logger.warn('No providers registered! Models will be empty.');
+      return [];
+    }
+
     let enabledProviders = Array.from(this._providers.values()).map((p) => p.name);
 
     if (providerSettings && Object.keys(providerSettings).length > 0) {
       enabledProviders = enabledProviders.filter((p) => providerSettings[p].enabled);
     }
+
+    const staticModels = Array.from(this._providers.values()).flatMap((p) => p.staticModels || []);
+    logger.debug(`Total static models available: ${staticModels.length}`);
 
     // Get dynamic models from all providers that support them
     const dynamicModels = await Promise.all(
@@ -206,21 +220,34 @@ export class LLMManager {
             })
             .catch((err) => {
               this._logProviderError(provider.name, err, 'dynamic models fetch');
+
+              const providerStaticModels = provider.staticModels || [];
+
+              if (providerStaticModels.length > 0) {
+                logger.info(`${provider.name}: Falling back to ${providerStaticModels.length} static models`);
+              }
+
               return [];
             });
 
           return dynamicModels;
         }),
     );
-    const staticModels = Array.from(this._providers.values()).flatMap((p) => p.staticModels || []);
+
     const dynamicModelsFlat = dynamicModels.flat();
     const dynamicModelKeys = dynamicModelsFlat.map((d) => `${d.name}-${d.provider}`);
-    const filteredStaticModesl = staticModels.filter((m) => !dynamicModelKeys.includes(`${m.name}-${m.provider}`));
+    const filteredStaticModels = staticModels.filter((m) => !dynamicModelKeys.includes(`${m.name}-${m.provider}`));
+
+    logger.debug(
+      `Dynamic models fetched: ${dynamicModelsFlat.length}, Static models to add: ${filteredStaticModels.length}`,
+    );
 
     // Combine static and dynamic models
-    const modelList = [...dynamicModelsFlat, ...filteredStaticModesl];
+    const modelList = [...dynamicModelsFlat, ...filteredStaticModels];
     modelList.sort((a, b) => a.name.localeCompare(b.name));
     this._modelList = modelList;
+
+    logger.info(`Total models available: ${modelList.length}`);
 
     return modelList;
   }
