@@ -23,7 +23,19 @@ import 'virtual:uno.css';
 export const links: LinksFunction = () => [
   {
     rel: 'icon',
-    href: '/icon.png',
+    href: '/icon-light.png',
+    type: 'image/png',
+    media: '(prefers-color-scheme: light)',
+  },
+  {
+    rel: 'icon',
+    href: '/icon-dark.png',
+    type: 'image/png',
+    media: '(prefers-color-scheme: dark)',
+  },
+  {
+    rel: 'icon',
+    href: '/icon-dark.png',
     type: 'image/png',
   },
   { rel: 'stylesheet', href: reactToastifyStyles },
@@ -56,6 +68,14 @@ const inlineThemeCode = stripIndents`
     }
 
     document.querySelector('html')?.setAttribute('data-theme', theme);
+    updateFavicon(theme);
+  }
+
+  function updateFavicon(theme) {
+    const iconLink = document.querySelector('link[rel="icon"]:not([media])');
+    if (iconLink) {
+      iconLink.href = theme === 'dark' ? '/icon-dark.png' : '/icon-light.png';
+    }
   }
 `;
 
@@ -74,6 +94,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     document.querySelector('html')?.setAttribute('data-theme', theme);
+
+    const iconLink = document.querySelector('link[rel="icon"]:not([media])') as HTMLLinkElement;
+
+    if (iconLink) {
+      iconLink.href = theme === 'dark' ? '/icon-dark.png' : '/icon-light.png';
+    }
   }, [theme]);
 
   return (
