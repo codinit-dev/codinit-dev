@@ -1,7 +1,7 @@
 import ignore from 'ignore';
 import { useGit } from '~/lib/hooks/useGit';
 import type { Message } from 'ai';
-import { detectProjectCommands, createCommandsMessage, escapeExampleTags } from '~/utils/projectCommands';
+import { detectProjectCommands, createCommandsMessage, escapeCodinitTags } from '~/utils/projectCommands';
 import { generateId } from '~/utils/fileUtils';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -119,16 +119,16 @@ ${skippedFiles.map((f) => `- ${f}`).join('\n')}`
     : ''
 }
 
-<exampleArtifact id="imported-files" title="Git Cloned Files" type="bundled">
+<codinitArtifact id="imported-files" title="Git Cloned Files" type="bundled">
 ${fileContents
   .map(
     (file) =>
-      `<exampleAction type="file" filePath="${file.path}">
-${escapeExampleTags(file.content)}
-</exampleAction>`,
+      `<codinitAction type="file" filePath="${file.path}">
+${escapeCodinitTags(file.content)}
+</codinitAction>`,
   )
   .join('\n')}
-</exampleArtifact>`,
+</codinitArtifact>`,
           id: generateId(),
           createdAt: new Date(),
         };
