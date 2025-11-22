@@ -43,6 +43,6 @@ export function UserMessage({ content }: UserMessageProps) {
 }
 
 function stripMetadata(content: string) {
-  const artifactRegex = /<exampleArtifact\s+[^>]*>[\s\S]*?<\/exampleArtifact>/gm;
+  const artifactRegex = /<codinitArtifact\s+[^>]*>[\s\S]*?<\/codinitArtifact>/gm;
   return content.replace(MODEL_REGEX, '').replace(PROVIDER_REGEX, '').replace(artifactRegex, '');
 }
