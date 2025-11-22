@@ -14,67 +14,33 @@ export default class MistralProvider extends BaseProvider {
   };
 
   staticModels: ModelInfo[] = [
+    /*
+     * Essential fallback models - only the most stable/reliable ones
+     * Mistral Large 3: 128k context, latest flagship model
+     */
     {
-      name: 'open-mistral-7b',
-      label: 'Mistral 7B',
+      name: 'mistral-large-2411',
+      label: 'Mistral Large 3',
       provider: 'Mistral',
-      maxTokenAllowed: 8000,
+      maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
+
+    // Mistral Small 3: 128k context, efficient model
     {
-      name: 'open-mixtral-8x7b',
-      label: 'Mistral 8x7B',
+      name: 'mistral-small-2501',
+      label: 'Mistral Small 3',
       provider: 'Mistral',
-      maxTokenAllowed: 8000,
+      maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
+
+    // Codestral 3: 128k context, coding model
     {
-      name: 'open-mixtral-8x22b',
-      label: 'Mistral 8x22B',
+      name: 'codestral-2501',
+      label: 'Codestral 3',
       provider: 'Mistral',
-      maxTokenAllowed: 8000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'open-codestral-mamba',
-      label: 'Codestral Mamba',
-      provider: 'Mistral',
-      maxTokenAllowed: 8000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'open-mistral-nemo',
-      label: 'Mistral Nemo',
-      provider: 'Mistral',
-      maxTokenAllowed: 8000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'ministral-8b-latest',
-      label: 'Mistral 8B',
-      provider: 'Mistral',
-      maxTokenAllowed: 8000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'mistral-small-latest',
-      label: 'Mistral Small',
-      provider: 'Mistral',
-      maxTokenAllowed: 8000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'codestral-latest',
-      label: 'Codestral',
-      provider: 'Mistral',
-      maxTokenAllowed: 8000,
-      maxCompletionTokens: 8192,
-    },
-    {
-      name: 'mistral-large-latest',
-      label: 'Mistral Large Latest',
-      provider: 'Mistral',
-      maxTokenAllowed: 8000,
+      maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
   ];
