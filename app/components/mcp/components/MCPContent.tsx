@@ -47,7 +47,7 @@ function TabContent({ tab }: { tab: TabType }) {
       return (
         <div className="flex items-center justify-center h-full text-codinit-elements-textSecondary">
           <div className="text-center">
-            <div className="i-heroicons:exclamation-triangle w-12 h-12 mx-auto mb-4 opacity-50" />
+            <div className="i-lucide:alert-triangle w-12 h-12 mx-auto mb-4 opacity-50" />
             <p className="text-sm">Tab not found</p>
           </div>
         </div>
