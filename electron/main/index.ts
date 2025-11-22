@@ -122,10 +122,12 @@ declare global {
       const result = await handler(req, {
         /*
          * Remix app access cloudflare.env
-         * Need to pass an empty object to prevent undefined
+         * In Electron, pass process.env so providers can access environment variables
          */
         // @ts-ignore:next-line
-        cloudflare: {},
+        cloudflare: {
+          env: process.env as Record<string, string>,
+        },
       });
 
       return result;
@@ -243,46 +245,6 @@ declare global {
     ipcMain.handle('cookie-remove', async (_, name: string) => {
       try {
         await session.defaultSession.cookies.remove(`http://localhost:${DEFAULT_PORT}`, name);
-        console.log('Cookie removed from Electron session:', name);
-
-        return true;
-      } catch (error) {
-        console.error('Failed to remove cookie from Electron session:', error);
-        return false;
-      }
-    });
-
-    ipcMain.handle('cookie-get', async (_, name: string) => {
-      try {
-        const cookies = await session.defaultSession.cookies.get({ name });
-        return cookies.length > 0 ? cookies[0].value : null;
-      } catch (error) {
-        console.error('Failed to get cookie from Electron session:', error);
-        return null;
-      }
-    });
-
-    ipcMain.handle('cookie-get-all', async (_) => {
-      try {
-        const cookies = await session.defaultSession.cookies.get({});
-        return cookies.map((cookie) => ({
-          name: cookie.name,
-          value: cookie.value,
-          path: cookie.path,
-          domain: cookie.domain,
-          secure: cookie.secure,
-          httpOnly: cookie.httpOnly,
-          expirationDate: cookie.expirationDate,
-        }));
-      } catch (error) {
-        console.error('Failed to get all cookies from Electron session:', error);
-        return [];
-      }
-    });
-
-    ipcMain.handle('cookie-remove', async (_, name: string) => {
-      try {
-        await session.defaultSession.cookies.remove('http://localhost', name);
         console.log('Cookie removed from Electron session:', name);
 
         return true;
