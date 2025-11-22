@@ -72,12 +72,12 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
 
   if (commands.setupCommand) {
     commandString += `
-<exampleAction type="shell">${commands.setupCommand}</exampleAction>`;
+<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<exampleAction type="start">${commands.startCommand}</exampleAction>
+<codinitAction type="start">${commands.startCommand}</codinitAction>
 `;
   }
 
@@ -85,17 +85,17 @@ export function createCommandsMessage(commands: ProjectCommands): Message | null
     role: 'assistant',
     content: `
 ${commands.followupMessage ? `\n\n${commands.followupMessage}` : ''}
-<exampleArtifact id="project-setup" title="Project Setup">
+<codinitArtifact id="project-setup" title="Project Setup">
 ${commandString}
-</exampleArtifact>`,
+</codinitArtifact>`,
     id: generateId(),
     createdAt: new Date(),
   };
 }
 
-export function escapeExampleArtifactTags(input: string) {
-  // Regular expression to match exampleArtifact tags and their content
-  const regex = /(<exampleArtifact[^>]*>)([\s\S]*?)(<\/exampleArtifact>)/g;
+export function escapeCodinitArtifactTags(input: string) {
+  // Regular expression to match codinitArtifact tags and their content
+  const regex = /(<codinitArtifact[^>]*>)([\s\S]*?)(<\/codinitArtifact>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -109,9 +109,9 @@ export function escapeExampleArtifactTags(input: string) {
   });
 }
 
-export function escapeExampleAActionTags(input: string) {
-  // Regular expression to match exampleArtifact tags and their content
-  const regex = /(<exampleAction[^>]*>)([\s\S]*?)(<\/exampleAction>)/g;
+export function escapeCodinitAActionTags(input: string) {
+  // Regular expression to match codinitArtifact tags and their content
+  const regex = /(<codinitAction[^>]*>)([\s\S]*?)(<\/codinitAction>)/g;
 
   return input.replace(regex, (match, openTag, content, closeTag) => {
     // Escape the opening tag
@@ -125,8 +125,8 @@ export function escapeExampleAActionTags(input: string) {
   });
 }
 
-export function escapeExampleTags(input: string) {
-  return escapeExampleArtifactTags(escapeExampleAActionTags(input));
+export function escapeCodinitTags(input: string) {
+  return escapeCodinitArtifactTags(escapeCodinitAActionTags(input));
 }
 
 // We have this seperate function to simplify the restore snapshot process in to one single artifact.
@@ -140,12 +140,12 @@ export function createCommandActionsString(commands: ProjectCommands): string {
 
   if (commands.setupCommand) {
     commandString += `
-<exampleAction type="shell">${commands.setupCommand}</exampleAction>`;
+<codinitAction type="shell">${commands.setupCommand}</codinitAction>`;
   }
 
   if (commands.startCommand) {
     commandString += `
-<exampleAction type="start">${commands.startCommand}</exampleAction>
+<codinitAction type="start">${commands.startCommand}</codinitAction>
 `;
   }
 
