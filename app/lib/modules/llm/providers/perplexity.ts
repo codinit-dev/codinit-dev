@@ -19,18 +19,21 @@ export default class PerplexityProvider extends BaseProvider {
       label: 'Sonar',
       provider: 'Perplexity',
       maxTokenAllowed: 8192,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'sonar-pro',
       label: 'Sonar Pro',
       provider: 'Perplexity',
       maxTokenAllowed: 8192,
+      maxCompletionTokens: 8192,
     },
     {
       name: 'sonar-reasoning-pro',
       label: 'Sonar Reasoning Pro',
       provider: 'Perplexity',
       maxTokenAllowed: 8192,
+      maxCompletionTokens: 8192,
     },
   ];
 
