@@ -18,7 +18,7 @@ export function BuiltWithCodinitBadge() {
                  text-xs font-medium"
       aria-label="Built with CodinIT.dev"
     >
-      <img src="/badge-light.png" alt="CodinIT" width="16" height="16" className="flex-shrink-0 dark:hidden" />
+      <img src="/icon-dark.png" alt="CodinIT" width="16" height="16" className="flex-shrink-0 dark:hidden" />
       <img src="/icon-light.png" alt="CodinIT" width="16" height="16" className="hidden flex-shrink-0 dark:block" />
       <span className="hidden md:inline whitespace-nowrap">Built with CodinIT.dev</span>
     </a>
