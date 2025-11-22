@@ -124,10 +124,9 @@ declare global {
          * Remix app access cloudflare.env
          * In Electron, pass process.env so providers can access environment variables
          */
-        // @ts-ignore:next-line
         cloudflare: {
-          env: process.env as Record<string, string>,
-        },
+          env: process.env,
+        } as any,
       });
 
       return result;
