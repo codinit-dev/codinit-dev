@@ -1,13 +1,13 @@
 import type { ActionType, BoltAction, BoltActionData, FileAction, ShellAction, SupabaseAction } from '~/types/actions';
-import type { ExampleArtifactData, ThinkingArtifactData } from '~/types/artifact';
+import type { CodinitArtifactData, ThinkingArtifactData } from '~/types/artifact';
 import type { ThinkingData } from '~/types/thinking';
 import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 
-const ARTIFACT_TAG_OPEN = '<exampleArtifact';
-const ARTIFACT_TAG_CLOSE = '</exampleArtifact>';
-const ARTIFACT_ACTION_TAG_OPEN = '<exampleAction';
-const ARTIFACT_ACTION_TAG_CLOSE = '</exampleAction>';
+const ARTIFACT_TAG_OPEN = '<codinitArtifact';
+const ARTIFACT_TAG_CLOSE = '</codinitArtifact>';
+const ARTIFACT_ACTION_TAG_OPEN = '<codinitAction';
+const ARTIFACT_ACTION_TAG_CLOSE = '</codinitAction>';
 
 // Legacy codinit tags (for backward compatibility)
 const CODINIT_ARTIFACT_TAG_OPEN = '<codinitArtifact';
@@ -25,7 +25,7 @@ const THINKING_ARTIFACT_TAG_CLOSE = '</thinkingArtifact>';
 
 const logger = createScopedLogger('MessageParser');
 
-export interface ArtifactCallbackData extends ExampleArtifactData {
+export interface ArtifactCallbackData extends CodinitArtifactData {
   messageId: string;
 }
 
@@ -80,7 +80,7 @@ interface MessageState {
   insideThinking: boolean;
   insideThinkingArtifact: boolean;
   actionId: number;
-  currentArtifact?: ExampleArtifactData;
+  currentArtifact?: CodinitArtifactData;
   currentAction?: BoltActionData;
   currentThinking?: ThinkingData;
   currentThinkingArtifact?: ThinkingArtifactData;
@@ -335,8 +335,7 @@ export class StreamingMessageParser {
         while (j < input.length && potentialTag.length < maxTagLength) {
           potentialTag += input[j];
 
-          const isExampleTag = potentialTag === ARTIFACT_TAG_OPEN;
-          const isCodinitTag = potentialTag === CODINIT_ARTIFACT_TAG_OPEN;
+          const isCodinitTag = potentialTag === ARTIFACT_TAG_OPEN;
           const isThinkingTag = potentialTag === THINKING_TAG_OPEN;
           const isThinkingArtifactTag = potentialTag === THINKING_ARTIFACT_TAG_OPEN;
 
@@ -420,7 +419,7 @@ export class StreamingMessageParser {
             }
 
             break;
-          } else if (isExampleTag || isCodinitTag) {
+          } else if (isCodinitTag || isCodinitTag) {
             const nextChar = input[j + 1];
 
             if (nextChar && nextChar !== '>' && nextChar !== ' ') {
@@ -452,7 +451,7 @@ export class StreamingMessageParser {
                 id: artifactId,
                 title: artifactTitle,
                 type,
-              } satisfies ExampleArtifactData;
+              } satisfies CodinitArtifactData;
 
               state.currentArtifact = currentArtifact;
 
@@ -612,7 +611,7 @@ export class StreamingMessageParser {
 
 const createArtifactElement: ElementFactory = (props) => {
   const elementProps = [
-    'class="__exampleArtifact__"',
+    'class="__codinitArtifact__"',
     ...Object.entries(props).map(([key, value]) => {
       return `data-${camelToDashCase(key)}=${JSON.stringify(value)}`;
     }),
