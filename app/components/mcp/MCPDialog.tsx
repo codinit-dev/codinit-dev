@@ -55,7 +55,7 @@ export function MCPDialog({ isOpen, onClose, initialTab = 'integrations' }: MCPD
                   )}
                   aria-label="Close MCP settings"
                 >
-                  <div className="i-heroicons:x-mark-solid w-4 h-4" />
+                  <div className="i-lucide:x w-4 h-4" />
                 </button>
               </RadixDialog.Close>
 
