@@ -25,7 +25,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
   const components = useMemo(() => {
     return {
       div: ({ className, children, node, ...props }) => {
-        if (className?.includes('__exampleArtifact__')) {
+        if (className?.includes('__codinitArtifact__')) {
           const messageId = node?.properties.dataMessageId as string;
 
           if (!messageId) {
@@ -97,7 +97,7 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
 export const stripCodeFenceFromArtifact = (content: string) => {
   if (
     !content ||
-    (!content.includes('__exampleArtifact__') &&
+    (!content.includes('__codinitArtifact__') &&
       !content.includes('__codinitThinking__') &&
       !content.includes('__thinkingArtifact__'))
   ) {
@@ -107,7 +107,7 @@ export const stripCodeFenceFromArtifact = (content: string) => {
   const lines = content.split('\n');
   const artifactLineIndex = lines.findIndex(
     (line) =>
-      line.includes('__exampleArtifact__') ||
+      line.includes('__codinitArtifact__') ||
       line.includes('__codinitThinking__') ||
       line.includes('__thinkingArtifact__'),
   );
