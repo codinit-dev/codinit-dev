@@ -25,12 +25,7 @@ jobs:
 
     strategy:
       matrix:
-        os: >-
-          ${{
-            github.event_name == 'workflow_dispatch' && github.event.inputs.os != 'all'
-            && fromJSON(format('["{0}"]', github.event.inputs.os))
-            || fromJSON('["ubuntu-latest", "windows-latest", "macos-latest"]')
-          }}
+        os: [ubuntu-latest, windows-latest, macos-latest]
         node-version: [20.15.1]
       fail-fast: false
 
