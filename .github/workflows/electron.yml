@@ -6,6 +6,10 @@ on:
       tag:
         description: 'Tag for the release (e.g., v1.0.0). Leave empty if not applicable.'
         required: false
+      os:
+        description: 'Operating system to build for (all, ubuntu-latest, windows-latest, macos-latest)'
+        required: false
+        default: 'all'
   push:
     branches:
       - electron
@@ -18,10 +22,15 @@ permissions:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest] # Use unsigned macOS builds for now
+        os: >-
+          ${{
+            github.event_name == 'workflow_dispatch' && github.event.inputs.os != 'all'
+            && fromJSON(format('["{0}"]', github.event.inputs.os))
+            || fromJSON('["ubuntu-latest", "windows-latest", "macos-latest"]')
+          }}
         node-version: [20.15.1]
       fail-fast: false
 
