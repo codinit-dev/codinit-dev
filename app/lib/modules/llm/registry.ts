@@ -6,6 +6,7 @@ import GroqProvider from './providers/groq';
 import HuggingFaceProvider from './providers/huggingface';
 import LMStudioProvider from './providers/lmstudio';
 import MistralProvider from './providers/mistral';
+import MoonshotProvider from './providers/moonshot';
 import OllamaProvider from './providers/ollama';
 import OpenRouterProvider from './providers/open-router';
 import OpenAILikeProvider from './providers/openai-like';
@@ -26,6 +27,7 @@ export {
   HuggingFaceProvider,
   HyperbolicProvider,
   MistralProvider,
+  MoonshotProvider,
   OllamaProvider,
   OpenAIProvider,
   OpenRouterProvider,

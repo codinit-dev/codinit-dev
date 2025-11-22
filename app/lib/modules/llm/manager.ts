@@ -42,17 +42,31 @@ export class LLMManager {
        * const providerModules = import.meta.glob('./providers/*.ts', { eager: true });
        */
 
+      logger.debug('Starting provider registration...');
+
+      const exportedItems = Object.values(providers);
+      logger.debug(`Found ${exportedItems.length} exported items in registry`);
+
+      let registeredCount = 0;
+
       // Look for exported classes that extend BaseProvider
-      for (const exportedItem of Object.values(providers)) {
+      for (const exportedItem of exportedItems) {
         if (typeof exportedItem === 'function' && exportedItem.prototype instanceof BaseProvider) {
           const provider = new exportedItem();
 
           try {
             this.registerProvider(provider);
+            registeredCount++;
           } catch (error: any) {
             logger.warn('Failed To Register Provider: ', provider.name, 'error:', error.message);
           }
         }
+      }
+
+      logger.info(`Successfully registered ${registeredCount} providers`);
+
+      if (registeredCount === 0) {
+        logger.error('WARNING: No providers were registered! This will cause model list to be empty.');
       }
     } catch (error) {
       logger.error('Error registering providers:', error);
