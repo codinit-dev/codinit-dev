@@ -16,34 +16,70 @@ export default class XAIProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Grok-2: 128k context, latest reasoning model
+     * Grok-2: 128k context, latest flagship reasoning model
      */
     {
-      name: 'grok-2-1212',
+      name: 'grok-2',
       label: 'Grok-2',
       provider: 'xAI',
       maxTokenAllowed: 131072,
       maxCompletionTokens: 32768,
     },
 
-    // Grok-2 mini: 128k context, faster model
+    // Grok-2 mini: 128k context, efficient variant
     {
       name: 'grok-2-mini',
       label: 'Grok-2 Mini',
       provider: 'xAI',
       maxTokenAllowed: 131072,
-      maxCompletionTokens: 16384,
-    },
-
-    // Grok-1.5: 128k context, previous generation
-    {
-      name: 'grok-1.5',
-      label: 'Grok-1.5',
-      provider: 'xAI',
-      maxTokenAllowed: 131072,
       maxCompletionTokens: 8192,
     },
   ];
+
+  async getDynamicModels(
+    apiKeys?: Record<string, string>,
+    settings?: IProviderSetting,
+    serverEnv?: Record<string, string>,
+  ): Promise<ModelInfo[]> {
+    const { apiKey } = this.getProviderBaseUrlAndKey({
+      apiKeys,
+      providerSettings: settings,
+      serverEnv: serverEnv as any,
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'XAI_API_KEY',
+    });
+
+    if (!apiKey) {
+      return this.staticModels;
+    }
+
+    try {
+      const response = await fetch('https://api.x.ai/v1/models', {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        return this.staticModels;
+      }
+
+      const res = (await response.json()) as any;
+      const staticModelIds = this.staticModels.map((m) => m.name);
+
+      const data = res.data?.filter((model: any) => !staticModelIds.includes(model.id)) || [];
+
+      return data.map((m: any) => ({
+        name: m.id,
+        label: m.id,
+        provider: this.name,
+        maxTokenAllowed: 131072,
+        maxCompletionTokens: 8192,
+      }));
+    } catch {
+      return this.staticModels;
+    }
+  }
 
   getModelInstance(options: {
     model: string;
