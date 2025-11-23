@@ -65,7 +65,7 @@ export default class DeepseekProvider extends BaseProvider {
     try {
       const response = await fetch('https://api.deepseek.com/models', {
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
         },
       });
 
