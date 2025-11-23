@@ -16,34 +16,88 @@ export default class MistralProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Mistral Large 3: 128k context, latest flagship model
+     * Mistral Large: 128k context, latest flagship model
      */
     {
-      name: 'mistral-large-2411',
-      label: 'Mistral Large 3',
+      name: 'mistral-large-latest',
+      label: 'Mistral Large',
+      provider: 'Mistral',
+      maxTokenAllowed: 128000,
+      maxCompletionTokens: 16000,
+    },
+
+    // Mistral Small: 128k context, efficient model
+    {
+      name: 'mistral-small-latest',
+      label: 'Mistral Small',
       provider: 'Mistral',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
 
-    // Mistral Small 3: 128k context, efficient model
+    // Codestral: 128k context, coding specialist model
     {
-      name: 'mistral-small-2501',
-      label: 'Mistral Small 3',
+      name: 'codestral-latest',
+      label: 'Codestral',
       provider: 'Mistral',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 8192,
     },
 
-    // Codestral 3: 128k context, coding model
+    // Mixtral 8x22B: 65k context, high-capacity sparse model
     {
-      name: 'codestral-2501',
-      label: 'Codestral 3',
+      name: 'mixtral-8x22b-v0.1',
+      label: 'Mixtral 8x22B',
       provider: 'Mistral',
-      maxTokenAllowed: 128000,
+      maxTokenAllowed: 65536,
       maxCompletionTokens: 8192,
     },
   ];
+
+  async getDynamicModels(
+    apiKeys?: Record<string, string>,
+    settings?: IProviderSetting,
+    serverEnv?: Record<string, string>,
+  ): Promise<ModelInfo[]> {
+    const { apiKey } = this.getProviderBaseUrlAndKey({
+      apiKeys,
+      providerSettings: settings,
+      serverEnv: serverEnv as any,
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'MISTRAL_API_KEY',
+    });
+
+    if (!apiKey) {
+      return this.staticModels;
+    }
+
+    try {
+      const response = await fetch('https://api.mistral.ai/v1/models', {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        return this.staticModels;
+      }
+
+      const res = (await response.json()) as any;
+      const staticModelIds = this.staticModels.map((m) => m.name);
+
+      const data = res.data.filter((model: any) => model.type === 'chat' && !staticModelIds.includes(model.id));
+
+      return data.map((m: any) => ({
+        name: m.id,
+        label: m.id,
+        provider: this.name,
+        maxTokenAllowed: 128000,
+        maxCompletionTokens: 8192,
+      }));
+    } catch {
+      return this.staticModels;
+    }
+  }
 
   getModelInstance(options: {
     model: string;
