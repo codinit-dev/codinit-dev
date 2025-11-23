@@ -45,6 +45,57 @@ export default class DeepseekProvider extends BaseProvider {
     },
   ];
 
+  async getDynamicModels(
+    apiKeys?: Record<string, string>,
+    settings?: IProviderSetting,
+    serverEnv?: Record<string, string>,
+  ): Promise<ModelInfo[]> {
+    const { apiKey } = this.getProviderBaseUrlAndKey({
+      apiKeys,
+      providerSettings: settings,
+      serverEnv: serverEnv as any,
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'DEEPSEEK_API_KEY',
+    });
+
+    if (!apiKey) {
+      return this.staticModels;
+    }
+
+    try {
+      const response = await fetch('https://api.deepseek.com/models', {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        return this.staticModels;
+      }
+
+      const data = (await response.json()) as any;
+      const staticModelIds = this.staticModels.map((m) => m.name);
+
+      if (!Array.isArray(data.data)) {
+        return this.staticModels;
+      }
+
+      const models = data.data
+        .filter((m: any) => m.id && !staticModelIds.includes(m.id))
+        .map((m: any) => ({
+          name: m.id,
+          label: m.id,
+          provider: this.name,
+          maxTokenAllowed: 131072,
+          maxCompletionTokens: 32768,
+        }));
+
+      return models.length > 0 ? [...this.staticModels, ...models] : this.staticModels;
+    } catch {
+      return this.staticModels;
+    }
+  }
+
   getModelInstance(options: {
     model: string;
     serverEnv: Env;
