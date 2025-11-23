@@ -26,16 +26,61 @@ export default class PerplexityProvider extends BaseProvider {
       label: 'Sonar Pro',
       provider: 'Perplexity',
       maxTokenAllowed: 131072,
-      maxCompletionTokens: 8192,
+      maxCompletionTokens: 16384,
     },
     {
       name: 'sonar-reasoning-pro',
       label: 'Sonar Reasoning Pro',
       provider: 'Perplexity',
       maxTokenAllowed: 131072,
-      maxCompletionTokens: 8192,
+      maxCompletionTokens: 32000,
     },
   ];
+
+  async getDynamicModels(
+    apiKeys?: Record<string, string>,
+    settings?: IProviderSetting,
+    serverEnv?: Record<string, string>,
+  ): Promise<ModelInfo[]> {
+    const { apiKey } = this.getProviderBaseUrlAndKey({
+      apiKeys,
+      providerSettings: settings,
+      serverEnv: serverEnv as any,
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'PERPLEXITY_API_KEY',
+    });
+
+    if (!apiKey) {
+      return this.staticModels;
+    }
+
+    try {
+      const response = await fetch('https://api.perplexity.ai/models', {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        return this.staticModels;
+      }
+
+      const res = (await response.json()) as any;
+      const staticModelIds = this.staticModels.map((m) => m.name);
+
+      const data = res.data?.filter((model: any) => !staticModelIds.includes(model.id)) || [];
+
+      return data.map((m: any) => ({
+        name: m.id,
+        label: m.name || m.id,
+        provider: this.name,
+        maxTokenAllowed: 131072,
+        maxCompletionTokens: 8192,
+      }));
+    } catch {
+      return this.staticModels;
+    }
+  }
 
   getModelInstance(options: {
     model: string;
