@@ -26,22 +26,31 @@ export default class GroqProvider extends BaseProvider {
       maxCompletionTokens: 32768,
     },
 
+    // Llama 3.1 70B: 128k context, stable alternative
+    {
+      name: 'llama-3.1-70b-versatile',
+      label: 'Llama 3.1 70B',
+      provider: 'Groq',
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 8192,
+    },
+
     // Llama 3.1 8B: 128k context, fast and efficient
     {
       name: 'llama-3.1-8b-instant',
       label: 'Llama 3.1 8B',
       provider: 'Groq',
       maxTokenAllowed: 131072,
-      maxCompletionTokens: 131072,
+      maxCompletionTokens: 8192,
     },
 
-    // GPT-OSS 120B: 128k context, OpenAI's flagship open-weight model
+    // Mixtral 8x7B: 32k context, efficient multi-expert model
     {
-      name: 'openai/gpt-oss-120b',
-      label: 'GPT-OSS 120B',
+      name: 'mixtral-8x7b-32768',
+      label: 'Mixtral 8x7B',
       provider: 'Groq',
-      maxTokenAllowed: 131072,
-      maxCompletionTokens: 65536,
+      maxTokenAllowed: 32768,
+      maxCompletionTokens: 4096,
     },
   ];
 
