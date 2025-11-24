@@ -502,40 +502,42 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   </p>
                 </div>
 
-                {/* Navigation Tabs */}
-                <div className="px-6 pt-4 pb-4 bg-codinit-elements-background-depth-1">
-                  <div className="flex gap-2 p-1.5 bg-codinit-elements-background-depth-3 rounded-xl">
-                    {[
-                      { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
-                      { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
-                      { key: 'features', label: 'Features', icon: 'i-ph:magic-wand' },
-                      { key: 'styling', label: 'Styling', icon: 'i-ph:gear' },
-                    ].map((tab) => (
-                      <button
-                        key={tab.key}
-                        onClick={() => setActiveSection(tab.key as any)}
-                        className={classNames(
-                          'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200',
-                          activeSection === tab.key
-                            ? 'bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary shadow-lg border border-codinit-elements-borderColor'
-                            : 'bg-transparent text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-2',
-                        )}
-                      >
-                        <span className={`${tab.icon} text-lg`} />
-                        <span>{tab.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Content Area - Two Column Layout */}
                 <div className="flex min-h-0 flex-1 gap-4 overflow-hidden px-6 pt-6 bg-codinit-elements-background-depth-1">
                   {/* Left Panel - Settings */}
-                  <div className="w-80 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
-                    {activeSection === 'colors' && renderColorSection()}
-                    {activeSection === 'typography' && renderTypographySection()}
-                    {activeSection === 'features' && renderFeaturesSection()}
-                    {activeSection === 'styling' && renderStylingSection()}
+                  <div className="w-80 flex flex-col gap-4">
+                    {/* Integrated Tab Navigation */}
+                    <div className="flex-1 overflow-hidden flex flex-col">
+                      <div className="grid grid-cols-2 gap-1 p-1 bg-codinit-elements-background-depth-3 rounded-lg mb-4">
+                        {[
+                          { key: 'colors', label: 'Colors' },
+                          { key: 'typography', label: 'Typography' },
+                          { key: 'features', label: 'Features' },
+                          { key: 'styling', label: 'Styling' },
+                        ].map((tab) => (
+                          <button
+                            key={tab.key}
+                            onClick={() => setActiveSection(tab.key as any)}
+                            className={classNames(
+                              'inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all',
+                              activeSection === tab.key
+                                ? 'bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary shadow'
+                                : 'text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                            )}
+                          >
+                            {tab.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Tab Content */}
+                      <div className="flex-1 overflow-y-auto custom-scrollbar">
+                        {activeSection === 'colors' && renderColorSection()}
+                        {activeSection === 'typography' && renderTypographySection()}
+                        {activeSection === 'features' && renderFeaturesSection()}
+                        {activeSection === 'styling' && renderStylingSection()}
+                      </div>
+                    </div>
                   </div>
 
                   {/* Right Panel - Preview */}
