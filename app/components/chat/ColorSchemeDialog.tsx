@@ -472,11 +472,12 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                       <button
                         key={tab.key}
                         onClick={() => setActiveSection(tab.key as any)}
-                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                        className={classNames(
+                          'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200',
                           activeSection === tab.key
                             ? 'bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary shadow-lg border border-codinit-elements-borderColor'
-                            : 'text-codinit-elements-textPrimary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-2'
-                        }`}
+                            : 'bg-transparent text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-background-depth-2',
+                        )}
                       >
                         <span className={`${tab.icon} text-lg`} />
                         <span>{tab.label}</span>
