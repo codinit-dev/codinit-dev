@@ -100,6 +100,48 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
     setSpacing(defaultDesignScheme.spacing);
   };
 
+  const getBorderRadius = () => {
+    if (features.includes('rounded')) {
+      return '1.5rem';
+    }
+
+    switch (borderRadius) {
+      case 'none':
+        return '0px';
+      case 'sm':
+        return '0.25rem';
+      case 'md':
+        return '0.375rem';
+      case 'lg':
+        return '0.5rem';
+      case 'xl':
+        return '0.75rem';
+      default:
+        return '1rem';
+    }
+  };
+
+  const getBoxShadow = () => {
+    if (!features.includes('shadow')) {
+      return 'none';
+    }
+
+    switch (shadow) {
+      case 'none':
+        return 'none';
+      case 'sm':
+        return '0 1px 2px 0 rgb(0 0 0 / 0.05)';
+      case 'md':
+        return '0 4px 6px -1px rgb(0 0 0 / 0.1)';
+      case 'lg':
+        return '0 10px 15px -3px rgb(0 0 0 / 0.1)';
+      case 'xl':
+        return '0 20px 25px -5px rgb(0 0 0 / 0.1)';
+      default:
+        return 'none';
+    }
+  };
+
   const renderColorSection = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -486,12 +528,307 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   </div>
                 </div>
 
-                {/* Content Area */}
-                <div className="flex-1 px-8 py-4 bg-codinit-elements-background-depth-1 overflow-y-auto custom-scrollbar">
-                  {activeSection === 'colors' && renderColorSection()}
-                  {activeSection === 'typography' && renderTypographySection()}
-                  {activeSection === 'features' && renderFeaturesSection()}
-                  {activeSection === 'styling' && renderStylingSection()}
+                {/* Content Area - Two Column Layout */}
+                <div className="flex flex-1 gap-6 px-8 py-4 bg-codinit-elements-background-depth-1 overflow-hidden">
+                  {/* Left Panel - Settings */}
+                  <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    {activeSection === 'colors' && renderColorSection()}
+                    {activeSection === 'typography' && renderTypographySection()}
+                    {activeSection === 'features' && renderFeaturesSection()}
+                    {activeSection === 'styling' && renderStylingSection()}
+                  </div>
+
+                  {/* Right Panel - Preview */}
+                  <div className="w-[500px] flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-codinit-elements-textPrimary">Live Preview</h3>
+                      <div className="flex items-center gap-2 bg-codinit-elements-background-depth-3 rounded-lg p-1.5">
+                        <button
+                          onClick={() => setMode('light')}
+                          className={classNames(
+                            'p-1.5 rounded transition-colors',
+                            mode === 'light'
+                              ? 'bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary'
+                              : 'text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                          )}
+                          title="Light mode"
+                        >
+                          <span className="i-ph:sun text-base" />
+                        </button>
+                        <button
+                          onClick={() => setMode('dark')}
+                          className={classNames(
+                            'p-1.5 rounded transition-colors',
+                            mode === 'dark'
+                              ? 'bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary'
+                              : 'text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                          )}
+                          title="Dark mode"
+                        >
+                          <span className="i-ph:moon text-base" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Preview Container */}
+                    <div className="flex-1 rounded-xl border border-codinit-elements-borderColor overflow-hidden bg-codinit-elements-background-depth-3">
+                      <div
+                        className="h-full w-full p-6 overflow-y-auto custom-scrollbar"
+                        style={{
+                          backgroundColor: palette[mode].background,
+                          color: palette[mode].text,
+                          fontFamily: font.join(', '),
+                          borderRadius:
+                            borderRadius === 'none'
+                              ? '0px'
+                              : borderRadius === 'sm'
+                                ? '0.25rem'
+                                : borderRadius === 'md'
+                                  ? '0.375rem'
+                                  : borderRadius === 'lg'
+                                    ? '0.5rem'
+                                    : borderRadius === 'xl'
+                                      ? '0.75rem'
+                                      : '1rem',
+                        }}
+                      >
+                        {/* Preview Content */}
+                        <div className="space-y-16 mt-6">
+                          {/* Hero Section */}
+                          <div
+                            className="p-8 text-center"
+                            style={{
+                              borderRadius: getBorderRadius(),
+                              border: features.includes('border') ? `1px solid ${palette[mode].accent}` : 'none',
+                              backgroundColor: palette[mode].background,
+                              color: palette[mode].text,
+                            }}
+                          >
+                            <h1
+                              className="text-5xl font-bold"
+                              style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
+                            >
+                              Ship faster with modern tools
+                            </h1>
+                            <p
+                              className="text-lg mt-4"
+                              style={{ color: palette[mode].text, opacity: 0.7, fontFamily: font.join(', ') }}
+                            >
+                              Build beautiful products that your users will love
+                            </p>
+                            <div className="mt-4 flex justify-center gap-4">
+                              <button
+                                className="px-4 py-2 text-sm font-medium transition-all"
+                                style={{
+                                  backgroundColor: palette[mode].primary,
+                                  color: palette[mode].text,
+                                  borderRadius: getBorderRadius(),
+                                  boxShadow: getBoxShadow(),
+                                }}
+                              >
+                                Get started
+                              </button>
+                              <button
+                                className="px-4 py-2 text-sm font-medium transition-all"
+                                style={{
+                                  backgroundColor: palette[mode].secondary,
+                                  color: palette[mode].text,
+                                  borderRadius: getBorderRadius(),
+                                  border: features.includes('border') ? `1px solid ${palette[mode].accent}` : 'none',
+                                }}
+                              >
+                                View demo
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Stats Section */}
+                          <div className="space-y-12">
+                            <div className="space-y-4 text-center">
+                              <h2
+                                className="text-5xl font-bold"
+                                style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
+                              >
+                                Trusted by teams everywhere
+                              </h2>
+                              <p
+                                className="text-lg"
+                                style={{ color: palette[mode].text, opacity: 0.7, fontFamily: font.join(', ') }}
+                              >
+                                Join thousands of companies building better products faster
+                              </p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-8">
+                              {[
+                                { value: '50K+', label: 'Active users' },
+                                { value: '99%', label: 'Customer satisfaction' },
+                                { value: '24/7', label: 'Support available' },
+                                { value: '150+', label: 'Countries served' },
+                              ].map((stat, i) => (
+                                <div key={i} className="space-y-2 text-center">
+                                  <div
+                                    className="text-4xl font-bold"
+                                    style={{ color: palette[mode].primary, fontFamily: font.join(', ') }}
+                                  >
+                                    {stat.value}
+                                  </div>
+                                  <p
+                                    className="text-sm"
+                                    style={{ color: palette[mode].text, opacity: 0.7, fontFamily: font.join(', ') }}
+                                  >
+                                    {stat.label}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Pricing Cards */}
+                          <div className="grid grid-cols-2 gap-4">
+                            {[
+                              {
+                                name: 'Starter',
+                                price: '$19',
+                                desc: 'Perfect for individuals and small projects',
+                                features: [
+                                  '10 projects',
+                                  '5GB storage',
+                                  'Basic analytics',
+                                  'Community support',
+                                  'API access',
+                                ],
+                              },
+                              {
+                                name: 'Professional',
+                                price: '$79',
+                                desc: 'Advanced features for growing teams',
+                                features: [
+                                  'Unlimited projects',
+                                  '100GB storage',
+                                  'Advanced analytics',
+                                  'Priority support',
+                                  'Custom integrations',
+                                ],
+                              },
+                            ].map((plan, i) => (
+                              <div
+                                key={i}
+                                className="flex flex-col gap-6 p-6"
+                                style={{
+                                  borderRadius: getBorderRadius(),
+                                  border: features.includes('border') ? `1px solid ${palette[mode].accent}` : 'none',
+                                  backgroundColor: palette[mode].secondary,
+                                  boxShadow: getBoxShadow(),
+                                  background:
+                                    i === 1 && features.includes('gradient')
+                                      ? `linear-gradient(135deg, ${palette[mode].primary} 0%, ${palette[mode].accent} 100%)`
+                                      : palette[mode].secondary,
+                                }}
+                              >
+                                <div className="flex flex-col space-y-1.5">
+                                  <div
+                                    className="font-medium"
+                                    style={{ color: palette[mode].primary, fontFamily: font.join(', ') }}
+                                  >
+                                    {plan.name}
+                                  </div>
+                                  <div className="mt-4">
+                                    <span
+                                      className="text-5xl font-bold"
+                                      style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
+                                    >
+                                      {plan.price}
+                                    </span>
+                                    <span style={{ color: palette[mode].text, opacity: 0.7 }}>/month</span>
+                                  </div>
+                                  <div
+                                    className="mt-4 text-sm"
+                                    style={{ color: palette[mode].text, opacity: 0.7, fontFamily: font.join(', ') }}
+                                  >
+                                    {plan.desc}
+                                  </div>
+                                </div>
+                                <ul className="space-y-3">
+                                  {plan.features.map((feature, j) => (
+                                    <li key={j} className="flex items-center gap-2">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        className="w-5 h-5"
+                                        style={{ color: palette[mode].accent }}
+                                      >
+                                        <path d="M18.369 4.595a.75.75 0 0 1 1.262.81l-9 14a.75.75 0 0 1-1.217.064l-5-6.25a.75.75 0 0 1 1.172-.938l4.347 5.435z" />
+                                      </svg>
+                                      <span style={{ color: palette[mode].text, fontFamily: font.join(', ') }}>
+                                        {feature}
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <button
+                                  className="w-full px-4 py-2 text-sm font-medium transition-all"
+                                  style={{
+                                    backgroundColor: palette[mode].primary,
+                                    color: palette[mode].text,
+                                    borderRadius: getBorderRadius(),
+                                  }}
+                                >
+                                  Start free trial
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* FAQ Section */}
+                          <div className="space-y-8">
+                            <h2
+                              className="text-5xl font-bold"
+                              style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
+                            >
+                              Frequently asked questions
+                            </h2>
+                            <div className="space-y-4">
+                              {[
+                                'How do I get started with the platform?',
+                                'Can I change my plan later?',
+                                'What payment methods do you accept?',
+                                'Is there a free trial available?',
+                              ].map((question, i) => (
+                                <div
+                                  key={i}
+                                  className="py-4"
+                                  style={{ borderBottom: `1px solid ${palette[mode].accent}` }}
+                                >
+                                  <button className="flex w-full items-center justify-between text-left">
+                                    <span
+                                      className="text-sm font-medium"
+                                      style={{ color: palette[mode].primary, fontFamily: font.join(', ') }}
+                                    >
+                                      {question}
+                                    </span>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                      className="w-5 h-5"
+                                      style={{ color: palette[mode].text, opacity: 0.5 }}
+                                    >
+                                      <path d="M9.47 6.47a.75.75 0 0 1 1.06 0l5 5a.75.75 0 0 1 0 1.06l-5 5a.75.75 0 1 1-1.06-1.06L13.94 12 9.47 7.53a.75.75 0 0 1 0-1.06" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-codinit-elements-textSecondary text-center">
+                      Preview updates in real-time as you change settings
+                    </p>
+                  </div>
                 </div>
 
                 {/* Action Buttons */}
