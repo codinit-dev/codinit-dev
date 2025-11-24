@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogDescription, DialogRoot } from '~/components/ui/Dialog';
 import { Button } from '~/components/ui/Button';
+import { IconButton } from '~/components/ui/IconButton';
 
 import type { DesignScheme } from '~/types/design-scheme';
 import {
@@ -402,45 +403,51 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
   );
 
   return (
-    <div>
+    <>
+      <IconButton title="Design System" className="transition-all" onClick={() => setIsDialogOpen(true)}>
+        <div className="i-ph:palette text-xl"></div>
+      </IconButton>
+
       <DialogRoot open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <Dialog className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 shadow-large">
-          <div className="w-[54rem] max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-4rem)] overflow-hidden">
-            <div className="">
+        <Dialog className="bg-codinit-elements-bg-depth-1 border-codinit-elements-borderColor shadow-large">
+          <div className="w-[54rem] max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-4rem)] flex flex-col overflow-hidden">
+            <div className="px-6 pt-6 pb-4 bg-codinit-elements-bg-depth-1">
               <DialogTitle className="text-2xl font-bold text-codinit-elements-textPrimary">
                 Design Palette & Features
               </DialogTitle>
-              <DialogDescription className="text-codinit-elements-textSecondary leading-relaxed">
+              <DialogDescription className="text-codinit-elements-textSecondary leading-relaxed mt-2">
                 Customize your color palette, typography, and design features. These preferences will guide the AI in
                 creating designs that match your style.
               </DialogDescription>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex gap-1 p-1 bg-codinit-elements-bg-depth-3 rounded-xl">
-              {[
-                { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
-                { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
-                { key: 'features', label: 'Features', icon: 'i-ph:magic-wand' },
-                { key: 'styling', label: 'Styling', icon: 'i-ph:gear' },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveSection(tab.key as any)}
-                  className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                    activeSection === tab.key
-                      ? 'bg-codinit-elements-background-depth-3 text-codinit-elements-textPrimary shadow-md'
-                      : 'bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-bg-depth-2'
-                  }`}
-                >
-                  <span className={`${tab.icon} text-lg`} />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
+            <div className="px-6 pb-4 bg-codinit-elements-bg-depth-1">
+              <div className="flex gap-1 p-1 bg-codinit-elements-bg-depth-3 rounded-xl">
+                {[
+                  { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
+                  { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
+                  { key: 'features', label: 'Features', icon: 'i-ph:magic-wand' },
+                  { key: 'styling', label: 'Styling', icon: 'i-ph:gear' },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveSection(tab.key as any)}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                      activeSection === tab.key
+                        ? 'bg-codinit-elements-bg-depth-1 text-codinit-elements-textPrimary shadow-md'
+                        : 'text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-bg-depth-2'
+                    }`}
+                  >
+                    <span className={`${tab.icon} text-lg`} />
+                    <span>{tab.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Content Area */}
-            <div className=" min-h-92 overflow-y-auto">
+            <div className="flex-1 px-6 py-4 bg-codinit-elements-bg-depth-1 overflow-y-auto custom-scrollbar">
               {activeSection === 'colors' && renderColorSection()}
               {activeSection === 'typography' && renderTypographySection()}
               {activeSection === 'features' && renderFeaturesSection()}
@@ -448,7 +455,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center px-6 py-4 bg-codinit-elements-bg-depth-1 border-t border-codinit-elements-borderColor">
               <div className="text-sm text-codinit-elements-textSecondary">
                 {Object.keys(palette).length} colors • {font.length} fonts • {features.length} features
               </div>
@@ -502,6 +509,6 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
           flex: 1;
         }
       `}</style>
-    </div>
+    </>
   );
 };
