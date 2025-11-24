@@ -209,7 +209,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         </h3>
         <button
           onClick={handleReset}
-          className="text-sm bg-transparent hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary rounded-lg flex items-center gap-2 transition-all duration-200"
+          className="text-sm px-3 py-1.5 bg-transparent hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary rounded-lg flex items-center gap-2 transition-all duration-200"
         >
           <span className="i-ph:arrow-clockwise text-sm" />
           Reset
@@ -702,10 +702,10 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                             </p>
                             <div className="mt-4 flex justify-center gap-4">
                               <button
-                                className="px-4 py-2 text-sm font-medium transition-all"
+                                className="px-4 py-2 text-sm font-medium transition-all hover:opacity-90"
                                 style={{
                                   backgroundColor: palette[mode].primary,
-                                  color: palette[mode].text,
+                                  color: '#ffffff',
                                   borderRadius: getBorderRadius(),
                                   boxShadow: getBoxShadow(),
                                 }}
@@ -713,12 +713,12 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                                 Get started
                               </button>
                               <button
-                                className="px-4 py-2 text-sm font-medium transition-all"
+                                className="px-4 py-2 text-sm font-medium transition-all hover:opacity-90"
                                 style={{
-                                  backgroundColor: palette[mode].secondary,
-                                  color: palette[mode].text,
+                                  backgroundColor: 'transparent',
+                                  color: palette[mode].primary,
                                   borderRadius: getBorderRadius(),
-                                  border: features.includes('border') ? `1px solid ${palette[mode].accent}` : 'none',
+                                  border: `2px solid ${palette[mode].primary}`,
                                 }}
                               >
                                 View demo
@@ -853,10 +853,10 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                                   ))}
                                 </ul>
                                 <button
-                                  className="w-full px-4 py-2 text-sm font-medium transition-all"
+                                  className="w-full px-4 py-2 text-sm font-medium transition-all hover:opacity-90"
                                   style={{
                                     backgroundColor: palette[mode].primary,
-                                    color: palette[mode].text,
+                                    color: '#ffffff',
                                     borderRadius: getBorderRadius(),
                                   }}
                                 >
