@@ -114,7 +114,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="grid grid-cols-2 gap-4 max-h-80 overflow-y-auto pr-4 custom-scrollbar">
         {paletteRoles.map((role) => (
           <div
             key={role.key}
@@ -163,7 +163,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         Typography
       </h3>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="grid grid-cols-3 gap-4 max-h-80 overflow-y-auto pr-4 custom-scrollbar">
         {designFonts.map((f) => (
           <button
             key={f.key}
@@ -214,7 +214,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         Design Features
       </h3>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="grid grid-cols-2 gap-4 max-h-80 overflow-y-auto pr-4 custom-scrollbar">
         {designFeatures.map((f) => {
           const isSelected = features.includes(f.key);
 
@@ -320,7 +320,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         Design Styling
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-6">
         {/* Border Radius */}
         <div className="space-y-3">
           <label className="text-sm font-medium text-codinit-elements-textPrimary">Border Radius</label>
@@ -411,7 +411,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
       <DialogRoot open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <Dialog className="bg-codinit-elements-bg-depth-1 border-codinit-elements-borderColor shadow-large">
           <div className="w-[90vw] h-[700px] max-w-[1500px] max-h-[85vh] flex flex-col overflow-hidden">
-            <div className="px-6 pt-6 pb-4 bg-codinit-elements-bg-depth-1">
+            <div className="px-8 pt-6 pb-4 bg-codinit-elements-bg-depth-1">
               <DialogTitle className="text-2xl font-bold text-codinit-elements-textPrimary">
                 Design Palette & Features
               </DialogTitle>
@@ -422,8 +422,8 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             </div>
 
             {/* Navigation Tabs */}
-            <div className="px-6 pb-4 bg-codinit-elements-bg-depth-1">
-              <div className="flex gap-1 p-1 bg-codinit-elements-bg-depth-3 rounded-xl">
+            <div className="px-8 pb-4 bg-codinit-elements-bg-depth-1">
+              <div className="flex gap-2 p-1.5 bg-codinit-elements-bg-depth-3 rounded-xl">
                 {[
                   { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
                   { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
@@ -435,8 +435,8 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                     onClick={() => setActiveSection(tab.key as any)}
                     className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                       activeSection === tab.key
-                        ? 'bg-codinit-elements-bg-depth-1 text-codinit-elements-textPrimary shadow-md'
-                        : 'text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-bg-depth-2'
+                        ? 'bg-codinit-elements-bg-depth-1 text-codinit-elements-textPrimary shadow-lg border border-codinit-elements-borderColor'
+                        : 'text-codinit-elements-textPrimary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-bg-depth-2'
                     }`}
                   >
                     <span className={`${tab.icon} text-lg`} />
@@ -447,7 +447,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 px-6 py-4 bg-codinit-elements-bg-depth-1 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 px-8 py-4 bg-codinit-elements-bg-depth-1 overflow-y-auto custom-scrollbar">
               {activeSection === 'colors' && renderColorSection()}
               {activeSection === 'typography' && renderTypographySection()}
               {activeSection === 'features' && renderFeaturesSection()}
@@ -455,7 +455,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-between items-center px-6 py-4 bg-codinit-elements-bg-depth-1 border-t border-codinit-elements-borderColor">
+            <div className="flex justify-between items-center px-8 py-4 bg-codinit-elements-bg-depth-1 border-t border-codinit-elements-borderColor">
               <div className="text-sm text-codinit-elements-textSecondary">
                 {Object.keys(palette).length} colors • {font.length} fonts • {features.length} features
               </div>
