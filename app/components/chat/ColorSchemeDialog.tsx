@@ -593,7 +593,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                         }}
                       >
                         {/* Preview Content */}
-                        <div className="space-y-16 mt-6">
+                        <div className="space-y-12 mt-4">
                           {/* Hero Section */}
                           <div
                             className="p-8 text-center"
@@ -605,13 +605,13 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                             }}
                           >
                             <h1
-                              className="text-5xl font-bold"
+                              className="text-3xl font-bold"
                               style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
                             >
                               Ship faster with modern tools
                             </h1>
                             <p
-                              className="text-lg mt-4"
+                              className="text-base mt-3"
                               style={{ color: palette[mode].text, opacity: 0.7, fontFamily: font.join(', ') }}
                             >
                               Build beautiful products that your users will love
@@ -643,37 +643,37 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                           </div>
 
                           {/* Stats Section */}
-                          <div className="space-y-12">
-                            <div className="space-y-4 text-center">
+                          <div className="space-y-8">
+                            <div className="space-y-3 text-center">
                               <h2
-                                className="text-5xl font-bold"
+                                className="text-2xl font-bold"
                                 style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
                               >
                                 Trusted by teams everywhere
                               </h2>
                               <p
-                                className="text-lg"
+                                className="text-sm"
                                 style={{ color: palette[mode].text, opacity: 0.7, fontFamily: font.join(', ') }}
                               >
                                 Join thousands of companies building better products faster
                               </p>
                             </div>
-                            <div className="grid grid-cols-2 gap-8">
+                            <div className="grid grid-cols-2 gap-6">
                               {[
                                 { value: '50K+', label: 'Active users' },
                                 { value: '99%', label: 'Customer satisfaction' },
                                 { value: '24/7', label: 'Support available' },
                                 { value: '150+', label: 'Countries served' },
                               ].map((stat, i) => (
-                                <div key={i} className="space-y-2 text-center">
+                                <div key={i} className="space-y-1 text-center">
                                   <div
-                                    className="text-4xl font-bold"
+                                    className="text-2xl font-bold"
                                     style={{ color: palette[mode].primary, fontFamily: font.join(', ') }}
                                   >
                                     {stat.value}
                                   </div>
                                   <p
-                                    className="text-sm"
+                                    className="text-xs"
                                     style={{ color: palette[mode].text, opacity: 0.7, fontFamily: font.join(', ') }}
                                   >
                                     {stat.label}
@@ -732,14 +732,16 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                                   >
                                     {plan.name}
                                   </div>
-                                  <div className="mt-4">
+                                  <div className="mt-3">
                                     <span
-                                      className="text-5xl font-bold"
+                                      className="text-3xl font-bold"
                                       style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
                                     >
                                       {plan.price}
                                     </span>
-                                    <span style={{ color: palette[mode].text, opacity: 0.7 }}>/month</span>
+                                    <span className="text-sm" style={{ color: palette[mode].text, opacity: 0.7 }}>
+                                      /month
+                                    </span>
                                   </div>
                                   <div
                                     className="mt-4 text-sm"
@@ -781,9 +783,9 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                           </div>
 
                           {/* FAQ Section */}
-                          <div className="space-y-8">
+                          <div className="space-y-6">
                             <h2
-                              className="text-5xl font-bold"
+                              className="text-2xl font-bold"
                               style={{ color: palette[mode].text, fontFamily: font.join(', ') }}
                             >
                               Frequently asked questions
