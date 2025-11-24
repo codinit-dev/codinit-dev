@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogDescription, DialogRoot } from '~/components/ui/Dialog';
+import * as RadixDialog from '@radix-ui/react-dialog';
+import { motion } from 'framer-motion';
 import { Button } from '~/components/ui/Button';
 import { IconButton } from '~/components/ui/IconButton';
+import { classNames } from '~/utils/classNames';
 
 import type { DesignScheme } from '~/types/design-scheme';
 import {
@@ -408,73 +410,112 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         <div className="i-ph:palette text-xl"></div>
       </IconButton>
 
-      <DialogRoot open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <Dialog className="bg-codinit-elements-bg-depth-1 border-codinit-elements-borderColor shadow-large">
-          <div className="w-[90vw] h-[700px] max-w-[1500px] max-h-[85vh] flex flex-col overflow-hidden">
-            <div className="px-8 pt-6 pb-4 bg-codinit-elements-bg-depth-1">
-              <DialogTitle className="text-2xl font-bold text-codinit-elements-textPrimary">
-                Design Palette & Features
-              </DialogTitle>
-              <DialogDescription className="text-codinit-elements-textSecondary leading-relaxed mt-2">
-                Customize your color palette, typography, and design features. These preferences will guide the AI in
-                creating designs that match your style.
-              </DialogDescription>
-            </div>
+      <RadixDialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <RadixDialog.Portal>
+          <RadixDialog.Overlay asChild>
+            <motion.div
+              className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            />
+          </RadixDialog.Overlay>
 
-            {/* Navigation Tabs */}
-            <div className="px-8 pb-4 bg-codinit-elements-bg-depth-1">
-              <div className="flex gap-2 p-1.5 bg-codinit-elements-bg-depth-3 rounded-xl">
-                {[
-                  { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
-                  { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
-                  { key: 'features', label: 'Features', icon: 'i-ph:magic-wand' },
-                  { key: 'styling', label: 'Styling', icon: 'i-ph:gear' },
-                ].map((tab) => (
+          <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+            <RadixDialog.Content asChild>
+              <motion.div
+                className={classNames(
+                  'w-[90vw] h-[700px] max-w-[1500px] max-h-[85vh]',
+                  'bg-codinit-elements-bg-depth-1 border border-codinit-elements-borderColor rounded-xl shadow-2xl',
+                  'flex flex-col overflow-hidden focus:outline-none',
+                )}
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+              >
+                {/* Close button */}
+                <RadixDialog.Close asChild>
                   <button
-                    key={tab.key}
-                    onClick={() => setActiveSection(tab.key as any)}
-                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
-                      activeSection === tab.key
-                        ? 'bg-codinit-elements-bg-depth-1 text-codinit-elements-textPrimary shadow-lg border border-codinit-elements-borderColor'
-                        : 'text-codinit-elements-textPrimary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-bg-depth-2'
-                    }`}
+                    className={classNames(
+                      'absolute top-2 right-2 z-[10000] flex items-center justify-center',
+                      'w-9 h-9 rounded-lg transition-all duration-200',
+                      'bg-transparent text-codinit-elements-textTertiary',
+                      'hover:bg-codinit-elements-bg-depth-2 hover:text-codinit-elements-textPrimary',
+                      'focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColor',
+                    )}
+                    aria-label="Close design settings"
                   >
-                    <span className={`${tab.icon} text-lg`} />
-                    <span>{tab.label}</span>
+                    <div className="i-lucide:x w-4 h-4" />
                   </button>
-                ))}
-              </div>
-            </div>
+                </RadixDialog.Close>
 
-            {/* Content Area */}
-            <div className="flex-1 px-8 py-4 bg-codinit-elements-bg-depth-1 overflow-y-auto custom-scrollbar">
-              {activeSection === 'colors' && renderColorSection()}
-              {activeSection === 'typography' && renderTypographySection()}
-              {activeSection === 'features' && renderFeaturesSection()}
-              {activeSection === 'styling' && renderStylingSection()}
-            </div>
+                {/* Header */}
+                <div className="px-8 pt-6 pb-4 bg-codinit-elements-bg-depth-1">
+                  <h2 className="text-2xl font-bold text-codinit-elements-textPrimary">Design Palette & Features</h2>
+                  <p className="text-codinit-elements-textSecondary leading-relaxed mt-2">
+                    Customize your color palette, typography, and design features. These preferences will guide the AI
+                    in creating designs that match your style.
+                  </p>
+                </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-between items-center px-8 py-4 bg-codinit-elements-bg-depth-1 border-t border-codinit-elements-borderColor">
-              <div className="text-sm text-codinit-elements-textSecondary">
-                {Object.keys(palette).length} colors • {font.length} fonts • {features.length} features
-              </div>
-              <div className="flex gap-3">
-                <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={handleSave}
-                  className="bg-codinit-elements-button-primary-background hover:bg-codinit-elements-button-primary-backgroundHover text-codinit-elements-button-primary-text"
-                >
-                  Save Changes
-                </Button>
-              </div>
-            </div>
+                {/* Navigation Tabs */}
+                <div className="px-8 pb-4 bg-codinit-elements-bg-depth-1">
+                  <div className="flex gap-2 p-1.5 bg-codinit-elements-bg-depth-3 rounded-xl">
+                    {[
+                      { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
+                      { key: 'typography', label: 'Typography', icon: 'i-ph:text-aa' },
+                      { key: 'features', label: 'Features', icon: 'i-ph:magic-wand' },
+                      { key: 'styling', label: 'Styling', icon: 'i-ph:gear' },
+                    ].map((tab) => (
+                      <button
+                        key={tab.key}
+                        onClick={() => setActiveSection(tab.key as any)}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                          activeSection === tab.key
+                            ? 'bg-codinit-elements-bg-depth-1 text-codinit-elements-textPrimary shadow-lg border border-codinit-elements-borderColor'
+                            : 'text-codinit-elements-textPrimary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-bg-depth-2'
+                        }`}
+                      >
+                        <span className={`${tab.icon} text-lg`} />
+                        <span>{tab.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Content Area */}
+                <div className="flex-1 px-8 py-4 bg-codinit-elements-bg-depth-1 overflow-y-auto custom-scrollbar">
+                  {activeSection === 'colors' && renderColorSection()}
+                  {activeSection === 'typography' && renderTypographySection()}
+                  {activeSection === 'features' && renderFeaturesSection()}
+                  {activeSection === 'styling' && renderStylingSection()}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-between items-center px-8 py-4 bg-codinit-elements-bg-depth-1 border-t border-codinit-elements-borderColor">
+                  <div className="text-sm text-codinit-elements-textSecondary">
+                    {Object.keys(palette).length} colors • {font.length} fonts • {features.length} features
+                  </div>
+                  <div className="flex gap-3">
+                    <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={handleSave}
+                      className="bg-codinit-elements-button-primary-background hover:bg-codinit-elements-button-primary-backgroundHover text-codinit-elements-button-primary-text"
+                    >
+                      Save Changes
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            </RadixDialog.Content>
           </div>
-        </Dialog>
-      </DialogRoot>
+        </RadixDialog.Portal>
+      </RadixDialog.Root>
 
       <style>{`
         .custom-scrollbar {
