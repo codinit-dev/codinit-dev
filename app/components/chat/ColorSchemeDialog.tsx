@@ -43,6 +43,12 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
   const [spacing, setSpacing] = useState<string>(designScheme?.spacing || defaultDesignScheme.spacing);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<'colors' | 'typography' | 'features' | 'styling'>('colors');
+  const [expandedColorGroups, setExpandedColorGroups] = useState<string[]>([
+    'primary',
+    'secondary',
+    'accent',
+    'background',
+  ]);
 
   useEffect(() => {
     if (designScheme) {
@@ -142,6 +148,58 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
     }
   };
 
+  const toggleColorGroup = (groupKey: string) => {
+    setExpandedColorGroups((prev) =>
+      prev.includes(groupKey) ? prev.filter((key) => key !== groupKey) : [...prev, groupKey],
+    );
+  };
+
+  const colorGroups = [
+    {
+      key: 'primary',
+      label: 'Primary',
+      colors: paletteRoles.filter((role) => role.key.toLowerCase().includes('primary')),
+    },
+    {
+      key: 'secondary',
+      label: 'Secondary',
+      colors: paletteRoles.filter((role) => role.key.toLowerCase().includes('secondary')),
+    },
+    {
+      key: 'accent',
+      label: 'Accent',
+      colors: paletteRoles.filter((role) => role.key.toLowerCase().includes('accent')),
+    },
+    {
+      key: 'background',
+      label: 'Base',
+      colors: paletteRoles.filter(
+        (role) =>
+          role.key === 'background' || role.key === 'foreground' || role.key === 'text' || role.key === 'textSecondary',
+      ),
+    },
+    {
+      key: 'card',
+      label: 'Card',
+      colors: paletteRoles.filter((role) => role.key.toLowerCase().includes('card')),
+    },
+    {
+      key: 'other',
+      label: 'Other',
+      colors: paletteRoles.filter(
+        (role) =>
+          !role.key.toLowerCase().includes('primary') &&
+          !role.key.toLowerCase().includes('secondary') &&
+          !role.key.toLowerCase().includes('accent') &&
+          !role.key.toLowerCase().includes('card') &&
+          role.key !== 'background' &&
+          role.key !== 'foreground' &&
+          role.key !== 'text' &&
+          role.key !== 'textSecondary',
+      ),
+    },
+  ].filter((group) => group.colors.length > 0);
+
   const renderColorSection = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -158,44 +216,68 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 max-h-80 overflow-y-auto pr-4 custom-scrollbar">
-        {paletteRoles.map((role) => (
-          <div
-            key={role.key}
-            className="group flex items-center gap-4 p-4 rounded-xl bg-codinit-elements-background-depth-3 hover:bg-codinit-elements-background-depth-2 border border-transparent hover:border-codinit-elements-borderColor transition-all duration-200"
-          >
-            <div className="relative flex-shrink-0">
-              <div
-                className="w-12 h-12 rounded-xl shadow-md cursor-pointer transition-all duration-200 hover:scale-110 ring-2 ring-transparent hover:ring-codinit-elements-borderColorActive"
-                style={{ backgroundColor: palette[mode][role.key] }}
-                onClick={() => document.getElementById(`color-input-${role.key}`)?.click()}
-                role="button"
-                tabIndex={0}
-                aria-label={`Change ${role.label} color`}
-              />
-              <input
-                id={`color-input-${role.key}`}
-                type="color"
-                value={palette[mode][role.key]}
-                onChange={(e) => handleColorChange(role.key, e.target.value)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                tabIndex={-1}
-              />
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-codinit-elements-background-depth-1 rounded-full flex items-center justify-center shadow-sm">
-                <span className="i-ph:pencil-simple text-xs text-codinit-elements-textSecondary" />
-              </div>
+      <div className="space-y-2 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+        {colorGroups.map((group) => {
+          const isExpanded = expandedColorGroups.includes(group.key);
+
+          return (
+            <div
+              key={group.key}
+              className="border border-codinit-elements-borderColor rounded-lg overflow-hidden bg-codinit-elements-background-depth-3"
+            >
+              <button
+                onClick={() => toggleColorGroup(group.key)}
+                className="flex w-full items-center justify-between p-3 text-left transition-colors hover:bg-codinit-elements-background-depth-2"
+              >
+                <span className="text-sm font-medium text-codinit-elements-textPrimary">{group.label}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className={`w-4 h-4 text-codinit-elements-textSecondary transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                >
+                  <path d="M6.23 7.47a.75.75 0 0 1 1.06-.02L12 12.18l4.71-4.73a.75.75 0 1 1 1.06 1.06l-5.25 5.25a.75.75 0 0 1-1.06 0L6.21 8.53a.75.75 0 0 1 .02-1.06" />
+                </svg>
+              </button>
+
+              {isExpanded && (
+                <div className="border-t border-codinit-elements-borderColor bg-codinit-elements-background-depth-1">
+                  {group.colors.map((role) => (
+                    <div
+                      key={role.key}
+                      className="flex items-center justify-between p-3 hover:bg-codinit-elements-background-depth-2 transition-colors border-b border-codinit-elements-borderColor last:border-b-0"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="relative flex-shrink-0">
+                          <div
+                            className="h-8 w-8 rounded border border-codinit-elements-borderColor cursor-pointer hover:scale-110 transition-transform"
+                            style={{ backgroundColor: palette[mode][role.key] }}
+                            onClick={() => document.getElementById(`color-input-${role.key}`)?.click()}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`Change ${role.label} color`}
+                          />
+                          <input
+                            id={`color-input-${role.key}`}
+                            type="color"
+                            value={palette[mode][role.key]}
+                            onChange={(e) => handleColorChange(role.key, e.target.value)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            tabIndex={-1}
+                          />
+                        </div>
+                        <span className="text-sm text-codinit-elements-textPrimary font-medium">{role.label}</span>
+                      </div>
+                      <span className="text-xs font-mono text-codinit-elements-textSecondary">
+                        {palette[mode][role.key]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="font-semibold text-codinit-elements-textPrimary transition-colors">{role.label}</div>
-              <div className="text-sm text-codinit-elements-textSecondary line-clamp-2 leading-relaxed">
-                {role.description}
-              </div>
-              <div className="text-xs text-codinit-elements-textTertiary font-mono mt-1 px-2 py-1 bg-codinit-elements-background-depth-1 rounded-md inline-block">
-                {palette[mode][role.key]}
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
