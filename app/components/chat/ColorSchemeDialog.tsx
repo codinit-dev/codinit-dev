@@ -468,9 +468,9 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             <RadixDialog.Content asChild>
               <motion.div
                 className={classNames(
-                  'w-[90vw] h-[700px] max-w-[1500px] max-h-[85vh]',
+                  'h-[90dvh] max-h-[900px] w-[95dvw] max-w-[1400px]',
                   'bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-xl shadow-2xl',
-                  'flex flex-col overflow-hidden focus:outline-none',
+                  'flex flex-col overflow-hidden focus:outline-none px-0 py-0',
                 )}
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -494,16 +494,16 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 </RadixDialog.Close>
 
                 {/* Header */}
-                <div className="px-8 pt-6 pb-4 bg-codinit-elements-background-depth-1">
-                  <h2 className="text-2xl font-bold text-codinit-elements-textPrimary">Design Palette & Features</h2>
-                  <p className="text-codinit-elements-textSecondary leading-relaxed mt-2">
+                <div className="border-b border-codinit-elements-borderColor p-6 bg-codinit-elements-background-depth-1">
+                  <h2 className="text-lg font-semibold text-codinit-elements-textPrimary">Design Palette & Features</h2>
+                  <p className="text-sm text-codinit-elements-textSecondary mt-1">
                     Customize your color palette, typography, and design features. These preferences will guide the AI
                     in creating designs that match your style.
                   </p>
                 </div>
 
                 {/* Navigation Tabs */}
-                <div className="px-8 pb-4 bg-codinit-elements-background-depth-1">
+                <div className="px-6 pt-4 pb-4 bg-codinit-elements-background-depth-1">
                   <div className="flex gap-2 p-1.5 bg-codinit-elements-background-depth-3 rounded-xl">
                     {[
                       { key: 'colors', label: 'Colors', icon: 'i-ph:palette' },
@@ -529,9 +529,9 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 </div>
 
                 {/* Content Area - Two Column Layout */}
-                <div className="flex flex-1 gap-6 px-8 py-4 bg-codinit-elements-background-depth-1 overflow-hidden">
+                <div className="flex min-h-0 flex-1 gap-4 overflow-hidden px-6 pt-6 bg-codinit-elements-background-depth-1">
                   {/* Left Panel - Settings */}
-                  <div className="flex-1 overflow-y-auto custom-scrollbar">
+                  <div className="w-80 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
                     {activeSection === 'colors' && renderColorSection()}
                     {activeSection === 'typography' && renderTypographySection()}
                     {activeSection === 'features' && renderFeaturesSection()}
@@ -539,7 +539,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   </div>
 
                   {/* Right Panel - Preview */}
-                  <div className="w-[500px] flex flex-col gap-4">
+                  <div className="flex flex-1 flex-col gap-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-codinit-elements-textPrimary">Live Preview</h3>
                       <div className="flex items-center gap-2 bg-codinit-elements-background-depth-3 rounded-lg p-1.5">
@@ -832,22 +832,17 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex justify-between items-center px-8 py-4 bg-codinit-elements-background-depth-1 border-t border-codinit-elements-borderColor">
-                  <div className="text-sm text-codinit-elements-textSecondary">
-                    {Object.keys(palette).length} colors • {font.length} fonts • {features.length} features
-                  </div>
-                  <div className="flex gap-3">
-                    <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={handleSave}
-                      className="bg-codinit-elements-button-primary-background hover:bg-codinit-elements-button-primary-backgroundHover text-codinit-elements-button-primary-text"
-                    >
-                      Save Changes
-                    </Button>
-                  </div>
+                <div className="flex justify-end items-center gap-3 px-6 py-4 bg-codinit-elements-background-depth-1 border-t border-codinit-elements-borderColor">
+                  <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleSave}
+                    className="bg-codinit-elements-button-primary-background hover:bg-codinit-elements-button-primary-backgroundHover text-codinit-elements-button-primary-text"
+                  >
+                    Save Changes
+                  </Button>
                 </div>
               </motion.div>
             </RadixDialog.Content>
