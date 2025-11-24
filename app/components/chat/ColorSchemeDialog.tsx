@@ -410,7 +410,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
 
       <DialogRoot open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <Dialog className="bg-codinit-elements-bg-depth-1 border-codinit-elements-borderColor shadow-large">
-          <div className="w-[54rem] max-w-[calc(100vw-3rem)] max-h-[calc(100dvh-4rem)] flex flex-col overflow-hidden">
+          <div className="w-[90vw] h-[700px] max-w-[1500px] max-h-[85vh] flex flex-col overflow-hidden">
             <div className="px-6 pt-6 pb-4 bg-codinit-elements-bg-depth-1">
               <DialogTitle className="text-2xl font-bold text-codinit-elements-textPrimary">
                 Design Palette & Features
