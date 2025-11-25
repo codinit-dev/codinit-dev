@@ -1,13 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React from 'react';
 import type { ProgressAnnotation } from '~/types/context';
-import { classNames } from '~/utils/classNames';
-import { cubicEasingFn } from '~/utils/easings';
 import { TextShimmer } from '~/components/ui/text-shimmer';
 
 export default function ProgressCompilation({ data }: { data?: ProgressAnnotation[] }) {
   const [progressList, setProgressList] = React.useState<ProgressAnnotation[]>([]);
-  const [expanded, setExpanded] = useState(false);
+
   React.useEffect(() => {
     if (!data || data.length == 0) {
       setProgressList([]);
@@ -31,57 +29,12 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
   }, [data]);
 
   if (progressList.length === 0) {
-    return <></>;
+    return null;
   }
 
   return (
     <AnimatePresence>
-      <div
-        className={classNames(
-          'bg-codinit-elements-background-depth-2',
-          'border border-codinit-elements-borderColor',
-          'shadow-lg rounded-lg  relative w-full max-w-chat mx-auto z-prompt',
-          'p-1',
-        )}
-      >
-        <div
-          className={classNames(
-            'bg-codinit-elements-item-backgroundAccent',
-            'p-1 rounded-lg text-codinit-elements-item-contentAccent',
-            'flex ',
-          )}
-        >
-          <div className="flex-1">
-            <AnimatePresence>
-              {expanded ? (
-                <motion.div
-                  className="actions"
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: '0px' }}
-                  transition={{ duration: 0.15 }}
-                >
-                  {progressList.map((x, i) => {
-                    return <ProgressItem key={i} progress={x} />;
-                  })}
-                </motion.div>
-              ) : (
-                <ProgressItem progress={progressList.slice(-1)[0]} />
-              )}
-            </AnimatePresence>
-          </div>
-          <motion.button
-            initial={{ width: 0 }}
-            animate={{ width: 'auto' }}
-            exit={{ width: 0 }}
-            transition={{ duration: 0.15, ease: cubicEasingFn }}
-            className=" p-1 rounded-lg bg-codinit-elements-item-backgroundAccent hover:bg-codinit-elements-artifacts-backgroundHover"
-            onClick={() => setExpanded((v) => !v)}
-          >
-            <div className={expanded ? 'i-ph:caret-up-bold' : 'i-ph:caret-down-bold'}></div>
-          </motion.button>
-        </div>
-      </div>
+      <ProgressItem progress={progressList[progressList.length - 1]} />
     </AnimatePresence>
   );
 }
@@ -89,28 +42,25 @@ export default function ProgressCompilation({ data }: { data?: ProgressAnnotatio
 const ProgressItem = ({ progress }: { progress: ProgressAnnotation }) => {
   return (
     <motion.div
-      className={classNames('flex text-sm gap-3')}
+      className="flex items-center gap-1.5 text-sm w-full max-w-chat mx-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
     >
-      <div className="flex items-center gap-1.5 ">
-        <div>
-          {progress.status === 'in-progress' ? (
-            <div className="i-svg-spinners:90-ring-with-bg"></div>
-          ) : progress.status === 'complete' ? (
-            <div className="i-ph:check"></div>
-          ) : null}
-        </div>
-        {/* {x.label} */}
+      <div>
+        {progress.status === 'in-progress' ? (
+          <div className="i-svg-spinners:90-ring-with-bg"></div>
+        ) : progress.status === 'complete' ? (
+          <div className="i-ph:check"></div>
+        ) : null}
       </div>
       {progress.status === 'in-progress' ? (
         <TextShimmer className="font-medium" duration={1.5}>
           {progress.message}
         </TextShimmer>
       ) : (
-        progress.message
+        <span>{progress.message}</span>
       )}
     </motion.div>
   );
