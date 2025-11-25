@@ -180,9 +180,7 @@ ${lockedFilesListString}
 
   logger.info(`Sending llm call to ${provider.name} with model ${modelDetails.name}`);
 
-  // console.log(systemPrompt, processedMessages);
-
-  return await _streamText({
+  const streamOptions: any = {
     model: provider.getModelInstance({
       model: modelDetails.name,
       serverEnv,
@@ -193,5 +191,11 @@ ${lockedFilesListString}
     maxTokens: dynamicMaxTokens,
     messages: convertToCoreMessages(processedMessages as any),
     ...options,
-  });
+  };
+
+  if (provider.name === 'Google') {
+    streamOptions.maxRetries = 1;
+  }
+
+  return await _streamText(streamOptions);
 }
