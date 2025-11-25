@@ -283,7 +283,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           label: 'response',
           status: 'in-progress',
           order: progressCounter++,
-          message: 'Generating Response',
+          message: 'Generating...',
         } satisfies ProgressAnnotation);
 
         // Process tool invocations if MCP tools are enabled
@@ -325,7 +325,27 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         })();
         result.mergeIntoDataStream(dataStream);
       },
-      onError: (error: any) => `Custom error: ${error.message}`,
+      onError: (error: any) => {
+        const errorMessage = error.message || String(error);
+
+        if (
+          errorMessage.includes('429') ||
+          errorMessage.includes('Resource exhausted') ||
+          errorMessage.includes('quota')
+        ) {
+          return `Rate limit reached. Your API quota has been exhausted. Please try again later or consider:\n• Waiting a few minutes before retrying\n• Using a different model or provider\n• Checking your API usage at your provider's dashboard\n\nTechnical details: ${errorMessage}`;
+        }
+
+        if (
+          errorMessage.includes('401') ||
+          errorMessage.includes('authentication') ||
+          errorMessage.includes('API key')
+        ) {
+          return `Authentication failed. Please check that your API key is valid and has the necessary permissions.\n\nTechnical details: ${errorMessage}`;
+        }
+
+        return `An error occurred: ${errorMessage}`;
+      },
     }).pipeThrough(
       new TransformStream({
         transform: (chunk, controller) => {
