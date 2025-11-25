@@ -8,6 +8,12 @@
   --codinit-elements-bg-depth-3: theme('colors.gray.200');
   --codinit-elements-bg-depth-4: theme('colors.alpha.gray.5');
 
+  /* Aliases for background-depth variables */
+  --codinit-elements-background-depth-1: var(--codinit-elements-bg-depth-1);
+  --codinit-elements-background-depth-2: var(--codinit-elements-bg-depth-2);
+  --codinit-elements-background-depth-3: var(--codinit-elements-bg-depth-3);
+  --codinit-elements-background-depth-4: var(--codinit-elements-bg-depth-4);
+
   --codinit-elements-textPrimary: theme('colors.gray.950');
   --codinit-elements-textSecondary: theme('colors.gray.600');
   --codinit-elements-textTertiary: theme('colors.gray.500');
@@ -137,6 +143,12 @@
   --codinit-elements-bg-depth-2: #1f1f1f; /* Content surfaces - neutral */
   --codinit-elements-bg-depth-3: #252525; /* Distinction elements - neutral */
   --codinit-elements-bg-depth-4: #2a2a2a; /* Buttons/inputs - neutral */
+
+  /* Aliases for background-depth variables */
+  --codinit-elements-background-depth-1: var(--codinit-elements-bg-depth-1);
+  --codinit-elements-background-depth-2: var(--codinit-elements-bg-depth-2);
+  --codinit-elements-background-depth-3: var(--codinit-elements-bg-depth-3);
+  --codinit-elements-background-depth-4: var(--codinit-elements-bg-depth-4);
 
   /* Optimized contrast for text */
   --codinit-elements-textPrimary: #ffffff; /* Pure white for better readability */
