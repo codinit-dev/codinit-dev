@@ -1,15 +1,44 @@
+export type ColorMode = 'light' | 'dark';
+
+export interface ColorPalette {
+  [key: string]: string;
+}
+
 export interface DesignScheme {
   palette: {
-    light: { [key: string]: string };
-    dark: { [key: string]: string };
+    light: ColorPalette;
+    dark: ColorPalette;
   };
   features: string[];
   font: string[];
-  mode: 'light' | 'dark';
+  mode: ColorMode;
   borderRadius: string;
   shadow: string;
   spacing: string;
   theme?: string;
+}
+
+export interface PaletteRole {
+  key: string;
+  label: string;
+  description: string;
+}
+
+export interface DesignOption {
+  key: string;
+  label: string;
+}
+
+export interface FontOption extends DesignOption {
+  preview: string;
+}
+
+export interface ThemePreset extends DesignOption {
+  image: string;
+}
+
+export interface ColorPreset extends DesignOption {
+  value: string;
 }
 
 export const defaultDesignScheme: DesignScheme = {
@@ -49,7 +78,7 @@ export const defaultDesignScheme: DesignScheme = {
   spacing: 'normal',
 };
 
-export const paletteRoles = [
+export const paletteRoles: PaletteRole[] = [
   {
     key: 'primary',
     label: 'Primary',
@@ -103,7 +132,7 @@ export const paletteRoles = [
   },
 ];
 
-export const designFeatures = [
+export const designFeatures: DesignOption[] = [
   { key: 'rounded', label: 'Rounded Corners' },
   { key: 'border', label: 'Subtle Border' },
   { key: 'gradient', label: 'Gradient Accent' },
@@ -111,7 +140,7 @@ export const designFeatures = [
   { key: 'frosted-glass', label: 'Frosted Glass' },
 ];
 
-export const designFonts = [
+export const designFonts: FontOption[] = [
   { key: 'Inter', label: 'Inter', preview: 'Aa' },
   { key: 'Roboto', label: 'Roboto', preview: 'Aa' },
   { key: 'Open Sans', label: 'Open Sans', preview: 'Aa' },
@@ -123,7 +152,7 @@ export const designFonts = [
   { key: 'Lora', label: 'Lora', preview: 'Aa' },
 ];
 
-export const borderRadiusOptions = [
+export const borderRadiusOptions: DesignOption[] = [
   { key: 'none', label: 'None' },
   { key: 'sm', label: 'Small' },
   { key: 'md', label: 'Medium' },
@@ -132,7 +161,7 @@ export const borderRadiusOptions = [
   { key: 'full', label: 'Full' },
 ];
 
-export const shadowOptions = [
+export const shadowOptions: DesignOption[] = [
   { key: 'none', label: 'None' },
   { key: 'sm', label: 'Small' },
   { key: 'md', label: 'Medium' },
@@ -140,14 +169,14 @@ export const shadowOptions = [
   { key: 'xl', label: 'Extra Large' },
 ];
 
-export const spacingOptions = [
+export const spacingOptions: DesignOption[] = [
   { key: 'tight', label: 'Tight' },
   { key: 'normal', label: 'Normal' },
   { key: 'relaxed', label: 'Relaxed' },
   { key: 'loose', label: 'Loose' },
 ];
 
-export const presetThemes = [
+export const presetThemes: ThemePreset[] = [
   { key: 'minimal', label: 'Minimal', image: '/style_presets/minimal.webp' },
   { key: 'modern', label: 'Modern', image: '/style_presets/modern.webp' },
   { key: 'carbon', label: 'Carbon', image: '/style_presets/carbon.webp' },
@@ -161,7 +190,7 @@ export const presetThemes = [
   { key: 'cyberpunk', label: 'Cyberpunk', image: '/style_presets/cyberpunk.webp' },
 ];
 
-export const predefinedColors = [
+export const predefinedColors: ColorPreset[] = [
   { key: 'red', label: 'Red', value: '#ef4444' },
   { key: 'orange', label: 'Orange', value: '#f97316' },
   { key: 'amber', label: 'Amber', value: '#f59e0b' },
@@ -185,3 +214,62 @@ export const predefinedColors = [
   { key: 'neutral', label: 'Neutral', value: '#737373' },
   { key: 'stone', label: 'Stone', value: '#78716c' },
 ];
+
+export function getBorderRadiusValue(key: string, hasRoundedFeature: boolean = false): string {
+  if (hasRoundedFeature) {
+    return '1.5rem';
+  }
+
+  switch (key) {
+    case 'none':
+      return '0px';
+    case 'sm':
+      return '0.25rem';
+    case 'md':
+      return '0.375rem';
+    case 'lg':
+      return '0.5rem';
+    case 'xl':
+      return '0.75rem';
+    case 'full':
+      return '9999px';
+    default:
+      return '0.375rem';
+  }
+}
+
+export function getBoxShadowValue(key: string, hasShadowFeature: boolean = false): string {
+  if (!hasShadowFeature) {
+    return 'none';
+  }
+
+  switch (key) {
+    case 'none':
+      return 'none';
+    case 'sm':
+      return '0 1px 2px 0 rgb(0 0 0 / 0.05)';
+    case 'md':
+      return '0 4px 6px -1px rgb(0 0 0 / 0.1)';
+    case 'lg':
+      return '0 10px 15px -3px rgb(0 0 0 / 0.1)';
+    case 'xl':
+      return '0 20px 25px -5px rgb(0 0 0 / 0.1)';
+    default:
+      return 'none';
+  }
+}
+
+export function getSpacingValue(key: string): string {
+  switch (key) {
+    case 'tight':
+      return '0.75rem';
+    case 'normal':
+      return '1rem';
+    case 'relaxed':
+      return '1.25rem';
+    case 'loose':
+      return '1.5rem';
+    default:
+      return '1rem';
+  }
+}
