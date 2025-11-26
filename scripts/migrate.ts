@@ -21,6 +21,7 @@ async function runMigrations() {
   console.log('🔄 Connecting to database...');
 
   const sql = postgres(connectionString, {
+    prepare: false,
     ssl: 'require',
     max: 1,
   });
