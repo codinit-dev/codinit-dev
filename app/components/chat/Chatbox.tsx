@@ -420,16 +420,16 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
       <MCPDialog isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} initialTab="marketplace" />
 
       {/* Tool Mention Autocomplete */}
-      {autocomplete.isOpen && (
-        <ToolMentionAutocomplete
-          tools={autocomplete.filteredTools}
-          selectedIndex={autocomplete.selectedIndex}
-          position={autocomplete.dropdownPosition}
-          onSelect={autocomplete.handleToolSelect}
-          onHover={autocomplete.setSelectedIndex}
-          searchQuery={autocomplete.searchQuery}
-        />
-      )}
+      <ToolMentionAutocomplete
+        isOpen={autocomplete.isOpen}
+        tools={autocomplete.filteredTools}
+        selectedIndex={autocomplete.selectedIndex}
+        position={autocomplete.dropdownPosition}
+        onSelect={autocomplete.handleToolSelect}
+        onHover={autocomplete.setSelectedIndex}
+        onClose={autocomplete.handleClose}
+        searchQuery={autocomplete.searchQuery}
+      />
     </>
   );
 };
