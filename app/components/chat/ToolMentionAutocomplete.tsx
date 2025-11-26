@@ -1,7 +1,8 @@
 import type { ToolItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { useEffect, useRef } from 'react';
 import { classNames } from '~/utils/classNames';
-import * as Dialog from '@radix-ui/react-dialog';
+import { DialogRoot } from '~/components/ui/Dialog';
+import * as RadixDialog from '@radix-ui/react-dialog';
 
 interface ToolMentionAutocompleteProps {
   isOpen: boolean;
@@ -59,9 +60,9 @@ export function ToolMentionAutocomplete({
   let globalIndex = 0;
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()} modal={false}>
-      <Dialog.Portal>
-        <Dialog.Content
+    <DialogRoot open={isOpen} onOpenChange={(open) => !open && onClose()} modal={false}>
+      <RadixDialog.Portal>
+        <RadixDialog.Content
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
           onEscapeKeyDown={onClose}
@@ -137,8 +138,8 @@ export function ToolMentionAutocomplete({
               )}
             </div>
           </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </RadixDialog.Content>
+      </RadixDialog.Portal>
+    </DialogRoot>
   );
 }
