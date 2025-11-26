@@ -50,6 +50,9 @@ const UpdateTab = lazy(() =>
 const TaskManagerTab = lazy(() =>
   import('~/components/@settings/tabs/task-manager/TaskManagerTab').then((module) => ({ default: module.default })),
 );
+const ApiKeysTab = lazy(() =>
+  import('~/components/@settings/tabs/api-keys/APIKeysTab').then((module) => ({ default: module.default })),
+);
 
 interface ControlPanelContentProps {
   activeTab: TabType;
@@ -94,6 +97,8 @@ function TabContent({ tab }: { tab: TabType }) {
       return <UpdateTab />;
     case 'task-manager':
       return <TaskManagerTab />;
+    case 'api-keys':
+      return <ApiKeysTab />;
     default:
       return (
         <div className="flex items-center justify-center h-full text-codinit-elements-textSecondary">
