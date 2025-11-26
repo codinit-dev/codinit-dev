@@ -1,7 +1,6 @@
 import type { ToolItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { useEffect, useRef } from 'react';
 import { classNames } from '~/utils/classNames';
-import { DialogRoot } from '~/components/ui/Dialog';
 import * as RadixDialog from '@radix-ui/react-dialog';
 
 interface ToolMentionAutocompleteProps {
@@ -60,7 +59,7 @@ export function ToolMentionAutocomplete({
   let globalIndex = 0;
 
   return (
-    <DialogRoot open={isOpen} onOpenChange={(open) => !open && onClose()} modal={false}>
+    <RadixDialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()} modal={false}>
       <RadixDialog.Portal>
         <RadixDialog.Content
           onOpenAutoFocus={(e) => e.preventDefault()}
@@ -140,6 +139,6 @@ export function ToolMentionAutocomplete({
           </div>
         </RadixDialog.Content>
       </RadixDialog.Portal>
-    </DialogRoot>
+    </RadixDialog.Root>
   );
 }
