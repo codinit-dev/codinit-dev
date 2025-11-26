@@ -240,7 +240,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
               </button>
 
               {isExpanded && (
-                <div className="border-t border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1-dark">
+                <div className="border-t border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark">
                   {group.colors.map((role) => (
                     <div
                       key={role.key}
