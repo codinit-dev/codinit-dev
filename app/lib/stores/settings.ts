@@ -222,13 +222,40 @@ const getInitialTabConfiguration = (): TabWindowConfig => {
       return defaultConfig;
     }
 
-    // Ensure proper typing of loaded configuration
-    return {
-      userTabs: parsed.userTabs.filter((tab: TabVisibilityConfig): tab is UserTabConfig => tab.window === 'user'),
-      developerTabs: parsed.developerTabs.filter(
-        (tab: TabVisibilityConfig): tab is DevTabConfig => tab.window === 'developer',
-      ),
-    };
+    const userTabs = parsed.userTabs.filter((tab: TabVisibilityConfig): tab is UserTabConfig => tab.window === 'user');
+    const developerTabs = parsed.developerTabs.filter(
+      (tab: TabVisibilityConfig): tab is DevTabConfig => tab.window === 'developer',
+    );
+
+    // Migration: Add new tabs from DEFAULT_TAB_CONFIG if they don't exist
+    let configUpdated = false;
+    const defaultUserTabs = DEFAULT_TAB_CONFIG.filter((tab): tab is UserTabConfig => tab.window === 'user');
+    const defaultDevTabs = DEFAULT_TAB_CONFIG.filter((tab): tab is DevTabConfig => tab.window === 'developer');
+
+    // Check for missing tabs in user tabs
+    defaultUserTabs.forEach((defaultTab) => {
+      if (!userTabs.find((tab: UserTabConfig) => tab.id === defaultTab.id)) {
+        userTabs.push(defaultTab);
+        configUpdated = true;
+      }
+    });
+
+    // Check for missing tabs in developer tabs
+    defaultDevTabs.forEach((defaultTab) => {
+      if (!developerTabs.find((tab: DevTabConfig) => tab.id === defaultTab.id)) {
+        developerTabs.push(defaultTab);
+        configUpdated = true;
+      }
+    });
+
+    // If config was updated, save it back to localStorage
+    const newConfig = { userTabs, developerTabs };
+
+    if (configUpdated) {
+      localStorage.setItem('codinit_tab_configuration', JSON.stringify(newConfig));
+    }
+
+    return newConfig;
   } catch (error) {
     console.warn('Failed to parse tab configuration:', error);
     return defaultConfig;
