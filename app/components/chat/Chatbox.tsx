@@ -21,6 +21,9 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from '~/components/mcp/MCPTools';
 import { MCPDialog } from '~/components/mcp/MCPDialog';
 import { McpServerSelector } from './MCPServerSelector';
+import { useToolMentionAutocomplete } from '~/lib/hooks/useToolMentionAutocomplete';
+import { ToolMentionAutocomplete } from './ToolMentionAutocomplete';
+import { insertToolMention } from '~/utils/toolMentionParser';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -69,6 +72,38 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
   const [placeholderText, setPlaceholderText] = useState('');
   const [showPlaceholder, setShowPlaceholder] = useState(true);
+  const [cursorPosition, setCursorPosition] = useState(0);
+
+  const handleToolSelected = (toolName: string) => {
+    if (!props.textareaRef?.current) {
+      return;
+    }
+
+    const textarea = props.textareaRef.current;
+    const { newText, newCursorPos } = insertToolMention(props.input, cursorPosition, toolName);
+
+    if (props.handleInputChange) {
+      const syntheticEvent = {
+        target: { value: newText },
+        currentTarget: { value: newText },
+      } as React.ChangeEvent<HTMLTextAreaElement>;
+
+      props.handleInputChange(syntheticEvent);
+    }
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+      setCursorPosition(newCursorPos);
+    }, 0);
+  };
+
+  const autocomplete = useToolMentionAutocomplete({
+    input: props.input,
+    cursorPosition,
+    textareaRef: props.textareaRef || { current: null },
+    onToolSelected: handleToolSelected,
+  });
 
   useEffect(() => {
     if (!props.chatStarted && props.input.length === 0 && showPlaceholder) {
@@ -242,6 +277,10 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             });
           }}
           onKeyDown={(event) => {
+            if (autocomplete.handleKeyDown(event)) {
+              return;
+            }
+
             if (event.key === 'Enter') {
               if (event.shiftKey) {
                 return;
@@ -254,7 +293,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                 return;
               }
 
-              // ignore if using input method engine
               if (event.nativeEvent.isComposing) {
                 return;
               }
@@ -263,7 +301,23 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             }
           }}
           value={props.input}
-          onChange={props.handleInputChange}
+          onChange={(e) => {
+            if (e.target.selectionStart !== null) {
+              setCursorPosition(e.target.selectionStart);
+            }
+
+            props.handleInputChange?.(e);
+          }}
+          onClick={(e) => {
+            if (e.currentTarget.selectionStart !== null) {
+              setCursorPosition(e.currentTarget.selectionStart);
+            }
+          }}
+          onKeyUp={(e) => {
+            if (e.currentTarget.selectionStart !== null) {
+              setCursorPosition(e.currentTarget.selectionStart);
+            }
+          }}
           onFocus={handleTextareaFocus}
           onBlur={handleTextareaBlur}
           onPaste={props.handlePaste}
@@ -364,6 +418,18 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
 
       {/* MCP Integration Panel */}
       <MCPDialog isOpen={isMcpPanelOpen} onClose={() => setIsMcpPanelOpen(false)} initialTab="marketplace" />
+
+      {/* Tool Mention Autocomplete */}
+      {autocomplete.isOpen && (
+        <ToolMentionAutocomplete
+          tools={autocomplete.filteredTools}
+          selectedIndex={autocomplete.selectedIndex}
+          position={autocomplete.dropdownPosition}
+          onSelect={autocomplete.handleToolSelect}
+          onHover={autocomplete.setSelectedIndex}
+          searchQuery={autocomplete.searchQuery}
+        />
+      )}
     </>
   );
 };
