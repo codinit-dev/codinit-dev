@@ -34,6 +34,19 @@ export function extractSearchQuery(text: string, cursorPos: number): string {
   return state.searchQuery;
 }
 
+function getTextWidth(text: string, font: string): number {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  if (!context) {
+    return text.length * 8;
+  }
+
+  context.font = font;
+
+  return context.measureText(text).width;
+}
+
 export function calculateDropdownPosition(
   textarea: HTMLTextAreaElement,
   atPosition: number,
@@ -45,18 +58,19 @@ export function calculateDropdownPosition(
   const text = textarea.value.slice(0, atPosition);
   const lines = text.split('\n');
   const currentLine = lines.length - 1;
-  const currentColumn = lines[lines.length - 1].length;
+  const textBeforeCursor = lines[lines.length - 1];
 
   const style = window.getComputedStyle(textarea);
   const fontSize = parseFloat(style.fontSize);
   const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.2;
   const paddingLeft = parseFloat(style.paddingLeft);
   const paddingTop = parseFloat(style.paddingTop);
+  const font = `${style.fontSize} ${style.fontFamily}`;
 
-  const charWidth = fontSize * 0.6;
+  const textWidth = getTextWidth(textBeforeCursor, font);
 
   const rect = textarea.getBoundingClientRect();
-  const x = rect.left + paddingLeft + currentColumn * charWidth;
+  const x = rect.left + paddingLeft + textWidth - textarea.scrollLeft;
   const y = rect.top + paddingTop + (currentLine + 1) * lineHeight;
 
   return { x, y };
