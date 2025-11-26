@@ -220,7 +220,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
           return (
             <div
               key={group.key}
-              className="border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark rounded-lg overflow-hidden bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark"
+              className="border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark rounded-lg overflow-hidden"
             >
               <button
                 onClick={() => toggleColorGroup(group.key)}
