@@ -115,7 +115,7 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
   };
 
   return (
-    <DialogRoot open={true} onOpenChange={() => {}}>
+    <DialogRoot open={true} onOpenChange={() => undefined}>
       <Dialog showCloseButton={false}>
         <div className="p-6 max-w-md mx-auto">
           <DialogTitle className="text-center mb-2">Welcome to Codinit!</DialogTitle>
