@@ -45,6 +45,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     contextOptimization,
     supabase,
     enableMCPTools = false,
+    selectedMCP,
   } = await request.json<{
     messages: Messages;
     files: any;
@@ -59,6 +60,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       };
     };
     enableMCPTools?: boolean;
+    selectedMCP?: string | null;
   }>();
 
   const cookieHeader = request.headers.get('Cookie');
@@ -197,15 +199,23 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         }
 
         let mcpService: MCPService | null = null;
+        let mcpTools: any = undefined;
 
         if (enableMCPTools) {
           mcpService = MCPService.getInstance();
+          mcpTools = selectedMCP ? mcpService.getToolsForServer(selectedMCP) : mcpService.tools;
+
+          if (selectedMCP) {
+            logger.debug(`Using MCP tools from server: ${selectedMCP}`);
+          } else {
+            logger.debug('Using all available MCP tools');
+          }
         }
 
         const options: StreamingOptions = {
           supabaseConnection: supabase,
           toolChoice: enableMCPTools ? 'auto' : 'none',
-          tools: mcpService?.tools,
+          tools: mcpTools,
           onFinish: async ({ text: content, finishReason, usage }) => {
             logger.debug('usage', JSON.stringify(usage));
 
