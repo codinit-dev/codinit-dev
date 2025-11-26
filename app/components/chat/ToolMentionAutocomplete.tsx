@@ -1,7 +1,7 @@
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '~/components/ui/Command';
 import type { ToolItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { createPortal } from 'react-dom';
 import { useEffect, useRef, useState } from 'react';
+import { classNames } from '~/utils/classNames';
 
 interface ToolMentionAutocompleteProps {
   tools: ToolItem[];
@@ -89,40 +89,38 @@ export function ToolMentionAutocomplete({
         top: `${adjustedPosition.y}px`,
       }}
     >
-      <Command className="bg-transparent border-none">
-        <CommandList className="max-h-[300px] overflow-y-auto p-2">
-          <CommandEmpty className="py-4 text-sm text-codinit-elements-textTertiary">
+      <div className="max-h-[300px] overflow-y-auto p-2">
+        {tools.length === 0 ? (
+          <div className="py-4 text-center text-sm text-codinit-elements-textTertiary">
             No tools found for &quot;{searchQuery}&quot;
-          </CommandEmpty>
-
-          {serverNames.map((serverName) => {
+          </div>
+        ) : (
+          serverNames.map((serverName) => {
             const serverTools = groupedTools[serverName];
 
             return (
-              <CommandGroup
-                key={serverName}
-                heading={showServerGroups ? `📦 ${serverName}` : undefined}
-                className="px-0"
-              >
+              <div key={serverName} className="mb-2">
+                {showServerGroups && (
+                  <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">
+                    📦 {serverName}
+                  </div>
+                )}
                 {serverTools.map((tool) => {
                   const currentIndex = globalIndex++;
                   const isSelected = currentIndex === selectedIndex;
 
                   return (
-                    <CommandItem
+                    <div
                       key={`${serverName}-${tool.name}`}
-                      value={tool.name}
-                      onSelect={() => onSelect(tool.name)}
+                      onClick={() => onSelect(tool.name)}
                       onMouseEnter={() => onHover(currentIndex)}
                       data-selected={isSelected}
-                      className={`
-                        cursor-pointer rounded-md px-3 py-2 mb-1
-                        ${
-                          isSelected
-                            ? 'bg-accent-500 text-white'
-                            : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary'
-                        }
-                      `}
+                      className={classNames(
+                        'cursor-pointer rounded-md px-3 py-2 mb-1 transition-colors',
+                        isSelected
+                          ? 'bg-accent-500 text-white'
+                          : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary',
+                      )}
                     >
                       <div className="flex flex-col gap-1 w-full">
                         <div className="flex items-center gap-2">
@@ -131,22 +129,23 @@ export function ToolMentionAutocomplete({
                         </div>
                         {tool.description && (
                           <div
-                            className={`text-xs ml-6 ${
-                              isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary'
-                            }`}
+                            className={classNames(
+                              'text-xs ml-6',
+                              isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary',
+                            )}
                           >
                             {tool.description.length > 100 ? `${tool.description.slice(0, 100)}...` : tool.description}
                           </div>
                         )}
                       </div>
-                    </CommandItem>
+                    </div>
                   );
                 })}
-              </CommandGroup>
+              </div>
             );
-          })}
-        </CommandList>
-      </Command>
+          })
+        )}
+      </div>
     </div>
   );
 
