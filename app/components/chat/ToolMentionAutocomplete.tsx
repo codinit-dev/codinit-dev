@@ -1,7 +1,7 @@
 import type { ToolItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { useEffect, useRef } from 'react';
 import { classNames } from '~/utils/classNames';
-import * as RadixDialog from '@radix-ui/react-dialog';
+import { createPortal } from 'react-dom';
 
 interface ToolMentionAutocompleteProps {
   isOpen: boolean;
@@ -36,6 +36,32 @@ export function ToolMentionAutocomplete({
     }
   }, [selectedIndex]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      return () => {};
+    }
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen || !position) {
     return null;
   }
@@ -58,87 +84,73 @@ export function ToolMentionAutocomplete({
 
   let globalIndex = 0;
 
-  return (
-    <RadixDialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()} modal={false}>
-      <RadixDialog.Portal>
-        <RadixDialog.Content
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          onCloseAutoFocus={(e) => e.preventDefault()}
-          onEscapeKeyDown={onClose}
-          onPointerDownOutside={onClose}
-          onInteractOutside={(e) => e.preventDefault()}
-          className="fixed z-[9999] outline-none"
-          style={{
-            left: `${position.x}px`,
-            top: `${position.y}px`,
-          }}
-        >
-          <div
-            ref={dropdownRef}
-            className="min-w-[400px] max-w-[500px] bg-codinit-elements-bg-depth-1 border border-codinit-elements-borderColor rounded-lg shadow-lg transition-theme"
-          >
-            <div className="max-h-[300px] overflow-y-auto p-2">
-              {tools.length === 0 ? (
-                <div className="py-4 text-center text-sm text-codinit-elements-textTertiary">
-                  No tools found for &quot;{searchQuery}&quot;
-                </div>
-              ) : (
-                serverNames.map((serverName) => {
-                  const serverTools = groupedTools[serverName];
+  return createPortal(
+    <div
+      ref={dropdownRef}
+      className="fixed z-[9999] min-w-[400px] max-w-[500px] bg-codinit-elements-bg-depth-1 border border-codinit-elements-borderColor rounded-lg shadow-lg transition-theme"
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+      }}
+    >
+      <div className="max-h-[300px] overflow-y-auto p-2">
+        {tools.length === 0 ? (
+          <div className="py-4 text-center text-sm text-codinit-elements-textTertiary">
+            No tools found for &quot;{searchQuery}&quot;
+          </div>
+        ) : (
+          serverNames.map((serverName) => {
+            const serverTools = groupedTools[serverName];
+
+            return (
+              <div key={serverName} className="mb-2">
+                {showServerGroups && (
+                  <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">
+                    📦 {serverName}
+                  </div>
+                )}
+                {serverTools.map((tool) => {
+                  const currentIndex = globalIndex++;
+                  const isSelected = currentIndex === selectedIndex;
 
                   return (
-                    <div key={serverName} className="mb-2">
-                      {showServerGroups && (
-                        <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">
-                          📦 {serverName}
-                        </div>
+                    <div
+                      key={`${serverName}-${tool.name}`}
+                      onClick={() => onSelect(tool.name)}
+                      onMouseEnter={() => onHover(currentIndex)}
+                      data-selected={isSelected}
+                      className={classNames(
+                        'cursor-pointer rounded-md px-3 py-2 mb-1 transition-colors',
+                        isSelected
+                          ? 'bg-accent-500 text-white'
+                          : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary',
                       )}
-                      {serverTools.map((tool) => {
-                        const currentIndex = globalIndex++;
-                        const isSelected = currentIndex === selectedIndex;
-
-                        return (
+                    >
+                      <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">🔧</span>
+                          <span className="font-medium text-sm">{tool.name}</span>
+                        </div>
+                        {tool.description && (
                           <div
-                            key={`${serverName}-${tool.name}`}
-                            onClick={() => onSelect(tool.name)}
-                            onMouseEnter={() => onHover(currentIndex)}
-                            data-selected={isSelected}
                             className={classNames(
-                              'cursor-pointer rounded-md px-3 py-2 mb-1 transition-colors',
-                              isSelected
-                                ? 'bg-accent-500 text-white'
-                                : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary',
+                              'text-xs ml-6',
+                              isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary',
                             )}
                           >
-                            <div className="flex flex-col gap-1 w-full">
-                              <div className="flex items-center gap-2">
-                                <span className="text-base">🔧</span>
-                                <span className="font-medium text-sm">{tool.name}</span>
-                              </div>
-                              {tool.description && (
-                                <div
-                                  className={classNames(
-                                    'text-xs ml-6',
-                                    isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary',
-                                  )}
-                                >
-                                  {tool.description.length > 100
-                                    ? `${tool.description.slice(0, 100)}...`
-                                    : tool.description}
-                                </div>
-                              )}
-                            </div>
+                            {tool.description.length > 100 ? `${tool.description.slice(0, 100)}...` : tool.description}
                           </div>
-                        );
-                      })}
+                        )}
+                      </div>
                     </div>
                   );
-                })
-              )}
-            </div>
-          </div>
-        </RadixDialog.Content>
-      </RadixDialog.Portal>
-    </RadixDialog.Root>
+                })}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>,
+    document.body,
   );
 }
