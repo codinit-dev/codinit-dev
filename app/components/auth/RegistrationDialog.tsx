@@ -117,7 +117,10 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
   return (
     <RadixDialog.Root open={true} onOpenChange={() => undefined}>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="fixed inset-0 bg-background z-[9999]" />
+        <RadixDialog.Overlay
+          className="fixed inset-0 z-[9999]"
+          style={{ backgroundColor: 'var(--codinit-elements-bg-depth-1)' }}
+        />
         <RadixDialog.Content className="fixed inset-0 z-[9999] focus:outline-none">
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="grid h-full min-h-screen lg:grid-cols-2">
@@ -125,27 +128,47 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
                 <div className="relative flex w-full max-w-[350px] flex-col items-start justify-center">
                   <a className="mb-6 transition-opacity" href="/">
                     <div className="flex h-9 items-center gap-2">
-                      <div className="i-ph:code-bold w-8 h-8 text-primary" />
-                      <span className="text-xl font-semibold">Codinit</span>
+                      <div
+                        className="i-ph:code-bold w-8 h-8"
+                        style={{ color: 'var(--codinit-elements-button-primary-background)' }}
+                      />
+                      <span className="text-xl font-semibold" style={{ color: 'var(--codinit-elements-textPrimary)' }}>
+                        Codinit
+                      </span>
                     </div>
                   </a>
 
                   <div className="min-h-[450px] w-full">
                     <div className="flex flex-col gap-8">
                       <div className="flex flex-col gap-3">
-                        <h1 className="text-3xl font-medium">Create account</h1>
+                        <h1 className="text-3xl font-medium" style={{ color: 'var(--codinit-elements-textPrimary)' }}>
+                          Create account
+                        </h1>
                       </div>
 
                       <form onSubmit={handleSubmit} className="grid gap-4">
                         {submitError && (
-                          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                            <p className="text-red-700 dark:text-red-400 text-sm">{submitError}</p>
+                          <div
+                            className="border rounded-lg p-3"
+                            style={{
+                              backgroundColor: 'var(--codinit-elements-button-danger-background)',
+                              borderColor: 'var(--codinit-elements-button-danger-text)',
+                            }}
+                          >
+                            <p className="text-sm" style={{ color: 'var(--codinit-elements-button-danger-text)' }}>
+                              {submitError}
+                            </p>
                           </div>
                         )}
 
                         <div className="grid gap-4">
                           <div className="grid">
-                            <p className="mb-1 text-sm font-medium text-foreground">Full Name</p>
+                            <p
+                              className="mb-1 text-sm font-medium"
+                              style={{ color: 'var(--codinit-elements-textPrimary)' }}
+                            >
+                              Full Name
+                            </p>
                             <Input
                               id="fullName"
                               type="text"
@@ -156,11 +179,20 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
                               disabled={isSubmitting}
                               required
                             />
-                            {errors.fullName && <p className="text-red-500 text-xs mt-1.5">{errors.fullName}</p>}
+                            {errors.fullName && (
+                              <p className="text-xs mt-1.5" style={{ color: 'var(--codinit-elements-icon-error)' }}>
+                                {errors.fullName}
+                              </p>
+                            )}
                           </div>
 
                           <div className="grid">
-                            <p className="mb-1 text-sm font-medium text-foreground">Email</p>
+                            <p
+                              className="mb-1 text-sm font-medium"
+                              style={{ color: 'var(--codinit-elements-textPrimary)' }}
+                            >
+                              Email
+                            </p>
                             <Input
                               id="email"
                               type="email"
@@ -174,7 +206,11 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
                               disabled={isSubmitting}
                               required
                             />
-                            {errors.email && <p className="text-red-500 text-xs mt-1.5">{errors.email}</p>}
+                            {errors.email && (
+                              <p className="text-xs mt-1.5" style={{ color: 'var(--codinit-elements-icon-error)' }}>
+                                {errors.email}
+                              </p>
+                            )}
                           </div>
 
                           <div className="flex items-start gap-2">
@@ -185,7 +221,11 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
                               disabled={isSubmitting}
                               className="mt-0.5"
                             />
-                            <Label htmlFor="emailOptIn" className="text-xs text-muted-foreground leading-relaxed">
+                            <Label
+                              htmlFor="emailOptIn"
+                              className="text-xs leading-relaxed"
+                              style={{ color: 'var(--codinit-elements-textSecondary)' }}
+                            >
                               I agree to receive email updates about new features and improvements.
                             </Label>
                           </div>
@@ -193,7 +233,11 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
                           <div className="flex flex-col gap-3">
                             <Button
                               type="submit"
-                              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                              className="w-full"
+                              style={{
+                                backgroundColor: 'var(--codinit-elements-button-primary-background)',
+                                color: 'var(--codinit-elements-button-primary-text)',
+                              }}
                               disabled={isSubmitting || !fullName.trim() || !email.trim()}
                             >
                               {isSubmitting ? (
@@ -207,18 +251,20 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
                             </Button>
 
                             <div className="text-center text-sm">
-                              <span className="text-muted-foreground">
+                              <span style={{ color: 'var(--codinit-elements-textSecondary)' }}>
                                 By registering you accept the{' '}
                                 <a
                                   href="https://codinit.dev/terms"
-                                  className="text-primary underline hover:no-underline"
+                                  className="underline hover:no-underline"
+                                  style={{ color: 'var(--codinit-elements-button-primary-background)' }}
                                 >
                                   Terms of Service
                                 </a>{' '}
                                 and{' '}
                                 <a
                                   href="https://codinit.dev/privacy"
-                                  className="text-primary underline hover:no-underline"
+                                  className="underline hover:no-underline"
+                                  style={{ color: 'var(--codinit-elements-button-primary-background)' }}
                                 >
                                   Privacy Policy
                                 </a>
@@ -234,18 +280,34 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
               </div>
 
               <div className="sticky top-0 hidden h-screen p-4 lg:block">
-                <div className="relative h-full w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900">
+                <div
+                  className="relative h-full w-full overflow-hidden rounded-xl"
+                  style={{ backgroundColor: 'var(--codinit-elements-bg-depth-2)' }}
+                >
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
-                    <div className="flex w-full max-w-md items-center gap-4 rounded-2xl bg-white/90 dark:bg-gray-900/90 px-6 py-6 shadow-xl backdrop-blur-sm">
+                    <div
+                      className="flex w-full max-w-md items-center gap-4 rounded-2xl px-6 py-6 shadow-xl"
+                      style={{
+                        backgroundColor: 'var(--codinit-elements-bg-depth-3)',
+                        borderColor: 'var(--codinit-elements-borderColor)',
+                        borderWidth: '1px',
+                      }}
+                    >
                       <div className="flex-1">
-                        <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        <p className="text-lg font-medium" style={{ color: 'var(--codinit-elements-textPrimary)' }}>
                           Build full-stack apps with AI
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-sm mt-1" style={{ color: 'var(--codinit-elements-textSecondary)' }}>
                           Start creating with Codinit today
                         </p>
                       </div>
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <div
+                        className="flex h-12 w-12 items-center justify-center rounded-full"
+                        style={{
+                          backgroundColor: 'var(--codinit-elements-button-primary-background)',
+                          color: 'var(--codinit-elements-button-primary-text)',
+                        }}
+                      >
                         <div className="i-ph:rocket-launch-bold w-6 h-6" />
                       </div>
                     </div>
