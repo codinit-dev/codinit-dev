@@ -1,29 +1,6 @@
-import { BrowserWindow, Menu } from 'electron';
+import { Menu } from 'electron';
 
-export function setupMenu(win: BrowserWindow): void {
-  const app = Menu.getApplicationMenu();
-  Menu.setApplicationMenu(
-    Menu.buildFromTemplate([
-      ...(app ? app.items : []),
-      {
-        label: 'Go',
-        submenu: [
-          {
-            label: 'Back',
-            accelerator: 'CmdOrCtrl+[',
-            click: () => {
-              win?.webContents.navigationHistory.goBack();
-            },
-          },
-          {
-            label: 'Forward',
-            accelerator: 'CmdOrCtrl+]',
-            click: () => {
-              win?.webContents.navigationHistory.goForward();
-            },
-          },
-        ],
-      },
-    ]),
-  );
+export function setupMenu(): void {
+  // Remove the application menu entirely to hide menu bar on all platforms
+  Menu.setApplicationMenu(null);
 }

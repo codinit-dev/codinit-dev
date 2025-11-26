@@ -197,5 +197,5 @@ ${lockedFilesListString}
     streamOptions.maxRetries = 1;
   }
 
-  return await _streamText(streamOptions);
+  return _streamText(streamOptions);
 }

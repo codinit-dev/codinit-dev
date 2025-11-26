@@ -109,7 +109,7 @@ async function llmCallAction({ context, request }: ActionFunctionArgs) {
         throw new Error('Provider not found');
       }
 
-      logger.info(`Generating response Provider: ${provider.name}, Model: ${modelDetails.name}`);
+      logger.info(`Generating... Provider: ${provider.name}, Model: ${modelDetails.name}`);
 
       const result = await generateText({
         system,

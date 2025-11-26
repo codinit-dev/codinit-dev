@@ -20,6 +20,7 @@ import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from '~/components/mcp/MCPTools';
 import { MCPDialog } from '~/components/mcp/MCPDialog';
+import { McpServerSelector } from './MCPServerSelector';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -352,8 +353,9 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               {props.isModelSettingsCollapsed ? <span className="text-xs">{props.model}</span> : <span />}
             </IconButton>
           </div>
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-2 items-center">
             <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />
+            <McpServerSelector />
             <SupabaseConnection />
           </div>
           <ExpoQrModal open={props.qrModalOpen} onClose={() => props.setQrModalOpen(false)} />

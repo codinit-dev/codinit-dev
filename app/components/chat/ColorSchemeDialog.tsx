@@ -213,7 +213,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
         </Button>
       </div>
 
-      <div className="space-y-2 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+      <div className="space-y-2 max-h-80 overflow-y-auto pr-4 custom-scrollbar">
         {colorGroups.map((group) => {
           const isExpanded = expandedColorGroups.includes(group.key);
 

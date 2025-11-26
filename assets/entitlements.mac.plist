@@ -14,12 +14,10 @@
     <key>com.apple.security.network.client</key>
     <true/>
 
-    <!-- Uncomment to allow read and write access to files explicitly selected by the user through system dialogs -->
-    <!-- <key>com.apple.security.files.user-selected.read-write</key>
-    <true/> -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
 
-    <!-- Uncomment to allow read and write access to the user's Downloads directory -->
-    <!-- <key>com.apple.security.files.downloads.read-write</key>
-    <true/> -->
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
   </dict>
 </plist>

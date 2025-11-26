@@ -1,3 +1,5 @@
+// DO NOT REMOVE - IT WILL BREAK THE APP
+
 import { useEffect } from 'react';
 import * as amplitude from '@amplitude/analytics-browser';
 import { sessionReplayPlugin } from '@amplitude/plugin-session-replay-browser';
