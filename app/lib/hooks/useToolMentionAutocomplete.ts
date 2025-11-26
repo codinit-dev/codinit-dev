@@ -12,8 +12,7 @@ export interface ToolItem {
 
 interface UseToolMentionAutocompleteOptions {
   input: string;
-  cursorPosition: number;
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  textareaRef: React.RefObject<HTMLTextAreaElement> | undefined;
   onToolSelected: (toolName: string) => void;
 }
 
@@ -76,14 +75,16 @@ function fuzzyFilterTools(tools: ToolItem[], query: string): ToolItem[] {
 export function useToolMentionAutocomplete(
   options: UseToolMentionAutocompleteOptions,
 ): UseToolMentionAutocompleteReturn {
-  const { input, cursorPosition, textareaRef, onToolSelected } = options;
+  const { input, textareaRef, onToolSelected } = options;
 
   const serverTools = useMCPStore((state) => state.serverTools);
   const selectedMCP = useMCPStore((state) => state.selectedMCP);
 
   const autocompleteState = useMemo(() => {
-    return shouldShowAutocomplete(input, cursorPosition);
-  }, [input, cursorPosition]);
+    const cursorPos = textareaRef?.current?.selectionStart || 0;
+
+    return shouldShowAutocomplete(input, cursorPos);
+  }, [input, textareaRef]);
 
   const { isOpen, searchQuery, atPosition } = autocompleteState;
 
@@ -102,7 +103,7 @@ export function useToolMentionAutocomplete(
   }, [searchQuery]);
 
   const dropdownPosition = useMemo(() => {
-    if (!isOpen || !textareaRef.current) {
+    if (!isOpen || !textareaRef?.current) {
       return null;
     }
 

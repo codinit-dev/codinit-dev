@@ -72,7 +72,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
   const [placeholderText, setPlaceholderText] = useState('');
   const [showPlaceholder, setShowPlaceholder] = useState(true);
-  const [cursorPosition, setCursorPosition] = useState(0);
 
   const handleToolSelected = (toolName: string) => {
     if (!props.textareaRef?.current) {
@@ -80,28 +79,29 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
     }
 
     const textarea = props.textareaRef.current;
-    const { newText, newCursorPos } = insertToolMention(props.input, cursorPosition, toolName);
+    const currentCursor = textarea.selectionStart || 0;
+    const { newText, newCursorPos } = insertToolMention(props.input, currentCursor, toolName);
 
     if (props.handleInputChange) {
+      textarea.value = newText;
+
       const syntheticEvent = {
-        target: { value: newText },
-        currentTarget: { value: newText },
+        target: textarea,
+        currentTarget: textarea,
       } as React.ChangeEvent<HTMLTextAreaElement>;
 
       props.handleInputChange(syntheticEvent);
     }
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       textarea.focus();
       textarea.setSelectionRange(newCursorPos, newCursorPos);
-      setCursorPosition(newCursorPos);
-    }, 0);
+    });
   };
 
   const autocomplete = useToolMentionAutocomplete({
     input: props.input,
-    cursorPosition,
-    textareaRef: props.textareaRef || { current: null },
+    textareaRef: props.textareaRef,
     onToolSelected: handleToolSelected,
   });
 
@@ -301,23 +301,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             }
           }}
           value={props.input}
-          onChange={(e) => {
-            if (e.target.selectionStart !== null) {
-              setCursorPosition(e.target.selectionStart);
-            }
-
-            props.handleInputChange?.(e);
-          }}
-          onClick={(e) => {
-            if (e.currentTarget.selectionStart !== null) {
-              setCursorPosition(e.currentTarget.selectionStart);
-            }
-          }}
-          onKeyUp={(e) => {
-            if (e.currentTarget.selectionStart !== null) {
-              setCursorPosition(e.currentTarget.selectionStart);
-            }
-          }}
+          onChange={props.handleInputChange}
           onFocus={handleTextareaFocus}
           onBlur={handleTextareaBlur}
           onPaste={props.handlePaste}
