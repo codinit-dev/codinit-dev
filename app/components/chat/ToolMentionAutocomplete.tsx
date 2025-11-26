@@ -1,7 +1,6 @@
 import type { ToolItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { useEffect, useRef } from 'react';
 import { classNames } from '~/utils/classNames';
-import { createPortal } from 'react-dom';
 
 interface ToolMentionAutocompleteProps {
   isOpen: boolean;
@@ -84,7 +83,7 @@ export function ToolMentionAutocomplete({
 
   let globalIndex = 0;
 
-  return createPortal(
+  return (
     <div
       ref={dropdownRef}
       className="fixed z-[9999] min-w-[400px] max-w-[500px] bg-codinit-elements-bg-depth-1 border border-codinit-elements-borderColor rounded-lg shadow-lg transition-theme"
@@ -150,7 +149,6 @@ export function ToolMentionAutocomplete({
           })
         )}
       </div>
-    </div>,
-    document.body,
+    </div>
   );
 }
