@@ -10,10 +10,12 @@ export async function checkDatabaseHealth(): Promise<{
   try {
     await db.execute('SELECT 1');
     logger.debug('Database health check passed');
+
     return { healthy: true };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('Database health check failed', { error: errorMessage });
+
     return {
       healthy: false,
       error: errorMessage,
