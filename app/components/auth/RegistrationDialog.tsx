@@ -127,15 +127,8 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
               <div className="flex justify-center px-4 py-20">
                 <div className="relative flex w-full max-w-[350px] flex-col items-start justify-center">
                   <a className="mb-6 transition-opacity" href="/">
-                    <div className="flex h-9 items-center gap-2">
-                      <div
-                        className="i-ph:code-bold w-8 h-8"
-                        style={{ color: 'var(--codinit-elements-button-primary-background)' }}
-                      />
-                      <span className="text-xl font-semibold" style={{ color: 'var(--codinit-elements-textPrimary)' }}>
-                        Codinit
-                      </span>
-                    </div>
+                    <img src="/logo-dark.png" alt="Codinit" className="w-[120px] inline-block dark:hidden" />
+                    <img src="/logo-light.png" alt="Codinit" className="w-[120px] inline-block hidden dark:block" />
                   </a>
 
                   <div className="min-h-[450px] w-full">
