@@ -224,7 +224,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             >
               <button
                 onClick={() => toggleColorGroup(group.key)}
-                className="flex w-full items-center justify-between p-3 text-left transition-colors hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-codinit-elements-ring"
+                className="flex w-full items-center justify-between p-3 text-left transition-colors bg-transparent hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-codinit-elements-ring"
               >
                 <span className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary-dark">
                   {group.label}
@@ -244,7 +244,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   {group.colors.map((role) => (
                     <div
                       key={role.key}
-                      className="flex items-center justify-between p-3 hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark transition-colors border-b border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark last:border-b-0"
+                      className="flex items-center justify-between p-3 bg-transparent hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark transition-colors border-b border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark last:border-b-0"
                     >
                       <div className="flex items-center gap-3 flex-1">
                         <div className="relative flex-shrink-0">
