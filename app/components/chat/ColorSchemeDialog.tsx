@@ -299,7 +299,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
             className={`group p-4 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
               font.includes(f.key)
                 ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white shadow-lg'
-                : 'bg-codinit-elements-background-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive hover:bg-codinit-elements-background-depth-2'
+                : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-codinit-elements-borderColorActive hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark'
             }`}
           >
             <div className="text-center space-y-2">
@@ -358,12 +358,12 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   f.key === 'border'
                     ? isSelected
                       ? 'border-3 border-codinit-elements-borderColorActive bg-codinit-elements-item-backgroundAccent text-white'
-                      : 'border-2 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary'
+                      : 'border-2 border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark'
                     : f.key === 'gradient'
                       ? ''
                       : isSelected
                         ? 'bg-codinit-elements-item-backgroundAccent text-white shadow-lg'
-                        : 'bg-codinit-elements-background-depth-3 hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
+                        : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark'
                 } ${f.key === 'shadow' ? (isSelected ? 'shadow-xl' : 'shadow-lg') : 'shadow-md'}`}
                 style={{
                   ...(f.key === 'gradient' && {
@@ -456,7 +456,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 className={`p-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
                   borderRadius === option.key
                     ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white'
-                    : 'bg-codinit-elements-background-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
+                    : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark'
                 }`}
               >
                 <div className="text-center space-y-1">
@@ -482,7 +482,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 className={`p-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
                   shadow === option.key
                     ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white'
-                    : 'bg-codinit-elements-background-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
+                    : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark'
                 } ${option.key === 'none' ? '' : option.key === 'sm' ? 'shadow-sm' : option.key === 'md' ? 'shadow-md' : option.key === 'lg' ? 'shadow-lg' : 'shadow-xl'}`}
               >
                 <div className="text-center space-y-1">
@@ -506,7 +506,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 className={`p-3 rounded-lg border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColorActive ${
                   spacing === option.key
                     ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white'
-                    : 'bg-codinit-elements-background-depth-3 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary'
+                    : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark'
                 }`}
               >
                 <div className="text-center space-y-1">
@@ -587,7 +587,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   <div className="w-80 flex flex-col gap-4">
                     {/* Integrated Tab Navigation */}
                     <div className="flex-1 overflow-hidden flex flex-col">
-                      <div className="grid grid-cols-2 gap-1 p-1 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-3-dark border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark rounded-lg mb-4">
+                      <div className="grid grid-cols-2 gap-1 p-1 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1-dark border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark rounded-lg mb-4">
                         {[
                           { key: 'colors', label: 'Colors' },
                           { key: 'typography', label: 'Typography' },
@@ -601,7 +601,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                               'inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-codinit-elements-ring',
                               activeSection === tab.key
                                 ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white shadow-sm'
-                                : 'text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark',
+                                : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark',
                             )}
                           >
                             {tab.label}
@@ -623,14 +623,14 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   <div className="flex flex-1 flex-col gap-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-codinit-elements-textPrimary">Live Preview</h3>
-                      <div className="flex items-center gap-1 p-1 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-3-dark border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark rounded-lg">
+                      <div className="flex items-center gap-1 p-1 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1-dark border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark rounded-lg">
                         <button
                           onClick={() => setMode('light')}
                           className={classNames(
                             'p-1.5 rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-codinit-elements-ring',
                             mode === 'light'
                               ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white shadow-sm'
-                              : 'text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark',
+                              : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark',
                           )}
                           title="Light mode"
                         >
@@ -642,7 +642,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                             'p-1.5 rounded-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-codinit-elements-ring',
                             mode === 'dark'
                               ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white shadow-sm'
-                              : 'text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark',
+                              : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark hover:bg-codinit-elements-background-depth-2 dark:hover:bg-codinit-elements-background-depth-2-dark',
                           )}
                           title="Dark mode"
                         >
