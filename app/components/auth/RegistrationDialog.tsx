@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogRoot } from '~/components/ui/Dialog';
+import * as RadixDialog from '@radix-ui/react-dialog';
 import { Input } from '~/components/ui/Input';
 import { Button } from '~/components/ui/Button';
 import { Checkbox } from '~/components/ui/Checkbox';
@@ -115,101 +115,113 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
   };
 
   return (
-    <DialogRoot open={true} onOpenChange={() => undefined}>
-      <Dialog showCloseButton={false} className="max-w-[480px]">
-        <div className="flex flex-col min-h-[500px]">
-          <main className="flex-1 p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-semibold text-codinit-elements-textPrimary mb-3">Welcome to Codinit</h1>
-              <p className="text-sm text-codinit-elements-textSecondary leading-relaxed">
-                Registration is required to use the application. Your information will be stored securely for updates
-                and support.
-              </p>
+    <RadixDialog.Root open={true} onOpenChange={() => undefined}>
+      <RadixDialog.Portal>
+        <RadixDialog.Overlay className="fixed inset-0 bg-white dark:bg-gray-950 z-[9999]" />
+        <RadixDialog.Content className="fixed inset-0 z-[9999] flex items-center justify-center focus:outline-none">
+          <div className="w-full h-full flex">
+            <div className="flex-1 flex items-center justify-center px-8">
+              <div className="w-full max-w-md">
+                <main className="flex flex-col">
+                  <div className="mb-8">
+                    <div className="text-2xl font-semibold text-codinit-elements-textPrimary mb-3">
+                      Welcome to Codinit
+                    </div>
+                    <h1 className="text-base text-codinit-elements-textSecondary leading-relaxed">
+                      Registration is required to use the application. Your information will be stored securely for
+                      updates and support.
+                    </h1>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {submitError && (
+                      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                        <p className="text-red-700 dark:text-red-400 text-sm">{submitError}</p>
+                      </div>
+                    )}
+
+                    <div>
+                      <Input
+                        id="fullName"
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => handleInputChange('fullName', e.target.value)}
+                        placeholder="Full Name"
+                        className={errors.fullName ? 'border-red-500' : ''}
+                        disabled={isSubmitting}
+                        required
+                      />
+                      {errors.fullName && <p className="text-red-500 text-xs mt-1.5">{errors.fullName}</p>}
+                    </div>
+
+                    <div>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        placeholder="Email Address"
+                        className={errors.email ? 'border-red-500' : ''}
+                        disabled={isSubmitting}
+                        required
+                      />
+                      {errors.email && <p className="text-red-500 text-xs mt-1.5">{errors.email}</p>}
+                    </div>
+
+                    <div className="flex items-start gap-2 pt-2">
+                      <Checkbox
+                        id="emailOptIn"
+                        checked={emailOptIn}
+                        onCheckedChange={(checked) => setEmailOptIn(checked as boolean)}
+                        disabled={isSubmitting}
+                        className="mt-0.5"
+                      />
+                      <Label
+                        htmlFor="emailOptIn"
+                        className="text-xs text-codinit-elements-textSecondary leading-relaxed cursor-pointer"
+                      >
+                        I agree to receive email updates about new features, improvements, and important announcements.
+                      </Label>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors"
+                      disabled={isSubmitting || !fullName.trim() || !email.trim()}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
+                          Creating Account...
+                        </>
+                      ) : (
+                        'Complete Registration'
+                      )}
+                    </Button>
+                  </form>
+
+                  <footer className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
+                    <p className="text-xs text-center text-codinit-elements-textSecondary leading-relaxed">
+                      By registering you accept the{' '}
+                      <a href="https://codinit.dev/terms" className="text-blue-600 dark:text-blue-400 hover:underline">
+                        Terms of Service
+                      </a>{' '}
+                      and acknowledge our{' '}
+                      <a
+                        href="https://codinit.dev/privacy"
+                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        Privacy Policy
+                      </a>
+                      .
+                    </p>
+                  </footer>
+                </main>
+              </div>
             </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {submitError && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                  <p className="text-red-700 dark:text-red-400 text-sm">{submitError}</p>
-                </div>
-              )}
-
-              <div>
-                <Input
-                  id="fullName"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => handleInputChange('fullName', e.target.value)}
-                  placeholder="Full Name"
-                  className={errors.fullName ? 'border-red-500' : ''}
-                  disabled={isSubmitting}
-                  required
-                />
-                {errors.fullName && <p className="text-red-500 text-xs mt-1.5">{errors.fullName}</p>}
-              </div>
-
-              <div>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="Email Address"
-                  className={errors.email ? 'border-red-500' : ''}
-                  disabled={isSubmitting}
-                  required
-                />
-                {errors.email && <p className="text-red-500 text-xs mt-1.5">{errors.email}</p>}
-              </div>
-
-              <div className="flex items-start gap-2 pt-2">
-                <Checkbox
-                  id="emailOptIn"
-                  checked={emailOptIn}
-                  onCheckedChange={(checked) => setEmailOptIn(checked as boolean)}
-                  disabled={isSubmitting}
-                  className="mt-0.5"
-                />
-                <Label
-                  htmlFor="emailOptIn"
-                  className="text-xs text-codinit-elements-textSecondary leading-relaxed cursor-pointer"
-                >
-                  I agree to receive email updates about new features, improvements, and important announcements.
-                </Label>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors"
-                disabled={isSubmitting || !fullName.trim() || !email.trim()}
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                    Creating Account...
-                  </>
-                ) : (
-                  'Complete Registration'
-                )}
-              </Button>
-            </form>
-          </main>
-
-          <footer className="border-t border-gray-200 dark:border-gray-700 p-6 bg-gray-50 dark:bg-gray-800/50">
-            <p className="text-xs text-center text-codinit-elements-textSecondary leading-relaxed">
-              By registering you accept the{' '}
-              <a href="https://codinit.dev/terms" className="text-blue-600 dark:text-blue-400 hover:underline">
-                Terms of Service
-              </a>{' '}
-              and acknowledge our{' '}
-              <a href="https://codinit.dev/privacy" className="text-blue-600 dark:text-blue-400 hover:underline">
-                Privacy Policy
-              </a>
-              .
-            </p>
-          </footer>
-        </div>
-      </Dialog>
-    </DialogRoot>
+          </div>
+        </RadixDialog.Content>
+      </RadixDialog.Portal>
+    </RadixDialog.Root>
   );
 }
