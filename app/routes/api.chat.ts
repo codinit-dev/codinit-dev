@@ -196,9 +196,16 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           // logger.debug('Code Files Selected');
         }
 
+        let mcpService: MCPService | null = null;
+
+        if (enableMCPTools) {
+          mcpService = MCPService.getInstance();
+        }
+
         const options: StreamingOptions = {
           supabaseConnection: supabase,
           toolChoice: enableMCPTools ? 'auto' : 'none',
+          tools: mcpService?.tools,
           onFinish: async ({ text: content, finishReason, usage }) => {
             logger.debug('usage', JSON.stringify(usage));
 
@@ -286,12 +293,10 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           message: 'Generating...',
         } satisfies ProgressAnnotation);
 
-        // Process tool invocations if MCP tools are enabled
         let processedMessages = messages;
 
-        if (enableMCPTools) {
+        if (enableMCPTools && mcpService) {
           try {
-            const mcpService = MCPService.getInstance();
             processedMessages = await mcpService.processToolInvocations(messages, dataStream);
             logger.debug('Processed MCP tool invocations');
           } catch (error) {
