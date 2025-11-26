@@ -26,6 +26,7 @@ const TAB_ICONS: Record<TabType, string> = {
   update: 'i-ph:arrow-clockwise-fill',
   'task-manager': 'i-ph:chart-line-fill',
   'tab-management': 'i-ph:squares-four-fill',
+  'api-keys': 'i-ph:key-fill',
 };
 
 // Define which tabs are default in user mode
@@ -33,6 +34,7 @@ const DEFAULT_USER_TABS: TabType[] = [
   'features',
   'data',
   'cloud-providers',
+  'api-keys',
   'local-providers',
   'connection',
   'notifications',

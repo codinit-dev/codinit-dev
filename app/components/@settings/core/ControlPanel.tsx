@@ -40,6 +40,7 @@ import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/Cloud
 import ServiceStatusTab from '~/components/@settings/tabs/providers/status/ServiceStatusTab';
 import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
 import TaskManagerTab from '~/components/@settings/tabs/task-manager/TaskManagerTab';
+import ApiKeysTab from '~/components/@settings/tabs/api-keys/APIKeysTab';
 
 interface ControlPanelProps {
   open: boolean;
@@ -83,6 +84,7 @@ const TAB_DESCRIPTIONS: Record<TabType, string> = {
   update: 'Check for updates and release notes',
   'task-manager': 'Monitor system resources and processes',
   'tab-management': 'Configure visible tabs and their order',
+  'api-keys': 'Manage API keys for LLM providers',
 };
 
 // Beta status for experimental features
@@ -339,6 +341,8 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <CloudProvidersTab />;
       case 'local-providers':
         return <LocalProvidersTab />;
+      case 'api-keys':
+        return <ApiKeysTab />;
       case 'connection':
         return <ConnectionsTab />;
       case 'debug':

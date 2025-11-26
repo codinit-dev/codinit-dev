@@ -16,7 +16,8 @@ export type TabType =
   | 'event-logs'
   | 'update'
   | 'task-manager'
-  | 'tab-management';
+  | 'tab-management'
+  | 'api-keys';
 
 export type WindowType = 'user' | 'developer';
 
@@ -81,6 +82,7 @@ export const TAB_LABELS: Record<TabType, string> = {
   update: 'Updates',
   'task-manager': 'Task Manager',
   'tab-management': 'Tab Management',
+  'api-keys': 'API Keys',
 };
 
 export const categoryLabels: Record<SettingCategory, string> = {
