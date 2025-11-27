@@ -13,6 +13,7 @@ import { BuiltWithCodinitBadge } from './components/ui/BuiltWithCodinitBadge';
 import { ToastContainer } from 'react-toastify';
 import { AmplitudeProvider } from './components/AmplitudeProvider';
 import { GTMProvider } from './components/GTMProvider';
+import { InsforgeProvider } from '@insforge/react';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -106,7 +107,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <>
       <ClientOnly>{() => <AmplitudeProvider />}</ClientOnly>
       <ClientOnly>{() => <GTMProvider />}</ClientOnly>
-      <ClientOnly>{() => <DndProvider backend={HTML5Backend}>{children}</DndProvider>}</ClientOnly>
+      <ClientOnly>
+        {() => (
+          <InsforgeProvider baseUrl={import.meta.env.VITE_INSFORGE_BASE_URL || 'https://84trh87i.us-east.insforge.app'}>
+            <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+          </InsforgeProvider>
+        )}
+      </ClientOnly>
       <ClientOnly>{() => <BuiltWithCodinitBadge />}</ClientOnly>
       <ClientOnly>{() => <ToastContainer />}</ClientOnly>
       <ScrollRestoration />
@@ -117,6 +124,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 import { logStore } from './lib/stores/logs';
 import { initCookieBridge } from './lib/electronCookieBridge';
+import { AuthGuard } from './components/auth/AuthGuard';
 
 export default function App() {
   const theme = useStore(themeStore);
@@ -135,7 +143,9 @@ export default function App() {
 
   return (
     <Layout>
-      <Outlet />
+      <AuthGuard>
+        <Outlet />
+      </AuthGuard>
     </Layout>
   );
 }

@@ -3,6 +3,7 @@ import { createRequestHandler } from '@remix-run/node';
 import electron, { app, BrowserWindow, ipcMain, protocol, session } from 'electron';
 import log from 'electron-log';
 import path from 'node:path';
+import dotenv from 'dotenv';
 import * as pkg from '../../package.json';
 import { setupAutoUpdater } from './utils/auto-update';
 import { isDev, DEFAULT_PORT } from './utils/constants';
@@ -12,6 +13,7 @@ import { createWindow } from './ui/window';
 import { initCookies, storeCookies } from './utils/cookie';
 import { loadServerBuild, serveAsset } from './utils/serve';
 import { reloadOnChange } from './utils/reload';
+import { setupDatabaseHandlers } from './database';
 
 Object.assign(console, log.functions);
 
@@ -19,6 +21,9 @@ console.debug('main: import.meta.env:', import.meta.env);
 console.log('main: isDev:', isDev);
 console.log('NODE_ENV:', global.process.env.NODE_ENV);
 console.log('isPackaged:', app.isPackaged);
+
+// Load environment variables from .env.production
+dotenv.config({ path: path.resolve(process.cwd(), '.env.production') });
 
 // Log unhandled errors
 process.on('uncaughtException', async (error) => {
@@ -182,7 +187,7 @@ declare global {
   return win;
 })()
   .then((win) => {
-    // IPC samples : send and recieve.
+    // ipc samples : send and recieve.
     let count = 0;
     setInterval(() => win.webContents.send('ping', `hello from main! ${count++}`), 60 * 1000);
     ipcMain.handle('ipcTest', (event, ...args) => console.log('ipc: renderer -> main', { event, ...args }));
@@ -297,7 +302,7 @@ declare global {
   .then((win) => {
     // Sync Electron session cookies to renderer document.cookie
     syncCookiesToRenderer(win);
-    return setupMenu(win);
+    return setupMenu();
   });
 
 app.on('window-all-closed', () => {
@@ -308,6 +313,7 @@ app.on('window-all-closed', () => {
 
 reloadOnChange();
 setupAutoUpdater();
+setupDatabaseHandlers();
 
 // Function to sync Electron session cookies to renderer document.cookie
 async function syncCookiesToRenderer(win: BrowserWindow) {

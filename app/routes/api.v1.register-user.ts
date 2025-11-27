@@ -39,6 +39,7 @@ async function registrationAction({ request }: ActionFunctionArgs) {
   // Check for required environment variables
   if (!process.env.DATABASE_URL) {
     logger.error('DATABASE_URL environment variable is not set');
+
     return json(
       {
         success: false,
@@ -50,6 +51,7 @@ async function registrationAction({ request }: ActionFunctionArgs) {
 
   if (!process.env.APP_URL) {
     logger.error('APP_URL environment variable is not set');
+
     return json(
       {
         success: false,
@@ -106,6 +108,7 @@ async function registrationAction({ request }: ActionFunctionArgs) {
             { status: 500 },
           );
         }
+
         if (queryError.message.includes('relation') || queryError.message.includes('does not exist')) {
           return json(
             {
@@ -253,7 +256,7 @@ async function sendVerificationEmail(email: string, token: string, fullName: str
     return;
   }
 
-  const verificationUrl = `${process.env.APP_URL || 'http://localhost:5173'}/api/v1/verify-email?token=${token}`;
+  const verificationUrl = `${process.env.APP_URL || 'http://localhost:5173'}/verify-email?token=${token}`;
 
   try {
     await resend.emails.send({
@@ -261,19 +264,28 @@ async function sendVerificationEmail(email: string, token: string, fullName: str
       to: email,
       subject: 'Verify your Codinit account',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #333;">Welcome to Codinit, ${fullName}!</h1>
-          <p>Please verify your email address to complete your registration.</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="color: #333;">Welcome to Codinit, ${fullName}!</h1>
+          </div>
+          <p style="font-size: 16px; color: #555;">
+            Thanks for signing up! Please verify your email address to complete your registration and start using Codinit.
+          </p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="${verificationUrl}"
-               style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+               style="background-color: #007bff; color: white; padding: 14px 28px; text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block;">
               Verify Email Address
             </a>
           </div>
-          <p>If the button doesn't work, copy and paste this link into your browser:</p>
-          <p style="word-break: break-all; color: #666;">${verificationUrl}</p>
-          <p style="color: #666; font-size: 12px;">
-            This link will expire in 24 hours. If you didn't create an account, please ignore this email.
+          <p style="font-size: 14px; color: #555;">
+            If the button above doesn't work, you can copy and paste this link into your browser:
+          </p>
+          <p style="word-break: break-all; color: #007bff; text-decoration: underline;">
+            ${verificationUrl}
+          </p>
+          <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;" />
+          <p style="color: #888; font-size: 12px; text-align: center;">
+            This link will expire in 24 hours. If you didn't create an account with us, please disregard this email.
           </p>
         </div>
       `,

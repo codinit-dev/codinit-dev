@@ -9,6 +9,17 @@ export interface IChatMetadata {
   netlifySiteId?: string;
 }
 
+export interface LocalUser {
+  id: string;
+  fullName: string;
+  email: string;
+  registrationDate: string;
+  isSyncedWithServer: boolean;
+  lastSyncAttempt: string;
+  appVersion: string;
+  platform: string;
+}
+
 const logger = createScopedLogger('ChatHistory');
 
 // this is used at the top level and never rejects
@@ -19,7 +30,7 @@ export async function openDatabase(): Promise<IDBDatabase | undefined> {
   }
 
   return new Promise((resolve) => {
-    const request = indexedDB.open('codinitHistory', 2);
+    const request = indexedDB.open('codinitHistory', 3);
 
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
@@ -36,6 +47,14 @@ export async function openDatabase(): Promise<IDBDatabase | undefined> {
       if (oldVersion < 2) {
         if (!db.objectStoreNames.contains('snapshots')) {
           db.createObjectStore('snapshots', { keyPath: 'chatId' });
+        }
+      }
+
+      if (oldVersion < 3) {
+        if (!db.objectStoreNames.contains('users')) {
+          const userStore = db.createObjectStore('users', { keyPath: 'id' });
+          userStore.createIndex('email', 'email', { unique: true });
+          userStore.createIndex('id', 'id', { unique: true });
         }
       }
     };
@@ -339,5 +358,65 @@ export async function deleteSnapshot(db: IDBDatabase, chatId: string): Promise<v
         reject(request.error);
       }
     };
+  });
+}
+
+// User management functions
+export async function saveUser(db: IDBDatabase, user: LocalUser): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction('users', 'readwrite');
+    const store = transaction.objectStore('users');
+    const request = store.put(user);
+
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function getUser(db: IDBDatabase, id: string): Promise<LocalUser | null> {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction('users', 'readonly');
+    const store = transaction.objectStore('users');
+    const request = store.get(id);
+
+    request.onsuccess = () => resolve((request.result as LocalUser) || null);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function getUserByEmail(db: IDBDatabase, email: string): Promise<LocalUser | null> {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction('users', 'readonly');
+    const store = transaction.objectStore('users');
+    const index = store.index('email');
+    const request = index.get(email);
+
+    request.onsuccess = () => resolve((request.result as LocalUser) || null);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function updateUserSyncStatus(db: IDBDatabase, id: string, isSynced: boolean): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction('users', 'readwrite');
+    const store = transaction.objectStore('users');
+
+    const getRequest = store.get(id);
+
+    getRequest.onsuccess = () => {
+      const user = getRequest.result as LocalUser;
+
+      if (user) {
+        user.isSyncedWithServer = isSynced;
+        user.lastSyncAttempt = new Date().toISOString();
+
+        const putRequest = store.put(user);
+        putRequest.onsuccess = () => resolve();
+        putRequest.onerror = () => reject(putRequest.error);
+      } else {
+        reject(new Error('User not found'));
+      }
+    };
+    getRequest.onerror = () => reject(getRequest.error);
   });
 }

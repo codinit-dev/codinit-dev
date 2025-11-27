@@ -5,7 +5,7 @@ import { Button } from '~/components/ui/Button';
 import { Checkbox } from '~/components/ui/Checkbox';
 import { Label } from '~/components/ui/Label';
 import { validateRegistrationForm } from '~/utils/validation';
-import { databaseService } from '~/IPC/databaseService';
+import { userService } from '~/lib/api/userService';
 import { openDatabase, saveUser, type LocalUser } from '~/lib/persistence/db';
 import { setUserRegistered, setSyncing } from '~/lib/stores/user';
 import { createScopedLogger } from '~/utils/logger';
@@ -33,6 +33,7 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
 
     if (!validation.isValid) {
       setErrors(validation.errors);
+
       return;
     }
 
@@ -54,42 +55,67 @@ export function RegistrationDialog({ onRegistrationComplete }: RegistrationDialo
         emailOptIn,
       };
 
-      // Attempt database registration
-      const response = await databaseService.registerUser(registrationData);
+      // Attempt web registration
+      const response = await userService.registerUser(registrationData);
 
       if (!response.success) {
         throw new Error(response.error || 'Registration failed');
       }
 
-      // Create local user record
-      const localUser: LocalUser = {
-        id: response.userId || crypto.randomUUID(),
-        fullName: registrationData.fullName,
-        email: registrationData.email,
-        registrationDate: new Date().toISOString(),
-        isSyncedWithServer: true,
-        lastSyncAttempt: new Date().toISOString(),
-        appVersion: registrationData.appVersion,
-        platform: registrationData.platform,
-      };
+      // Handle different response types
+      if (response.type === 'signin') {
+        // Existing verified user - sign in
+        const localUser: LocalUser = {
+          id: response.userId!,
+          fullName: registrationData.fullName,
+          email: registrationData.email,
+          registrationDate: new Date().toISOString(),
+          isSyncedWithServer: true,
+          lastSyncAttempt: new Date().toISOString(),
+          appVersion: registrationData.appVersion,
+          platform: registrationData.platform,
+        };
 
-      // Save to local database
-      const db = await openDatabase();
+        // Save to local database
+        const db = await openDatabase();
 
-      if (db) {
-        await saveUser(db, localUser);
+        if (db) {
+          await saveUser(db, localUser);
+        }
+
+        // Update user store
+        setUserRegistered(localUser);
+        setSyncing(false);
+
+        logStore.logSystem('User signed in', {
+          userId: localUser.id,
+          email: localUser.email,
+        });
+
+        onRegistrationComplete();
+
+        return;
       }
 
-      // Update user store
-      setUserRegistered(localUser);
+      if (response.type === 'verification_resent') {
+        // Existing unverified user - verification resent
+        setSubmitError(
+          'A verification email has been sent to your email address. Please check your inbox and click the verification link.',
+        );
+        setSyncing(false);
+
+        return;
+      }
+
+      // New registration - verification email sent
+      setSubmitError(null);
       setSyncing(false);
 
-      logStore.logSystem('Registration completed', {
-        userId: localUser.id,
-        email: localUser.email,
-      });
+      // Show success message instead of error
+      setSubmitError(response.message || 'Registration successful! Please check your email to verify your account.');
 
-      onRegistrationComplete();
+      // Don't call onRegistrationComplete() yet - user needs to verify email first
+      return;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Registration failed';
       setSubmitError(errorMessage);
