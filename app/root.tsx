@@ -95,7 +95,7 @@ export const Head = createHead(() => (
   </>
 ));
 
-export function Layout({ children }: { children: React.ReactNode }) {
+function AppLayout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
 
   useEffect(() => {
@@ -121,18 +121,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export function Layout({ children }: { children: React.ReactNode }) {
+  return children;
+}
+
 import { logStore } from './lib/stores/logs';
 import { initCookieBridge } from './lib/electronCookieBridge';
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/remix';
 
 function App() {
-  const theme = useStore(themeStore);
-
   useEffect(() => {
     initCookieBridge();
 
     logStore.logSystem('Application initialized', {
-      theme,
       platform: navigator.platform,
       userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),
@@ -140,7 +141,7 @@ function App() {
   }, []);
 
   return (
-    <Layout>
+    <AppLayout>
       <SignedIn>
         <Outlet />
       </SignedIn>
@@ -208,8 +209,10 @@ function App() {
           </div>
         </div>
       </SignedOut>
-    </Layout>
+    </AppLayout>
   );
 }
 
-export default ClerkApp(App);
+export default ClerkApp(App, {
+  publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+});
