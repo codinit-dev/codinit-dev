@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/react';
-import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/cloudflare';
+import type { LinksFunction } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
 import { themeStore } from './lib/stores/theme';
@@ -13,7 +13,6 @@ import { BuiltWithCodinitBadge } from './components/ui/BuiltWithCodinitBadge';
 import { ToastContainer } from 'react-toastify';
 import { AmplitudeProvider } from './components/AmplitudeProvider';
 import { GTMProvider } from './components/GTMProvider';
-import { ClerkApp } from '@clerk/remix';
 
 import reactToastifyStyles from 'react-toastify/dist/ReactToastify.css?url';
 import globalStyles from './styles/index.scss?url';
@@ -80,11 +79,6 @@ const inlineThemeCode = stripIndents`
   }
 `;
 
-export const loader = async (args: LoaderFunctionArgs) => {
-  const { rootAuthLoader } = await import('@clerk/remix/ssr.server');
-  return rootAuthLoader(args);
-};
-
 export const Head = createHead(() => (
   <>
     <meta charSet="utf-8" />
@@ -127,7 +121,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 import { logStore } from './lib/stores/logs';
 import { initCookieBridge } from './lib/electronCookieBridge';
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/remix';
 
 function App() {
   useEffect(() => {
@@ -142,77 +135,9 @@ function App() {
 
   return (
     <AppLayout>
-      <SignedIn>
-        <Outlet />
-      </SignedIn>
-      <SignedOut>
-        <div
-          className="flex items-center justify-center min-h-screen"
-          style={{ backgroundColor: 'var(--codinit-elements-bg-depth-1)' }}
-        >
-          <div className="max-w-md w-full mx-4">
-            <div className="text-center mb-8">
-              <img src="/logo-dark.png" alt="Codinit" className="w-32 mx-auto mb-6 dark:hidden" />
-              <img src="/logo-light.png" alt="Codinit" className="w-32 mx-auto mb-6 hidden dark:block" />
-              <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--codinit-elements-textPrimary)' }}>
-                Welcome to CodinIT
-              </h1>
-              <p className="text-lg" style={{ color: 'var(--codinit-elements-textSecondary)' }}>
-                Build full-stack apps with AI
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <SignUpButton mode="modal">
-                <button
-                  className="w-full px-4 py-2 rounded-lg font-medium"
-                  style={{
-                    backgroundColor: 'var(--codinit-elements-button-primary-background)',
-                    color: 'var(--codinit-elements-button-primary-text)',
-                  }}
-                >
-                  Sign Up
-                </button>
-              </SignUpButton>
-              <SignInButton mode="modal">
-                <button
-                  className="w-full px-4 py-2 rounded-lg font-medium border"
-                  style={{
-                    borderColor: 'var(--codinit-elements-borderColor)',
-                    color: 'var(--codinit-elements-textPrimary)',
-                  }}
-                >
-                  Sign In
-                </button>
-              </SignInButton>
-            </div>
-
-            <p className="text-center text-sm mt-6" style={{ color: 'var(--codinit-elements-textSecondary)' }}>
-              By signing up, you agree to our{' '}
-              <a
-                href="https://codinit.dev/terms"
-                className="underline hover:no-underline"
-                style={{ color: 'var(--codinit-elements-button-primary-background)' }}
-              >
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a
-                href="https://codinit.dev/privacy"
-                className="underline hover:no-underline"
-                style={{ color: 'var(--codinit-elements-button-primary-background)' }}
-              >
-                Privacy Policy
-              </a>
-              .
-            </p>
-          </div>
-        </div>
-      </SignedOut>
+      <Outlet />
     </AppLayout>
   );
 }
 
-export default ClerkApp(App, {
-  publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
-});
+export default App;
