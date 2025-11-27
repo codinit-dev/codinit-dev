@@ -37,7 +37,9 @@ export function ToolMentionAutocomplete({
 
   useEffect(() => {
     if (!isOpen) {
-      return () => {};
+      return () => {
+        /* empty */
+      };
     }
 
     const handleClickOutside = (e: MouseEvent) => {
