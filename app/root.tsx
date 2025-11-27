@@ -1,6 +1,7 @@
 import { useStore } from '@nanostores/react';
 import type { LinksFunction } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import { ClerkApp } from '@clerk/remix';
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
 import { themeStore } from './lib/stores/theme';
 import { stripIndents } from './utils/stripIndent';
@@ -140,4 +141,11 @@ function App() {
   );
 }
 
-export default App;
+export default ClerkApp(App, {
+  publishableKey: process.env.VITE_CLERK_PUBLISHABLE_KEY || '',
+  domain: 'clerk.codinit.dev',
+  isSatellite: false,
+  signInUrl: 'https://accounts.codinit.dev/sign-in',
+  signUpUrl: 'https://accounts.codinit.dev/sign-up',
+  waitlistUrl: '/waitlist',
+});
