@@ -2,13 +2,13 @@ import { useState, useCallback } from 'react';
 import { useStore } from '@nanostores/react';
 import { classNames } from '~/utils/classNames';
 import { profileStore, updateProfile } from '~/lib/stores/profile';
-import { userStore } from '~/lib/stores/user';
+import { useUser } from '@clerk/remix';
 import { toast } from 'react-toastify';
 import { debounce } from '~/utils/debounce';
 
 export default function ProfileTab() {
   const profile = useStore(profileStore);
-  const userState = useStore(userStore);
+  const { user, isLoaded } = useUser();
   const [isUploading, setIsUploading] = useState(false);
 
   // Create debounced update functions
@@ -178,8 +178,8 @@ export default function ProfileTab() {
           </div>
         </div>
 
-        {/* Registration Information Section */}
-        {userState.user && (
+        {/* Account Information Section */}
+        {isLoaded && user && (
           <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Account Information</h3>
 
@@ -188,7 +188,7 @@ export default function ProfileTab() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                   <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white">
-                    {userState.user.fullName}
+                    {user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Not set'}
                   </div>
                 </div>
 
@@ -197,59 +197,26 @@ export default function ProfileTab() {
                     Email Address
                   </label>
                   <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white">
-                    {userState.user.email}
+                    {user.primaryEmailAddress?.emailAddress || 'Not set'}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">User ID</label>
+                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white font-mono text-xs">
+                    {user.id}
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Registration Date
+                    Account Created
                   </label>
                   <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white">
-                    {new Date(userState.user.registrationDate).toLocaleDateString()}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">App Version</label>
-                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white">
-                    {userState.user.appVersion}
+                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Not available'}
                   </div>
                 </div>
               </div>
-
-              {/* Sync Status */}
-              <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={classNames(
-                      'w-3 h-3 rounded-full',
-                      userState.user.isSyncedWithServer ? 'bg-green-500' : 'bg-yellow-500',
-                    )}
-                  />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {userState.user.isSyncedWithServer ? 'Synced with Server' : 'Sync Pending'}
-                    </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Last sync: {new Date(userState.user.lastSyncAttempt).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-
-                {userState.isSyncing && (
-                  <div className="flex items-center gap-2">
-                    <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Syncing...</span>
-                  </div>
-                )}
-              </div>
-
-              {userState.syncError && (
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                  <p className="text-sm text-red-700 dark:text-red-400">Sync Error: {userState.syncError}</p>
-                </div>
-              )}
             </div>
           </div>
         )}
