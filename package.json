@@ -5,7 +5,7 @@
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "version": "1.1.14",
+  "version": "1.1.15",
   "author": {
     "name": "Gerome-Elassaad",
     "email": "gerome.e24@gmail.com"
@@ -16,16 +16,13 @@
     "test": "vitest --run",
     "test:watch": "vitest",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint app",
-    "lint:fix": "pnpm run lint -- --fix && prettier app --write",
-    "start:windows": "wrangler pages dev ./build/client",
-    "start:unix": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings",
+    "lint:fix": "pnpm run lint --fix && prettier app --write",
     "start": "node -e \"const { spawn } = require('child_process'); const isWindows = process.platform === 'win32'; const cmd = isWindows ? 'pnpm run start:windows' : 'pnpm run start:unix'; const child = spawn(cmd, { shell: true, stdio: 'inherit' }); child.on('exit', code => process.exit(code));\"",
     "dockerstart": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings --ip 0.0.0.0 --port 5173 --no-show-interactive-dev-session",
     "dockerrun": "docker run -it -d --name codinit-ai-live -p 5173:5173 --env-file .env codinit-ai",
     "dockerbuild:prod": "docker build -t codinit-ai:production -t codinit-ai:latest --target codinit-ai-production .",
     "dockerbuild": "docker build -t codinit-ai:development -t codinit-ai:latest --target codinit-ai-development .",
     "typecheck": "tsc",
-    "typegen": "wrangler types",
     "preview": "pnpm run build && pnpm run start",
     "prepare": "husky",
     "clean": "node scripts/clean.js",
@@ -241,7 +238,8 @@
   "pnpm": {
     "overrides": {
       "wrangler": "^4.42.1",
-      "jsondiffpatch": "^0.7.2"
+      "jsondiffpatch": "^0.7.2",
+      "glob": ">=11.1.0"
     },
     "peerDependencyRules": {
       "allowedVersions": {
