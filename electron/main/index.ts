@@ -13,8 +13,6 @@ import { createWindow } from './ui/window';
 import { initCookies, storeCookies } from './utils/cookie';
 import { loadServerBuild, serveAsset } from './utils/serve';
 import { reloadOnChange } from './utils/reload';
-import { setupDatabaseHandlers } from './database';
-
 Object.assign(console, log.functions);
 
 console.debug('main: import.meta.env:', import.meta.env);
@@ -313,7 +311,6 @@ app.on('window-all-closed', () => {
 
 reloadOnChange();
 setupAutoUpdater();
-setupDatabaseHandlers();
 
 // Function to sync Electron session cookies to renderer document.cookie
 async function syncCookiesToRenderer(win: BrowserWindow) {
