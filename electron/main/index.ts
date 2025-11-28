@@ -71,7 +71,7 @@ declare global {
   await app.whenReady();
   console.log('App is ready');
 
-  Menu.setApplicationMenu(null);
+  Menu.setApplicationMenu(Menu.buildFromTemplate([]));
 
   // Load any existing cookies from ElectronStore, set as cookie
   await initCookies();
