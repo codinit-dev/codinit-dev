@@ -83,6 +83,32 @@ jobs:
           fi
         shell: bash
 
+      # Upload artifacts from this platform
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.deb
+            dist/*.AppImage
+            dist/*.zip
+          retention-days: 1
+          if-no-files-found: warn
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag' || github.ref == 'refs/heads/electron'
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist-combined
+          merge-multiple: true
+
       # Create Release
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -94,10 +120,11 @@ jobs:
           # For tag pushes, name the release as "Release <tagname>", otherwise "Electron Release".
           name: ${{ (github.event_name == 'push' && github.ref_type == 'tag') && format('Release {0}', github.ref_name) || 'Electron Release' }}
           files: |
-            dist/*.exe
-            dist/*.dmg
-            dist/*.deb
-            dist/*.AppImage
-            dist/*.zip
+            dist-combined/*.exe
+            dist-combined/*.dmg
+            dist-combined/*.deb
+            dist-combined/*.AppImage
+            dist-combined/*.zip
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
