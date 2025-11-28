@@ -2,48 +2,99 @@ import { BaseProvider } from '~/lib/modules/llm/base-provider';
 import type { ModelInfo } from '~/lib/modules/llm/types';
 import type { IProviderSetting } from '~/types/model';
 import type { LanguageModelV1 } from 'ai';
-import { createCohere } from '@ai-sdk/cohere';
+import { createDeepSeek } from '@ai-sdk/deepseek';
 
-export default class CohereProvider extends BaseProvider {
-  name = 'Cohere';
-  getApiKeyLink = 'https://dashboard.cohere.com/api-keys';
-  icon = '/thirdparty/logos/cohere.svg';
+export default class DeepseekProvider extends BaseProvider {
+  name = 'Deepseek';
+  getApiKeyLink = 'https://platform.deepseek.com/apiKeys';
+  icon = '/thirdparty/logos/deepseek.svg';
 
   config = {
-    apiTokenKey: 'COHERE_API_KEY',
+    apiTokenKey: 'DEEPSEEK_API_KEY',
   };
 
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Command R7B: 128k context, latest production model
+     * DeepSeek-R1: 128k context, reasoning model
      */
     {
-      name: 'command-r7b-12-2024',
-      label: 'Command R7B',
-      provider: 'Cohere',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4000,
+      name: 'deepseek-reasoner',
+      label: 'DeepSeek-R1',
+      provider: 'Deepseek',
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 32768,
     },
 
-    // Command R Plus: 128k context, enhanced reasoning
+    // DeepSeek-V3: 128k context, chat model
     {
-      name: 'command-r-plus-08-2024',
-      label: 'Command R Plus',
-      provider: 'Cohere',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4000,
+      name: 'deepseek-chat',
+      label: 'DeepSeek-V3',
+      provider: 'Deepseek',
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 8192,
     },
 
-    // Command R: 128k context, standard model
+    // DeepSeek-Coder-V2: 128k context, coding model
     {
-      name: 'command-r-08-2024',
-      label: 'Command R',
-      provider: 'Cohere',
-      maxTokenAllowed: 128000,
-      maxCompletionTokens: 4000,
+      name: 'deepseek-coder',
+      label: 'DeepSeek-Coder-V2',
+      provider: 'Deepseek',
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 8192,
     },
   ];
+
+  async getDynamicModels(
+    apiKeys?: Record<string, string>,
+    settings?: IProviderSetting,
+    serverEnv?: Record<string, string>,
+  ): Promise<ModelInfo[]> {
+    const { apiKey } = this.getProviderBaseUrlAndKey({
+      apiKeys,
+      providerSettings: settings,
+      serverEnv: serverEnv as any,
+      defaultBaseUrlKey: '',
+      defaultApiTokenKey: 'DEEPSEEK_API_KEY',
+    });
+
+    if (!apiKey) {
+      return this.staticModels;
+    }
+
+    try {
+      const response = await fetch('https://api.deepseek.com/models', {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+
+      if (!response.ok) {
+        return this.staticModels;
+      }
+
+      const data = (await response.json()) as any;
+      const staticModelIds = this.staticModels.map((m) => m.name);
+
+      if (!Array.isArray(data.data)) {
+        return this.staticModels;
+      }
+
+      const models = data.data
+        .filter((m: any) => m.id && !staticModelIds.includes(m.id))
+        .map((m: any) => ({
+          name: m.id,
+          label: m.id,
+          provider: this.name,
+          maxTokenAllowed: 131072,
+          maxCompletionTokens: 32768,
+        }));
+
+      return models.length > 0 ? [...this.staticModels, ...models] : this.staticModels;
+    } catch {
+      return this.staticModels;
+    }
+  }
 
   getModelInstance(options: {
     model: string;
@@ -58,17 +109,19 @@ export default class CohereProvider extends BaseProvider {
       providerSettings: providerSettings?.[this.name],
       serverEnv: serverEnv as any,
       defaultBaseUrlKey: '',
-      defaultApiTokenKey: 'COHERE_API_KEY',
+      defaultApiTokenKey: 'DEEPSEEK_API_KEY',
     });
 
     if (!apiKey) {
       throw new Error(`Missing API key for ${this.name} provider`);
     }
 
-    const cohere = createCohere({
+    const deepseek = createDeepSeek({
       apiKey,
     });
 
-    return cohere(model);
+    return deepseek(model, {
+      // simulateStreaming: true,
+    });
   }
 }

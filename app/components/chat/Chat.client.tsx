@@ -348,7 +348,9 @@ export const ChatImpl = memo(
       setChatStarted(true);
     };
 
+    // Helper function to create message parts array from text and images
     const createMessageParts = (text: string, images: string[] = []): Array<TextUIPart | FileUIPart> => {
+      // Create an array of properly typed message parts
       const parts: Array<TextUIPart | FileUIPart> = [
         {
           type: 'text',
@@ -356,9 +358,12 @@ export const ChatImpl = memo(
         },
       ];
 
+      // Add image parts if any
       images.forEach((imageData) => {
+        // Extract correct MIME type from the data URL
         const mimeType = imageData.split(';')[0].split(':')[1] || 'image/jpeg';
 
+        // Create file part according to AI SDK format
         parts.push({
           type: 'file',
           mimeType,
@@ -475,7 +480,7 @@ export const ChatImpl = memo(
                   id: `1-${new Date().getTime()}`,
                   role: 'user',
                   content: userMessageText,
-                  parts: createMessageParts(userMessageText, uploadedFiles.length > 0 ? [] : imageDataList),
+                  parts: createMessageParts(userMessageText, imageDataList),
                 },
                 {
                   id: `2-${new Date().getTime()}`,
@@ -512,6 +517,7 @@ export const ChatImpl = memo(
           }
         }
 
+        // If autoSelectTemplate is disabled or template selection failed, proceed with normal message
         const userMessageText = `[Model: ${model}]\n\n[Provider: ${provider.name}]\n\n${finalMessageContent}`;
         const attachments = uploadedFiles.length > 0 ? await filesToAttachments(uploadedFiles) : undefined;
 
@@ -520,7 +526,7 @@ export const ChatImpl = memo(
             id: `${new Date().getTime()}`,
             role: 'user',
             content: userMessageText,
-            parts: createMessageParts(userMessageText, attachments ? [] : imageDataList),
+            parts: createMessageParts(userMessageText, imageDataList),
             experimental_attachments: attachments,
           },
         ]);
@@ -558,7 +564,7 @@ export const ChatImpl = memo(
           {
             role: 'user',
             content: messageText,
-            parts: createMessageParts(messageText, attachmentOptions ? [] : imageDataList),
+            parts: createMessageParts(messageText, imageDataList),
           },
           attachmentOptions,
         );
@@ -574,7 +580,7 @@ export const ChatImpl = memo(
           {
             role: 'user',
             content: messageText,
-            parts: createMessageParts(messageText, attachmentOptions ? [] : imageDataList),
+            parts: createMessageParts(messageText, imageDataList),
           },
           attachmentOptions,
         );

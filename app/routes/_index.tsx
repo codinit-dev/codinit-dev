@@ -1,4 +1,4 @@
-import type { MetaFunction } from '@remix-run/cloudflare';
+import { json, type MetaFunction } from '@remix-run/cloudflare';
 import { ClientOnly } from 'remix-utils/client-only';
 import { BaseChat } from '~/components/chat/BaseChat';
 import { Chat } from '~/components/chat/Chat.client';
@@ -11,6 +11,8 @@ export const meta: MetaFunction = () => {
     { name: 'description', content: 'Talk with CodinIT, an AI assistant from CodinIT.dev' },
   ];
 };
+
+export const loader = () => json({});
 
 export default function Index() {
   return (

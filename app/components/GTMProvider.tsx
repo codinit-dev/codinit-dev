@@ -1,5 +1,3 @@
-// DO NOT REMOVE - IT WILL BREAK THE APP
-
 import { useEffect } from 'react';
 
 declare global {

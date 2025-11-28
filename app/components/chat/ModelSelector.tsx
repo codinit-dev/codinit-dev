@@ -444,7 +444,7 @@ export const ModelSelector = ({
               )}
             >
               {modelLoading === 'all' || modelLoading === provider?.name ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary text-shimmer">Loading...</div>
+                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">Loading...</div>
               ) : filteredModels.length === 0 ? (
                 <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No models found</div>
               ) : (

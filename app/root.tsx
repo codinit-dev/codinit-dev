@@ -116,11 +116,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 import { logStore } from './lib/stores/logs';
+import { initCookieBridge } from './lib/electronCookieBridge';
 
 export default function App() {
   const theme = useStore(themeStore);
 
   useEffect(() => {
+    // Initialize Electron cookie bridge if running in Electron
+    initCookieBridge();
+
     logStore.logSystem('Application initialized', {
       theme,
       platform: navigator.platform,

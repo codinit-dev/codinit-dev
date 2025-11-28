@@ -9,6 +9,7 @@ import { getAllChats, type Chat } from '~/lib/persistence/chats';
 import { DataVisualization } from './DataVisualization';
 import { classNames } from '~/utils/classNames';
 import { toast } from 'react-toastify';
+import { TextShimmer } from '~/components/ui';
 
 // Create a custom hook to connect to the codinitHistory database
 function useHistoryDB() {
@@ -658,7 +659,7 @@ export function DataTab() {
                   {isDownloadingTemplate ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      <span className="text-shimmer">Downloading...</span>
+                      <TextShimmer>Downloading...</TextShimmer>
                     </>
                   ) : (
                     'Download'

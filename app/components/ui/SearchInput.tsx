@@ -4,13 +4,27 @@ import { Input } from './Input';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  /** Function to call when the clear button is clicked */
   onClear?: () => void;
+
+  /** Whether to show the clear button when there is input */
   showClearButton?: boolean;
+
+  /** Additional class name for the search icon */
   iconClassName?: string;
+
+  /** Additional class name for the container */
   containerClassName?: string;
+
+  /** Whether the search is loading */
   loading?: boolean;
 }
 
+/**
+ * SearchInput component
+ *
+ * A search input field with a search icon and optional clear button.
+ */
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
   (
     { className, onClear, showClearButton = true, iconClassName, containerClassName, loading = false, ...props },

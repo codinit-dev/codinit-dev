@@ -25,7 +25,7 @@ function MCPIntegrationsTab() {
     if (!isInitialized) {
       initialize();
     }
-  }, [isInitialized, initialize]);
+  }, [isInitialized]);
 
   // Set up periodic connection checking
   useEffect(() => {
@@ -44,7 +44,7 @@ function MCPIntegrationsTab() {
     return () => {
       clearInterval(interval);
     };
-  }, [isInitialized, serverEntries.length, checkServersAvailabilities]);
+  }, [isInitialized, serverEntries.length]);
 
   const handleCheckServers = () => {
     setError(null);
