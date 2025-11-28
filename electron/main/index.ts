@@ -1,12 +1,13 @@
 /// <reference types="vite/client" />
 import { createRequestHandler } from '@remix-run/node';
-import electron, { app, BrowserWindow, ipcMain, Menu, protocol, session } from 'electron';
+import electron, { app, BrowserWindow, ipcMain, protocol, session } from 'electron';
 import log from 'electron-log';
 import path from 'node:path';
 import * as pkg from '../../package.json';
 import { setupAutoUpdater } from './utils/auto-update';
 import { isDev, DEFAULT_PORT } from './utils/constants';
 import { initViteServer, viteServer } from './utils/vite-server';
+import { setupMenu } from './ui/menu';
 import { createWindow } from './ui/window';
 import { initCookies, storeCookies } from './utils/cookie';
 import { loadServerBuild, serveAsset } from './utils/serve';
@@ -70,8 +71,6 @@ declare global {
 (async () => {
   await app.whenReady();
   console.log('App is ready');
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate([]));
 
   // Load any existing cookies from ElectronStore, set as cookie
   await initCookies();
@@ -298,7 +297,7 @@ declare global {
   .then((win) => {
     // Sync Electron session cookies to renderer document.cookie
     syncCookiesToRenderer(win);
-    return win;
+    return setupMenu(win);
   });
 
 app.on('window-all-closed', () => {

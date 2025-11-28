@@ -15,9 +15,6 @@ export function createWindow(rendererURL: string) {
       height: 800,
       ...bounds,
     },
-    frame: false,
-    titleBarStyle: 'hidden',
-    autoHideMenuBar: true,
     vibrancy: 'under-window',
     visualEffectState: 'active',
     webPreferences: {
