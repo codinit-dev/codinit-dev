@@ -44,6 +44,8 @@ export function CustomTitleBar() {
         cleanupUnmaximize();
       };
     }
+
+    return undefined;
   }, []);
 
   const handleMinimize = () => {
