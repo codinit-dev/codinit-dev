@@ -20,7 +20,48 @@ permissions:
   contents: write
 
 jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref_type == 'branch'
+    outputs:
+      tag_created: ${{ steps.tag.outputs.tag_created }}
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from package.json
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "Extracted version: v${VERSION}"
+
+      - name: Check if tag exists
+        id: tag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v${VERSION}"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists"
+            echo "tag_created=false" >> $GITHUB_OUTPUT
+          else
+            echo "Creating new tag $TAG"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+            echo "tag_created=true" >> $GITHUB_OUTPUT
+          fi
+
   build:
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      github.ref_type == 'tag'
     runs-on: ${{ matrix.os }}
 
     strategy:
