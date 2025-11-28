@@ -33,6 +33,11 @@ win:
   icon: assets/icons/icon.ico
   target:
     - nsis
+  certificateFile: ${CSC_LINK}
+  certificatePassword: ${CSC_KEY_PASSWORD}
+  signingHashAlgorithms:
+    - sha256
+  sign: null
   artifactName: ${name}-${version}-${os}-${arch}.${ext}
 
 linux:
