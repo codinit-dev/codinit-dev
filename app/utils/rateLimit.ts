@@ -78,7 +78,6 @@ class RateLimiter {
 
 // Rate limiters for different endpoints
 export const registrationRateLimiter = new RateLimiter(60 * 60 * 1000, 5); // 5 per hour per IP
-export const verificationRateLimiter = new RateLimiter(60 * 60 * 1000, 3); // 3 per hour per email
 
 // Helper function to get client IP from request
 export function getClientIP(request: Request): string {

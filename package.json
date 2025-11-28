@@ -1,28 +1,32 @@
 {
-  "name": "codinit-dev",
+  "name": "codinit",
   "description": "An AI-Powered Development Platform",
   "private": true,
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "version": "1.2.15",
+  "version": "1.2.16",
   "author": {
     "name": "Gerome-Elassaad",
     "email": "gerome.e24@gmail.com"
   },
   "scripts": {
+    "deploy": "npm run build && wrangler pages deploy",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 remix vite:build",
     "dev": "node pre-start.cjs && remix vite:dev",
     "test": "vitest --run",
     "test:watch": "vitest",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint app",
-    "lint:fix": "pnpm run lint --fix && prettier app --write",
-    "start": "node -e \"const { spawn } = require('child_process'); const isWindows = process.platform === 'win32'; const cmd = isWindows ? 'pnpm run start:windows' : 'pnpm run start:unix'; const child = spawn(cmd, { shell: true, stdio: 'inherit' }); child.on('exit', code => process.exit(code));\"",
+    "lint:fix": "npm run lint -- --fix && prettier app --write",
+    "start:windows": "wrangler pages dev ./build/client",
+    "start:unix": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings",
+    "start": "node -e \"const { spawn } = require('child_process'); const isWindows = process.platform === 'win32'; const cmd = isWindows ? 'npm run start:windows' : 'npm run start:unix'; const child = spawn(cmd, { shell: true, stdio: 'inherit' }); child.on('exit', code => process.exit(code));\"",
     "dockerstart": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings --ip 0.0.0.0 --port 5173 --no-show-interactive-dev-session",
     "dockerrun": "docker run -it -d --name codinit-ai-live -p 5173:5173 --env-file .env codinit-ai",
     "dockerbuild:prod": "docker build -t codinit-ai:production -t codinit-ai:latest --target codinit-ai-production .",
     "dockerbuild": "docker build -t codinit-ai:development -t codinit-ai:latest --target codinit-ai-development .",
     "typecheck": "tsc",
+    "typegen": "wrangler types",
     "preview": "pnpm run build && pnpm run start",
     "prepare": "husky",
     "clean": "node scripts/clean.js",
@@ -38,11 +42,7 @@
     "electron:build:linux": "rimraf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder --linux",
     "electron:build:dist": "rimraf dist && pnpm electron:build:renderer && pnpm electron:build:deps && electron-builder -m -w -l",
     "email:dev": "email dev --dir emails --port 3000",
-    "email:export": "email export --dir emails --outDir .react-email",
-    "db:migrate": "tsx scripts/migrate.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push"
+    "email:export": "email export --dir emails --outDir .react-email"
   },
   "engines": {
     "node": ">=20.15.1"
@@ -79,8 +79,6 @@
     "@heroicons/react": "^2.2.0",
     "@iconify-json/lucide": "^1.2.73",
     "@iconify-json/svg-spinners": "^1.2.4",
-    "@insforge/react": "^1.0.1",
-    "@insforge/sdk": "^1.0.0",
     "@lezer/highlight": "^1.2.1",
     "@modelcontextprotocol/sdk": "^1.20.0",
     "@nanostores/react": "^0.7.3",
@@ -111,7 +109,6 @@
     "@remix-run/node": "^2.17.1",
     "@remix-run/react": "^2.17.1",
     "@tanstack/react-virtual": "^3.13.12",
-    "@types/bcrypt": "^6.0.0",
     "@types/unist": "^3.0.3",
     "@uiw/codemirror-theme-vscode": "^4.25.2",
     "@unocss/reset": "^0.61.9",
@@ -121,7 +118,6 @@
     "@xterm/addon-web-links": "^0.11.0",
     "@xterm/xterm": "^5.5.0",
     "ai": "4.3.16",
-    "bcrypt": "^6.0.0",
     "chalk": "^5.6.2",
     "chart.js": "^4.5.0",
     "class-variance-authority": "^0.7.1",
@@ -129,7 +125,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "diff": "^5.2.0",
-    "drizzle-orm": "^0.44.7",
+    "dotenv": "^16.6.1",
     "electron-log": "^5.4.3",
     "electron-store": "^10.1.0",
     "electron-updater": "^6.6.2",
@@ -150,7 +146,6 @@
     "nanostores": "^0.10.3",
     "ollama-ai-provider": "^0.15.2",
     "path-browserify": "^1.0.1",
-    "postgres": "^3.4.7",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
     "react-dnd": "^16.0.1",
@@ -180,7 +175,6 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@21st-extension/toolbar": "^0.5.14",
     "@blitz/eslint-plugin": "0.1.0",
     "@cloudflare/workers-types": "^4.20251004.0",
     "@electron/notarize": "^2.5.0",
@@ -196,7 +190,6 @@
     "@types/file-saver": "^2.0.7",
     "@types/js-cookie": "^3.0.6",
     "@types/path-browserify": "^1.0.3",
-    "@types/pg": "^8.15.6",
     "@types/react": "^18.3.25",
     "@types/react-dom": "^18.3.7",
     "@types/react-window": "^1.8.8",
@@ -204,8 +197,6 @@
     "@vitest/browser": "^3.1.0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.6.1",
-    "drizzle-kit": "^0.31.7",
     "electron": "^35.7.5",
     "electron-builder": "^26.0.12",
     "eslint": "^9.38.0",
@@ -221,7 +212,6 @@
     "rimraf": "^4.4.1",
     "sass-embedded": "^1.93.2",
     "stream-browserify": "^3.0.0",
-    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "unified": "^11.0.5",
     "unocss": "^0.61.9",
@@ -238,8 +228,7 @@
   "pnpm": {
     "overrides": {
       "wrangler": "^4.42.1",
-      "jsondiffpatch": "^0.7.2",
-      "glob": ">=11.1.0"
+      "jsondiffpatch": "^0.7.2"
     },
     "peerDependencyRules": {
       "allowedVersions": {
