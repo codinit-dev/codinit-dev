@@ -34,5 +34,38 @@ const cookies = {
   },
 };
 
+const windowControls = {
+  minimize: () => {
+    ipcRenderer.invoke('window-minimize');
+  },
+  maximize: () => {
+    ipcRenderer.invoke('window-maximize');
+  },
+  close: () => {
+    ipcRenderer.invoke('window-close');
+  },
+  isMaximized: () => {
+    return ipcRenderer.invoke('window-is-maximized');
+  },
+  getPlatform: () => {
+    return ipcRenderer.invoke('window-get-platform');
+  },
+  onMaximize: (callback: () => void) => {
+    ipcRenderer.on('window-maximized', callback);
+    return () => ipcRenderer.removeListener('window-maximized', callback);
+  },
+  onUnmaximize: (callback: () => void) => {
+    ipcRenderer.on('window-unmaximized', callback);
+    return () => ipcRenderer.removeListener('window-unmaximized', callback);
+  },
+  offMaximize: (callback: () => void) => {
+    ipcRenderer.removeListener('window-maximized', callback);
+  },
+  offUnmaximize: (callback: () => void) => {
+    ipcRenderer.removeListener('window-unmaximized', callback);
+  },
+};
+
 contextBridge.exposeInMainWorld('ipc', ipc);
 contextBridge.exposeInMainWorld('electronCookies', cookies);
+contextBridge.exposeInMainWorld('electronAPI', windowControls);

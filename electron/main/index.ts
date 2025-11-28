@@ -292,6 +292,40 @@ declare global {
       }
     });
 
+    // Window control handlers
+    ipcMain.handle('window-minimize', () => {
+      win.minimize();
+    });
+
+    ipcMain.handle('window-maximize', () => {
+      if (win.isMaximized()) {
+        win.unmaximize();
+      } else {
+        win.maximize();
+      }
+    });
+
+    ipcMain.handle('window-close', () => {
+      win.close();
+    });
+
+    ipcMain.handle('window-is-maximized', () => {
+      return win.isMaximized();
+    });
+
+    ipcMain.handle('window-get-platform', () => {
+      return process.platform;
+    });
+
+    // Window state change listeners
+    win.on('maximize', () => {
+      win.webContents.send('window-maximized');
+    });
+
+    win.on('unmaximize', () => {
+      win.webContents.send('window-unmaximized');
+    });
+
     return win;
   })
   .then((win) => {
