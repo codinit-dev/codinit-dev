@@ -115,6 +115,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
+          set -e
           if [ "$RUNNER_OS" == "Windows" ]; then
             pnpm run electron:build:win
           elif [ "$RUNNER_OS" == "macOS" ]; then
@@ -122,6 +123,18 @@ jobs:
           else
             pnpm run electron:build:linux
           fi
+        shell: bash
+
+      # Debug: List build directory
+      - name: Debug - List build directory
+        if: always()
+        run: |
+          echo "=== Build directory contents ==="
+          ls -la build/ || echo "build/ directory not found"
+          echo "=== Build/electron directory ==="
+          ls -la build/electron/ || echo "build/electron/ not found"
+          echo "=== Dist directory contents ==="
+          ls -la dist/ || echo "dist/ directory not found"
         shell: bash
 
       # Upload artifacts from this platform
