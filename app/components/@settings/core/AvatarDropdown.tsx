@@ -19,11 +19,6 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
   const profile = useStore(profileStore) as Profile;
 
   const handleSignOut = () => {
-    // TODO: Update this URL to your actual auth domain
-    if (typeof window !== 'undefined' && (window as any).electronAPI) {
-      (window as any).electronAPI.invoke('open-external', 'https://your-auth-domain.com/sign-out');
-    }
-
     setTimeout(() => {
       window.location.href = '/';
     }, 500);
