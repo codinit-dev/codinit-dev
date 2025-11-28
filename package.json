@@ -1,11 +1,11 @@
 {
-  "name": "codinit",
+  "name": "codinit-dev",
   "description": "An AI-Powered Development Platform",
   "private": true,
   "license": "MIT",
   "sideEffects": false,
   "type": "module",
-  "version": "1.1.15",
+  "version": "1.2.15",
   "author": {
     "name": "Gerome-Elassaad",
     "email": "gerome.e24@gmail.com"
