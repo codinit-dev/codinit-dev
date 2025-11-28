@@ -27,14 +27,20 @@ export function Header() {
       </div>
 
       {!isSignedIn && (
-        <a
-          href="https://smooth-crab-83.accounts.dev/sign-up?redirect_url=codinit-auth://signup-callback"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-1.5 rounded-lg font-medium text-sm bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+        <button
+          onClick={() => {
+            const signUpUrl = 'https://smooth-crab-83.accounts.dev/sign-up?redirect_url=codinit-auth://signup-callback';
+
+            if (typeof window !== 'undefined' && (window as any).electronAPI) {
+              (window as any).electronAPI.invoke('open-external', signUpUrl);
+            } else {
+              window.open(signUpUrl, '_blank');
+            }
+          }}
+          className="px-4 py-1.5 rounded-lg font-medium text-sm bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer"
         >
           Join Waitlist
-        </a>
+        </button>
       )}
     </header>
   );
