@@ -18,6 +18,17 @@ interface AvatarDropdownProps {
 export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
   const profile = useStore(profileStore) as Profile;
 
+  const handleSignOut = () => {
+    // TODO: Update this URL to your actual auth domain
+    if (typeof window !== 'undefined' && (window as any).electronAPI) {
+      (window as any).electronAPI.invoke('open-external', 'https://your-auth-domain.com/sign-out');
+    }
+
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 500);
+  };
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -150,6 +161,23 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             <div className="i-ph:heartbeat w-4 h-4 text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
             Service Status
             <BetaLabel />
+          </DropdownMenu.Item>
+
+          <div className="my-1 border-t border-gray-200/50 dark:border-gray-800/50" />
+
+          <DropdownMenu.Item
+            className={classNames(
+              'flex items-center gap-2 px-4 py-2.5',
+              'text-sm text-red-600 dark:text-red-400',
+              'hover:bg-red-50 dark:hover:bg-red-500/10',
+              'cursor-pointer transition-all duration-200',
+              'outline-none',
+              'group',
+            )}
+            onClick={handleSignOut}
+          >
+            <div className="i-ph:sign-out w-4 h-4" />
+            Sign Out
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

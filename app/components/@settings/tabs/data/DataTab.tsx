@@ -658,7 +658,7 @@ export function DataTab() {
                   {isDownloadingTemplate ? (
                     <>
                       <div className="i-ph-spinner-gap-bold animate-spin w-4 h-4 mr-2" />
-                      Downloading...
+                      <span className="text-shimmer">Downloading...</span>
                     </>
                   ) : (
                     'Download'

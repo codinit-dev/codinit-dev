@@ -67,77 +67,22 @@ yarn install
 ```
 ### 2️⃣ Set Up the Database
 
-Codinit requires a PostgreSQL database. Choose one of the following options:
-
-#### Option A: Local PostgreSQL with Docker (Recommended for Development)
-
-```bash
-# Start PostgreSQL in Docker (run this in a separate terminal)
-docker run --name codinit-postgres \
-  -e POSTGRES_DB=codinit_db \
-  -e POSTGRES_USER=codinit_user \
-  -e POSTGRES_PASSWORD=codinit_password \
-  -p 5432:5432 \
-  -d postgres:15
-```
-
-#### Option B: Cloud Database
-
-Use any PostgreSQL-compatible cloud database:
-- **Supabase** (free tier available)
-- **Neon** (serverless PostgreSQL)
-- **Railway** (PostgreSQL hosting)
-- **PlanetScale** (MySQL-compatible)
-
-#### Option C: Native PostgreSQL Installation
-
-Install PostgreSQL locally and create a database:
-```sql
-CREATE DATABASE codinit_db;
-CREATE USER codinit_user WITH PASSWORD 'codinit_password';
-GRANT ALL PRIVILEGES ON DATABASE codinit_db TO codinit_user;
-```
+Ensure you have a PostgreSQL database running. You can use Supabase for a quick setup.
 
 ### 3️⃣ Configure Environment
 ```bash
 cp .env.example .env.local
 ```
 
-#### Edit .env.local and add your configuration:
+#### Edit .env.local and add your provider keys:
 
 ```bash
-# Database connection (required)
-DATABASE_URL=postgresql://codinit_user:codinit_password@localhost:5432/codinit_db
-
-# AI Provider API keys
 OPENAI_API_KEY=your_openai_key
 ANTHROPIC_API_KEY=your_anthropic_key
-
-# Optional: Supabase integration
 SUPABASE_URL=your_supabase_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Optional: Email verification (requires Resend account)
-RESEND_API_KEY=your_resend_api_key
-APP_URL=http://localhost:5173
 ```
-
-### 4️⃣ Run Database Migrations
-
-```bash
-# Apply database schema changes
-pnpm db:migrate
-```
-
-**Important:** If your password contains special characters (`$`, `!`, `@`, etc.), you must URL-encode them:
-```bash
-# Use the password encoder helper
-pnpm tsx scripts/encode-password.ts "yourPassword$123!"
-```
-
-See [docs/database-setup.md](docs/database-setup.md) for detailed setup instructions.
-
-### 5️⃣ Run the Dev Server
+### 4️⃣ Run the Dev Server
 
 ```bash
 pnpm run dev

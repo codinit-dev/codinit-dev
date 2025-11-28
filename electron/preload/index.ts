@@ -6,8 +6,7 @@ const ipc = {
   invoke(...args: any[]) {
     return ipcRenderer.invoke('ipcTest', ...args);
   },
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  on(channel: string, func: Function) {
+  on(channel: string, func: (...args: any[]) => void) {
     const f = (event: IpcRendererEvent, ...args: any[]) => func(...[event, ...args]);
     console.debug('register listener', channel, f);
     ipcRenderer.on(channel, f);
@@ -36,3 +35,9 @@ const cookies = {
 
 contextBridge.exposeInMainWorld('ipc', ipc);
 contextBridge.exposeInMainWorld('electronCookies', cookies);
+
+// Expose electronAPI for cookie bridge
+contextBridge.exposeInMainWorld('electronAPI', {
+  on: ipc.on,
+  invoke: ipc.invoke,
+});

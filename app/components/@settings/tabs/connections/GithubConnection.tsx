@@ -979,7 +979,7 @@ function LoadingSpinner() {
     <div className="flex items-center justify-center p-4">
       <div className="flex items-center gap-2">
         <div className="i-ph:spinner-gap-bold animate-spin w-4 h-4" />
-        <span className="text-codinit-elements-textSecondary">Loading...</span>
+        <span className="text-codinit-elements-textSecondary text-shimmer">Loading...</span>
       </div>
     </div>
   );

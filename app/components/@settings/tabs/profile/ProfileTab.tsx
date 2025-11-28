@@ -2,13 +2,11 @@ import { useState, useCallback } from 'react';
 import { useStore } from '@nanostores/react';
 import { classNames } from '~/utils/classNames';
 import { profileStore, updateProfile } from '~/lib/stores/profile';
-import { useUser } from '@clerk/remix';
 import { toast } from 'react-toastify';
 import { debounce } from '~/utils/debounce';
 
 export default function ProfileTab() {
   const profile = useStore(profileStore);
-  const { user, isLoaded } = useUser();
   const [isUploading, setIsUploading] = useState(false);
 
   // Create debounced update functions
@@ -177,49 +175,6 @@ export default function ProfileTab() {
             </div>
           </div>
         </div>
-
-        {/* Account Information Section */}
-        {isLoaded && user && (
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Account Information</h3>
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white">
-                    {user.fullName || `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Not set'}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Email Address
-                  </label>
-                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white">
-                    {user.primaryEmailAddress?.emailAddress || 'Not set'}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">User ID</label>
-                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white font-mono text-xs">
-                    {user.id}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Account Created
-                  </label>
-                  <div className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-sm text-gray-900 dark:text-white">
-                    {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Not available'}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

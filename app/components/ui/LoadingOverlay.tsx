@@ -14,7 +14,7 @@ export const LoadingOverlay = ({
           className={'i-svg-spinners:90-ring-with-bg text-codinit-elements-loader-progress'}
           style={{ fontSize: '2rem' }}
         ></div>
-        <p className="text-lg text-codinit-elements-textTertiary">{message}</p>
+        <p className="text-lg text-codinit-elements-textTertiary text-shimmer">{message}</p>
         {progress !== undefined && (
           <div className="w-64 flex flex-col gap-2">
             <div className="w-full h-2 bg-codinit-elements-background-depth-1 rounded-full overflow-hidden">

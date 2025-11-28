@@ -45,7 +45,6 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     contextOptimization,
     supabase,
     enableMCPTools = false,
-    selectedMCP,
   } = await request.json<{
     messages: Messages;
     files: any;
@@ -60,7 +59,6 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       };
     };
     enableMCPTools?: boolean;
-    selectedMCP?: string | null;
   }>();
 
   const cookieHeader = request.headers.get('Cookie');
@@ -198,24 +196,9 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           // logger.debug('Code Files Selected');
         }
 
-        let mcpService: MCPService | null = null;
-        let mcpTools: any = undefined;
-
-        if (enableMCPTools) {
-          mcpService = MCPService.getInstance();
-          mcpTools = selectedMCP ? mcpService.getToolsForServer(selectedMCP) : mcpService.tools;
-
-          if (selectedMCP) {
-            logger.debug(`Using MCP tools from server: ${selectedMCP}`);
-          } else {
-            logger.debug('Using all available MCP tools');
-          }
-        }
-
         const options: StreamingOptions = {
           supabaseConnection: supabase,
           toolChoice: enableMCPTools ? 'auto' : 'none',
-          tools: mcpTools,
           onFinish: async ({ text: content, finishReason, usage }) => {
             logger.debug('usage', JSON.stringify(usage));
 
@@ -300,13 +283,15 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           label: 'response',
           status: 'in-progress',
           order: progressCounter++,
-          message: 'Generating...',
+          message: 'Generating Response',
         } satisfies ProgressAnnotation);
 
+        // Process tool invocations if MCP tools are enabled
         let processedMessages = messages;
 
-        if (enableMCPTools && mcpService) {
+        if (enableMCPTools) {
           try {
+            const mcpService = MCPService.getInstance();
             processedMessages = await mcpService.processToolInvocations(messages, dataStream);
             logger.debug('Processed MCP tool invocations');
           } catch (error) {
@@ -340,27 +325,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         })();
         result.mergeIntoDataStream(dataStream);
       },
-      onError: (error: any) => {
-        const errorMessage = error.message || String(error);
-
-        if (
-          errorMessage.includes('429') ||
-          errorMessage.includes('Resource exhausted') ||
-          errorMessage.includes('quota')
-        ) {
-          return `Rate limit reached. Your API quota has been exhausted. Please try again later or consider:\n• Waiting a few minutes before retrying\n• Using a different model or provider\n• Checking your API usage at your provider's dashboard\n\nTechnical details: ${errorMessage}`;
-        }
-
-        if (
-          errorMessage.includes('401') ||
-          errorMessage.includes('authentication') ||
-          errorMessage.includes('API key')
-        ) {
-          return `Authentication failed. Please check that your API key is valid and has the necessary permissions.\n\nTechnical details: ${errorMessage}`;
-        }
-
-        return `An error occurred: ${errorMessage}`;
-      },
+      onError: (error: any) => `Custom error: ${error.message}`,
     }).pipeThrough(
       new TransformStream({
         transform: (chunk, controller) => {

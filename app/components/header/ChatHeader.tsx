@@ -13,8 +13,11 @@ export function ChatHeader() {
   }
 
   return (
-    <header className={classNames('flex shrink-0 select-none items-center pl-2 pr-3 h-12', 'bg-transparent')}>
-      <a href="/">
+    <header
+      className={classNames('flex shrink-0 select-none items-center pl-2 pr-3 h-12', 'bg-transparent')}
+      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+    >
+      <a href="/" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
         <button
           className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent [&:hover:where(:not(:disabled))]:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary text-sm px-2"
           type="button"

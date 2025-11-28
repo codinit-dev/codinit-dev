@@ -23,12 +23,12 @@ Add the following environment variables to your `.env` file:
 
 ```bash
 # Clerk Authentication
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_... # Your publishable key
+CLERK_PUBLISHABLE_KEY=pk_test_... # Your publishable key
 CLERK_SECRET_KEY=sk_test_...           # Your secret key
 ```
 
 **Important Notes:**
-- `VITE_CLERK_PUBLISHABLE_KEY` is prefixed with `VITE_` to make it available on the client-side
+- `CLERK_PUBLISHABLE_KEY` is prefixed with `VITE_` to make it available on the client-side
 - `CLERK_SECRET_KEY` remains server-side only
 - Never commit these keys to version control
 - Use different keys for development and production
@@ -65,6 +65,7 @@ The Clerk integration provides:
 - ✅ **User Profile**: Access to user data (name, email, avatar)
 - ✅ **Protected Routes**: Uses `SignedIn` and `SignedOut` components
 - ✅ **Modal Authentication**: Sign-in/sign-up in modal dialogs
+- ✅ **Electron Support**: Seamless authentication in desktop app with custom protocol handling
 
 ## How It Works
 
@@ -84,7 +85,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 // App wrapped with ClerkApp
 export default ClerkApp(App, {
-  publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+  publishableKey: import.meta.env.CLERK_PUBLISHABLE_KEY,
 });
 ```
 
@@ -192,7 +193,7 @@ Clerk replaces this with:
 
 ### "Clerk publishable key is missing"
 
-Make sure `VITE_CLERK_PUBLISHABLE_KEY` is set in your `.env` file and the dev server is restarted.
+Make sure `CLERK_PUBLISHABLE_KEY` is set in your `.env` file and the dev server is restarted.
 
 ### Authentication redirects not working
 
@@ -212,6 +213,51 @@ Check browser console for errors. Clerk uses cookies and local storage for sessi
 - [Remix Integration Guide](https://clerk.com/docs/references/remix/overview)
 - [Clerk Dashboard](https://dashboard.clerk.com/)
 - [API Reference](https://clerk.com/docs/references/javascript/overview)
+
+## Electron App Integration
+
+CodinIT supports both web and desktop (Electron) authentication using Clerk.
+
+### How Electron Authentication Works
+
+1. **Custom Protocol Handler**: The Electron app registers a `codinit-auth://` protocol
+2. **External Sign-In**: When signing in from Electron, the user is redirected to Clerk's hosted UI in their default browser
+3. **Callback Handling**: After successful authentication, Clerk redirects back to `codinit-auth://signin-callback`
+4. **Cookie Sync**: The Electron main process captures cookies and syncs them to the app session
+5. **App Access**: User is automatically signed in to the desktop app
+
+### Electron Configuration
+
+The Electron app automatically handles:
+- Protocol registration (`codinit-auth://`)
+- Cookie storage and synchronization
+- Auth callbacks for sign-in, sign-up, and sign-out
+- Session persistence across app restarts
+
+### Setting Up Custom Domain (Optional)
+
+If you're using a custom Clerk domain:
+
+1. Add to `.env`:
+   ```bash
+   CLERK_DOMAIN=your-domain.clerk.accounts.com
+   ```
+
+2. Configure redirect URLs in Clerk Dashboard:
+   ```
+   codinit-auth://signin-callback
+   codinit-auth://signup-callback
+   codinit-auth://signout-callback
+   ```
+
+### Routes
+
+The app provides dedicated authentication routes:
+
+- `/sign-in` - Clerk's SignIn component for web users
+- `/sign-up` - Clerk's SignUp component for web users
+
+Note: Electron users are redirected to the hosted Clerk UI instead of in-app routes.
 
 ## Support
 

@@ -1,8 +1,6 @@
 import { useStore } from '@nanostores/react';
-import type { LinksFunction, LoaderFunctionArgs } from '@remix-run/cloudflare';
+import type { LinksFunction } from '@remix-run/cloudflare';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
-import { ClerkApp } from '@clerk/remix';
-import { rootAuthLoader } from '@clerk/remix/ssr.server';
 import tailwindReset from '@unocss/reset/tailwind-compat.css?url';
 import { themeStore } from './lib/stores/theme';
 import { stripIndents } from './utils/stripIndent';
@@ -21,10 +19,6 @@ import globalStyles from './styles/index.scss?url';
 import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 
 import 'virtual:uno.css';
-
-export const loader = (args: LoaderFunctionArgs) => {
-  return rootAuthLoader(args);
-};
 
 export const links: LinksFunction = () => [
   {
@@ -95,7 +89,7 @@ export const Head = createHead(() => (
   </>
 ));
 
-function AppLayout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: React.ReactNode }) {
   const theme = useStore(themeStore);
 
   useEffect(() => {
@@ -121,18 +115,18 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  return children;
-}
-
 import { logStore } from './lib/stores/logs';
 import { initCookieBridge } from './lib/electronCookieBridge';
 
-function App() {
+export default function App() {
+  const theme = useStore(themeStore);
+
   useEffect(() => {
+    // Initialize Electron cookie bridge if running in Electron
     initCookieBridge();
 
     logStore.logSystem('Application initialized', {
+      theme,
       platform: navigator.platform,
       userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),
@@ -140,16 +134,8 @@ function App() {
   }, []);
 
   return (
-    <AppLayout>
+    <Layout>
       <Outlet />
-    </AppLayout>
+    </Layout>
   );
 }
-
-export default ClerkApp(App, {
-  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || 'pk_live_Y2xlcmsuY29kaW5pdC5kZXYk',
-  domain: 'clerk.codinit.dev',
-  isSatellite: false,
-  signInUrl: 'https://smooth-crab-83.accounts.dev/sign-in',
-  signUpUrl: 'https://smooth-crab-83.accounts.dev/sign-up',
-});

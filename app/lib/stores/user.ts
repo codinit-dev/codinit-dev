@@ -1,6 +1,6 @@
 import { atom } from 'nanostores';
 
-interface ClerkUser {
+interface User {
   id: string;
   emailAddress?: string;
   fullName?: string;
@@ -10,27 +10,27 @@ interface ClerkUser {
 }
 
 interface UserState {
-  clerkUser: ClerkUser | null;
+  user: User | null;
   isLoaded: boolean;
 }
 
 const initialState: UserState = {
-  clerkUser: null,
+  user: null,
   isLoaded: false,
 };
 
 export const userStore = atom<UserState>(initialState);
 
-export const setClerkUser = (user: ClerkUser | null, isLoaded: boolean = true) => {
+export const setUser = (user: User | null, isLoaded: boolean = true) => {
   userStore.set({
-    clerkUser: user,
+    user,
     isLoaded,
   });
 };
 
 export const clearUser = () => {
   userStore.set({
-    clerkUser: null,
+    user: null,
     isLoaded: true,
   });
 };
