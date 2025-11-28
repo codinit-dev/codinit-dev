@@ -160,6 +160,7 @@ jobs:
           draft: ${{ github.event_name != 'workflow_dispatch' && github.ref_type == 'branch' }}
           # For tag pushes, name the release as "Release <tagname>", otherwise "Electron Release".
           name: ${{ (github.event_name == 'push' && github.ref_type == 'tag') && format('Release {0}', github.ref_name) || 'Electron Release' }}
+          generate_release_notes: true
           files: |
             dist-combined/*.exe
             dist-combined/*.dmg
