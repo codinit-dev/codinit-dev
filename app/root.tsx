@@ -147,10 +147,9 @@ function App() {
 }
 
 export default ClerkApp(App, {
-  publishableKey: process.env.VITE_CLERK_PUBLISHABLE_KEY || '',
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY || 'pk_live_Y2xlcmsuY29kaW5pdC5kZXYk',
   domain: 'clerk.codinit.dev',
   isSatellite: false,
-  signInUrl: 'https://accounts.codinit.dev/sign-in',
-  signUpUrl: 'https://accounts.codinit.dev/sign-up',
-  waitlistUrl: '/waitlist',
+  signInUrl: 'https://smooth-crab-83.accounts.dev/sign-in',
+  signUpUrl: 'https://smooth-crab-83.accounts.dev/sign-up',
 });
