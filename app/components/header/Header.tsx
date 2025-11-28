@@ -28,7 +28,7 @@ export function Header() {
 
       {!isSignedIn && (
         <a
-          href="https://smooth-crab-83.accounts.dev/sign-up"
+          href="https://smooth-crab-83.accounts.dev/sign-up?redirect_url=codinit-auth://signup-callback"
           target="_blank"
           rel="noopener noreferrer"
           className="px-4 py-1.5 rounded-lg font-medium text-sm bg-blue-600 hover:bg-blue-700 text-white transition-colors"
