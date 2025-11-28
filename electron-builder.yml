@@ -21,7 +21,6 @@ mac:
   icon: assets/icons/icon.icns
   target:
     - dmg
-  identity: null
   category: 'public.app-category.developer-tools'
   type: 'distribution'
   hardenedRuntime: true
