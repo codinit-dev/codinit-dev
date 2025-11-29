@@ -15,6 +15,7 @@ export const TAB_ICONS: Record<TabType, string> = {
   update: 'i-ph:arrow-clockwise-fill',
   'task-manager': 'i-ph:chart-line-fill',
   'tab-management': 'i-ph:squares-four-fill',
+  'api-keys': 'i-ph:key-fill',
 };
 
 export const TAB_LABELS: Record<TabType, string> = {
@@ -32,6 +33,7 @@ export const TAB_LABELS: Record<TabType, string> = {
   update: 'Updates',
   'task-manager': 'Task Manager',
   'tab-management': 'Tab Management',
+  'api-keys': 'API Keys',
 };
 
 export const TAB_DESCRIPTIONS: Record<TabType, string> = {
@@ -49,6 +51,7 @@ export const TAB_DESCRIPTIONS: Record<TabType, string> = {
   update: 'Check for updates and release notes',
   'task-manager': 'Monitor system resources and processes',
   'tab-management': 'Configure visible tabs and their order',
+  'api-keys': 'Manage API keys for AI providers',
 };
 
 export const DEFAULT_TAB_CONFIG = [
