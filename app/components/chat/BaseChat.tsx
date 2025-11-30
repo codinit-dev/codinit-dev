@@ -429,7 +429,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
         {/* Unified Header Container - spans full width */}
         {chatStarted && (
-          <div className="flex border-b border-codinit-elements-borderColor bg-codinit-elements-background-depth-1">
+          <div className="flex bg-codinit-elements-background-depth-1">
             {/* Chat Header Section - constrained to chat width */}
             <div className="w-[var(--chat-min-width)]">
               <ChatHeader />
