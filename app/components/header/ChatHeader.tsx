@@ -25,11 +25,9 @@ export function ChatHeader() {
   const isElectron = typeof window !== 'undefined' && window.electronAPI;
   const isMacOS = platform === 'darwin';
 
-  const paddingClass = !isElectron ? 'pl-2 pr-3' : isElectron && !isMacOS ? 'pl-2 pr-0' : 'pl-1 pr-3';
-
   return (
     <header
-      className={classNames('flex shrink-0 select-none items-center h-12 bg-transparent', paddingClass)}
+      className={classNames('flex shrink-0 select-none items-center pl-2 pr-3 h-12 bg-transparent relative')}
       style={
         isElectron
           ? ({
@@ -39,8 +37,16 @@ export function ChatHeader() {
           : undefined
       }
     >
-      <div className="flex items-center flex-1 min-w-0">
-        {isElectron && isMacOS && <ClientOnly>{() => <ElectronWindowControls className="mr-2" />}</ClientOnly>}
+      {isElectron && isMacOS && (
+        <ClientOnly>
+          {() => (
+            <div className="absolute left-2 top-0 h-12 flex items-center">
+              <ElectronWindowControls />
+            </div>
+          )}
+        </ClientOnly>
+      )}
+      <div className={classNames('flex items-center flex-1 min-w-0', isElectron && isMacOS ? 'ml-[72px]' : '')}>
         <a href="/" style={isElectron ? ({ WebkitAppRegion: 'no-drag' } as React.CSSProperties) : undefined}>
           <button
             className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent [&:hover:where(:not(:disabled))]:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary text-sm px-2"
@@ -55,7 +61,15 @@ export function ChatHeader() {
           <ClientOnly>{() => <ChatDescription />}</ClientOnly>
         </div>
       </div>
-      {isElectron && !isMacOS && <ClientOnly>{() => <ElectronWindowControls />}</ClientOnly>}
+      {isElectron && !isMacOS && (
+        <ClientOnly>
+          {() => (
+            <div className="absolute right-0 top-0 h-12 flex items-center">
+              <ElectronWindowControls />
+            </div>
+          )}
+        </ClientOnly>
+      )}
     </header>
   );
 }
