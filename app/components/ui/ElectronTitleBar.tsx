@@ -69,7 +69,7 @@ export function ElectronTitleBar() {
 
   return (
     <div
-      className="flex items-center h-9 bg-codinit-elements-background-depth-1 border-b border-codinit-elements-borderColor select-none"
+      className="flex items-center justify-between h-8 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor/50 select-none shadow-sm"
       style={
         {
           WebkitAppRegion: 'drag',
@@ -78,92 +78,96 @@ export function ElectronTitleBar() {
       }
     >
       {/* macOS: Controls on left */}
-      {isMacOS && (
-        <div className="flex items-center pl-3 pr-2 space-x-2">
+      {isMacOS ? (
+        <div className="flex items-center pl-2.5 space-x-2">
           <button
             onClick={handleClose}
-            className="w-3 h-3 rounded-full bg-[#ff5f56] hover:bg-[#ff3b30] transition-colors flex items-center justify-center group"
+            className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#ff3b30] transition-all flex items-center justify-center group shadow-sm"
             style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             title="Close"
           >
-            <div className="hidden group-hover:block text-[10px] text-[#6e0d03] font-bold leading-none">×</div>
+            <div className="opacity-0 group-hover:opacity-100 text-[9px] text-[#4d0000] font-bold leading-none transition-opacity">
+              ×
+            </div>
           </button>
           <button
             onClick={handleMinimize}
-            className="w-3 h-3 rounded-full bg-[#ffbd2e] hover:bg-[#ffaa00] transition-colors flex items-center justify-center group"
+            className="w-3 h-3 rounded-full bg-[#febc2e] hover:bg-[#ffaa00] transition-all flex items-center justify-center group shadow-sm"
             style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             title="Minimize"
           >
-            <div className="hidden group-hover:block w-1.5 h-0.5 bg-[#6e4d00]" />
+            <div className="opacity-0 group-hover:opacity-100 w-1.5 h-[1.5px] bg-[#6e4d00] transition-opacity" />
           </button>
           <button
             onClick={handleMaximize}
-            className="w-3 h-3 rounded-full bg-[#28c940] hover:bg-[#00d700] transition-colors flex items-center justify-center group"
+            className="w-3 h-3 rounded-full bg-[#28c840] hover:bg-[#00d700] transition-all flex items-center justify-center group shadow-sm"
             style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             title={isMaximized ? 'Restore' : 'Maximize'}
           >
-            <div className="hidden group-hover:block text-[8px] text-[#005700] font-bold leading-none">
-              {isMaximized ? '−' : '+'}
+            <div className="opacity-0 group-hover:opacity-100 text-[7px] text-[#004d00] font-bold leading-none transition-opacity">
+              {isMaximized ? '□' : '+'}
             </div>
           </button>
         </div>
+      ) : (
+        <div className="w-12" />
       )}
 
       {/* App branding - centered */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="flex items-center gap-2 text-xs text-codinit-elements-textSecondary">
-          <img src="/icon-dark.png" alt="CodinIT" className="w-4 h-4 dark:hidden" />
-          <img src="/icon-light.png" alt="CodinIT" className="w-4 h-4 hidden dark:block" />
-          <span className="font-medium">CodinIT.dev</span>
-        </div>
+      <div className="flex items-center gap-2 text-xs text-codinit-elements-textSecondary font-medium">
+        <img src="/icon-dark.png" alt="CodinIT" className="w-3.5 h-3.5 dark:hidden" />
+        <img src="/icon-light.png" alt="CodinIT" className="w-3.5 h-3.5 hidden dark:block" />
+        <span className="tracking-wide">CodinIT.dev</span>
       </div>
 
       {/* Windows/Linux: Controls on right */}
-      {!isMacOS && (
-        <div className="flex items-center">
+      {!isMacOS ? (
+        <div className="flex items-center h-full">
           <button
             onClick={handleMinimize}
-            className="h-9 px-4 flex items-center justify-center hover:bg-codinit-elements-background-depth-2 transition-colors"
+            className="h-full px-4 flex items-center justify-center hover:bg-white/10 dark:hover:bg-white/5 transition-colors"
             style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             title="Minimize"
           >
-            <svg width="10" height="1" viewBox="0 0 10 1" className="fill-codinit-elements-textSecondary">
-              <rect width="10" height="1" />
+            <svg width="12" height="1" viewBox="0 0 12 1" className="fill-codinit-elements-textSecondary">
+              <rect width="12" height="1" />
             </svg>
           </button>
           <button
             onClick={handleMaximize}
-            className="h-9 px-4 flex items-center justify-center hover:bg-codinit-elements-background-depth-2 transition-colors"
+            className="h-full px-4 flex items-center justify-center hover:bg-white/10 dark:hover:bg-white/5 transition-colors"
             style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             title={isMaximized ? 'Restore' : 'Maximize'}
           >
             {isMaximized ? (
               <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
+                width="11"
+                height="11"
+                viewBox="0 0 11 11"
                 className="fill-none stroke-codinit-elements-textSecondary"
               >
-                <rect x="0" y="2" width="8" height="8" strokeWidth="1" />
-                <rect x="2" y="0" width="8" height="8" strokeWidth="1" fill="var(--background)" />
+                <rect x="0" y="2.5" width="8" height="8" strokeWidth="1" />
+                <rect x="2.5" y="0" width="8" height="8" strokeWidth="1" />
               </svg>
             ) : (
-              <svg width="10" height="10" viewBox="0 0 10 10" className="stroke-codinit-elements-textSecondary">
-                <rect x="0" y="0" width="10" height="10" strokeWidth="1" fill="none" />
+              <svg width="11" height="11" viewBox="0 0 11 11" className="stroke-codinit-elements-textSecondary">
+                <rect x="0.5" y="0.5" width="10" height="10" strokeWidth="1" fill="none" />
               </svg>
             )}
           </button>
           <button
             onClick={handleClose}
-            className="h-9 px-4 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors"
+            className="h-full px-4 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
             style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
             title="Close"
           >
-            <svg width="10" height="10" viewBox="0 0 10 10" className="fill-none stroke-current">
-              <path d="M0 0 L10 10 M10 0 L0 10" strokeWidth="1" />
+            <svg width="11" height="11" viewBox="0 0 11 11" className="fill-none stroke-current" strokeWidth="1">
+              <path d="M0.5 0.5 L10.5 10.5 M10.5 0.5 L0.5 10.5" />
             </svg>
           </button>
         </div>
+      ) : (
+        <div className="w-12" />
       )}
     </div>
   );
