@@ -10,6 +10,7 @@ const rootDir = join(__dirname, '..');
 function runCommand(command, args, options = {}) {
   return new Promise((resolve, reject) => {
     console.log(`\n🔧 Running: ${command} ${args.join(' ')}\n`);
+
     const child = spawn(command, args, {
       stdio: 'inherit',
       shell: true,
