@@ -1,11 +1,18 @@
 <p align="center">
-  <img 
-    width="1650" 
-    height="1033" 
-    alt="1000027646" 
-    src="https://github.com/user-attachments/assets/39ca8364-e755-46e2-81c5-5fdd76ed3907"
-    style="border-radius: 16px;"
-  />
+<div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
+  <iframe
+    src="https://demo.arcade.software/7fFNUCTHxZK8M9WnvXR3?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+    title="Walkthrough"
+    frameborder="0"
+    loading="lazy"
+    allow="clipboard-write"
+    webkitallowfullscreen
+    mozallowfullscreen
+    allowfullscreen
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+  ></iframe>
+</div>
+
 
 </p>
 
