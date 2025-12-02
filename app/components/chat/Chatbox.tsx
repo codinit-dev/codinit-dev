@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { classNames } from '~/utils/classNames';
 import { PROVIDER_LIST } from '~/utils/constants';
-import { ModelSelector } from '~/components/chat/ModelSelector';
+import { ProviderModelSelector } from '~/components/chat/ProviderModelSelector';
 import { APIKeyManager } from './APIKeyManager';
 import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
 import FilePreview from './FilePreview';
@@ -178,7 +178,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           <ClientOnly>
             {() => (
               <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
-                <ModelSelector
+                <ProviderModelSelector
                   key={props.provider?.name + ':' + props.modelList.length}
                   model={props.model}
                   setModel={props.setModel}
