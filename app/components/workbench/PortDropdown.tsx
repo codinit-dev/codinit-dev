@@ -46,7 +46,7 @@ export const PortDropdown = memo(
     }, [isDropdownOpen]);
 
     return (
-      <div className="relative z-port-dropdown" ref={dropdownRef}>
+      <div className="relative z-[999]" ref={dropdownRef}>
         {/* Display the active port if available, otherwise show the plug icon */}
         <button
           className="flex items-center group-focus-within:text-codinit-elements-preview-addressBar-text bg-white group-focus-within:bg-codinit-elements-preview-addressBar-background dark:bg-codinit-elements-preview-addressBar-backgroundHover rounded-full px-2 py-1 gap-1.5"
@@ -58,7 +58,7 @@ export const PortDropdown = memo(
           ) : null}
         </button>
         {isDropdownOpen && (
-          <div className="absolute left-0 mt-2 z-[999] bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor rounded shadow-sm min-w-[140px] dropdown-animation">
+          <div className="absolute left-0 mt-2 z-[999] bg-codinit-elements-background-depth-3 border border-codinit-elements-borderColor rounded shadow-sm min-w-[140px] dropdown-animation">
             <div className="px-4 py-2 border-b border-codinit-elements-borderColor text-sm font-semibold text-codinit-elements-textPrimary">
               Ports
             </div>
