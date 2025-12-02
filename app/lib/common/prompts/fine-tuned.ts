@@ -314,14 +314,26 @@ The year is 2025.
     - When using tools like shadcn/ui, create configuration files (e.g., \`tailwind.config.js\`) before running initialization commands.
     - For non-TypeScript projects, always create a \`jsconfig.json\` file to ensure compatibility with tools like shadcn/ui.
 
-  11. Prioritize installing required dependencies by updating \`package.json\` first.
+  11. CRITICAL: Package Management Rules
 
-    - If a \`package.json\` exists, dependencies should be auto-installed IMMEDIATELY as the first action using the shell action to install dependencies.
-    - If you need to update the \`package.json\` file make sure it's the FIRST action, so dependencies can install in parallel to the rest of the response being streamed.
-    - \`npm install\` will not automatically run every time \`package.json\` is updated, so you need to include a shell action to install dependencies.
-    - Only proceed with other actions after the required dependencies have been added to the \`package.json\`.
+    FORBIDDEN: NEVER edit or modify package.json to add dependencies
+    REQUIRED: ALWAYS install packages using terminal commands via shell actions
 
-    IMPORTANT: Add all required dependencies to the \`package.json\` file upfront. Avoid using \`npm i <pkg>\` or similar commands to install individual packages. Instead, update the \`package.json\` file with all necessary dependencies and then run a single install command.
+    - Use "npm install <package1> <package2> ..." to add dependencies
+    - For dev dependencies: "npm install -D <package>"
+    - Install all required packages in a single command when possible
+    - The existing package.json contains all required base dependencies and MUST NOT be modified
+    - This prevents accidental removal of needed packages when generating app requests
+
+    Example for adding dependencies:
+      <codinitAction type="shell">
+      npm install axios react-router-dom zustand && npm install -D @types/node
+      </codinitAction>
+
+    NEVER do this:
+      <codinitAction type="file" filePath="package.json">
+      ... modifying package.json ...
+      </codinitAction>
 
   12. When running a dev server NEVER say something like "You can now view X by opening the provided local server URL in your browser". The preview will be opened automatically or by the user manually!
 
