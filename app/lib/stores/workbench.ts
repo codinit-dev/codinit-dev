@@ -47,7 +47,7 @@ export type ThinkingArtifactUpdateState = Pick<ThinkingArtifactState, 'title' | 
 
 type Artifacts = MapStore<Record<string, ArtifactState>>;
 
-export type WorkbenchViewType = 'code' | 'diff' | 'preview';
+export type WorkbenchViewType = 'code' | 'diff' | 'preview' | 'progress';
 
 export class WorkbenchStore {
   #previewsStore = new PreviewsStore(webcontainer);
@@ -63,6 +63,7 @@ export class WorkbenchStore {
 
   showWorkbench: WritableAtom<boolean> = import.meta.hot?.data.showWorkbench ?? atom(false);
   currentView: WritableAtom<WorkbenchViewType> = import.meta.hot?.data.currentView ?? atom('code');
+  currentArtifactMessageId: WritableAtom<string | null> = import.meta.hot?.data.currentArtifactMessageId ?? atom(null);
   unsavedFiles: WritableAtom<Set<string>> = import.meta.hot?.data.unsavedFiles ?? atom(new Set<string>());
   actionAlert: WritableAtom<ActionAlert | undefined> =
     import.meta.hot?.data.actionAlert ?? atom<ActionAlert | undefined>(undefined);
@@ -80,6 +81,7 @@ export class WorkbenchStore {
       import.meta.hot.data.unsavedFiles = this.unsavedFiles;
       import.meta.hot.data.showWorkbench = this.showWorkbench;
       import.meta.hot.data.currentView = this.currentView;
+      import.meta.hot.data.currentArtifactMessageId = this.currentArtifactMessageId;
       import.meta.hot.data.actionAlert = this.actionAlert;
       import.meta.hot.data.supabaseAlert = this.supabaseAlert;
       import.meta.hot.data.deployAlert = this.deployAlert;
@@ -915,3 +917,10 @@ export class WorkbenchStore {
 }
 
 export const workbenchStore = new WorkbenchStore();
+
+// Setup WebContainer event handlers after store initialization
+if (!import.meta.env.SSR) {
+  import('~/lib/webcontainer').then(({ setupWebContainerEventHandlers }) => {
+    setupWebContainerEventHandlers(workbenchStore);
+  });
+}
