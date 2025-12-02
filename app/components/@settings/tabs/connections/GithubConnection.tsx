@@ -6,6 +6,7 @@ import { classNames } from '~/utils/classNames';
 import Cookies from 'js-cookie';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '~/components/ui/Collapsible';
 import { Button } from '~/components/ui/Button';
+import { TextShimmer } from '~/components/ui/text-shimmer';
 
 interface GitHubUserResponse {
   login: string;
@@ -979,7 +980,7 @@ function LoadingSpinner() {
     <div className="flex items-center justify-center p-4">
       <div className="flex items-center gap-2">
         <div className="i-ph:spinner-gap-bold animate-spin w-4 h-4" />
-        <span className="text-codinit-elements-textSecondary">Loading...</span>
+        <TextShimmer>Loading...</TextShimmer>
       </div>
     </div>
   );
