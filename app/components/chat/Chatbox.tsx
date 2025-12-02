@@ -5,6 +5,7 @@ import { PROVIDER_LIST } from '~/utils/constants';
 import { ProviderModelSelector } from '~/components/chat/ProviderModelSelector';
 import { APIKeyManager } from './APIKeyManager';
 import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import FilePreview from './FilePreview';
 import { ScreenshotStateManager } from './ScreenshotStateManager';
 import { SendButton } from './SendButton.client';
@@ -72,6 +73,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [isMcpPanelOpen, setIsMcpPanelOpen] = useState(false);
   const [placeholderText, setPlaceholderText] = useState('');
   const [showPlaceholder, setShowPlaceholder] = useState(true);
+  const [providerDropdownOpen, setProviderDropdownOpen] = useState(false);
 
   const handleToolSelected = (toolName: string) => {
     if (!props.textareaRef?.current) {
@@ -177,30 +179,33 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <div>
           <ClientOnly>
             {() => (
-              <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
-                <ProviderModelSelector
-                  key={props.provider?.name + ':' + props.modelList.length}
-                  model={props.model}
-                  setModel={props.setModel}
-                  modelList={props.modelList}
-                  provider={props.provider}
-                  setProvider={props.setProvider}
-                  providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
-                  apiKeys={props.apiKeys}
-                  modelLoading={props.isModelLoading}
-                />
-                {(props.providerList || []).length > 0 &&
-                  props.provider &&
-                  !LOCAL_PROVIDERS.includes(props.provider.name) && (
-                    <APIKeyManager
-                      provider={props.provider}
-                      apiKey={props.apiKeys[props.provider.name] || ''}
-                      setApiKey={(key) => {
-                        props.onApiKeysChange(props.provider.name, key);
-                      }}
-                    />
-                  )}
-              </div>
+              <>
+                <div className={props.isModelSettingsCollapsed ? 'hidden' : ''}>
+                  <ProviderModelSelector
+                    key={props.provider?.name + ':' + props.modelList.length}
+                    model={props.model}
+                    setModel={props.setModel}
+                    modelList={props.modelList}
+                    provider={props.provider}
+                    setProvider={props.setProvider}
+                    providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+                    apiKeys={props.apiKeys}
+                    modelLoading={props.isModelLoading}
+                    isCollapsed={false}
+                  />
+                  {(props.providerList || []).length > 0 &&
+                    props.provider &&
+                    !LOCAL_PROVIDERS.includes(props.provider.name) && (
+                      <APIKeyManager
+                        provider={props.provider}
+                        apiKey={props.apiKeys[props.provider.name] || ''}
+                        setApiKey={(key) => {
+                          props.onApiKeysChange(props.provider.name, key);
+                        }}
+                      />
+                    )}
+                </div>
+              </>
             )}
           </ClientOnly>
         </div>
@@ -376,20 +381,55 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               <div className={`i-ph:chats text-xl`} />
               {props.chatMode === 'discuss' ? <span>Discuss</span> : <span />}
             </IconButton>
-            <IconButton
-              title="Model Settings"
-              className={classNames('transition-all flex items-center gap-1', {
-                'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent':
-                  props.isModelSettingsCollapsed,
-                'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault':
-                  !props.isModelSettingsCollapsed,
-              })}
-              onClick={() => props.setIsModelSettingsCollapsed(!props.isModelSettingsCollapsed)}
-              disabled={!props.providerList || props.providerList.length === 0}
-            >
-              <div className={`i-ph:caret-${props.isModelSettingsCollapsed ? 'right' : 'down'} text-lg`} />
-              {props.isModelSettingsCollapsed ? <span className="text-xs">{props.model}</span> : <span />}
-            </IconButton>
+            <ClientOnly>
+              {() =>
+                props.isModelSettingsCollapsed ? (
+                  <DropdownMenu.Root open={providerDropdownOpen} onOpenChange={setProviderDropdownOpen}>
+                    <DropdownMenu.Trigger asChild>
+                      <button
+                        title="Model Settings"
+                        type="button"
+                        className={classNames(
+                          'flex items-center justify-center text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-500/50 p-1',
+                          'transition-all flex items-center gap-1 cursor-pointer',
+                          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent',
+                        )}
+                        disabled={!props.providerList || props.providerList.length === 0}
+                      >
+                        <div className="i-ph:caret-right text-lg" />
+                        <span className="text-xs">{props.model}</span>
+                      </button>
+                    </DropdownMenu.Trigger>
+                    <ProviderModelSelector
+                      key={props.provider?.name + ':' + props.modelList.length + '-collapsed'}
+                      model={props.model}
+                      setModel={props.setModel}
+                      modelList={props.modelList}
+                      provider={props.provider}
+                      setProvider={props.setProvider}
+                      providerList={props.providerList || (PROVIDER_LIST as ProviderInfo[])}
+                      apiKeys={props.apiKeys}
+                      modelLoading={props.isModelLoading}
+                      isCollapsed={true}
+                      open={providerDropdownOpen}
+                      onOpenChange={setProviderDropdownOpen}
+                    />
+                  </DropdownMenu.Root>
+                ) : (
+                  <IconButton
+                    title="Model Settings"
+                    className={classNames(
+                      'transition-all flex items-center gap-1',
+                      'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault',
+                    )}
+                    onClick={() => props.setIsModelSettingsCollapsed(!props.isModelSettingsCollapsed)}
+                    disabled={!props.providerList || props.providerList.length === 0}
+                  >
+                    <div className="i-ph:caret-down text-lg" />
+                  </IconButton>
+                )
+              }
+            </ClientOnly>
           </div>
           <div className="flex gap-2 items-center">
             <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />

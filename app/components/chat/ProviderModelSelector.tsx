@@ -14,6 +14,9 @@ interface ProviderModelSelectorProps {
   providerList: ProviderInfo[];
   apiKeys: Record<string, string>;
   modelLoading?: string;
+  isCollapsed?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const ProviderModelSelector = ({
@@ -24,10 +27,16 @@ export const ProviderModelSelector = ({
   modelList,
   providerList,
   modelLoading,
+  isCollapsed,
+  open,
+  onOpenChange,
 }: ProviderModelSelectorProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const isDropdownOpen = open !== undefined ? open : internalOpen;
+  const setIsDropdownOpen = onOpenChange || setInternalOpen;
 
   // Get current model info
   const currentModel = modelList.find((m) => m.name === model);
@@ -89,6 +98,124 @@ export const ProviderModelSelector = ({
 
   const displayText = provider && currentModel ? `${provider.name} / ${currentModel.label}` : 'Select provider / model';
 
+  const dropdownContent = (
+    <DropdownMenu.Portal>
+      <DropdownMenu.Content
+        className={classNames(
+          'min-w-[300px] rounded-lg p-2',
+          'bg-codinit-elements-background-depth-2',
+          'border border-codinit-elements-borderColor',
+          'shadow-lg',
+          'animate-in fade-in-80 zoom-in-95',
+          'data-[side=bottom]:slide-in-from-top-2',
+          'data-[side=left]:slide-in-from-right-2',
+          'data-[side=right]:slide-in-from-left-2',
+          'data-[side=top]:slide-in-from-bottom-2',
+          'z-[1000]',
+        )}
+        side={isCollapsed ? 'top' : 'bottom'}
+        sideOffset={8}
+        align="start"
+        alignOffset={0}
+        collisionPadding={8}
+        avoidCollisions={true}
+      >
+        {/* Search Input */}
+        <div className="px-2 pb-2">
+          <div className="relative">
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search providers..."
+              className={classNames(
+                'w-full pl-8 py-1.5 rounded-md text-sm',
+                'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
+                'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary',
+                'focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus',
+                'transition-all',
+              )}
+              onClick={(e) => e.stopPropagation()}
+              role="searchbox"
+              aria-label="Search providers"
+            />
+            <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
+              <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary" />
+            </div>
+          </div>
+        </div>
+
+        <div className="max-h-60 overflow-y-auto">
+          {filteredProviders.length === 0 ? (
+            <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No providers found</div>
+          ) : (
+            filteredProviders.map((providerOption) => {
+              // Get models for this provider
+              const providerModels = modelList.filter((m) => m.provider === providerOption.name && m.name);
+
+              return (
+                <div key={providerOption.name}>
+                  {/* Provider Header */}
+                  <div
+                    className={classNames(
+                      'flex items-center gap-2 px-3 py-2 text-sm',
+                      'text-codinit-elements-textPrimary',
+                      'bg-codinit-elements-background-depth-1',
+                      'border-b border-codinit-elements-borderColor',
+                    )}
+                  >
+                    {providerOption.icon && (
+                      <img src={providerOption.icon} alt={providerOption.name} className="w-5 h-5" />
+                    )}
+                    <span className="font-medium">{providerOption.name}</span>
+                  </div>
+
+                  {/* Models for this provider */}
+                  {providerModels.length > 0 && (
+                    <div className="ml-6">
+                      {modelLoading === 'all' || modelLoading === providerOption.name ? (
+                        <div className="px-3 py-1 text-xs">
+                          <TextShimmer>Loading...</TextShimmer>
+                        </div>
+                      ) : (
+                        providerModels.map((modelOption) => (
+                          <DropdownMenu.Item
+                            key={modelOption.name}
+                            className={classNames(
+                              'flex items-center gap-2 px-3 py-1 text-xs cursor-pointer',
+                              'hover:bg-codinit-elements-background-depth-3',
+                              'text-codinit-elements-textSecondary',
+                              'outline-none rounded-md',
+                              model === modelOption.name
+                                ? 'bg-codinit-elements-background-depth-2 text-codinit-elements-textPrimary'
+                                : undefined,
+                            )}
+                            onSelect={() => handleModelSelect(modelOption)}
+                          >
+                            {modelOption.icon && (
+                              <img src={modelOption.icon} alt={modelOption.label} className="w-4 h-4" />
+                            )}
+                            <span>{modelOption.label}</span>
+                            {model === modelOption.name && <div className="ml-auto i-ph:check text-xs" />}
+                          </DropdownMenu.Item>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </DropdownMenu.Content>
+    </DropdownMenu.Portal>
+  );
+
+  if (isCollapsed) {
+    return dropdownContent;
+  }
+
   return (
     <DropdownMenu.Root open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
       <DropdownMenu.Trigger asChild>
@@ -145,114 +272,7 @@ export const ProviderModelSelector = ({
           </svg>
         </button>
       </DropdownMenu.Trigger>
-
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className={classNames(
-            'min-w-[300px] rounded-lg p-2',
-            'bg-codinit-elements-background-depth-2',
-            'border border-codinit-elements-borderColor',
-            'shadow-lg',
-            'animate-in fade-in-80 zoom-in-95',
-            'data-[side=bottom]:slide-in-from-top-2',
-            'data-[side=left]:slide-in-from-right-2',
-            'data-[side=right]:slide-in-from-left-2',
-            'data-[side=top]:slide-in-from-bottom-2',
-            'z-[1000]',
-          )}
-          sideOffset={5}
-          align="start"
-        >
-          {/* Search Input */}
-          <div className="px-2 pb-2">
-            <div className="relative">
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search providers..."
-                className={classNames(
-                  'w-full pl-8 py-1.5 rounded-md text-sm',
-                  'bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor',
-                  'text-codinit-elements-textPrimary placeholder:text-codinit-elements-textTertiary',
-                  'focus:outline-none focus:ring-2 focus:ring-codinit-elements-focus',
-                  'transition-all',
-                )}
-                onClick={(e) => e.stopPropagation()}
-                role="searchbox"
-                aria-label="Search providers"
-              />
-              <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
-                <span className="i-ph:magnifying-glass text-codinit-elements-textTertiary" />
-              </div>
-            </div>
-          </div>
-
-          <div className="max-h-60 overflow-y-auto">
-            {filteredProviders.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No providers found</div>
-            ) : (
-              filteredProviders.map((providerOption) => {
-                // Get models for this provider
-                const providerModels = modelList.filter((m) => m.provider === providerOption.name && m.name);
-
-                return (
-                  <div key={providerOption.name}>
-                    {/* Provider Header */}
-                    <div
-                      className={classNames(
-                        'flex items-center gap-2 px-3 py-2 text-sm',
-                        'text-codinit-elements-textPrimary',
-                        'bg-codinit-elements-background-depth-1',
-                        'border-b border-codinit-elements-borderColor',
-                      )}
-                    >
-                      {providerOption.icon && (
-                        <img src={providerOption.icon} alt={providerOption.name} className="w-5 h-5" />
-                      )}
-                      <span className="font-medium">{providerOption.name}</span>
-                    </div>
-
-                    {/* Models for this provider */}
-                    {providerModels.length > 0 && (
-                      <div className="ml-6">
-                        {modelLoading === 'all' || modelLoading === providerOption.name ? (
-                          <div className="px-3 py-1 text-xs">
-                            <TextShimmer>Loading...</TextShimmer>
-                          </div>
-                        ) : (
-                          providerModels.map((modelOption) => (
-                            <DropdownMenu.Item
-                              key={modelOption.name}
-                              className={classNames(
-                                'flex items-center gap-2 px-3 py-1 text-xs cursor-pointer',
-                                'hover:bg-codinit-elements-background-depth-3',
-                                'text-codinit-elements-textSecondary',
-                                'outline-none rounded-md',
-                                model === modelOption.name
-                                  ? 'bg-codinit-elements-background-depth-2 text-codinit-elements-textPrimary'
-                                  : undefined,
-                              )}
-                              onSelect={() => handleModelSelect(modelOption)}
-                            >
-                              {modelOption.icon && (
-                                <img src={modelOption.icon} alt={modelOption.label} className="w-4 h-4" />
-                              )}
-                              <span>{modelOption.label}</span>
-                              {model === modelOption.name && <div className="ml-auto i-ph:check text-xs" />}
-                            </DropdownMenu.Item>
-                          ))
-                        )}
-                      </div>
-                    )}
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
+      {dropdownContent}
     </DropdownMenu.Root>
   );
 };
