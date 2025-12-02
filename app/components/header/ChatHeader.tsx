@@ -22,7 +22,7 @@ export function ChatHeader() {
         </button>
       </a>
       <span className="text-codinit-elements-textPrimary opacity-[.12] text-xl antialiased mx-1">/</span>
-      <div className="flex-1 px-4 truncate text-codinit-elements-textPrimary">
+      <div className="flex-1 pl-2 pr-4 truncate text-codinit-elements-textPrimary">
         <ClientOnly>{() => <ChatDescription />}</ClientOnly>
       </div>
       <button
