@@ -56,14 +56,6 @@ const PROVIDERS: ProviderConfig[] = [
     category: 'cloud',
   },
   {
-    name: 'Cohere',
-    displayName: 'Cohere',
-    icon: 'i-ph:polygon',
-    apiKeyPlaceholder: '...',
-    getApiKeyUrl: 'https://dashboard.cohere.com/api-keys',
-    category: 'cloud',
-  },
-  {
     name: 'Deepseek',
     displayName: 'Deepseek',
     icon: 'i-ph:eye',
