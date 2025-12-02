@@ -25,25 +25,21 @@ export const ProgressIndicator = memo(() => {
   const currentArtifactMessageId = useStore(workbenchStore.currentArtifactMessageId);
   const artifacts = useStore(workbenchStore.artifacts);
 
-  if (!currentArtifactMessageId) {
+  const artifact = currentArtifactMessageId ? artifacts[currentArtifactMessageId] : null;
+
+  const actionsComputed = artifact
+    ? computed(artifact.runner.actions, (actions) => {
+        return Object.values(actions).filter((action) => {
+          return action.type !== 'supabase' && !(action.type === 'shell' && action.content?.includes('supabase'));
+        });
+      })
+    : computed([], () => []);
+
+  const actions = useStore(actionsComputed);
+
+  if (!currentArtifactMessageId || !artifact) {
     return null;
   }
-
-  const artifact = artifacts[currentArtifactMessageId];
-
-  if (!artifact) {
-    return null;
-  }
-
-  const actions = useStore(
-    computed(artifact.runner.actions, (actions) => {
-      // Filter out Supabase actions except for migrations
-      return Object.values(actions).filter((action) => {
-        // Exclude actions with type 'supabase' or actions that contain 'supabase' in their content
-        return action.type !== 'supabase' && !(action.type === 'shell' && action.content?.includes('supabase'));
-      });
-    }),
-  );
 
   return (
     <div className="p-5 bg-codinit-elements-actions-background">
