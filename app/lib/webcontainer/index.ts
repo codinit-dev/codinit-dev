@@ -18,6 +18,12 @@ export let webcontainer: Promise<WebContainer> = new Promise(() => {
   // noop for ssr
 });
 
+let workbenchStore: any = null;
+
+export function setupWebContainerEventHandlers(store: any) {
+  workbenchStore = store;
+}
+
 if (!import.meta.env.SSR) {
   webcontainer =
     import.meta.hot?.data.webcontainer ??
@@ -32,8 +38,6 @@ if (!import.meta.env.SSR) {
       .then(async (webcontainer) => {
         webcontainerContext.loaded = true;
 
-        const { workbenchStore } = await import('~/lib/stores/workbench');
-
         // Listen for preview errors
         webcontainer.on('preview-message', (message) => {
           console.log('WebContainer preview message:', message);
@@ -42,13 +46,16 @@ if (!import.meta.env.SSR) {
           if (message.type === 'PREVIEW_UNCAUGHT_EXCEPTION' || message.type === 'PREVIEW_UNHANDLED_REJECTION') {
             const isPromise = message.type === 'PREVIEW_UNHANDLED_REJECTION';
             const title = isPromise ? 'Unhandled Promise Rejection' : 'Uncaught Exception';
-            workbenchStore.actionAlert.set({
-              type: 'preview',
-              title,
-              description: 'message' in message ? message.message : 'Unknown error',
-              content: `Error occurred at ${message.pathname}${message.search}${message.hash}\nPort: ${message.port}\n\nStack trace:\n${cleanStackTrace(message.stack || '')}`,
-              source: 'preview',
-            });
+
+            if (workbenchStore) {
+              workbenchStore.actionAlert.set({
+                type: 'preview',
+                title,
+                description: 'message' in message ? message.message : 'Unknown error',
+                content: `Error occurred at ${message.pathname}${message.search}${message.hash}\nPort: ${message.port}\n\nStack trace:\n${cleanStackTrace(message.stack || '')}`,
+                source: 'preview',
+              });
+            }
           }
         });
 
