@@ -133,7 +133,7 @@ export const PreviewHeader = memo(
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content
-              className="min-w-[240px] z-[250] bg-codinit-elements-background-depth-2 dark:bg-[#141414] rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"
+              className="min-w-[240px] z-[999] bg-codinit-elements-background-depth-2 dark:bg-[#141414] rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"
               sideOffset={5}
               align="start"
             >
@@ -348,7 +348,7 @@ export const PreviewHeader = memo(
         {isWindowSizeDropdownOpen && (
           <>
             <div className="fixed inset-0 z-50" onClick={() => setIsWindowSizeDropdownOpen(false)} />
-            <div className="absolute right-0 top-full mt-2 z-50 min-w-[240px] max-h-[400px] overflow-y-auto bg-codinit-elements-background-depth-1 rounded-xl shadow-2xl border border-codinit-elements-borderColor overflow-hidden">
+            <div className="absolute right-0 top-full mt-2 z-[999] min-w-[240px] max-h-[400px] overflow-y-auto bg-codinit-elements-background-depth-1 rounded-xl shadow-2xl border border-codinit-elements-borderColor overflow-hidden">
               <div className="p-3 border-b border-codinit-elements-borderColor">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-codinit-elements-textPrimary">Window Options</span>

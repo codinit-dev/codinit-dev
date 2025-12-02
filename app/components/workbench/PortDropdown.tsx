@@ -58,7 +58,7 @@ export const PortDropdown = memo(
           ) : null}
         </button>
         {isDropdownOpen && (
-          <div className="absolute left-0 mt-2 bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor rounded shadow-sm min-w-[140px] dropdown-animation">
+          <div className="absolute left-0 mt-2 z-[999] bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor rounded shadow-sm min-w-[140px] dropdown-animation">
             <div className="px-4 py-2 border-b border-codinit-elements-borderColor text-sm font-semibold text-codinit-elements-textPrimary">
               Ports
             </div>
