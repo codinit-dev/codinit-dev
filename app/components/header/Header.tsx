@@ -30,7 +30,15 @@ export function Header() {
             <img src="/logo-light.png" alt="logo" className="w-[90px] inline-block hidden dark:block" />
           </a>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => window.open('https://github.com/Gerome-Elassaad/codinit-app/issues/new/choose', '_blank')}
+            className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent [&:hover:where(:not(:disabled))]:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary text-sm px-2"
+            type="button"
+            title="Report a bug"
+          >
+            <div className="i-lucide:bug text-lg" />
+          </button>
           <SettingsButton onClick={handleSettingsClick} />
         </div>
       </header>
