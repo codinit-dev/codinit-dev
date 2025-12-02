@@ -11,7 +11,7 @@ import { providerBaseUrlEnvKeys } from '~/utils/constants';
 import { SiAmazon, SiGoogle, SiHuggingface, SiPerplexity, SiOpenai } from 'react-icons/si';
 import { BsRobot, BsCloud } from 'react-icons/bs';
 import { TbBrain, TbCloudComputing } from 'react-icons/tb';
-import { BiCodeBlock, BiChip } from 'react-icons/bi';
+import { BiCodeBlock } from 'react-icons/bi';
 import { FaCloud, FaBrain } from 'react-icons/fa';
 import type { IconType } from 'react-icons';
 
@@ -19,7 +19,6 @@ import type { IconType } from 'react-icons';
 type ProviderName =
   | 'AmazonBedrock'
   | 'Anthropic'
-  | 'Cohere'
   | 'Deepseek'
   | 'Google'
   | 'Groq'
@@ -36,7 +35,6 @@ type ProviderName =
 const PROVIDER_ICONS: Record<ProviderName, IconType> = {
   AmazonBedrock: SiAmazon,
   Anthropic: FaBrain,
-  Cohere: BiChip,
   Deepseek: BiCodeBlock,
   Google: SiGoogle,
   Groq: BsCloud,
