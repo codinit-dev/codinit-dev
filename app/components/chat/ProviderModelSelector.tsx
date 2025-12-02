@@ -4,6 +4,8 @@ import type { ModelInfo } from '~/lib/modules/llm/types';
 import { classNames } from '~/utils/classNames';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { TextShimmer } from '~/components/ui/text-shimmer';
+import { APIKeyManager } from './APIKeyManager';
+import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
 
 interface ProviderModelSelectorProps {
   model?: string;
@@ -17,6 +19,7 @@ interface ProviderModelSelectorProps {
   isCollapsed?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onApiKeyChange?: (providerName: string, apiKey: string) => void;
 }
 
 export const ProviderModelSelector = ({
@@ -30,6 +33,8 @@ export const ProviderModelSelector = ({
   isCollapsed,
   open,
   onOpenChange,
+  apiKeys,
+  onApiKeyChange,
 }: ProviderModelSelectorProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [internalOpen, setInternalOpen] = useState(false);
@@ -208,6 +213,17 @@ export const ProviderModelSelector = ({
             })
           )}
         </div>
+
+        {/* API Key Manager for collapsed mode */}
+        {isCollapsed && provider && !LOCAL_PROVIDERS.includes(provider.name) && onApiKeyChange && (
+          <div className="px-2 pt-2 border-t border-codinit-elements-borderColor mt-2">
+            <APIKeyManager
+              provider={provider}
+              apiKey={apiKeys[provider.name] || ''}
+              setApiKey={(key) => onApiKeyChange(provider.name, key)}
+            />
+          </div>
+        )}
       </DropdownMenu.Content>
     </DropdownMenu.Portal>
   );

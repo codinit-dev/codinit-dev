@@ -413,6 +413,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
                       isCollapsed={true}
                       open={providerDropdownOpen}
                       onOpenChange={setProviderDropdownOpen}
+                      onApiKeyChange={props.onApiKeysChange}
                     />
                   </DropdownMenu.Root>
                 ) : (
