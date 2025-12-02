@@ -6,7 +6,7 @@ import { BsCheckCircleFill, BsXCircleFill, BsExclamationCircleFill } from 'react
 import { SiAmazon, SiGoogle, SiHuggingface, SiPerplexity, SiOpenai } from 'react-icons/si';
 import { BsRobot, BsCloud } from 'react-icons/bs';
 import { TbBrain } from 'react-icons/tb';
-import { BiChip, BiCodeBlock } from 'react-icons/bi';
+import { BiCodeBlock } from 'react-icons/bi';
 import { FaCloud, FaBrain } from 'react-icons/fa';
 import type { IconType } from 'react-icons';
 import { useSettings } from '~/lib/hooks/useSettings';
@@ -16,7 +16,6 @@ import { useToast } from '~/components/ui/use-toast';
 type ProviderName =
   | 'AmazonBedrock'
   | 'Anthropic'
-  | 'Cohere'
   | 'Deepseek'
   | 'Google'
   | 'Groq'
@@ -81,14 +80,6 @@ const PROVIDER_STATUS_URLS: Record<ProviderName, ProviderConfig> = {
       'anthropic-version': '2024-02-29',
     },
     testModel: 'claude-3-sonnet-20240229',
-  },
-  Cohere: {
-    statusUrl: 'https://status.cohere.com/',
-    apiUrl: 'https://api.cohere.ai/v1/models',
-    headers: {
-      Authorization: 'Bearer $COHERE_API_KEY',
-    },
-    testModel: 'command',
   },
   Google: {
     statusUrl: 'https://status.cloud.google.com/',
@@ -175,7 +166,6 @@ const PROVIDER_STATUS_URLS: Record<ProviderName, ProviderConfig> = {
 const PROVIDER_ICONS: Record<ProviderName, IconType> = {
   AmazonBedrock: SiAmazon,
   Anthropic: FaBrain,
-  Cohere: BiChip,
   Google: SiGoogle,
   Groq: BsCloud,
   HuggingFace: SiHuggingface,
@@ -209,7 +199,6 @@ const ServiceStatusTab = () => {
       const envKeyMap: Record<ProviderName, string> = {
         OpenAI: 'OPENAI_API_KEY',
         Anthropic: 'ANTHROPIC_API_KEY',
-        Cohere: 'COHERE_API_KEY',
         Google: 'GOOGLE_GENERATIVE_AI_API_KEY',
         HuggingFace: 'HuggingFace_API_KEY',
         Mistral: 'MISTRAL_API_KEY',
