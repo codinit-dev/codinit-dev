@@ -13,6 +13,7 @@ import { netlifyConnection } from '~/lib/stores/netlify';
 import { vercelConnection } from '~/lib/stores/vercel';
 import { cloudflareConnection } from '~/lib/stores/cloudflare';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
 
 interface PreviewHeaderProps {
   previews: any[];
@@ -33,7 +34,7 @@ interface PreviewHeaderProps {
   setShowDeviceFrame: (show: boolean) => void;
   isLandscape: boolean;
   setIsLandscape: (landscape: boolean) => void;
-  setIsPushDialogOpen: (open: boolean) => void;
+  setIsPushDialogOpen?: (open: boolean) => void;
 }
 
 export const PreviewHeader = memo(
@@ -63,6 +64,7 @@ export const PreviewHeader = memo(
     const expoUrl = useStore(expoUrlAtom);
     const [isExpoQrModalOpen, setIsExpoQrModalOpen] = useState(false);
     const [isDeployDialogOpen, setIsDeployDialogOpen] = useState(false);
+    const [isPushDialogOpen, setIsPushDialogOpenState] = useState(false);
 
     // Deployment hooks
     const { isDeploying: isDeployingVercel, handleVercelDeploy } = useVercelDeploy();
@@ -90,6 +92,23 @@ export const PreviewHeader = memo(
 
     const handleDeployToCloudflare = async () => {
       await handleCloudflareDeploy();
+    };
+
+    const handleOpenPushDialog = () => {
+      setIsPushDialogOpenState(true);
+      setIsPushDialogOpen?.(true);
+    };
+
+    const handleClosePushDialog = () => {
+      setIsPushDialogOpenState(false);
+      setIsPushDialogOpen?.(false);
+    };
+
+    const handlePushToGitHub = async (repoName: string, username?: string, token?: string, isPrivate?: boolean) => {
+      const commitMessage = prompt('Please enter a commit message:', 'Initial commit') || 'Initial commit';
+      const repoUrl = await workbenchStore.pushToGitHub(repoName, commitMessage, username, token, isPrivate);
+
+      return repoUrl;
     };
 
     return (
@@ -138,7 +157,7 @@ export const PreviewHeader = memo(
               </DropdownMenu.Item>
               <DropdownMenu.Item
                 className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
-                onClick={() => setIsPushDialogOpen(true)}
+                onClick={handleOpenPushDialog}
               >
                 <div className="flex items-center gap-2">
                   <span className="i-lucide:git-branch text-current" />
@@ -317,7 +336,7 @@ export const PreviewHeader = memo(
               className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1 flex gap-1.7 shrink-0 w-8 h-8 text-sm"
               type="button"
               aria-controls="publish-menu"
-              onClick={() => setIsPushDialogOpen(true)}
+              onClick={handleOpenPushDialog}
               title="Publish"
             >
               <span className="i-lucide:github size-4"></span>
@@ -468,6 +487,9 @@ export const PreviewHeader = memo(
 
         {/* Deploy Dialog */}
         <DeployDialog isOpen={isDeployDialogOpen} onClose={() => setIsDeployDialogOpen(false)} />
+
+        {/* Push to GitHub Dialog */}
+        <PushToGitHubDialog isOpen={isPushDialogOpen} onClose={handleClosePushDialog} onPush={handlePushToGitHub} />
       </div>
     );
   },
