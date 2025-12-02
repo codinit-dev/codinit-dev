@@ -22,6 +22,7 @@ import { description } from '~/lib/persistence';
 import Cookies from 'js-cookie';
 import { createSampler } from '~/utils/sampler';
 import type { ActionAlert, DeployAlert, SupabaseAlert } from '~/types/actions';
+import { startAutoSave } from '~/lib/persistence/fileAutoSave';
 
 const { saveAs } = fileSaver;
 
@@ -42,8 +43,42 @@ export interface ThinkingArtifactState {
   content: string;
 }
 
+export interface TestArtifactState {
+  id: string;
+  title: string;
+  type: 'test';
+  closed: boolean;
+  summary: {
+    total: number;
+    passed: number;
+    failed: number;
+    skipped: number;
+  };
+  duration: number;
+  coverage?: {
+    lines: number;
+    statements: number;
+    functions: number;
+    branches: number;
+  };
+  failedTests?: Array<{
+    name: string;
+    file: string;
+    line: number;
+    error: string;
+    stack?: string;
+  }>;
+  command: string;
+  status: 'running' | 'complete' | 'failed';
+  timestamp: string;
+}
+
 export type ArtifactUpdateState = Pick<ArtifactState, 'title' | 'closed'>;
 export type ThinkingArtifactUpdateState = Pick<ThinkingArtifactState, 'title' | 'closed'>;
+export type TestArtifactUpdateState = Pick<
+  TestArtifactState,
+  'title' | 'closed' | 'status' | 'summary' | 'duration' | 'coverage' | 'failedTests'
+>;
 
 type Artifacts = MapStore<Record<string, ArtifactState>>;
 
@@ -60,6 +95,7 @@ export class WorkbenchStore {
   artifacts: Artifacts = import.meta.hot?.data.artifacts ?? map({});
   thinkingArtifacts: MapStore<Record<string, ThinkingArtifactState>> =
     import.meta.hot?.data.thinkingArtifacts ?? map({});
+  testArtifacts: MapStore<Record<string, TestArtifactState>> = import.meta.hot?.data.testArtifacts ?? map({});
 
   showWorkbench: WritableAtom<boolean> = import.meta.hot?.data.showWorkbench ?? atom(false);
   currentView: WritableAtom<WorkbenchViewType> = import.meta.hot?.data.currentView ?? atom('code');
@@ -74,10 +110,12 @@ export class WorkbenchStore {
   modifiedFiles = new Set<string>();
   artifactIdList: string[] = [];
   #globalExecutionQueue = Promise.resolve();
+
   constructor() {
     if (import.meta.hot) {
       import.meta.hot.data.artifacts = this.artifacts;
       import.meta.hot.data.thinkingArtifacts = this.thinkingArtifacts;
+      import.meta.hot.data.testArtifacts = this.testArtifacts;
       import.meta.hot.data.unsavedFiles = this.unsavedFiles;
       import.meta.hot.data.showWorkbench = this.showWorkbench;
       import.meta.hot.data.currentView = this.currentView;
@@ -95,6 +133,13 @@ export class WorkbenchStore {
           this.files.setKey(path, { ...dirent });
         }
       }
+    }
+
+    if (!import.meta.env.SSR && typeof window !== 'undefined') {
+      startAutoSave(
+        () => this.files.get(),
+        () => this.currentArtifactMessageId.get() || '',
+      );
     }
   }
 
@@ -520,6 +565,37 @@ export class WorkbenchStore {
 
           this.deployAlert.set(alert);
         },
+        (testResult) => {
+          if (this.#reloadedMessages.has(messageId)) {
+            return;
+          }
+
+          // Create or update test artifact
+          const testArtifact = this.#getTestArtifact(messageId);
+
+          if (!testArtifact) {
+            this.addTestArtifact(messageId, {
+              id: `test-${Date.now()}`,
+              title: 'Test Results',
+              type: 'test',
+              command: testResult.command,
+              summary: testResult.summary,
+              duration: testResult.duration,
+              coverage: testResult.coverage,
+              failedTests: testResult.failedTests,
+              status: testResult.status,
+              timestamp: new Date().toISOString(),
+            });
+          } else {
+            this.updateTestArtifact(messageId, {
+              summary: testResult.summary,
+              duration: testResult.duration,
+              coverage: testResult.coverage,
+              failedTests: testResult.failedTests,
+              status: testResult.status,
+            });
+          }
+        },
       ),
     });
   }
@@ -564,6 +640,34 @@ export class WorkbenchStore {
   #getThinkingArtifact(messageId: string): ThinkingArtifactState | undefined {
     return this.thinkingArtifacts.get()[messageId];
   }
+
+  addTestArtifact(messageId: string, artifact: Omit<TestArtifactState, 'closed'>) {
+    const testArtifact = this.#getTestArtifact(messageId);
+
+    if (testArtifact) {
+      return;
+    }
+
+    this.testArtifacts.setKey(messageId, {
+      ...artifact,
+      closed: false,
+    });
+  }
+
+  updateTestArtifact(messageId: string, updates: Partial<TestArtifactUpdateState>) {
+    const testArtifact = this.#getTestArtifact(messageId);
+
+    if (!testArtifact) {
+      return;
+    }
+
+    this.testArtifacts.setKey(messageId, { ...testArtifact, ...updates });
+  }
+
+  #getTestArtifact(messageId: string): TestArtifactState | undefined {
+    return this.testArtifacts.get()[messageId];
+  }
+
   addAction(data: ActionCallbackData) {
     // this._addAction(data);
 
