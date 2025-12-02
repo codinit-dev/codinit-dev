@@ -15,7 +15,7 @@ export default class GoogleProvider extends BaseProvider {
 
   staticModels: ModelInfo[] = [
     {
-      name: 'gemini-3-pro-preview',
+      name: 'gemini-3',
       label: 'Gemini 3 Pro Preview',
       provider: 'Google',
       maxTokenAllowed: 2000000,
