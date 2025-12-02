@@ -22,9 +22,17 @@ export function ChatHeader() {
         </button>
       </a>
       <span className="text-codinit-elements-textPrimary opacity-[.12] text-xl antialiased mx-1">/</span>
-      <div className="flex-1 px-4 truncate text-center text-codinit-elements-textPrimary">
+      <div className="flex-1 px-4 truncate text-codinit-elements-textPrimary">
         <ClientOnly>{() => <ChatDescription />}</ClientOnly>
       </div>
+      <button
+        onClick={() => window.open('https://github.com/Gerome-Elassaad/codinit-app/issues/new/choose', '_blank')}
+        className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 relative gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent hover:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary hover:text-codinit-ds-brandHighlight text-sm px-2 transition-colors"
+        type="button"
+        title="Report a bug"
+      >
+        <div className="i-lucide:bug text-lg" />
+      </button>
     </header>
   );
 }
