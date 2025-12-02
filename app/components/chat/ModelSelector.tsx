@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { ModelInfo } from '~/lib/modules/llm/types';
 import { classNames } from '~/utils/classNames';
+import { TextShimmer } from '~/components/ui/text-shimmer';
 
 interface ModelSelectorProps {
   model?: string;
@@ -444,7 +445,9 @@ export const ModelSelector = ({
               )}
             >
               {modelLoading === 'all' || modelLoading === provider?.name ? (
-                <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">Loading...</div>
+                <div className="px-3 py-2 text-sm">
+                  <TextShimmer>Loading...</TextShimmer>
+                </div>
               ) : filteredModels.length === 0 ? (
                 <div className="px-3 py-2 text-sm text-codinit-elements-textTertiary">No models found</div>
               ) : (
