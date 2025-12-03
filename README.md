@@ -1,16 +1,8 @@
 <p align="center">
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
-  <iframe
-    src="https://demo.arcade.software/7fFNUCTHxZK8M9WnvXR3?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
-    title="Walkthrough"
-    frameborder="0"
-    loading="lazy"
-    allow="clipboard-write"
-    webkitallowfullscreen
-    mozallowfullscreen
-    allowfullscreen
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-  ></iframe>
+
+<video autoPlay muted loop playsInline className="w-full aspect-video rounded-lg mb-6" src="https://mintcdn.com/codinitdev/oNMhfyXlLQz-6G-R/assets/videos/walkthrough.mp4?fit=max&auto=format&n=oNMhfyXlLQz-6G-R&q=85&s=4ed94113f5d1ba95dae65f32e634c9e2" data-path="assets/videos/walkthrough.mp4" />
+
 </div>
 
 
