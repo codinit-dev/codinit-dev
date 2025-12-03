@@ -112,7 +112,7 @@ export const PreviewHeader = memo(
     };
 
     return (
-      <div className="flex relative items-center gap-2 py-2 h-12 pl-2 pr-3">
+      <div className="flex relative items-center gap-2 py-2 h-12 pl-2 pr-3 z-50">
         {/* Toggle Buttons Section */}
         <div className="flex items-center gap-1 ml-8">
           <IconButton
