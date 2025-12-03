@@ -231,12 +231,29 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             }
 
             if (stream.switches >= MAX_RESPONSE_SEGMENTS) {
-              throw Error('Cannot continue message: Maximum segments reached');
+              logger.warn(`Maximum response segments (${MAX_RESPONSE_SEGMENTS}) reached. Stopping continuation.`);
+              dataStream.writeMessageAnnotation({
+                type: 'usage',
+                value: {
+                  completionTokens: cumulativeUsage.completionTokens,
+                  promptTokens: cumulativeUsage.promptTokens,
+                  totalTokens: cumulativeUsage.totalTokens,
+                },
+              });
+              dataStream.writeData({
+                type: 'progress',
+                label: 'response',
+                status: 'complete',
+                order: progressCounter++,
+                message: 'Response Generated (max segments reached)',
+              } satisfies ProgressAnnotation);
+
+              return;
             }
 
-            const switchesLeft = MAX_RESPONSE_SEGMENTS - stream.switches;
-
-            logger.info(`Reached max token limit (${MAX_TOKENS}): Continuing message (${switchesLeft} switches left)`);
+            logger.info(
+              `Reached max token limit (${MAX_TOKENS}): Continuing message (switch ${stream.switches + 1}/${MAX_RESPONSE_SEGMENTS})`,
+            );
 
             const lastUserMessage = processedMessages.filter((x) => x.role == 'user').slice(-1)[0];
             const { model, provider } = extractPropertiesFromMessage(lastUserMessage);
@@ -261,6 +278,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               messageSliceId,
             });
 
+            stream.switchSource(result.toDataStream());
             result.mergeIntoDataStream(dataStream);
 
             (async () => {
