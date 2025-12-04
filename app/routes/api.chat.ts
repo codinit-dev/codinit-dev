@@ -5,6 +5,7 @@ import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
 import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
 import type { IProviderSetting } from '~/types/model';
+import type { DesignScheme } from '~/types/design-scheme';
 import { createScopedLogger } from '~/utils/logger';
 import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
 import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
@@ -44,12 +45,14 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     promptId,
     contextOptimization,
     supabase,
+    designScheme,
     enableMCPTools = false,
   } = await request.json<{
     messages: Messages;
     files: any;
     promptId?: string;
     contextOptimization: boolean;
+    designScheme?: DesignScheme;
     supabase?: {
       isConnected: boolean;
       hasSelectedProject: boolean;
@@ -276,6 +279,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               contextFiles: filteredFiles,
               summary,
               messageSliceId,
+              designScheme,
             });
 
             stream.switchSource(result.toDataStream());
@@ -329,6 +333,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           contextFiles: filteredFiles,
           summary,
           messageSliceId,
+          designScheme,
         });
 
         (async () => {

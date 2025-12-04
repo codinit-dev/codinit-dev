@@ -3,6 +3,7 @@ import { MAX_TOKENS, type FileMap } from './constants';
 import { getSystemPrompt } from '~/lib/common/prompts/prompts';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, MODIFICATIONS_TAG_NAME, PROVIDER_LIST, WORK_DIR } from '~/utils/constants';
 import type { IProviderSetting } from '~/types/model';
+import type { DesignScheme } from '~/types/design-scheme';
 import { PromptLibrary } from '~/lib/common/prompt-library';
 import { allowedHTMLElements } from '~/utils/markdown';
 import { LLMManager } from '~/lib/modules/llm/manager';
@@ -36,6 +37,7 @@ export async function streamText(props: {
   contextFiles?: FileMap;
   summary?: string;
   messageSliceId?: number;
+  designScheme?: DesignScheme;
 }) {
   const {
     messages,
@@ -48,6 +50,7 @@ export async function streamText(props: {
     contextOptimization,
     contextFiles,
     summary,
+    designScheme,
   } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
@@ -176,6 +179,34 @@ ${lockedFilesListString}
 `;
   } else {
     console.log('No locked files found from any source for prompt.');
+  }
+
+  if (designScheme) {
+    systemPrompt = `${systemPrompt}
+
+DESIGN PREFERENCES:
+The user has the following design preferences that should guide your creation of UI components and designs:
+- Color Palette (Light Mode):
+  - Primary: ${designScheme.palette.light.primary}
+  - Secondary: ${designScheme.palette.light.secondary}
+  - Accent: ${designScheme.palette.light.accent}
+  - Background: ${designScheme.palette.light.background}
+  - Text: ${designScheme.palette.light.text}
+- Color Palette (Dark Mode):
+  - Primary: ${designScheme.palette.dark.primary}
+  - Secondary: ${designScheme.palette.dark.secondary}
+  - Accent: ${designScheme.palette.dark.accent}
+  - Background: ${designScheme.palette.dark.background}
+  - Text: ${designScheme.palette.dark.text}
+- Typography: ${designScheme.font.join(', ')}
+- Design Mode: ${designScheme.mode}
+- Border Radius: ${designScheme.borderRadius}
+- Shadow Style: ${designScheme.shadow}
+- Spacing: ${designScheme.spacing}
+- Design Features: ${designScheme.features.join(', ')}
+
+Use these preferences when creating UI components, styling code, or suggesting design improvements.
+`;
   }
 
   logger.info(`Sending llm call to ${provider.name} with model ${modelDetails.name}`);
