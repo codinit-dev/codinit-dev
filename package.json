@@ -81,7 +81,7 @@
     "@iconify-json/lucide": "^1.2.73",
     "@iconify-json/svg-spinners": "^1.2.4",
     "@lezer/highlight": "^1.2.1",
-    "@modelcontextprotocol/sdk": "^1.20.0",
+    "@modelcontextprotocol/sdk": "^1.24.0",
     "@nanostores/react": "^0.7.3",
     "@octokit/rest": "^21.1.1",
     "@octokit/types": "^13.10.0",

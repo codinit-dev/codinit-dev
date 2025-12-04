@@ -131,7 +131,7 @@ Open an issue, submit a PR, or join discussions to help shape the future of Codi
 
 <p align="center">
   <strong>CodinIT.dev — Build Faster. Code Smarter.</strong><br/>
-  <a href="https://github.com/Gerome-Elassaad/codinit-app/releases/latest">Download the latest version →</a>
+  <a href="https://codinit.dev/download">Download the latest version →</a>
 </p>
 ```
 
