@@ -244,7 +244,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                 label: 'response',
                 status: 'complete',
                 order: progressCounter++,
-                message: 'Response Generated (max segments reached)',
+                message: 'Response',
               } satisfies ProgressAnnotation);
 
               return;
