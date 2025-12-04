@@ -5,6 +5,9 @@
 
 </div>
 
+<div>
+<a href="https://sourceforge.net/projects/codinit-dev/files/latest/download"><img alt="Download CodinIT.dev" src="https://img.shields.io/sourceforge/dm/codinit-dev.svg" ></a>
+</div>
 
 </p>
 
