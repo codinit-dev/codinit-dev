@@ -481,21 +481,6 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           </div>
         )}
 
-        {/* Workbench positioned just below headers */}
-        <ClientOnly>
-          {() => (
-            <Suspense
-              fallback={
-                <div className="h-full flex items-center justify-center">
-                  <div className="i-svg-spinners:90-ring-with-bg text-2xl text-codinit-elements-textTertiary"></div>
-                </div>
-              }
-            >
-              <Workbench chatStarted={chatStarted} isStreaming={isStreaming} setSelectedElement={setSelectedElement} />
-            </Suspense>
-          )}
-        </ClientOnly>
-
         <div className="flex flex-col lg:flex-row flex-1 overflow-hidden w-full">
           <div className={classNames(styles.Chat, 'flex flex-col flex-grow lg:min-w-[var(--chat-min-width)] h-full')}>
             {!chatStarted && (
@@ -772,6 +757,23 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
               <div className="flex flex-col gap-5">{!chatStarted && <StarterTemplates />}</div>
             </div>
           </div>
+          <ClientOnly>
+            {() => (
+              <Suspense
+                fallback={
+                  <div className="h-full flex items-center justify-center">
+                    <div className="i-svg-spinners:90-ring-with-bg text-2xl text-codinit-elements-textTertiary"></div>
+                  </div>
+                }
+              >
+                <Workbench
+                  chatStarted={chatStarted}
+                  isStreaming={isStreaming}
+                  setSelectedElement={setSelectedElement}
+                />
+              </Suspense>
+            )}
+          </ClientOnly>
         </div>
       </div>
     );
