@@ -436,14 +436,48 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
     </div>
   );
 
-  const renderStylingSection = () => (
-    <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-codinit-elements-textPrimary flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-codinit-elements-item-contentAccent"></div>
-        Design Styling
-      </h3>
+  const getBorderRadiusPixels = (key: string): string => {
+    switch (key) {
+      case 'none':
+        return '0px';
+      case 'sm':
+        return '0.25rem';
+      case 'md':
+        return '0.375rem';
+      case 'lg':
+        return '0.5rem';
+      case 'xl':
+        return '0.75rem';
+      case 'full':
+        return '9999px';
+      default:
+        return '0.375rem';
+    }
+  };
 
-      <div className="grid grid-cols-3 gap-6">
+  const getSpacingPixels = (key: string): string => {
+    switch (key) {
+      case 'tight':
+        return '0.5rem';
+      case 'normal':
+        return '1rem';
+      case 'relaxed':
+        return '1.25rem';
+      case 'loose':
+        return '1.5rem';
+      default:
+        return '1rem';
+    }
+  };
+
+  const renderStylingSection = () => (
+    <div className="space-y-6 max-h-80 overflow-y-auto pr-4 custom-scrollbar">
+      <div className="space-y-6 pr-2">
+        <h3 className="text-lg font-semibold text-codinit-elements-textPrimary flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-codinit-elements-item-contentAccent"></div>
+          Design Styling
+        </h3>
+
         {/* Border Radius */}
         <div className="space-y-3">
           <label className="text-sm font-medium text-codinit-elements-textPrimary">Border Radius</label>
@@ -461,7 +495,8 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
               >
                 <div className="text-center space-y-1">
                   <div
-                    className={`w-6 h-6 mx-auto rounded-${option.key === 'none' ? 'none' : option.key === 'sm' ? 'sm' : option.key === 'md' ? 'md' : option.key === 'lg' ? 'lg' : option.key === 'xl' ? 'xl' : 'full'} bg-current opacity-80`}
+                    className="w-6 h-6 mx-auto bg-current opacity-80"
+                    style={{ borderRadius: getBorderRadiusPixels(option.key) }}
                   />
                   <div className="text-xs font-medium">{option.label}</div>
                 </div>
@@ -483,7 +518,10 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                   shadow === option.key
                     ? 'bg-codinit-elements-item-backgroundAccent border-codinit-elements-borderColorActive text-white'
                     : 'bg-codinit-elements-background-depth-3 dark:bg-codinit-elements-background-depth-3-dark border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark hover:border-codinit-elements-borderColorActive text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary-dark hover:text-codinit-elements-textPrimary dark:hover:text-codinit-elements-textPrimary-dark'
-                } ${option.key === 'none' ? '' : option.key === 'sm' ? 'shadow-sm' : option.key === 'md' ? 'shadow-md' : option.key === 'lg' ? 'shadow-lg' : 'shadow-xl'}`}
+                }`}
+                style={{
+                  boxShadow: shadow === option.key ? getBoxShadow() : 'none',
+                }}
               >
                 <div className="text-center space-y-1">
                   <div className="w-6 h-6 mx-auto bg-current rounded opacity-80" />
@@ -510,10 +548,13 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                 }`}
               >
                 <div className="text-center space-y-1">
-                  <div className="flex justify-center space-x-1">
-                    <div className="w-2 h-6 bg-current rounded opacity-80" />
-                    <div className="w-2 h-6 bg-current rounded opacity-80" />
-                    <div className="w-2 h-6 bg-current rounded opacity-80" />
+                  <div
+                    className="flex justify-center items-center opacity-80"
+                    style={{ gap: getSpacingPixels(option.key) }}
+                  >
+                    <div className="w-2 h-6 bg-current rounded" />
+                    <div className="w-2 h-6 bg-current rounded" />
+                    <div className="w-2 h-6 bg-current rounded" />
                   </div>
                   <div className="text-xs font-medium">{option.label}</div>
                 </div>
@@ -654,27 +695,16 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                     {/* Preview Container */}
                     <div className="flex-1 rounded-xl border border-codinit-elements-borderColor overflow-hidden bg-codinit-elements-background-depth-3">
                       <div
-                        className="h-full w-full p-6 overflow-y-auto custom-scrollbar"
+                        className="h-full w-full overflow-y-auto custom-scrollbar"
                         style={{
                           backgroundColor: palette[mode].background,
                           color: palette[mode].text,
                           fontFamily: font.join(', '),
-                          borderRadius:
-                            borderRadius === 'none'
-                              ? '0px'
-                              : borderRadius === 'sm'
-                                ? '0.25rem'
-                                : borderRadius === 'md'
-                                  ? '0.375rem'
-                                  : borderRadius === 'lg'
-                                    ? '0.5rem'
-                                    : borderRadius === 'xl'
-                                      ? '0.75rem'
-                                      : '1rem',
+                          padding: getSpacingPixels(spacing),
                         }}
                       >
                         {/* Preview Content */}
-                        <div className="space-y-12 mt-4">
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: getSpacingPixels(spacing) }}>
                           {/* Hero Section */}
                           <div
                             className="p-8 text-center"
