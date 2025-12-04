@@ -1,7 +1,9 @@
 <p align="center">
 <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
 
-<video autoPlay muted loop playsInline class="w-full aspect-video rounded-lg mb-6" src="https://mintcdn.com/codinitdev/oNMhfyXlLQz-6G-R/assets/videos/walkthrough.mp4?fit=max&auto=format&n=oNMhfyXlLQz-6G-R&q=85&s=4ed94113f5d1ba95dae65f32e634c9e2" data-path="assets/videos/walkthrough.mp4" />
+<video autoplay muted loop playsinline class="w-full aspect-video rounded-lg mb-6" src="https://mintcdn.com/codinitdev/oNMhfyXlLQz-6G-R/assets/videos/walkthrough.mp4?fit=max&auto=format&n=oNMhfyXlLQz-6G-R&q=85&s=4ed94113f5d1ba95dae65f32e634c9e2" data-path="assets/videos/walkthrough.mp4">
+  Your browser does not support the video tag. You can <a href="https://mintcdn.com/codinitdev/oNMhfyXlLQz-6G-R/assets/videos/walkthrough.mp4?fit=max&auto=format&n=oNMhfyXlLQz-6G-R&q=85&s=4ed94113f5d1ba95dae65f32e634c9e2">download the video</a>.
+</video>
 
 </div>
 
