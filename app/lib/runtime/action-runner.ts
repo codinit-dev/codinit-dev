@@ -63,6 +63,15 @@ class ActionCommandError extends Error {
   }
 }
 
+export type TestResultCallback = (result: {
+  command: string;
+  summary: { total: number; passed: number; failed: number; skipped: number };
+  duration: number;
+  coverage?: { lines: number; statements: number; functions: number; branches: number };
+  failedTests?: Array<{ name: string; file: string; line: number; error: string; stack?: string }>;
+  status: 'complete' | 'failed';
+}) => void;
+
 export class ActionRunner {
   #webcontainer: Promise<WebContainer>;
   #currentExecutionPromise: Promise<void> = Promise.resolve();
@@ -72,6 +81,7 @@ export class ActionRunner {
   onAlert?: (alert: ActionAlert) => void;
   onSupabaseAlert?: (alert: SupabaseAlert) => void;
   onDeployAlert?: (alert: DeployAlert) => void;
+  onTestResult?: TestResultCallback;
   buildOutput?: { path: string; exitCode: number; output: string };
 
   constructor(
@@ -80,12 +90,14 @@ export class ActionRunner {
     onAlert?: (alert: ActionAlert) => void,
     onSupabaseAlert?: (alert: SupabaseAlert) => void,
     onDeployAlert?: (alert: DeployAlert) => void,
+    onTestResult?: TestResultCallback,
   ) {
     this.#webcontainer = webcontainerPromise;
     this.#shellTerminal = getShellTerminal;
     this.onAlert = onAlert;
     this.onSupabaseAlert = onSupabaseAlert;
     this.onDeployAlert = onDeployAlert;
+    this.onTestResult = onTestResult;
   }
 
   addAction(data: ActionCallbackData) {
@@ -264,6 +276,21 @@ export class ActionRunner {
       action.abort();
     });
     logger.debug(`${action.type} Shell Response: [exit code:${resp?.exitCode}]`);
+
+    // Check if this is a test command and handle test results
+    if (this.#isTestCommand(action.content) && resp?.output && this.onTestResult) {
+      const testResult = this.#parseTestOutput(resp.output);
+
+      if (testResult) {
+        const status = resp.exitCode === 0 && testResult.summary.failed === 0 ? 'complete' : 'failed';
+
+        this.onTestResult({
+          command: action.content,
+          ...testResult,
+          status,
+        });
+      }
+    }
 
     if (resp?.exitCode != 0) {
       throw new ActionCommandError(`Failed To Execute Shell Command`, resp?.output || 'No Output Available');
@@ -551,5 +578,116 @@ export class ActionRunner {
       deployStatus: deployStatus as any,
       source: details?.source || 'netlify',
     });
+  }
+
+  #isTestCommand(command: string): boolean {
+    const patterns = [/\b(npm|pnpm|yarn|bun)\s+(run\s+)?test\b/, /\b(vitest|jest|mocha|ava|tape)\b/, /\btest:[^\s]+/];
+    return patterns.some((p) => p.test(command));
+  }
+
+  #parseTestOutput(output: string): {
+    summary: { total: number; passed: number; failed: number; skipped: number };
+    duration: number;
+    coverage?: { lines: number; statements: number; functions: number; branches: number };
+    failedTests?: Array<{ name: string; file: string; line: number; error: string; stack?: string }>;
+  } | null {
+    try {
+      // Try to parse Vitest output
+      const vitestMatch = output.match(/Test Files\s+(\d+)\s+passed.*?\((\d+)\)/);
+      const vitestFailed = output.match(/(\d+)\s+failed/);
+      const vitestSkipped = output.match(/(\d+)\s+skipped/);
+      const vitestDuration = output.match(/Duration\s+([\d.]+)([ms]+)/);
+
+      // Try Jest format
+      const jestMatch = output.match(/Tests:\s+(\d+)\s+failed.*?(\d+)\s+passed.*?(\d+)\s+total/);
+      const jestTime = output.match(/Time:\s+([\d.]+)\s*s/);
+
+      let summary = { total: 0, passed: 0, failed: 0, skipped: 0 };
+      let duration = 0;
+
+      if (vitestMatch) {
+        const passed = parseInt(vitestMatch[1] || '0', 10);
+        const total = parseInt(vitestMatch[2] || '0', 10);
+        const failed = vitestFailed ? parseInt(vitestFailed[1] || '0', 10) : 0;
+        const skipped = vitestSkipped ? parseInt(vitestSkipped[1] || '0', 10) : 0;
+
+        summary = { total, passed, failed, skipped };
+
+        if (vitestDuration) {
+          const value = parseFloat(vitestDuration[1]);
+          duration = vitestDuration[2] === 's' ? value * 1000 : value;
+        }
+      } else if (jestMatch) {
+        const failed = parseInt(jestMatch[1] || '0', 10);
+        const passed = parseInt(jestMatch[2] || '0', 10);
+        const total = parseInt(jestMatch[3] || '0', 10);
+        const skipped = total - passed - failed;
+
+        summary = { total, passed, failed, skipped };
+
+        if (jestTime) {
+          duration = parseFloat(jestTime[1]) * 1000;
+        }
+      } else {
+        // Fallback: try to find any test counts
+        const passedMatch = output.match(/(\d+)\s+pass/i);
+        const failedMatch = output.match(/(\d+)\s+fail/i);
+
+        if (passedMatch || failedMatch) {
+          const passed = passedMatch ? parseInt(passedMatch[1], 10) : 0;
+          const failed = failedMatch ? parseInt(failedMatch[1], 10) : 0;
+          const total = passed + failed;
+          summary = { total, passed, failed, skipped: 0 };
+        } else {
+          return null;
+        }
+      }
+
+      // Parse coverage if available
+      let coverage;
+      const coverageMatch = output.match(/All files\s*\|\s*([\d.]+)\s*\|\s*([\d.]+)\s*\|\s*([\d.]+)\s*\|\s*([\d.]+)/);
+
+      if (coverageMatch) {
+        coverage = {
+          statements: parseFloat(coverageMatch[1]),
+          branches: parseFloat(coverageMatch[2]),
+          functions: parseFloat(coverageMatch[3]),
+          lines: parseFloat(coverageMatch[4]),
+        };
+      }
+
+      // Parse failed tests
+      let failedTests;
+
+      if (summary.failed > 0) {
+        failedTests = [];
+
+        const failurePattern = /FAIL\s+(.+?)\n.*?›\s+(.+?)\n.*?Error:\s+(.+?)(?=\n\s*\n|\n\s*at|$)/gs;
+        let match;
+
+        while ((match = failurePattern.exec(output)) !== null && failedTests.length < 10) {
+          const [, filePath, testName, error] = match;
+          const lineMatch = filePath.match(/:(\d+):/);
+          const line = lineMatch ? parseInt(lineMatch[1], 10) : 1;
+
+          failedTests.push({
+            name: testName.trim(),
+            file: filePath.replace(/:\d+:\d+$/, '').trim(),
+            line,
+            error: error.trim(),
+          });
+        }
+      }
+
+      return {
+        summary,
+        duration: duration || 0,
+        coverage,
+        failedTests,
+      };
+    } catch (error) {
+      logger.error('Failed to parse test output:', error);
+      return null;
+    }
   }
 }
