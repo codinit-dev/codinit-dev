@@ -525,7 +525,8 @@ export class WorkbenchStore {
     this.#reloadedMessages = new Set(messages);
   }
 
-  addArtifact({ messageId, title, id, type }: ArtifactCallbackData) {
+  addArtifact(data: ArtifactCallbackData & { id: string; title: string; type?: string }) {
+    const { messageId, title, id, type } = data;
     const artifact = this.#getArtifact(messageId);
 
     if (artifact) {
