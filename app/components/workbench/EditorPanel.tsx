@@ -1,15 +1,20 @@
 import { useStore } from '@nanostores/react';
-import { memo, useMemo } from 'react';
+import { lazy, memo, Suspense, useMemo } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import * as Tabs from '@radix-ui/react-tabs';
-import {
-  CodeMirrorEditor,
-  type EditorDocument,
-  type EditorSettings,
-  type OnChangeCallback as OnEditorChange,
-  type OnSaveCallback as OnEditorSave,
-  type OnScrollCallback as OnEditorScroll,
+import type {
+  EditorDocument,
+  EditorSettings,
+  OnChangeCallback as OnEditorChange,
+  OnSaveCallback as OnEditorSave,
+  OnScrollCallback as OnEditorScroll,
 } from '~/components/editor/codemirror/CodeMirrorEditor';
+
+const CodeMirrorEditor = lazy(() =>
+  import('~/components/editor/codemirror/CodeMirrorEditor').then((module) => ({
+    default: module.CodeMirrorEditor,
+  })),
+);
 import { PanelHeader } from '~/components/ui/PanelHeader';
 import { PanelHeaderButton } from '~/components/ui/PanelHeaderButton';
 import type { FileMap } from '~/lib/stores/files';
@@ -169,16 +174,24 @@ export const EditorPanel = memo(
                 )}
               </PanelHeader>
               <div className="h-full flex-1 overflow-hidden modern-scrollbar">
-                <CodeMirrorEditor
-                  theme={theme}
-                  editable={!isStreaming && editorDocument !== undefined}
-                  settings={editorSettings}
-                  doc={editorDocument}
-                  autoFocusOnDocumentChange={!isMobile()}
-                  onScroll={onEditorScroll}
-                  onChange={onEditorChange}
-                  onSave={onFileSave}
-                />
+                <Suspense
+                  fallback={
+                    <div className="h-full flex items-center justify-center text-codinit-elements-textTertiary">
+                      <div className="i-svg-spinners:90-ring-with-bg text-2xl"></div>
+                    </div>
+                  }
+                >
+                  <CodeMirrorEditor
+                    theme={theme}
+                    editable={!isStreaming && editorDocument !== undefined}
+                    settings={editorSettings}
+                    doc={editorDocument}
+                    autoFocusOnDocumentChange={!isMobile()}
+                    onScroll={onEditorScroll}
+                    onChange={onEditorChange}
+                    onSave={onFileSave}
+                  />
+                </Suspense>
               </div>
             </Panel>
           </PanelGroup>
