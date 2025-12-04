@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Template } from '~/types/template';
 import { STARTER_TEMPLATES } from '~/utils/constants';
+import { TextShimmer } from '~/components/ui/text-shimmer';
 
 interface FrameworkLinkProps {
   template: Template;
@@ -23,7 +24,9 @@ const FrameworkLink: React.FC<FrameworkLinkProps> = ({ template }) => (
 const StarterTemplates: React.FC = () => {
   return (
     <div className="flex flex-col items-center gap-4">
-      <span className="text-sm text-gray-500 mt-6">Please select your favourite stack to begin...</span>
+      <span className="text-sm text-gray-500 mt-6">
+        <TextShimmer>Please select your favourite stack to begin...</TextShimmer>
+      </span>
       <div className="flex justify-center">
         <div className="flex flex-wrap justify-center items-center gap-4 max-w-sm">
           {STARTER_TEMPLATES.map((template) => (

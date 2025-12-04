@@ -136,7 +136,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
       case 'none':
         return 'none';
       case 'sm':
-        return '0 1px 2px 0 rgb(0 0 0 / 0.05)';
+        return '0 1px 2px 0 rgb(0 0 0 / 0.1)';
       case 'md':
         return '0 4px 6px -1px rgb(0 0 0 / 0.1)';
       case 'lg':
@@ -913,7 +913,7 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
                                   className="py-4"
                                   style={{ borderBottom: `1px solid ${palette[mode].accent}` }}
                                 >
-                                  <button className="flex w-full items-center justify-between text-left">
+                                  <button>
                                     <span
                                       className="text-sm font-medium"
                                       style={{ color: palette[mode].primary, fontFamily: font.join(', ') }}

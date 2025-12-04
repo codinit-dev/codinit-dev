@@ -16,6 +16,7 @@ import { ChatHeader } from '~/components/header/ChatHeader';
 import { PreviewHeader } from '~/components/workbench/PreviewHeader';
 import { CodeModeHeader } from '~/components/workbench/CodeModeHeader';
 import { workbenchStore } from '~/lib/stores/workbench';
+import { TextShimmer } from '~/components/ui/text-shimmer';
 import { classNames } from '~/utils/classNames';
 import { PROVIDER_LIST } from '~/utils/constants';
 import { Messages } from './Messages.client';
@@ -632,7 +633,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   <span className="text-codinit-elements-textPrimary"> Deploy</span>
                 </h1>
                 <p className="text-md lg:text-xl mb-8 text-codinit-elements-textSecondary animate-fade-in animation-delay-200">
-                  Let your imagination build your next startup idea.
+                  <TextShimmer>Let your imagination build your next startup idea</TextShimmer>
                 </p>
               </div>
             )}
