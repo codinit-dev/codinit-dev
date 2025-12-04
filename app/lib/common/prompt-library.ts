@@ -1,6 +1,7 @@
 import { getSystemPrompt } from './prompts/prompts';
 import optimized from './prompts/optimized';
 import { getFineTunedPrompt } from './prompts/fine-tuned';
+import { getBasePrompt } from './prompts/base-prompt';
 
 export interface PromptOptions {
   cwd: string;
@@ -25,19 +26,24 @@ export class PromptLibrary {
       get: (options: PromptOptions) => string;
     }
   > = {
+    base: {
+      label: 'Universal Standards (Core)',
+      description: 'Framework-agnostic universal standards and best practices that always apply',
+      get: () => getBasePrompt(),
+    },
     default: {
       label: 'Default Prompt',
-      description: 'This is the battle tested default system Prompt',
+      description: 'Battle-tested default system prompt with comprehensive guidelines',
       get: (options) => getSystemPrompt(options.cwd, options.supabase),
     },
     enhanced: {
       label: 'Fine Tuned Prompt',
-      description: 'An fine tuned prompt for better results',
+      description: 'Fine-tuned prompt optimized for better results with advanced techniques',
       get: (options) => getFineTunedPrompt(options.cwd, options.supabase),
     },
     optimized: {
       label: 'Optimized Prompt (experimental)',
-      description: 'an Experimental version of the prompt for lower token usage',
+      description: 'Experimental version optimized for lower token usage',
       get: (options) => optimized(options),
     },
   };
