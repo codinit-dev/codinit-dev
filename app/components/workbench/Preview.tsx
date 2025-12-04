@@ -2,6 +2,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { ScreenshotSelector } from './ScreenshotSelector';
 import { workbenchStore } from '~/lib/stores/workbench';
+import { TextShimmer } from '~/components/ui/text-shimmer';
 
 type ResizeSide = 'left' | 'right' | null;
 
@@ -493,10 +494,12 @@ export const Preview = memo(() => {
           ) : (
             <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary">
               <div className="text-center">
-                <div className="text-lg font-medium mb-2">No Preview Available</div>
-                <div className="text-sm text-codinit-elements-textSecondary">
-                  Start a development server to see your app
-                </div>
+                <TextShimmer>
+                  <div className="text-lg font-medium mb-2">No Preview Available</div>
+                  <div className="text-sm text-codinit-elements-textSecondary">
+                    Start a development server to see your app
+                  </div>
+                </TextShimmer>
               </div>
             </div>
           )}
