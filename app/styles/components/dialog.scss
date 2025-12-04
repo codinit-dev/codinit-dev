@@ -1,24 +1,45 @@
 @use '../variables.scss';
 
-:root {
-  /* Secondary color scale for dialogs and popovers - neutral gray */
-  --secondary-1: #1f1f1f; /* Matches depth-2 for dialog background */
-  --secondary-2: #252525; /* Matches depth-3 for dialog elements */
-  --secondary-3: #2a2a2a; /* Matches depth-4 for interactive elements */
-  --secondary-4: #333333; /* Border color */
-  --secondary-5: rgba(204, 204, 204, 0.1); /* Subtle accent */
-  --secondary-6: rgba(204, 204, 204, 0.15); /* Medium accent */
-  --secondary-7: rgba(204, 204, 204, 0.2); /* Stronger accent */
-  --secondary-8: rgba(204, 204, 204, 0.25); /* Active accent */
-  --secondary-9: rgba(204, 204, 204, 0.3); /* Hover accent */
-  --secondary-10: rgba(204, 204, 204, 0.4); /* Focus accent */
-  --secondary-11: #cccccc; /* Text color */
-  --secondary-12: #ffffff; /* Primary text color */
+/* Light theme dialog colors */
+:root[data-theme='light'] {
+  --secondary-1: #ffffff;
+  --secondary-2: #f8fafc;
+  --secondary-3: #f1f5f9;
+  --secondary-4: #e2e8f0;
+  --secondary-5: rgba(0, 0, 0, 0.05);
+  --secondary-6: rgba(0, 0, 0, 0.08);
+  --secondary-7: rgba(0, 0, 0, 0.1);
+  --secondary-8: rgba(0, 0, 0, 0.12);
+  --secondary-9: rgba(0, 0, 0, 0.15);
+  --secondary-10: rgba(0, 0, 0, 0.2);
+  --secondary-11: #64748b;
+  --secondary-12: #0f172a;
+  --dialog-overlay-bg: rgba(0, 0, 0, 0.4);
+  --dialog-shadow-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Dialog specific styles - neutral gray */
+/* Dark theme dialog colors */
+:root,
+:root[data-theme='dark'] {
+  --secondary-1: #1f1f1f;
+  --secondary-2: #252525;
+  --secondary-3: #2a2a2a;
+  --secondary-4: #333333;
+  --secondary-5: rgba(204, 204, 204, 0.1);
+  --secondary-6: rgba(204, 204, 204, 0.15);
+  --secondary-7: rgba(204, 204, 204, 0.2);
+  --secondary-8: rgba(204, 204, 204, 0.25);
+  --secondary-9: rgba(204, 204, 204, 0.3);
+  --secondary-10: rgba(204, 204, 204, 0.4);
+  --secondary-11: #cccccc;
+  --secondary-12: #ffffff;
+  --dialog-overlay-bg: rgba(25, 25, 25, 0.7);
+  --dialog-shadow-color: rgba(25, 25, 25, 0.3);
+}
+
+/* Dialog specific styles */
 .dialog-overlay {
-  background-color: rgba(25, 25, 25, 0.7); /* Matches depth-1 with opacity */
+  background-color: var(--dialog-overlay-bg);
   backdrop-filter: blur(4px);
 }
 
@@ -26,6 +47,6 @@
   background-color: var(--secondary-1);
   border: 1px solid var(--secondary-4);
   box-shadow:
-    0 20px 25px -5px rgba(25, 25, 25, 0.3),
-    0 10px 10px -5px rgba(25, 25, 25, 0.1);
+    0 20px 25px -5px var(--dialog-shadow-color),
+    0 10px 10px -5px var(--dialog-shadow-color);
 }

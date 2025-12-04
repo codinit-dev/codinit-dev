@@ -19,7 +19,7 @@
 }
 
 .diff-panel-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(155, 155, 155, 0.7);
+  background-color: var(--codinit-elements-textSecondary);
 }
 
 /* Hide scrollbar for the left panel when not hovered */
