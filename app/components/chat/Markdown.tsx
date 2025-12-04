@@ -5,6 +5,7 @@ import { createScopedLogger } from '~/utils/logger';
 import { rehypePlugins, remarkPlugins, allowedHTMLElements } from '~/utils/markdown';
 import { Artifact } from './Artifact';
 import { ThinkingArtifact } from './ThinkingArtifact';
+import { TestArtifact } from './TestArtifact';
 import { CodeBlock } from './CodeBlock';
 import { ThinkingProcess } from './ThinkingProcess';
 
@@ -43,6 +44,16 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
           }
 
           return <ThinkingArtifact messageId={messageId} />;
+        }
+
+        if (className?.includes('__testArtifact__')) {
+          const messageId = node?.properties.dataMessageId as string;
+
+          if (!messageId) {
+            logger.error(`Invalid message id ${messageId}`);
+          }
+
+          return <TestArtifact messageId={messageId} />;
         }
 
         if (className?.includes('__codinitThought__')) {
