@@ -1,14 +1,5 @@
-<p align="center">
-  <a href="/readme_assets/walkthrough.mp4">
-    ▶️ Watch Full Demo Video
-  </a>
-</p>
 
-<p align="center">
-  <a href="https://sourceforge.net/projects/codinit-dev/files/latest/download">
-    <img alt="Download CodinIT.dev" src="https://img.shields.io/sourceforge/dm/codinit-dev.svg">
-  </a>
-</p>
+<img width="1280" height="720" alt="codinit-image" src="https://github.com/user-attachments/assets/b26a4799-0642-4d5c-9240-e8d6f7b9626b" />
 
 <p align="center">
   <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens">
@@ -133,5 +124,4 @@ Open an issue, submit a PR, or join discussions to help shape the future of Codi
   <strong>CodinIT.dev — Build Faster. Code Smarter.</strong><br/>
   <a href="https://codinit.dev/download">Download the latest version →</a>
 </p>
-```
 
