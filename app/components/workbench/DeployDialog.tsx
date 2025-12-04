@@ -97,7 +97,7 @@ export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
                   <div className="i-svg-spinners:90-ring-with-bg w-8 h-8" />
                 ) : (
                   <svg
-                    className="w-8 h-8"
+                    className="w-8 h-8 dark:invert"
                     width="800px"
                     height="800px"
                     viewBox="0 0 40 40"
@@ -186,7 +186,7 @@ export function DeployDialog({ isOpen, onClose }: DeployDialogProps) {
                   <div className="i-svg-spinners:90-ring-with-bg w-8 h-8" />
                 ) : (
                   <svg
-                    className="w-8 h-8"
+                    className="w-8 h-8 dark:invert"
                     xmlns="http://www.w3.org/2000/svg"
                     role="img"
                     viewBox="0 0 460 271.2"
