@@ -49,22 +49,22 @@
 ._Shadow_8mvus_1 {
   background: linear-gradient(
     to top,
-    #0f0f0f 0%,
-    rgba(15, 15, 15, 0.987) 8.1%,
-    rgba(15, 15, 15, 0.951) 15.5%,
-    rgba(15, 15, 15, 0.896) 22.5%,
-    rgba(15, 15, 15, 0.825) 29%,
-    rgba(15, 15, 15, 0.741) 35.3%,
-    rgba(15, 15, 15, 0.648) 41.2%,
-    rgba(15, 15, 15, 0.55) 47.1%,
-    rgba(15, 15, 15, 0.45) 52.9%,
-    rgba(15, 15, 15, 0.352) 58.8%,
-    rgba(15, 15, 15, 0.259) 64.7%,
-    rgba(15, 15, 15, 0.175) 71%,
-    rgba(15, 15, 15, 0.104) 77.5%,
-    rgba(15, 15, 15, 0.049) 84.5%,
-    rgba(15, 15, 15, 0.013) 91.9%,
-    rgba(15, 15, 15, 0) 100%
+    var(--codinit-elements-bg-depth-1) 0%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 98.7%, transparent) 8.1%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 95.1%, transparent) 15.5%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 89.6%, transparent) 22.5%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 82.5%, transparent) 29%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 74.1%, transparent) 35.3%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 64.8%, transparent) 41.2%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 55%, transparent) 47.1%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 45%, transparent) 52.9%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 35.2%, transparent) 58.8%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 25.9%, transparent) 64.7%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 17.5%, transparent) 71%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 10.4%, transparent) 77.5%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 4.9%, transparent) 84.5%,
+    color-mix(in srgb, var(--codinit-elements-bg-depth-1) 1.3%, transparent) 91.9%,
+    transparent 100%
   );
 }
 

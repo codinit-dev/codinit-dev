@@ -2,10 +2,9 @@ import { type ActionFunctionArgs } from '@remix-run/cloudflare';
 import { createDataStream, generateId } from 'ai';
 import { MAX_RESPONSE_SEGMENTS, MAX_TOKENS, type FileMap } from '~/lib/.server/llm/constants';
 import { CONTINUE_PROMPT } from '~/lib/common/prompts/prompts';
-import { streamText, type Messages, type StreamingOptions } from '~/lib/.server/llm/stream-text';
+import { streamText, type StreamingOptions } from '~/lib/.server/llm/stream-text';
 import SwitchableStream from '~/lib/.server/llm/switchable-stream';
 import type { IProviderSetting } from '~/types/model';
-import type { DesignScheme } from '~/types/design-scheme';
 import { createScopedLogger } from '~/utils/logger';
 import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
 import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
@@ -13,6 +12,12 @@ import { WORK_DIR } from '~/utils/constants';
 import { createSummary } from '~/lib/.server/llm/create-summary';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import { MCPService } from '~/lib/services/mcpService';
+import {
+  validateChatRequest,
+  categorizeError,
+  getHttpStatusForError,
+  type ValidatedChatRequest,
+} from '~/lib/api/chat-validation';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -39,30 +44,21 @@ function parseCookies(cookieHeader: string): Record<string, string> {
 }
 
 async function chatAction({ context, request }: ActionFunctionArgs) {
-  const {
-    messages,
-    files,
-    promptId,
-    contextOptimization,
-    supabase,
-    designScheme,
-    enableMCPTools = false,
-  } = await request.json<{
-    messages: Messages;
-    files: any;
-    promptId?: string;
-    contextOptimization: boolean;
-    designScheme?: DesignScheme;
-    supabase?: {
-      isConnected: boolean;
-      hasSelectedProject: boolean;
-      credentials?: {
-        anonKey?: string;
-        supabaseUrl?: string;
-      };
-    };
-    enableMCPTools?: boolean;
-  }>();
+  let validatedRequest: ValidatedChatRequest;
+
+  try {
+    const rawBody = await request.json();
+    validatedRequest = validateChatRequest(rawBody);
+  } catch (validationError) {
+    const error = categorizeError(validationError);
+    logger.error('Validation error:', validationError);
+    throw new Response(JSON.stringify(error), {
+      status: getHttpStatusForError(error),
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const { messages, files, promptId, contextOptimization, supabase, designScheme, enableMCPTools } = validatedRequest;
 
   const cookieHeader = request.headers.get('Cookie');
   const apiKeys = JSON.parse(parseCookies(cookieHeader || '').apiKeys || '{}');
@@ -248,7 +244,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
                 label: 'response',
                 status: 'complete',
                 order: progressCounter++,
-                message: 'Response Generated (max segments reached)',
+                message: 'Response',
               } satisfies ProgressAnnotation);
 
               return;
@@ -396,19 +392,16 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         'Text-Encoding': 'chunked',
       },
     });
-  } catch (error: any) {
-    logger.error(error);
+  } catch (error: unknown) {
+    logger.error('Chat error:', error);
 
-    if (error.message?.includes('API key')) {
-      throw new Response('Invalid or missing API key', {
-        status: 401,
-        statusText: 'Unauthorized',
-      });
-    }
+    const chatError = categorizeError(error);
+    const status = getHttpStatusForError(chatError);
 
-    throw new Response(null, {
-      status: 500,
-      statusText: 'Internal Server Error',
+    throw new Response(JSON.stringify(chatError), {
+      status,
+      statusText: chatError.message,
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 }

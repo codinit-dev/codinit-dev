@@ -6,7 +6,7 @@ import type {
   ArtifactCallbackData,
   ThinkingArtifactCallbackData,
 } from '~/lib/runtime/message-parser';
-import { webcontainer } from '~/lib/webcontainer';
+import { webcontainer, setupWebContainerEventHandlers } from '~/lib/webcontainer';
 import type { ITerminal } from '~/types/terminal';
 import { unreachable } from '~/utils/unreachable';
 import { EditorStore } from './editor';
@@ -1025,7 +1025,5 @@ export const workbenchStore = new WorkbenchStore();
 
 // Setup WebContainer event handlers after store initialization
 if (!import.meta.env.SSR) {
-  import('~/lib/webcontainer').then(({ setupWebContainerEventHandlers }) => {
-    setupWebContainerEventHandlers(workbenchStore);
-  });
+  setupWebContainerEventHandlers(workbenchStore);
 }

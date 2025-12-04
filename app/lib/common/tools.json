@@ -1,0 +1,207 @@
+{
+  "_metadata": {
+    "version": "2.0.0",
+    "description": "CodinIT agent tools specification. These tools describe the actual capabilities available in the application. Tools are invoked via XML action tags in LLM responses, not standard function calling.",
+    "execution_method": "XML action tags",
+    "frameworks": ["web", "electron"],
+    "runtimes": ["web-remix", "electron-webcontainer"]
+  },
+
+  "file": {
+    "version": "1.0.0",
+    "category": "file-operations",
+    "status": "production",
+    "frameworks": ["all"],
+    "environments": ["web", "electron"],
+    "requires": [],
+    "description": "Create or write files to the project. Overwrites existing files completely. Use for creating new files or complete rewrites. For modifying existing files, prefer using the 'line-replace' action if possible.",
+    "invocation": "<codinitAction type=\"file\" filePath=\"path/to/file.ts\">file content here</codinitAction>",
+    "parameters": {
+      "properties": {
+        "filePath": {
+          "type": "string",
+          "description": "Path relative to project root (e.g., 'src/main.ts', 'config.json', 'styles/theme.css')",
+          "example": "src/App.tsx"
+        },
+        "content": {
+          "type": "string",
+          "description": "Complete file content - code, configuration, CSS, or any text",
+          "example": "export const config = { /* ... */ };"
+        }
+      },
+      "required": ["filePath", "content"],
+      "type": "object"
+    },
+    "examples": [
+      {
+        "description": "Create a TypeScript component",
+        "code": "<codinitAction type=\"file\" filePath=\"src/components/Button.tsx\">export function Button() { return <button>Click me</button>; }</codinitAction>"
+      },
+      {
+        "description": "Create a configuration file",
+        "code": "<codinitAction type=\"file\" filePath=\"config.json\">{\"name\": \"my-app\", \"version\": \"1.0.0\"}</codinitAction>"
+      }
+    ]
+  },
+
+  "line-replace": {
+    "version": "1.0.0",
+    "category": "file-operations",
+    "status": "production",
+    "frameworks": ["all"],
+    "environments": ["web", "electron"],
+    "requires": [],
+    "description": "Modify specific lines in existing files using exact line numbers. Preferred method for editing existing code. Maintains file integrity and allows precise edits without rewriting entire files. Works with any language or file type.",
+    "invocation": "<codinitAction type=\"line-replace\" filePath=\"path/to/file\" firstLine=\"15\" lastLine=\"28\" search=\"exact content to find\" replace=\"new content\"></codinitAction>",
+    "parameters": {
+      "properties": {
+        "filePath": {
+          "type": "string",
+          "description": "Path relative to project root",
+          "example": "src/components/Form.tsx"
+        },
+        "firstLine": {
+          "type": "number",
+          "description": "First line number to replace (1-indexed)",
+          "example": 15
+        },
+        "lastLine": {
+          "type": "number",
+          "description": "Last line number to replace (1-indexed)",
+          "example": 28
+        },
+        "search": {
+          "type": "string",
+          "description": "Exact content to search for. Use '...' for omitted sections in large blocks.",
+          "example": "const value = oldValue;\n...\nreturn value;"
+        },
+        "replace": {
+          "type": "string",
+          "description": "New content to insert",
+          "example": "const value = newValue;\nconst doubled = value * 2;\nreturn doubled;"
+        }
+      },
+      "required": ["filePath", "firstLine", "lastLine", "search", "replace"],
+      "type": "object"
+    },
+    "examples": [
+      {
+        "description": "Update a function implementation",
+        "code": "<codinitAction type=\"line-replace\" filePath=\"src/utils.ts\" firstLine=\"5\" lastLine=\"8\" search=\"return a + b;\" replace=\"return a * b;\"></codinitAction>"
+      }
+    ]
+  },
+
+  "shell": {
+    "version": "1.0.0",
+    "category": "environment",
+    "status": "production",
+    "frameworks": ["all"],
+    "environments": ["web", "electron"],
+    "requires": [],
+    "description": "Execute shell commands in the project environment. Runs in WebContainer with access to pnpm, npm, git, and other CLI tools. Use for installing dependencies, running builds, git operations, etc.",
+    "invocation": "<codinitAction type=\"shell\">pnpm add lodash</codinitAction>",
+    "parameters": {
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "Shell command to execute (e.g., 'pnpm add package', 'npm run build', 'git commit -m message')",
+          "example": "pnpm install"
+        }
+      },
+      "required": ["command"],
+      "type": "object"
+    },
+    "examples": [
+      {
+        "description": "Install a package dependency",
+        "code": "<codinitAction type=\"shell\">pnpm add lodash@latest</codinitAction>"
+      },
+      {
+        "description": "Run a build command",
+        "code": "<codinitAction type=\"shell\">pnpm run build</codinitAction>"
+      },
+      {
+        "description": "Git operations",
+        "code": "<codinitAction type=\"shell\">git add . && git commit -m \"Initial commit\"</codinitAction>"
+      }
+    ]
+  },
+
+  "supabase": {
+    "version": "1.0.0",
+    "category": "database",
+    "status": "production",
+    "frameworks": ["all"],
+    "environments": ["web", "electron"],
+    "requires": ["supabase-connection"],
+    "description": "Perform database operations: create migrations, execute SQL queries, or manage database schema. Supports PostgreSQL SQL syntax for Supabase backend.",
+    "operations": {
+      "migration": "Create a new database migration file",
+      "query": "Execute a SQL query directly"
+    },
+    "invocation": "<codinitAction type=\"supabase\" operation=\"migration|query\">SQL content</codinitAction>",
+    "parameters": {
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": ["migration", "query"],
+          "description": "Operation type: 'migration' to create a migration file, 'query' to execute SQL",
+          "example": "migration"
+        },
+        "content": {
+          "type": "string",
+          "description": "SQL code for the operation",
+          "example": "CREATE TABLE users (id uuid PRIMARY KEY, name text);"
+        }
+      },
+      "required": ["operation", "content"],
+      "type": "object"
+    },
+    "examples": [
+      {
+        "description": "Create a database migration",
+        "code": "<codinitAction type=\"supabase\" operation=\"migration\">\nCREATE TABLE users (\n  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),\n  name text NOT NULL,\n  email text UNIQUE,\n  created_at timestamp DEFAULT now()\n);\n</codinitAction>"
+      },
+      {
+        "description": "Create authentication tables",
+        "code": "<codinitAction type=\"supabase\" operation=\"migration\">\nCREATE TABLE auth_users (\n  id uuid PRIMARY KEY,\n  email text UNIQUE NOT NULL,\n  password_hash text,\n  created_at timestamp DEFAULT now()\n);\n</codinitAction>"
+      }
+    ]
+  },
+
+  "mcp-tools": {
+    "version": "1.0.0",
+    "category": "extensibility",
+    "status": "production",
+    "frameworks": ["all"],
+    "environments": ["web", "electron"],
+    "requires": [],
+    "description": "Model Context Protocol (MCP) tools provide extensibility through external MCP servers. Available tools depend on configured MCP servers. Common available tools include Supabase database, Stripe payments, GitHub operations, and more.",
+    "configuration": "Configured through the MCP settings panel in the application",
+    "available_servers": [
+      {
+        "name": "Supabase",
+        "tools": "Database queries, table management, RLS policies",
+        "transport": "SSE"
+      },
+      {
+        "name": "Claude Code",
+        "tools": "Code search, file operations, terminal access",
+        "transport": "stdio"
+      },
+      {
+        "name": "Stripe",
+        "tools": "Payment processing, subscription management",
+        "transport": "streamable-http"
+      },
+      {
+        "name": "PostHog",
+        "tools": "Analytics, event tracking",
+        "transport": "streamable-http"
+      }
+    ],
+    "invocation": "MCP tools are invoked directly by name (after LLM function calling capability is enabled)",
+    "note": "These tools are optional and must be explicitly configured by the user. Not all users have MCP servers available."
+  }
+}

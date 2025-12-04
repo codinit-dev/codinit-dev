@@ -246,14 +246,6 @@ export function getBoxShadowValue(key: string, hasShadowFeature: boolean = false
   switch (key) {
     case 'none':
       return 'none';
-    case 'sm':
-      return '0 1px 2px 0 rgb(0 0 0 / 0.05)';
-    case 'md':
-      return '0 4px 6px -1px rgb(0 0 0 / 0.1)';
-    case 'lg':
-      return '0 10px 15px -3px rgb(0 0 0 / 0.1)';
-    case 'xl':
-      return '0 20px 25px -5px rgb(0 0 0 / 0.1)';
     default:
       return 'none';
   }

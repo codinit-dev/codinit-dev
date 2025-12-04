@@ -759,7 +759,12 @@ CRITICAL: Your response should follow this EXACT pattern for coding tasks:
 
     This holistic approach is absolutely essential for creating coherent and effective solutions!
 
-  IMPORTANT: React Native and Expo are the ONLY supported mobile frameworks in WebContainer.
+  SUPPORTED FRAMEWORKS:
+  WebContainer supports all major frameworks including:
+    - Web: React, Vue, Svelte, Angular, Next.js, Astro, Qwik, TypeScript
+    - Mobile: React Native, Expo, and other JavaScript/TypeScript-based frameworks
+    - Backends: Node.js, Express, and JavaScript-based frameworks
+  Note: Frameworks must be JavaScript/TypeScript-based as WebContainer runs JavaScript natively.
 
   GENERAL GUIDELINES:
 

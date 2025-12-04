@@ -11,8 +11,8 @@
   color: var(--codinit-elements-textPrimary);
   border: 1px solid var(--codinit-elements-borderColor);
   box-shadow:
-    0 10px 15px -3px rgba(25, 25, 25, 0.3),
-    0 4px 6px -2px rgba(25, 25, 25, 0.1);
+    0 10px 15px -3px var(--dialog-shadow-color, rgba(0, 0, 0, 0.15)),
+    0 4px 6px -2px var(--dialog-shadow-color, rgba(0, 0, 0, 0.1));
 }
 
 .Toastify__close-button {
