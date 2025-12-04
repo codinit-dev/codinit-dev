@@ -135,14 +135,14 @@
 /* Color Tokens Dark Theme */
 :root,
 :root[data-theme='dark'] {
-  /* Pure neutral gray with blue accents */
-  --codinit-elements-borderColor: #333333; /* Neutral gray border */
+  /* Pure neutral gray with blue accents - improved contrast */
+  --codinit-elements-borderColor: #3a3a3a; /* Neutral gray border - slightly lighter for visibility */
   --codinit-elements-borderColorActive: #3b82f6; /* Blue active border */
 
-  --codinit-elements-bg-depth-1: #191919; /* Main background - pure neutral */
-  --codinit-elements-bg-depth-2: #1f1f1f; /* Content surfaces - neutral */
-  --codinit-elements-bg-depth-3: #252525; /* Distinction elements - neutral */
-  --codinit-elements-bg-depth-4: #2a2a2a; /* Buttons/inputs - neutral */
+  --codinit-elements-bg-depth-1: #121212; /* Main background - darker base */
+  --codinit-elements-bg-depth-2: #1a1a1a; /* Content surfaces */
+  --codinit-elements-bg-depth-3: #242424; /* Distinction elements */
+  --codinit-elements-bg-depth-4: #2e2e2e; /* Buttons/inputs - more contrast */
 
   /* Aliases for background-depth variables */
   --codinit-elements-background-depth-1: var(--codinit-elements-bg-depth-1);
@@ -155,7 +155,7 @@
   --codinit-elements-textSecondary: #cccccc; /* Neutral gray */
   --codinit-elements-textTertiary: #999999; /* Muted neutral */
 
-  --codinit-elements-code-background: #0d1117; /* Darker code background */
+  --codinit-elements-code-background: #0a0a0a; /* Dark code background */
   --codinit-elements-code-text: #f0f6fc; /* Bright code text */
 
   /* Primary Button - Blue accent */
@@ -163,46 +163,46 @@
   --codinit-elements-button-primary-backgroundHover: #2563eb; /* Darker blue on hover */
   --codinit-elements-button-primary-text: #ffffff; /* White text for max contrast */
 
-  /* Secondary Button - Neutral gray */
-  --codinit-elements-button-secondary-background: #252525; /* Matches depth-3 */
-  --codinit-elements-button-secondary-backgroundHover: #2a2a2a; /* Matches depth-4 */
-  --codinit-elements-button-secondary-text: #cccccc;
+  /* Secondary Button - Neutral gray with better contrast */
+  --codinit-elements-button-secondary-background: #2e2e2e; /* Matches depth-4 for visibility on containers */
+  --codinit-elements-button-secondary-backgroundHover: #3a3a3a; /* Lighter hover for clear feedback */
+  --codinit-elements-button-secondary-text: #e0e0e0;
 
   /* Danger Button - Remains prominent */
   --codinit-elements-button-danger-background: rgba(248, 81, 73, 0.1);
   --codinit-elements-button-danger-backgroundHover: rgba(248, 81, 73, 0.2);
   --codinit-elements-button-danger-text: #f85149;
 
-  /* Item backgrounds and content - neutral gray */
-  --codinit-elements-item-contentDefault: #999999;
+  /* Item backgrounds and content - neutral gray with improved contrast */
+  --codinit-elements-item-contentDefault: #a0a0a0;
   --codinit-elements-item-contentActive: #ffffff; /* White for active */
-  --codinit-elements-item-contentAccent: #cccccc; /* Neutral gray accent */
+  --codinit-elements-item-contentAccent: #d0d0d0; /* Neutral gray accent */
   --codinit-elements-item-contentDanger: #f85149; /* Remains prominent */
-  --codinit-elements-item-backgroundDefault: #191919; /* Matches depth-1 */
-  --codinit-elements-item-backgroundActive: #252525; /* Matches depth-3 */
-  --codinit-elements-item-backgroundAccent: rgba(204, 204, 204, 0.1); /* Neutral accent background */
+  --codinit-elements-item-backgroundDefault: transparent; /* Transparent for layering */
+  --codinit-elements-item-backgroundActive: #2e2e2e; /* Matches depth-4 for clear hover/active */
+  --codinit-elements-item-backgroundAccent: rgba(204, 204, 204, 0.08); /* Subtle neutral accent background */
   --codinit-elements-item-backgroundDanger: rgba(248, 81, 73, 0.1);
 
   /* Loader - Higher contrast */
   --codinit-elements-loader-background: rgba(255, 255, 255, 0.1); /* Slightly more opaque */
   --codinit-elements-loader-progress: #79c0ff; /* Brighter progress color */
 
-  /* Artifacts - Neutral gray */
-  --codinit-elements-artifacts-background: #191919; /* Matches depth-1 */
-  --codinit-elements-artifacts-backgroundHover: rgba(255, 255, 255, 0.05); /* Subtle hover */
+  /* Artifacts - Neutral gray aligned with new depth system */
+  --codinit-elements-artifacts-background: var(--codinit-elements-bg-depth-1);
+  --codinit-elements-artifacts-backgroundHover: rgba(255, 255, 255, 0.06); /* Subtle hover */
   --codinit-elements-artifacts-borderColor: var(--codinit-elements-borderColor);
-  --codinit-elements-artifacts-inlineCode-background: #1f1f1f; /* Matches depth-2 */
+  --codinit-elements-artifacts-inlineCode-background: var(--codinit-elements-bg-depth-3);
   --codinit-elements-artifacts-inlineCode-text: #ffffff;
 
-  /* Actions - Neutral gray */
-  --codinit-elements-actions-background: #191919; /* Matches depth-1 */
-  --codinit-elements-actions-code-background: #1f1f1f; /* Matches depth-2 */
+  /* Actions - Neutral gray aligned with new depth system */
+  --codinit-elements-actions-background: var(--codinit-elements-bg-depth-1);
+  --codinit-elements-actions-code-background: var(--codinit-elements-bg-depth-2);
 
-  /* Messages - Neutral gray */
-  --codinit-elements-messages-background: #191919; /* Matches depth-1 */
-  --codinit-elements-messages-linkColor: #cccccc; /* Neutral gray link */
-  --codinit-elements-messages-code-background: #0f0f0f; /* Darker code background */
-  --codinit-elements-messages-inlineCode-background: #1f1f1f; /* Matches depth-2 */
+  /* Messages - Neutral gray aligned with new depth system */
+  --codinit-elements-messages-background: var(--codinit-elements-bg-depth-2);
+  --codinit-elements-messages-linkColor: #d0d0d0; /* Slightly brighter link */
+  --codinit-elements-messages-code-background: #0a0a0a; /* Darker code background */
+  --codinit-elements-messages-inlineCode-background: var(--codinit-elements-bg-depth-3);
   --codinit-elements-messages-inlineCode-text: var(--codinit-elements-textPrimary);
 
   /* Icons - Adjusted for dark theme contrast */
@@ -212,9 +212,9 @@
   --codinit-elements-icon-secondary: #c9d1d9; /* Bright */
   --codinit-elements-icon-tertiary: #8b949e; /* Subtle */
 
-  --codinit-elements-dividerColor: #30363d; /* Darker divider */
+  --codinit-elements-dividerColor: #333333; /* Aligned with border color */
 
-  --codinit-elements-prompt-background: rgba(15, 15, 15, 0.8); /* Remains similar */
+  --codinit-elements-prompt-background: rgba(18, 18, 18, 0.85); /* Aligned with depth-1 */
 
   /* Sidebar - Blue accent */
   --codinit-elements-sidebar-buttonBackgroundDefault: rgba(59, 130, 246, 0.1); /* Blue accent background */
@@ -236,7 +236,7 @@
   --codinit-elements-terminals-background: var(--codinit-elements-bg-depth-1); /* Use depth-1 for terminal background */
   --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-3); /* Use depth-3 for buttons */
 
-  --codinit-elements-cta-background: rgba(255, 255, 255, 0.08); /* Slightly more opaque CTA */
+  --codinit-elements-cta-background: var(--codinit-elements-bg-depth-3); /* Use depth-3 for CTA */
   --codinit-elements-cta-text: #ffffff;
 
   /* Terminal Colors - Pure neutral gray */
@@ -251,7 +251,7 @@
   --codinit-terminal-magenta: #ff79c6; /* Brighter magenta */
   --codinit-terminal-cyan: #98d4ca; /* Brighter cyan */
   --codinit-terminal-white: #ffffff; /* Pure white */
-  --codinit-terminal-brightBlack: #666666; /* Neutral gray */
+  --codinit-terminal-brightBlack: #555555; /* Neutral gray */
   --codinit-terminal-brightRed: #ff7b72; /* Brighter red */
   --codinit-terminal-brightGreen: #76d974; /* Brighter green */
   --codinit-terminal-brightYellow: #e2e27a; /* Brighter yellow */
@@ -262,26 +262,26 @@
   --modern-scrollbar-thumb-background: rgba(153, 153, 153, 0.3); /* Neutral gray thumb */
   --modern-scrollbar-thumb-backgroundHover: rgba(153, 153, 153, 0.5); /* More opaque on hover */
 
-  /* Command/Dialog popover variables - Dark Theme */
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
+  /* Command/Dialog popover variables - Dark Theme - neutral gray aligned */
+  --background: 0 0% 7%; /* #121212 */
+  --foreground: 0 0% 98%;
+  --card: 0 0% 10%; /* #1a1a1a */
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 10%; /* #1a1a1a */
+  --popover-foreground: 0 0% 98%;
   --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 84% 4.9%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 14%; /* #242424 */
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14%; /* #242424 */
+  --muted-foreground: 0 0% 64%;
+  --accent: 0 0% 18%; /* #2e2e2e */
+  --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 94.1%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 23%; /* #3a3a3a */
+  --input: 0 0% 18%; /* #2e2e2e */
+  --ring: 217.2 91.2% 59.8%;
 }
 
 /*
