@@ -3,10 +3,15 @@
  * Preventing TS checks with files presented in the video for a better presentation.
  */
 import type { JSONValue, Message } from 'ai';
-import React, { type RefCallback, useEffect, useState } from 'react';
+import React, { lazy, Suspense, type RefCallback, useEffect, useState } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { Menu } from '~/components/sidebar/Menu.client';
-import { Workbench } from '~/components/workbench/Workbench.client';
+
+const Workbench = lazy(() =>
+  import('~/components/workbench/Workbench.client').then((module) => ({
+    default: module.Workbench,
+  })),
+);
 import { ChatHeader } from '~/components/header/ChatHeader';
 import { PreviewHeader } from '~/components/workbench/PreviewHeader';
 import { CodeModeHeader } from '~/components/workbench/CodeModeHeader';
@@ -754,7 +759,19 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
           </div>
           <ClientOnly>
             {() => (
-              <Workbench chatStarted={chatStarted} isStreaming={isStreaming} setSelectedElement={setSelectedElement} />
+              <Suspense
+                fallback={
+                  <div className="h-full flex items-center justify-center">
+                    <div className="i-svg-spinners:90-ring-with-bg text-2xl text-codinit-elements-textTertiary"></div>
+                  </div>
+                }
+              >
+                <Workbench
+                  chatStarted={chatStarted}
+                  isStreaming={isStreaming}
+                  setSelectedElement={setSelectedElement}
+                />
+              </Suspense>
             )}
           </ClientOnly>
         </div>
