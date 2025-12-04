@@ -101,8 +101,6 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@react-email/components": "^0.5.7",
-    "@react-email/render": "^1.4.0",
     "@remix-run/cloudflare": "^2.17.1",
     "@remix-run/cloudflare-pages": "^2.17.1",
     "@remix-run/node": "^2.17.1",
