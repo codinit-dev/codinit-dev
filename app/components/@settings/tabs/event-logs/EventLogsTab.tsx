@@ -6,7 +6,6 @@ import { useStore } from '@nanostores/react';
 import { classNames } from '~/utils/classNames';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Dialog, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
-import { jsPDF } from 'jspdf';
 import { toast } from 'react-toastify';
 
 interface SelectOption {
@@ -272,18 +271,20 @@ export function EventLogsTab() {
 
   const filteredLogs = useMemo(() => {
     const allLogs = Object.values(logs);
-
-    if (selectedLevel === 'all') {
-      return allLogs.filter((log) =>
-        searchQuery ? log.message.toLowerCase().includes(searchQuery.toLowerCase()) : true,
-      );
-    }
+    const lowerSearchQuery = searchQuery.toLowerCase();
+    const hasSearch = Boolean(searchQuery);
+    const isAllLevel = selectedLevel === 'all';
 
     return allLogs.filter((log) => {
-      const matchesType = log.category === selectedLevel || log.level === selectedLevel;
-      const matchesSearch = searchQuery ? log.message.toLowerCase().includes(searchQuery.toLowerCase()) : true;
+      if (!isAllLevel && log.category !== selectedLevel && log.level !== selectedLevel) {
+        return false;
+      }
 
-      return matchesType && matchesSearch;
+      if (hasSearch && !log.message.toLowerCase().includes(lowerSearchQuery)) {
+        return false;
+      }
+
+      return true;
     });
   }, [logs, selectedLevel, searchQuery]);
 
@@ -471,8 +472,10 @@ export function EventLogsTab() {
     }
   };
 
-  const exportAsPDF = () => {
+  const exportAsPDF = async () => {
     try {
+      const { jsPDF } = await import('jspdf');
+
       // Create new PDF document
       const doc = new jsPDF();
       const lineHeight = 7;
