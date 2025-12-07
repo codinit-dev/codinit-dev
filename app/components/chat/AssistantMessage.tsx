@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Markdown } from './Markdown';
 import type { JSONValue } from 'ai';
 import { ContextIndicator } from './ContextIndicator';
@@ -13,27 +13,28 @@ interface AssistantMessageProps {
 }
 
 export const AssistantMessage = memo(({ content, annotations, messageId, onRewind, onFork }: AssistantMessageProps) => {
-  const filteredAnnotations = (annotations?.filter(
-    (annotation: JSONValue) => annotation && typeof annotation === 'object' && Object.keys(annotation).includes('type'),
-  ) || []) as { type: string; value: any } & { [key: string]: any }[];
+  const { chatSummary, codeContext, usage } = useMemo(() => {
+    const filteredAnnotations = (annotations?.filter(
+      (annotation: JSONValue) =>
+        annotation && typeof annotation === 'object' && Object.keys(annotation).includes('type'),
+    ) || []) as { type: string; value: any } & { [key: string]: any }[];
 
-  let chatSummary: string | undefined = undefined;
+    const summaryAnnotation = filteredAnnotations.find((annotation) => annotation.type === 'chatSummary');
+    const contextAnnotation = filteredAnnotations.find((annotation) => annotation.type === 'codeContext');
+    const usageAnnotation = filteredAnnotations.find((annotation) => annotation.type === 'usage');
 
-  if (filteredAnnotations.find((annotation) => annotation.type === 'chatSummary')) {
-    chatSummary = filteredAnnotations.find((annotation) => annotation.type === 'chatSummary')?.summary;
-  }
-
-  let codeContext: string[] | undefined = undefined;
-
-  if (filteredAnnotations.find((annotation) => annotation.type === 'codeContext')) {
-    codeContext = filteredAnnotations.find((annotation) => annotation.type === 'codeContext')?.files;
-  }
-
-  const usage: {
-    completionTokens: number;
-    promptTokens: number;
-    totalTokens: number;
-  } = filteredAnnotations.find((annotation) => annotation.type === 'usage')?.value;
+    return {
+      chatSummary: summaryAnnotation?.summary as string | undefined,
+      codeContext: contextAnnotation?.files as string[] | undefined,
+      usage: usageAnnotation?.value as
+        | {
+            completionTokens: number;
+            promptTokens: number;
+            totalTokens: number;
+          }
+        | undefined,
+    };
+  }, [annotations]);
 
   return (
     <div className="overflow-hidden w-full">
