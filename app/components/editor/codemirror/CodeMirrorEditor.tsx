@@ -127,7 +127,7 @@ export const CodeMirrorEditor = memo(
     id,
     doc,
     debounceScroll = 100,
-    debounceChange = 150,
+    debounceChange = 300,
     autoFocusOnDocumentChange = false,
     editable = true,
     onScroll,
