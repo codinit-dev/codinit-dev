@@ -7,15 +7,41 @@ files:
   - build/**/*
   - package.json
   - node_modules/**/*
+  - "!node_modules/wrangler/**"
+  - "!node_modules/miniflare/**"
+  - "!node_modules/workerd/**"
+  - "!node_modules/@cloudflare/**"
+  - "!node_modules/typescript/**"
+  - "!node_modules/prettier/**"
+  - "!node_modules/vitest/**"
+  - "!node_modules/@vitest/**"
+  - "!node_modules/eslint/**"
+  - "!node_modules/eslint-*/**"
+  - "!node_modules/@eslint/**"
+  - "!node_modules/playwright/**"
+  - "!node_modules/playwright-core/**"
+  - "!node_modules/@playwright/**"
+  - "!node_modules/electron-builder/**"
+  - "!node_modules/app-builder-bin/**"
+  - "!node_modules/app-builder-lib/**"
+  - "!node_modules/@electron/rebuild/**"
+  - "!node_modules/@remix-run/dev/**"
+  - "!node_modules/vite/**"
+  - "!node_modules/rollup/**"
+  - "!node_modules/esbuild/**"
+  - "!node_modules/@esbuild/**"
+  - "!node_modules/@types/**"
+  - "!node_modules/sass/**"
+  - "!node_modules/sass-embedded/**"
+  - "!node_modules/sass-embedded-*/**"
   - icons/**
   - electron-update.yml
 extraMetadata:
   main: build/electron/main/index.mjs
 asarUnpack:
   - resources/**
-  - build/client/**/*
-  - build/server/**/*
   - electron-update.yml
+  - "node_modules/**/build/Release/*.node"
 
 mac:
   icon: assets/icons/icon.icns
