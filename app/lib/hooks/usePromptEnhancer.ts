@@ -51,10 +51,24 @@ export function usePromptEnhancer() {
       try {
         setInput('');
 
+        let rafId: number | null = null;
+        let pendingUpdate = false;
+
+        const updateInput = () => {
+          setInput(_input);
+          pendingUpdate = false;
+          rafId = null;
+        };
+
         while (true) {
           const { value, done } = await reader.read();
 
           if (done) {
+            if (rafId) {
+              cancelAnimationFrame(rafId);
+            }
+
+            setInput(_input);
             break;
           }
 
@@ -62,7 +76,10 @@ export function usePromptEnhancer() {
 
           logger.trace('Set input', _input);
 
-          setInput(_input);
+          if (!pendingUpdate) {
+            pendingUpdate = true;
+            rafId = requestAnimationFrame(updateInput);
+          }
         }
       } catch (error) {
         _error = error;
