@@ -1,14 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { classNames } from '~/utils/classNames';
-import { TbActivityHeartbeat } from 'react-icons/tb';
-import { BsCheckCircleFill, BsXCircleFill, BsExclamationCircleFill } from 'react-icons/bs';
-import { SiAmazon, SiGoogle, SiHuggingface, SiPerplexity, SiOpenai } from 'react-icons/si';
-import { BsRobot, BsCloud } from 'react-icons/bs';
-import { TbBrain } from 'react-icons/tb';
-import { BiCodeBlock } from 'react-icons/bi';
-import { FaCloud, FaBrain } from 'react-icons/fa';
-import type { IconType } from 'react-icons';
 import { useSettings } from '~/lib/hooks/useSettings';
 import { useToast } from '~/components/ui/use-toast';
 
@@ -32,7 +24,7 @@ type ServiceStatus = {
   status: 'operational' | 'degraded' | 'down';
   lastChecked: string;
   statusUrl?: string;
-  icon?: IconType;
+  icon?: string;
   message?: string;
   responseTime?: number;
   incidents?: string[];
@@ -163,19 +155,19 @@ const PROVIDER_STATUS_URLS: Record<ProviderName, ProviderConfig> = {
   },
 };
 
-const PROVIDER_ICONS: Record<ProviderName, IconType> = {
-  AmazonBedrock: SiAmazon,
-  Anthropic: FaBrain,
-  Google: SiGoogle,
-  Groq: BsCloud,
-  HuggingFace: SiHuggingface,
-  Mistral: TbBrain,
-  OpenAI: SiOpenai,
-  OpenRouter: FaCloud,
-  Perplexity: SiPerplexity,
-  Together: BsCloud,
-  XAI: BsRobot,
-  Deepseek: BiCodeBlock,
+const PROVIDER_ICONS: Record<ProviderName, string> = {
+  AmazonBedrock: 'i-simple-icons:amazonaws',
+  Anthropic: 'i-ph:brain',
+  Google: 'i-simple-icons:google',
+  Groq: 'i-ph:cloud',
+  HuggingFace: 'i-simple-icons:huggingface',
+  Mistral: 'i-ph:brain',
+  OpenAI: 'i-simple-icons:openai',
+  OpenRouter: 'i-ph:cloud',
+  Perplexity: 'i-simple-icons:perplexity',
+  Together: 'i-ph:cloud',
+  XAI: 'i-ph:robot',
+  Deepseek: 'i-ph:code',
 };
 
 const ServiceStatusTab = () => {
@@ -665,13 +657,13 @@ const ServiceStatusTab = () => {
   const getStatusIcon = (status: ServiceStatus['status']) => {
     switch (status) {
       case 'operational':
-        return <BsCheckCircleFill className="w-4 h-4" />;
+        return <div className="i-ph:check-circle-fill w-4 h-4" />;
       case 'degraded':
-        return <BsExclamationCircleFill className="w-4 h-4" />;
+        return <div className="i-ph:warning-circle-fill w-4 h-4" />;
       case 'down':
-        return <BsXCircleFill className="w-4 h-4" />;
+        return <div className="i-ph:x-circle-fill w-4 h-4" />;
       default:
-        return <BsXCircleFill className="w-4 h-4" />;
+        return <div className="i-ph:x-circle-fill w-4 h-4" />;
     }
   };
 
@@ -692,7 +684,7 @@ const ServiceStatusTab = () => {
                 'text-blue-500',
               )}
             >
-              <TbActivityHeartbeat className="w-5 h-5" />
+              <div className="i-ph:activity w-5 h-5" />
             </div>
             <div>
               <h4 className="text-md font-medium text-codinit-elements-textPrimary">Service Status</h4>
@@ -818,9 +810,7 @@ const ServiceStatusTab = () => {
                             getStatusColor(service.status),
                           )}
                         >
-                          {React.createElement(service.icon, {
-                            className: 'w-5 h-5',
-                          })}
+                          <div className={classNames(service.icon, 'w-5 h-5')} />
                         </div>
                       )}
                       <div>
