@@ -226,8 +226,7 @@ const UpdateTab = () => {
                 </p>
               )}
               <p className="mt-1">
-                Updates are checked from: <span className="font-mono">codinit-dev/codinit-dev</span> (GitHub
-                releases)
+                Updates are checked from: <span className="font-mono">codinit-dev/codinit-dev</span> (GitHub releases)
               </p>
             </div>
             {hasUpdate && releaseUrl && (
