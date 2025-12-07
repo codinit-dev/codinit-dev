@@ -615,7 +615,9 @@ export const ColorSchemeDialog: React.FC<ColorSchemeDialogProps> = ({ setDesignS
 
                 {/* Header */}
                 <div className="border-b border-codinit-elements-borderColor p-6 bg-codinit-elements-background-depth-1">
-                  <h2 className="text-lg font-semibold text-codinit-elements-textPrimary">Design Palette & Features</h2>
+                  <h2 className="text-lg font-semibold text-codinit-elements-textPrimary">
+                    Design Palette (experimental)
+                  </h2>
                   <p className="text-sm text-codinit-elements-textSecondary mt-1">
                     Customize your color palette, typography, and design features. These preferences will guide the AI
                     in creating designs that match your style.
