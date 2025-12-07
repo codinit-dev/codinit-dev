@@ -8,7 +8,6 @@ import { Progress } from '~/components/ui/Progress';
 import { ScrollArea } from '~/components/ui/ScrollArea';
 import { Badge } from '~/components/ui/Badge';
 import { Dialog, DialogRoot, DialogTitle } from '~/components/ui/Dialog';
-import { jsPDF } from 'jspdf';
 import { useSettings } from '~/lib/hooks/useSettings';
 
 interface SystemInfo {
@@ -599,7 +598,7 @@ export default function DebugTab() {
     }
   };
 
-  const handleLogPerformance = () => {
+  const handleLogPerformance = async () => {
     try {
       setLoading((prev) => ({ ...prev, performance: true }));
 
@@ -642,23 +641,30 @@ export default function DebugTab() {
 
       if ('requestAnimationFrame' in window) {
         const times: number[] = [];
+        let sampleCount = 0;
+        const maxSamples = 12;
 
-        function calculateFPS(now: number) {
-          times.push(now);
+        fps = await new Promise<number>((resolve) => {
+          function calculateFPS(now: number) {
+            times.push(now);
+            sampleCount++;
 
-          if (times.length > 10) {
-            const fps = Math.round((1000 * 10) / (now - times[0]));
-            times.shift();
+            if (times.length > 10) {
+              const calculatedFPS = Math.round((1000 * 10) / (now - times[0]));
+              resolve(calculatedFPS);
 
-            return fps;
+              return;
+            }
+
+            if (sampleCount < maxSamples) {
+              requestAnimationFrame(calculateFPS);
+            } else {
+              resolve(0);
+            }
           }
 
           requestAnimationFrame(calculateFPS);
-
-          return 0;
-        }
-
-        fps = calculateFPS(performance.now());
+        });
       }
 
       // Log all performance metrics
@@ -776,8 +782,10 @@ export default function DebugTab() {
     }
   };
 
-  const exportAsPDF = () => {
+  const exportAsPDF = async () => {
     try {
+      const { jsPDF } = await import('jspdf');
+
       const debugData = {
         system: systemInfo,
         webApp: webAppInfo,
