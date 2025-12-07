@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Switch } from '~/components/ui/Switch';
 import { useSettings } from '~/lib/hooks/useSettings';
 import { LOCAL_PROVIDERS, URL_CONFIGURABLE_PROVIDERS } from '~/lib/stores/settings';
@@ -6,10 +6,6 @@ import type { IProviderConfig } from '~/types/model';
 import { logStore } from '~/lib/stores/logs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { classNames } from '~/utils/classNames';
-import { BsRobot } from 'react-icons/bs';
-import type { IconType } from 'react-icons';
-import { BiChip } from 'react-icons/bi';
-import { TbBrandOpenai } from 'react-icons/tb';
 import { providerBaseUrlEnvKeys } from '~/utils/constants';
 import { useToast } from '~/components/ui/use-toast';
 import { Progress } from '~/components/ui/Progress';
@@ -18,11 +14,10 @@ import OllamaModelInstaller from './OllamaModelInstaller';
 // Add type for provider names to ensure type safety
 type ProviderName = 'Ollama' | 'LMStudio' | 'OpenAILike';
 
-// Update the PROVIDER_ICONS type to use the ProviderName type
-const PROVIDER_ICONS: Record<ProviderName, IconType> = {
-  Ollama: BsRobot,
-  LMStudio: BsRobot,
-  OpenAILike: TbBrandOpenai,
+const PROVIDER_ICONS: Record<ProviderName, string> = {
+  Ollama: 'i-ph:robot',
+  LMStudio: 'i-ph:robot',
+  OpenAILike: 'i-simple-icons:openai',
 };
 
 // Update PROVIDER_DESCRIPTIONS to use the same type
@@ -402,7 +397,7 @@ export default function LocalProvidersTab() {
               )}
               whileHover={{ scale: 1.05 }}
             >
-              <BiChip className="w-6 h-6" />
+              <div className="i-ph:cpu w-6 h-6" />
             </motion.div>
             <div>
               <div className="flex items-center gap-2">
@@ -451,10 +446,10 @@ export default function LocalProvidersTab() {
                     )}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                   >
-                    {React.createElement(PROVIDER_ICONS[provider.name as ProviderName] || BsRobot, {
-                      className: 'w-7 h-7',
-                      'aria-label': `${provider.name} icon`,
-                    })}
+                    <div
+                      className={classNames(PROVIDER_ICONS[provider.name as ProviderName] || 'i-ph:robot', 'w-7 h-7')}
+                      aria-label={`${provider.name} icon`}
+                    />
                   </motion.div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -660,10 +655,13 @@ export default function LocalProvidersTab() {
                         )}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                       >
-                        {React.createElement(PROVIDER_ICONS[provider.name as ProviderName] || BsRobot, {
-                          className: 'w-7 h-7',
-                          'aria-label': `${provider.name} icon`,
-                        })}
+                        <div
+                          className={classNames(
+                            PROVIDER_ICONS[provider.name as ProviderName] || 'i-ph:robot',
+                            'w-7 h-7',
+                          )}
+                          aria-label={`${provider.name} icon`}
+                        />
                       </motion.div>
                       <div>
                         <div className="flex items-center gap-2">
