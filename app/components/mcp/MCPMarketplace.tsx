@@ -189,7 +189,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     id: '21st-dev',
     name: '21st.dev',
     description: 'Use 21st.dev Magic MCP to build your next.js app components.',
-    icon: '/21st.jpeg',
+    icon: 'https://21st.dev/brand/21st-logo-dark.png',
     iconColor: '#ffffff',
     iconBgColor: '#0255fbff',
     category: 'development',
