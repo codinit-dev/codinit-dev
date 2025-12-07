@@ -16,23 +16,76 @@ export default class XAIProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Grok-2: 128k context, latest flagship reasoning model
      */
     {
-      name: 'grok-2',
-      label: 'Grok-2',
+      name: 'grok-4-1-fast-reasoning',
+      label: 'Grok-4-1 Fast Reasoning',
+      provider: 'xAI',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-4-1-fast-non-reasoning',
+      label: 'Grok-4-1 Fast Non-Reasoning',
+      provider: 'xAI',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-code-fast-1',
+      label: 'Grok Code Fast 1',
+      provider: 'xAI',
+      maxTokenAllowed: 256000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-4-fast-reasoning',
+      label: 'Grok-4 Fast Reasoning',
+      provider: 'xAI',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-4-fast-non-reasoning',
+      label: 'Grok-4 Fast Non-Reasoning',
+      provider: 'xAI',
+      maxTokenAllowed: 2000000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-4-0709',
+      label: 'Grok-4 0709',
+      provider: 'xAI',
+      maxTokenAllowed: 256000,
+      maxCompletionTokens: 32768,
+    },
+    {
+      name: 'grok-3-mini',
+      label: 'Grok-3 Mini',
+      provider: 'xAI',
+      maxTokenAllowed: 131072,
+      maxCompletionTokens: 8192,
+    },
+    {
+      name: 'grok-3',
+      label: 'Grok-3',
       provider: 'xAI',
       maxTokenAllowed: 131072,
       maxCompletionTokens: 32768,
     },
-
-    // Grok-2 mini: 128k context, efficient variant
     {
-      name: 'grok-2-mini',
-      label: 'Grok-2 Mini',
+      name: 'grok-2-vision-1212',
+      label: 'Grok-2 Vision 1212',
+      provider: 'xAI',
+      maxTokenAllowed: 32768,
+      maxCompletionTokens: 8192,
+    },
+    {
+      name: 'grok-2-1212',
+      label: 'Grok-2 1212',
       provider: 'xAI',
       maxTokenAllowed: 131072,
-      maxCompletionTokens: 8192,
+      maxCompletionTokens: 32768,
     },
   ];
 

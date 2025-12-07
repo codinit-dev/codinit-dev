@@ -833,37 +833,40 @@ export class WorkbenchStore {
     isPrivate: boolean = false,
   ) {
     try {
-      // Use cookies if username and token are not provided
       const githubToken = ghToken || Cookies.get('githubToken');
       const owner = githubUsername || Cookies.get('githubUsername');
 
       if (!githubToken || !owner) {
-        throw new Error('GitHub token or username is not set in cookies or provided.');
+        const error = new Error('GitHub authentication required. Please connect your GitHub account in Settings > Connections.');
+        (error as any).code = 'AUTH_REQUIRED';
+        throw error;
       }
 
-      // Log the isPrivate flag to verify it's being properly passed
+      if (!repoName || !repoName.trim()) {
+        const error = new Error('Repository name is required.');
+        (error as any).code = 'INVALID_REPO_NAME';
+        throw error;
+      }
+
       console.log(`pushToGitHub called with isPrivate=${isPrivate}`);
 
-      // Initialize Octokit with the auth token
       const octokit = new Octokit({ auth: githubToken });
 
-      // Check if the repository already exists before creating it
       let repo: RestEndpointMethodTypes['repos']['get']['response']['data'];
       let visibilityJustChanged = false;
+      let isNewRepo = false;
 
       try {
         const resp = await octokit.repos.get({ owner, repo: repoName });
         repo = resp.data;
         console.log('Repository already exists, using existing repo');
 
-        // Check if we need to update visibility of existing repo
         if (repo.private !== isPrivate) {
           console.log(
             `Updating repository visibility from ${repo.private ? 'private' : 'public'} to ${isPrivate ? 'private' : 'public'}`,
           );
 
           try {
-            // Update repository visibility using the update method
             const { data: updatedRepo } = await octokit.repos.update({
               owner,
               repo: repoName,
@@ -874,93 +877,157 @@ export class WorkbenchStore {
             repo = updatedRepo;
             visibilityJustChanged = true;
 
-            // Add a delay after changing visibility to allow GitHub to fully process the change
             console.log('Waiting for visibility change to propagate...');
-            await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 second delay
-          } catch (visibilityError) {
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+          } catch (visibilityError: any) {
             console.error('Failed to update repository visibility:', visibilityError);
 
-            // Continue with push even if visibility update fails
+            if (visibilityError.status === 403) {
+              const error = new Error('Permission denied. Your GitHub token may not have sufficient permissions to update repository visibility.');
+              (error as any).code = 'PERMISSION_DENIED';
+              throw error;
+            }
           }
         }
-      } catch (error) {
-        if (error instanceof Error && 'status' in error && error.status === 404) {
-          // Repository doesn't exist, so create a new one
+      } catch (error: any) {
+        if (error.code === 'PERMISSION_DENIED') {
+          throw error;
+        }
+
+        if (error.status === 404) {
           console.log(`Creating new repository with private=${isPrivate}`);
+          isNewRepo = true;
 
-          // Create new repository with specified privacy setting
-          const createRepoOptions = {
-            name: repoName,
-            private: isPrivate,
-            auto_init: true,
-          };
+          try {
+            const createRepoOptions = {
+              name: repoName,
+              private: isPrivate,
+              auto_init: true,
+            };
 
-          console.log('Create repo options:', createRepoOptions);
+            console.log('Create repo options:', createRepoOptions);
 
-          const { data: newRepo } = await octokit.repos.createForAuthenticatedUser(createRepoOptions);
+            const { data: newRepo } = await octokit.repos.createForAuthenticatedUser(createRepoOptions);
 
-          console.log('Repository created:', newRepo.html_url, 'Private:', newRepo.private);
-          repo = newRepo;
+            console.log('Repository created:', newRepo.html_url, 'Private:', newRepo.private);
+            repo = newRepo;
 
-          // Add a small delay after creating a repository to allow GitHub to fully initialize it
-          console.log('Waiting for repository to initialize...');
-          await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
+            console.log('Waiting for repository to initialize...');
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+          } catch (createError: any) {
+            console.error('Failed to create repository:', createError);
+
+            if (createError.status === 422) {
+              const errorMessage = createError.response?.data?.errors?.[0]?.message || createError.message;
+              if (errorMessage.includes('name already exists')) {
+                const error = new Error(`Repository "${repoName}" already exists. Please choose a different name.`);
+                (error as any).code = 'REPO_EXISTS';
+                throw error;
+              }
+              const error = new Error(`Invalid repository name. ${errorMessage}`);
+              (error as any).code = 'INVALID_REPO_NAME';
+              throw error;
+            } else if (createError.status === 403) {
+              const error = new Error('Permission denied. Your GitHub token may not have permission to create repositories.');
+              (error as any).code = 'PERMISSION_DENIED';
+              throw error;
+            } else if (createError.status === 401) {
+              const error = new Error('GitHub token is invalid or expired. Please reconnect your GitHub account.');
+              (error as any).code = 'AUTH_INVALID';
+              throw error;
+            }
+
+            throw createError;
+          }
+        } else if (error.status === 401) {
+          const err = new Error('GitHub token is invalid or expired. Please reconnect your GitHub account.');
+          (err as any).code = 'AUTH_INVALID';
+          throw err;
+        } else if (error.status === 403) {
+          const err = new Error('Permission denied. Your GitHub token may not have access to this repository.');
+          (err as any).code = 'PERMISSION_DENIED';
+          throw err;
         } else {
-          console.error('Cannot create repo:', error);
-          throw error; // Some other error occurred
+          console.error('Cannot access repo:', error);
+          throw error;
         }
       }
 
-      // Get all files
       const files = this.files.get();
 
       if (!files || Object.keys(files).length === 0) {
-        throw new Error('No files found to push');
+        const error = new Error('No files found in the workspace. Please add some files before pushing.');
+        (error as any).code = 'NO_FILES';
+        throw error;
       }
 
-      // Function to push files with retry logic
       const pushFilesToRepo = async (attempt = 1): Promise<string> => {
-        const maxAttempts = 3;
+        const maxAttempts = isNewRepo ? 4 : 3;
 
         try {
           console.log(`Pushing files to repository (attempt ${attempt}/${maxAttempts})...`);
 
-          // Create blobs for each file
           const blobs = await Promise.all(
             Object.entries(files).map(async ([filePath, dirent]) => {
               if (dirent?.type === 'file' && dirent.content) {
-                const { data: blob } = await octokit.git.createBlob({
-                  owner: repo.owner.login,
-                  repo: repo.name,
-                  content: Buffer.from(dirent.content).toString('base64'),
-                  encoding: 'base64',
-                });
-                return { path: extractRelativePath(filePath), sha: blob.sha };
+                try {
+                  const { data: blob } = await octokit.git.createBlob({
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    content: Buffer.from(dirent.content).toString('base64'),
+                    encoding: 'base64',
+                  });
+                  return { path: extractRelativePath(filePath), sha: blob.sha };
+                } catch (blobError) {
+                  console.error(`Failed to create blob for ${filePath}:`, blobError);
+                  return null;
+                }
               }
 
               return null;
             }),
           );
 
-          const validBlobs = blobs.filter(Boolean); // Filter out any undefined blobs
+          const validBlobs = blobs.filter(Boolean);
 
           if (validBlobs.length === 0) {
-            throw new Error('No valid files to push');
+            const error = new Error('No valid files to push. All files may be binary or empty.');
+            (error as any).code = 'NO_VALID_FILES';
+            throw error;
           }
 
-          // Refresh repository reference to ensure we have the latest data
           const repoRefresh = await octokit.repos.get({ owner, repo: repoName });
           repo = repoRefresh.data;
 
-          // Get the latest commit SHA (assuming main branch, update dynamically if needed)
-          const { data: ref } = await octokit.git.getRef({
-            owner: repo.owner.login,
-            repo: repo.name,
-            ref: `heads/${repo.default_branch || 'main'}`, // Handle dynamic branch
-          });
-          const latestCommitSha = ref.object.sha;
+          const defaultBranch = repo.default_branch || 'main';
+          let latestCommitSha: string;
 
-          // Create a new tree
+          try {
+            const { data: ref } = await octokit.git.getRef({
+              owner: repo.owner.login,
+              repo: repo.name,
+              ref: `heads/${defaultBranch}`,
+            });
+            latestCommitSha = ref.object.sha;
+          } catch (refError: any) {
+            console.error(`Error getting ref for branch ${defaultBranch}:`, refError);
+
+            if (refError.status === 404) {
+              if (isNewRepo && attempt < maxAttempts) {
+                const delayMs = 3000;
+                console.log(`Branch not ready yet, waiting ${delayMs}ms before retry...`);
+                await new Promise((resolve) => setTimeout(resolve, delayMs));
+                return pushFilesToRepo(attempt + 1);
+              }
+
+              const error = new Error(`Branch "${defaultBranch}" not found. The repository may still be initializing. Please try again in a moment.`);
+              (error as any).code = 'BRANCH_NOT_FOUND';
+              throw error;
+            }
+
+            throw refError;
+          }
+
           const { data: newTree } = await octokit.git.createTree({
             owner: repo.owner.login,
             repo: repo.name,
@@ -973,7 +1040,6 @@ export class WorkbenchStore {
             })),
           });
 
-          // Create a new commit
           const { data: newCommit } = await octokit.git.createCommit({
             owner: repo.owner.login,
             repo: repo.name,
@@ -982,41 +1048,70 @@ export class WorkbenchStore {
             parents: [latestCommitSha],
           });
 
-          // Update the reference
           await octokit.git.updateRef({
             owner: repo.owner.login,
             repo: repo.name,
-            ref: `heads/${repo.default_branch || 'main'}`, // Handle dynamic branch
+            ref: `heads/${defaultBranch}`,
             sha: newCommit.sha,
           });
 
           console.log('Files successfully pushed to repository');
 
           return repo.html_url;
-        } catch (error) {
+        } catch (error: any) {
           console.error(`Error during push attempt ${attempt}:`, error);
 
-          // If we've just changed visibility and this is not our last attempt, wait and retry
-          if ((visibilityJustChanged || attempt === 1) && attempt < maxAttempts) {
-            const delayMs = attempt * 2000; // Increasing delay with each attempt
+          if (error.code === 'NO_VALID_FILES' || error.code === 'BRANCH_NOT_FOUND') {
+            throw error;
+          }
+
+          if ((visibilityJustChanged || isNewRepo || attempt === 1) && attempt < maxAttempts) {
+            const delayMs = attempt * 2000;
             console.log(`Waiting ${delayMs}ms before retry...`);
             await new Promise((resolve) => setTimeout(resolve, delayMs));
 
             return pushFilesToRepo(attempt + 1);
           }
 
-          throw error; // Rethrow if we're out of attempts
+          if (error.status === 409) {
+            const err = new Error('Conflict detected. The repository may have been updated by another process. Please try again.');
+            (err as any).code = 'CONFLICT';
+            throw err;
+          } else if (error.status === 422) {
+            const err = new Error('Invalid data sent to GitHub. Please check your files and try again.');
+            (err as any).code = 'INVALID_DATA';
+            throw err;
+          }
+
+          throw error;
         }
       };
 
-      // Execute the push function with retry logic
       const repoUrl = await pushFilesToRepo();
 
-      // Return the repository URL
       return repoUrl;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error pushing to GitHub:', error);
-      throw error; // Rethrow the error for further handling
+
+      if (error.code) {
+        throw error;
+      }
+
+      if (error.status === 401) {
+        const err = new Error('GitHub authentication failed. Please reconnect your GitHub account.');
+        (err as any).code = 'AUTH_INVALID';
+        throw err;
+      } else if (error.status === 403) {
+        const err = new Error('Permission denied. Please check your GitHub token permissions.');
+        (err as any).code = 'PERMISSION_DENIED';
+        throw err;
+      } else if (error.status === 404) {
+        const err = new Error('Repository not found. Please check the repository name and try again.');
+        (err as any).code = 'REPO_NOT_FOUND';
+        throw err;
+      }
+
+      throw error;
     }
   }
 }
