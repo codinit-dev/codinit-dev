@@ -146,28 +146,34 @@ export class ExampleShell {
     let buffer = '';
     const expoUrlRegex = /(exp:\/\/[^\s]+)/;
 
-    while (true) {
-      const { value, done } = await reader.read();
+    try {
+      while (true) {
+        const { value, done } = await reader.read();
 
-      if (done) {
-        break;
+        if (done) {
+          break;
+        }
+
+        buffer += value || '';
+
+        const expoUrlMatch = buffer.match(expoUrlRegex);
+
+        if (expoUrlMatch) {
+          const cleanUrl = expoUrlMatch[1]
+            .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
+            .replace(/[^\x20-\x7E]+$/g, '');
+          expoUrlAtom.set(cleanUrl);
+          buffer = buffer.slice(buffer.indexOf(expoUrlMatch[1]) + expoUrlMatch[1].length);
+        }
+
+        if (buffer.length > 2048) {
+          buffer = buffer.slice(-2048);
+        }
       }
-
-      buffer += value || '';
-
-      const expoUrlMatch = buffer.match(expoUrlRegex);
-
-      if (expoUrlMatch) {
-        const cleanUrl = expoUrlMatch[1]
-          .replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '')
-          .replace(/[^\x20-\x7E]+$/g, '');
-        expoUrlAtom.set(cleanUrl);
-        buffer = buffer.slice(buffer.indexOf(expoUrlMatch[1]) + expoUrlMatch[1].length);
-      }
-
-      if (buffer.length > 2048) {
-        buffer = buffer.slice(-2048);
-      }
+    } catch (error) {
+      console.error('Error in Expo URL watcher:', error);
+    } finally {
+      reader.releaseLock();
     }
   }
 
