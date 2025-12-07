@@ -1,5 +1,3 @@
-import type { IconType } from 'react-icons';
-
 export type ProviderName =
   | 'AmazonBedrock'
   | 'Cohere'
@@ -19,7 +17,7 @@ export type ServiceStatus = {
   status: 'operational' | 'degraded' | 'down';
   lastChecked: string;
   statusUrl?: string;
-  icon?: IconType;
+  icon?: string;
   message?: string;
   responseTime?: number;
   incidents?: string[];
