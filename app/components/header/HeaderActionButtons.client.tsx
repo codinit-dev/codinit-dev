@@ -148,7 +148,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
         <div className="w-[1px] bg-codinit-elements-borderColor" />
         <IconButton
           title="View on GitHub"
-          onClick={() => window.open('https://github.com/codinit-app/codinit', '_blank')}
+          onClick={() => window.open('https://github.com/codinit-dev/codinit', '_blank')}
         >
           <img
             className="w-5 h-5"

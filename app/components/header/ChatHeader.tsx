@@ -26,7 +26,7 @@ export function ChatHeader() {
         <ClientOnly>{() => <ChatDescription />}</ClientOnly>
       </div>
       <button
-        onClick={() => window.open('https://github.com/Gerome-Elassaad/codinit-app/issues/new/choose', '_blank')}
+        onClick={() => window.open('https://github.com/codinit-dev/codinit-dev/issues/new/choose', '_blank')}
         className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 relative gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent hover:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary hover:text-codinit-ds-brandHighlight text-sm px-2 transition-colors"
         type="button"
         title="Report a bug"
