@@ -18,7 +18,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Anthropic',
     displayName: 'Anthropic (Claude)',
-    icon: 'i-ph:brain',
+    icon: '/thirdparty/logos/anthropic.svg',
     apiKeyPlaceholder: 'sk-ant-...',
     getApiKeyUrl: 'https://console.anthropic.com/',
     category: 'cloud',
@@ -26,7 +26,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'OpenAI',
     displayName: 'OpenAI',
-    icon: 'i-ph:circles-four',
+    icon: '/thirdparty/logos/openai.svg',
     apiKeyPlaceholder: 'sk-...',
     getApiKeyUrl: 'https://platform.openai.com/api-keys',
     category: 'cloud',
@@ -34,7 +34,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Google',
     displayName: 'Google (Gemini)',
-    icon: 'i-ph:google-logo',
+    icon: '/thirdparty/logos/gemini.svg',
     apiKeyPlaceholder: 'AI...',
     getApiKeyUrl: 'https://aistudio.google.com/app/apikey',
     category: 'cloud',
@@ -42,7 +42,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Groq',
     displayName: 'Groq',
-    icon: 'i-ph:lightning',
+    icon: '/thirdparty/logos/groq.svg',
     apiKeyPlaceholder: 'gsk_...',
     getApiKeyUrl: 'https://console.groq.com/keys',
     category: 'cloud',
@@ -50,7 +50,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'xAI',
     displayName: 'xAI (Grok)',
-    icon: 'i-ph:x-logo',
+    icon: '/thirdparty/logos/xai.svg',
     apiKeyPlaceholder: 'xai-...',
     getApiKeyUrl: 'https://console.x.ai/',
     category: 'cloud',
@@ -58,7 +58,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Deepseek',
     displayName: 'Deepseek',
-    icon: 'i-ph:eye',
+    icon: '/thirdparty/logos/deepseek.svg',
     apiKeyPlaceholder: 'sk-...',
     getApiKeyUrl: 'https://platform.deepseek.com/api_keys',
     category: 'cloud',
@@ -66,7 +66,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Mistral',
     displayName: 'Mistral AI',
-    icon: 'i-ph:wind',
+    icon: '/thirdparty/logos/mistral.svg',
     apiKeyPlaceholder: '...',
     getApiKeyUrl: 'https://console.mistral.ai/api-keys',
     category: 'cloud',
@@ -74,7 +74,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Moonshot',
     displayName: 'Moonshot AI',
-    icon: 'i-ph:moon-stars',
+    icon: '/thirdparty/logos/moonshot.svg',
     apiKeyPlaceholder: 'sk-...',
     getApiKeyUrl: 'https://platform.moonshot.cn/console/api-keys',
     category: 'cloud',
@@ -82,7 +82,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'OpenRouter',
     displayName: 'OpenRouter',
-    icon: 'i-ph:arrows-clockwise',
+    icon: '/thirdparty/logos/openrouter.svg',
     apiKeyPlaceholder: 'sk-or-...',
     getApiKeyUrl: 'https://openrouter.ai/keys',
     category: 'cloud',
@@ -90,7 +90,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Perplexity',
     displayName: 'Perplexity',
-    icon: 'i-ph:magnifying-glass',
+    icon: '/thirdparty/logos/perplexity.svg',
     apiKeyPlaceholder: 'pplx-...',
     getApiKeyUrl: 'https://www.perplexity.ai/settings/api',
     category: 'cloud',
@@ -98,7 +98,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Together',
     displayName: 'Together AI',
-    icon: 'i-ph:users-three',
+    icon: '/thirdparty/logos/togetherai.svg',
     apiKeyPlaceholder: '...',
     getApiKeyUrl: 'https://api.together.xyz/settings/api-keys',
     category: 'cloud',
@@ -106,7 +106,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'HuggingFace',
     displayName: 'Hugging Face',
-    icon: 'i-ph:smiley',
+    icon: '/thirdparty/logos/huggingface.svg',
     apiKeyPlaceholder: 'hf_...',
     getApiKeyUrl: 'https://huggingface.co/settings/tokens',
     category: 'cloud',
@@ -114,7 +114,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Hyperbolic',
     displayName: 'Hyperbolic',
-    icon: 'i-ph:spiral',
+    icon: '/thirdparty/logos/hyperbolic.svg',
     apiKeyPlaceholder: '...',
     getApiKeyUrl: 'https://app.hyperbolic.xyz/settings',
     category: 'cloud',
@@ -122,7 +122,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'AmazonBedrock',
     displayName: 'Amazon Bedrock',
-    icon: 'i-ph:amazon-logo',
+    icon: '/thirdparty/logos/bedrock.svg',
     apiKeyPlaceholder: 'Access Key ID',
     getApiKeyUrl: 'https://console.aws.amazon.com/iam/home#/security_credentials',
     category: 'cloud',
@@ -130,7 +130,7 @@ const PROVIDERS: ProviderConfig[] = [
   {
     name: 'Github',
     displayName: 'GitHub Models',
-    icon: 'i-ph:github-logo',
+    icon: '/thirdparty/logos/github.svg',
     apiKeyPlaceholder: 'ghp_...',
     getApiKeyUrl: 'https://github.com/settings/tokens',
     category: 'cloud',
@@ -228,7 +228,7 @@ export default function ApiKeysTab() {
                         'transition-all duration-300',
                       )}
                     >
-                      <div className={classNames(provider.icon, 'w-6 h-6 text-blue-600 dark:text-blue-400')} />
+                      <img src={provider.icon} alt={provider.displayName} className="w-6 h-6" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
