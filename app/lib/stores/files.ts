@@ -18,7 +18,6 @@ import {
   getLockedFoldersForChat,
   isPathInLockedFolder,
   migrateLegacyLocks,
-  clearCache,
 } from '~/lib/persistence/lockedFiles';
 import { getCurrentChatId } from '~/utils/fileLocks';
 
@@ -107,8 +106,8 @@ export class FilesStore {
     if (typeof window !== 'undefined') {
       let lastChatId = getCurrentChatId();
 
-      // Use MutationObserver to detect URL changes (for SPA navigation)
-      const observer = new MutationObserver(() => {
+      // Listen to navigation events instead of observing entire DOM
+      const handleNavigation = () => {
         const currentChatId = getCurrentChatId();
 
         if (currentChatId !== lastChatId) {
@@ -116,9 +115,10 @@ export class FilesStore {
           lastChatId = currentChatId;
           this.#loadLockedFiles(currentChatId);
         }
-      });
+      };
 
-      observer.observe(document, { subtree: true, childList: true });
+      window.addEventListener('popstate', handleNavigation);
+      window.addEventListener('hashchange', handleNavigation);
     }
 
     this.#init();
@@ -598,7 +598,7 @@ export class FilesStore {
     // Set up file watcher
     webcontainer.internal.watchPaths(
       { include: [`${WORK_DIR}/**`], exclude: ['**/node_modules', '.git'], includeContent: true },
-      bufferWatchEvents(100, this.#processEventBuffer.bind(this)),
+      bufferWatchEvents(300, this.#processEventBuffer.bind(this)),
     );
 
     // Get the current chat ID
@@ -617,18 +617,6 @@ export class FilesStore {
     setTimeout(() => {
       this.#loadLockedFiles(currentChatId);
     }, 2000);
-
-    /**
-     * Set up a less frequent periodic check to ensure locks remain applied.
-     * This is now less critical since we have the storage event listener.
-     */
-    setInterval(() => {
-      // Clear the cache to force a fresh read from localStorage
-      clearCache();
-
-      const latestChatId = getCurrentChatId();
-      this.#loadLockedFiles(latestChatId);
-    }, 30000); // Reduced from 10s to 30s
   }
 
   /**
