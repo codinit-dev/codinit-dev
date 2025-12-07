@@ -1,8 +1,8 @@
 import { useStore } from '@nanostores/react';
 import { motion } from 'framer-motion';
 import { computed } from 'nanostores';
-import { memo } from 'react';
-import { createHighlighter, type BundledLanguage, type BundledTheme, type HighlighterGeneric } from 'shiki';
+import { memo, useEffect, useState } from 'react';
+import type { BundledLanguage, BundledTheme, HighlighterGeneric } from 'shiki';
 import type { ActionState } from '~/lib/runtime/action-runner';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
@@ -14,12 +14,24 @@ const highlighterOptions = {
   themes: ['light-plus', 'dark-plus'],
 };
 
-const shellHighlighter: HighlighterGeneric<BundledLanguage, BundledTheme> =
-  import.meta.hot?.data.shellHighlighter ?? (await createHighlighter(highlighterOptions));
+let shellHighlighterPromise: Promise<HighlighterGeneric<BundledLanguage, BundledTheme>> | null = null;
 
-if (import.meta.hot) {
-  import.meta.hot.data.shellHighlighter = shellHighlighter;
-}
+const getShellHighlighter = async () => {
+  if (!shellHighlighterPromise) {
+    shellHighlighterPromise = (async () => {
+      const { createHighlighter } = await import('shiki');
+      return import.meta.hot?.data.shellHighlighter ?? (await createHighlighter(highlighterOptions));
+    })();
+
+    if (import.meta.hot) {
+      shellHighlighterPromise.then((highlighter) => {
+        import.meta.hot!.data.shellHighlighter = highlighter;
+      });
+    }
+  }
+
+  return shellHighlighterPromise;
+};
 
 export const ProgressIndicator = memo(() => {
   const currentArtifactMessageId = useStore(workbenchStore.currentArtifactMessageId);
@@ -54,17 +66,20 @@ interface ShellCodeBlockProps {
 }
 
 function ShellCodeBlock({ classsName, code }: ShellCodeBlockProps) {
-  return (
-    <div
-      className={classNames('text-xs', classsName)}
-      dangerouslySetInnerHTML={{
-        __html: shellHighlighter.codeToHtml(code, {
+  const [html, setHtml] = useState<string>('');
+
+  useEffect(() => {
+    getShellHighlighter().then((highlighter) => {
+      setHtml(
+        highlighter.codeToHtml(code, {
           lang: 'shell',
           theme: 'dark-plus',
         }),
-      }}
-    ></div>
-  );
+      );
+    });
+  }, [code]);
+
+  return <div className={classNames('text-xs', classsName)} dangerouslySetInnerHTML={{ __html: html }}></div>;
 }
 
 interface ActionListProps {
