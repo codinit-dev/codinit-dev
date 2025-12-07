@@ -4,7 +4,6 @@ import { workbenchStore } from '~/lib/stores/workbench';
 import type { FileMap } from '~/lib/stores/files';
 import type { EditorDocument } from '~/components/editor/codemirror/CodeMirrorEditor';
 import { diffLines, type Change } from 'diff';
-import { getHighlighter } from 'shiki';
 import '~/styles/diff-view.css';
 import { diffFiles, extractRelativePath } from '~/utils/diff';
 import { ActionRunner } from '~/lib/runtime/action-runner';
@@ -62,6 +61,7 @@ const FullscreenOverlay = memo(({ isFullscreen, children }: { isFullscreen: bool
 });
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+const MAX_LINES_FOR_DIFF = 1000; // Skip detailed diff for files >1000 lines
 const BINARY_REGEX = /[\x00-\x08\x0E-\x1F]/;
 
 const isBinaryFile = (content: string) => {
@@ -99,6 +99,21 @@ const processChanges = (beforeCode: string, afterCode: string) => {
         afterLines,
         hasChanges: false,
         lineChanges: { before: new Set(), after: new Set() },
+        unifiedBlocks: [],
+        isBinary: false,
+      };
+    }
+
+    // Skip detailed diff for very large files
+    if (beforeLines.length > MAX_LINES_FOR_DIFF || afterLines.length > MAX_LINES_FOR_DIFF) {
+      return {
+        beforeLines,
+        afterLines,
+        hasChanges: true,
+        lineChanges: {
+          before: new Set(Array.from({ length: beforeLines.length }, (_, i) => i)),
+          after: new Set(Array.from({ length: afterLines.length }, (_, i) => i)),
+        },
         unifiedBlocks: [],
         isBinary: false,
       };
@@ -554,28 +569,30 @@ const InlineDiffComparison = memo(({ beforeCode, afterCode, filename, language }
   const { unifiedBlocks, hasChanges, isBinary, error } = useProcessChanges(beforeCode, afterCode);
 
   useEffect(() => {
-    getHighlighter({
-      themes: ['github-dark', 'github-light'],
-      langs: [
-        'typescript',
-        'javascript',
-        'json',
-        'html',
-        'css',
-        'jsx',
-        'tsx',
-        'python',
-        'php',
-        'java',
-        'c',
-        'cpp',
-        'csharp',
-        'go',
-        'ruby',
-        'rust',
-        'plaintext',
-      ],
-    }).then(setHighlighter);
+    import('shiki').then(({ getHighlighter }) => {
+      getHighlighter({
+        themes: ['github-dark', 'github-light'],
+        langs: [
+          'typescript',
+          'javascript',
+          'json',
+          'html',
+          'css',
+          'jsx',
+          'tsx',
+          'python',
+          'php',
+          'java',
+          'c',
+          'cpp',
+          'csharp',
+          'go',
+          'ruby',
+          'rust',
+          'plaintext',
+        ],
+      }).then(setHighlighter);
+    });
   }, []);
 
   if (isBinary || error) {
