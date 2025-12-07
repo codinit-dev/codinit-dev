@@ -7,15 +7,17 @@ import { getCurrentChatId } from '~/utils/fileLocks';
 
 const logger = createScopedLogger('FileAutoSave');
 
-const AUTO_SAVE_INTERVAL = 10000;
+const AUTO_SAVE_INTERVAL = 30000;
 const LOCALSTORAGE_KEY_PREFIX = 'codinit-autosave-files';
 const LOCALSTORAGE_BACKUP_KEY = 'codinit-files-backup';
+const MAX_STRINGIFY_SIZE = 5 * 1024 * 1024;
 
 let autoSaveTimer: NodeJS.Timeout | null = null;
-let lastSavedFiles: FileMap | null = null;
+let lastSavedHash: string | null = null;
 
 function getFileHash(files: FileMap): string {
-  return JSON.stringify(Object.keys(files).sort());
+  const keys = Object.keys(files);
+  return `${keys.length}-${keys.join('|')}`;
 }
 
 export function saveFilesToLocalStorage(chatId: string, files: FileMap): void {
@@ -25,6 +27,13 @@ export function saveFilesToLocalStorage(chatId: string, files: FileMap): void {
       files,
       timestamp: Date.now(),
     };
+
+    const estimatedSize = JSON.stringify(data).length;
+
+    if (estimatedSize > MAX_STRINGIFY_SIZE) {
+      logger.warn(`Data size (${estimatedSize} bytes) exceeds maximum, skipping save`);
+      return;
+    }
 
     localStorage.setItem(`${LOCALSTORAGE_KEY_PREFIX}-${chatId}`, JSON.stringify(data));
 
@@ -195,7 +204,7 @@ export function startAutoSave(getFiles: () => FileMap, getMessageId: () => strin
 
   logger.info(`Starting auto-save with ${AUTO_SAVE_INTERVAL}ms interval`);
 
-  autoSaveTimer = setInterval(async () => {
+  const performSave = async () => {
     const chatId = getCurrentChatId();
 
     if (!chatId) {
@@ -204,18 +213,31 @@ export function startAutoSave(getFiles: () => FileMap, getMessageId: () => strin
 
     const files = getFiles();
     const currentHash = getFileHash(files);
-    const lastHash = lastSavedFiles ? getFileHash(lastSavedFiles) : null;
 
-    if (currentHash === lastHash) {
+    if (currentHash === lastSavedHash) {
       return;
     }
 
     const messageId = getMessageId();
 
-    await saveSnapshot(chatId, messageId, files);
+    const saveOperation = async () => {
+      await saveSnapshot(chatId, messageId, files);
+      lastSavedHash = currentHash;
+    };
 
-    lastSavedFiles = files;
-  }, AUTO_SAVE_INTERVAL);
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(
+        () => {
+          saveOperation();
+        },
+        { timeout: 5000 },
+      );
+    } else {
+      await saveOperation();
+    }
+  };
+
+  autoSaveTimer = setInterval(performSave, AUTO_SAVE_INTERVAL);
 
   return () => {
     if (autoSaveTimer) {
