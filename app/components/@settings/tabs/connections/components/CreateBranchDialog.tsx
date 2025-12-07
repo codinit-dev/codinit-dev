@@ -2,7 +2,6 @@ import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { classNames } from '~/utils/classNames';
 import type { GitHubRepoInfo } from '~/components/@settings/tabs/connections/types/GitHub';
-import { GitBranch } from '@phosphor-icons/react';
 
 interface GitHubBranch {
   name: string;
@@ -104,7 +103,7 @@ export function CreateBranchDialog({ isOpen, onClose, onConfirm, repository, bra
                 <h4 className="text-sm font-medium text-codinit-elements-textSecondary mb-2">Branch Overview</h4>
                 <ul className="space-y-2 text-sm text-codinit-elements-textSecondary">
                   <li className="flex items-center gap-2">
-                    <GitBranch className="text-lg" />
+                    <div className="i-ph:git-branch text-lg" />
                     Repository: {repository.name}
                   </li>
                   {branchName && (
