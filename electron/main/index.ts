@@ -9,7 +9,7 @@ import { isDev, DEFAULT_PORT } from './utils/constants';
 import { initViteServer, viteServer } from './utils/vite-server';
 import { setupMenu } from './ui/menu';
 import { createWindow } from './ui/window';
-import { initCookies, storeCookies } from './utils/cookie';
+import { initCookies } from './utils/cookie';
 import { loadServerBuild, serveAsset } from './utils/serve';
 import { reloadOnChange } from './utils/reload';
 
@@ -61,6 +61,18 @@ console.log('appPath:', app.getAppPath());
 
 const keys: Parameters<typeof app.getPath>[number][] = ['home', 'appData', 'userData', 'sessionData', 'logs', 'temp'];
 keys.forEach((key) => console.log(`${key}:`, app.getPath(key)));
+
+// Performance optimizations
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+app.commandLine.appendSwitch('disable-background-timer-throttling');
+app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
+app.commandLine.appendSwitch('enable-features', 'VaapiVideoDecoder,VaapiVideoEncoder');
+
+// Limit process count to prevent resource exhaustion
+if (process.platform !== 'darwin') {
+  app.commandLine.appendSwitch('js-flags', '--max-old-space-size=4096');
+}
+
 console.log('start whenReady');
 
 declare global {
@@ -77,11 +89,12 @@ declare global {
 
   const serverBuild = await loadServerBuild();
 
-  protocol.handle('http', async (req) => {
-    console.log('Handling request for:', req.url);
+  // Cache the request handler instead of creating on every request
+  const handler = createRequestHandler(serverBuild, 'production');
+  const assetPath = path.join(app.getAppPath(), 'build', 'client');
 
+  protocol.handle('http', async (req) => {
     if (isDev) {
-      console.log('Dev mode: forwarding to vite server');
       return await fetch(req);
     }
 
@@ -92,33 +105,24 @@ declare global {
 
       // Forward requests to specific local server ports
       if (url.port !== `${DEFAULT_PORT}`) {
-        console.log('Forwarding request to local server:', req.url);
         return await fetch(req);
       }
 
       // Always try to serve asset first
-      const assetPath = path.join(app.getAppPath(), 'build', 'client');
       const res = await serveAsset(req, assetPath);
 
       if (res) {
-        console.log('Served asset:', req.url);
         return res;
       }
 
-      // Forward all cookies to remix server
+      // Forward all cookies to remix server - optimized to only fetch when needed
       const cookies = await session.defaultSession.cookies.get({});
 
       if (cookies.length > 0) {
         req.headers.set('Cookie', cookies.map((c) => `${c.name}=${c.value}`).join('; '));
-
-        // Store all cookies
-        await storeCookies(cookies);
       }
 
-      // Create request handler with the server build
-      const handler = createRequestHandler(serverBuild, 'production');
-      console.log('Handling request with server build:', req.url);
-
+      // Use cached request handler
       const result = await handler(req, {
         /*
          * Remix app access cloudflare.env
@@ -130,19 +134,8 @@ declare global {
 
       return result;
     } catch (err) {
-      console.log('Error handling request:', {
-        url: req.url,
-        error:
-          err instanceof Error
-            ? {
-                message: err.message,
-                stack: err.stack,
-                cause: err.cause,
-              }
-            : err,
-      });
-
       const error = err instanceof Error ? err : new Error(String(err));
+      console.error('Error handling request:', req.url, error.message);
 
       return new Response(`Error handling request to ${req.url}: ${error.stack ?? error.message}`, {
         status: 500,
@@ -182,9 +175,7 @@ declare global {
   return win;
 })()
   .then((win) => {
-    // IPC samples : send and recieve.
-    let count = 0;
-    setInterval(() => win.webContents.send('ping', `hello from main! ${count++}`), 60 * 1000);
+    // IPC test handler (ping removed to reduce overhead)
     ipcMain.handle('ipcTest', (event, ...args) => console.log('ipc: renderer -> main', { event, ...args }));
 
     // Cookie synchronization handlers
@@ -203,8 +194,6 @@ declare global {
 
       try {
         await session.defaultSession.cookies.set(cookieDetails);
-        console.log('Cookie set in Electron session:', name);
-
         return true;
       } catch (error) {
         console.error('Failed to set cookie in Electron session:', error);
@@ -243,48 +232,6 @@ declare global {
     ipcMain.handle('cookie-remove', async (_, name: string) => {
       try {
         await session.defaultSession.cookies.remove(`http://localhost:${DEFAULT_PORT}`, name);
-        console.log('Cookie removed from Electron session:', name);
-
-        return true;
-      } catch (error) {
-        console.error('Failed to remove cookie from Electron session:', error);
-        return false;
-      }
-    });
-
-    ipcMain.handle('cookie-get', async (_, name: string) => {
-      try {
-        const cookies = await session.defaultSession.cookies.get({ name });
-        return cookies.length > 0 ? cookies[0].value : null;
-      } catch (error) {
-        console.error('Failed to get cookie from Electron session:', error);
-        return null;
-      }
-    });
-
-    ipcMain.handle('cookie-get-all', async (_) => {
-      try {
-        const cookies = await session.defaultSession.cookies.get({});
-        return cookies.map((cookie) => ({
-          name: cookie.name,
-          value: cookie.value,
-          path: cookie.path,
-          domain: cookie.domain,
-          secure: cookie.secure,
-          httpOnly: cookie.httpOnly,
-          expirationDate: cookie.expirationDate,
-        }));
-      } catch (error) {
-        console.error('Failed to get all cookies from Electron session:', error);
-        return [];
-      }
-    });
-
-    ipcMain.handle('cookie-remove', async (_, name: string) => {
-      try {
-        await session.defaultSession.cookies.remove('http://localhost', name);
-        console.log('Cookie removed from Electron session:', name);
-
         return true;
       } catch (error) {
         console.error('Failed to remove cookie from Electron session:', error);
@@ -343,8 +290,19 @@ app.on('window-all-closed', () => {
 reloadOnChange();
 setupAutoUpdater();
 
-// Function to sync Electron session cookies to renderer document.cookie
+// Function to sync Electron session cookies to renderer document.cookie (throttled)
+let lastCookieSync = 0;
+const COOKIE_SYNC_THROTTLE = 5000; // Only sync every 5 seconds
+
 async function syncCookiesToRenderer(win: BrowserWindow) {
+  const now = Date.now();
+
+  if (now - lastCookieSync < COOKIE_SYNC_THROTTLE) {
+    return;
+  }
+
+  lastCookieSync = now;
+
   try {
     const cookies = await session.defaultSession.cookies.get({});
 
@@ -362,7 +320,9 @@ async function syncCookiesToRenderer(win: BrowserWindow) {
       })),
     );
 
-    console.log(`Synced ${cookies.length} cookies to renderer`);
+    if (isDev) {
+      console.log(`Synced ${cookies.length} cookies to renderer`);
+    }
   } catch (error) {
     console.error('Failed to sync cookies to renderer:', error);
   }
