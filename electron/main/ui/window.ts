@@ -20,6 +20,10 @@ export function createWindow(rendererURL: string) {
     visualEffectState: 'active',
     webPreferences: {
       preload: path.join(app.getAppPath(), 'build', 'electron', 'preload', 'index.cjs'),
+      nodeIntegration: false,
+      contextIsolation: true,
+      backgroundThrottling: false,
+      offscreen: false,
     },
   });
 
@@ -41,9 +45,17 @@ export function createWindow(rendererURL: string) {
     win.webContents.openDevTools();
   }
 
+  // Debounce window bounds saving to prevent excessive disk writes
+  let boundsTimeout: NodeJS.Timeout | null = null;
   const boundsListener = () => {
-    const bounds = win.getBounds();
-    store.set('bounds', bounds);
+    if (boundsTimeout) {
+      clearTimeout(boundsTimeout);
+    }
+    boundsTimeout = setTimeout(() => {
+      const bounds = win.getBounds();
+      store.set('bounds', bounds);
+      boundsTimeout = null;
+    }, 500);
   };
   win.on('moved', boundsListener);
   win.on('resized', boundsListener);
