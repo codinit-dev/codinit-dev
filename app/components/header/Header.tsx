@@ -32,12 +32,21 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => window.open('https://github.com/Gerome-Elassaad/codinit-app', '_blank')}
+            className="flex items-center justify-center font-medium shrink-0 rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1.5 h-9 px-2.5 bg-transparent hover:bg-white/5 dark:hover:bg-white/10 text-sm border border-white/10 dark:border-white/20 transition-colors"
+            type="button"
+            title="Star on GitHub"
+          >
+            <div className="i-lucide:star text-xl text-yellow-400" />
+            <span className="text-sm text-gray-700 dark:text-gray-200">Star</span>
+          </button>
+          <button
             onClick={() => window.open('https://github.com/Gerome-Elassaad/codinit-app/issues/new/choose', '_blank')}
-            className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent [&:hover:where(:not(:disabled))]:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary text-sm px-2"
+            className="flex items-center justify-center font-medium shrink-0 rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed h-9 w-9 bg-transparent hover:bg-white/5 dark:hover:bg-white/10 border border-white/10 dark:border-white/20 transition-colors"
             type="button"
             title="Report a bug"
           >
-            <div className="i-lucide:bug text-lg" />
+            <div className="i-lucide:bug text-xl text-red-500" />
           </button>
           <SettingsButton onClick={handleSettingsClick} />
         </div>

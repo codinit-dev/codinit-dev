@@ -12,7 +12,7 @@ export const SettingsButton = memo(({ onClick }: SettingsButtonProps) => {
       size="xl"
       title="Settings"
       data-testid="settings-button"
-      className="text-[#666] hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive/10 transition-colors"
+      className="h-9 w-9 text-gray-600 dark:text-gray-400 hover:text-accent-500 dark:hover:text-accent-400 hover:bg-white/5 dark:hover:bg-white/10 transition-colors border border-white/10 dark:border-white/20"
     />
   );
 });
