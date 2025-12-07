@@ -7,7 +7,6 @@ import { tabConfigurationStore } from '~/lib/stores/settings';
 import { TAB_LABELS } from '~/components/@settings/core/constants';
 import type { TabType } from '~/components/@settings/core/types';
 import { toast } from 'react-toastify';
-import { TbLayoutGrid } from 'react-icons/tb';
 import { useSettingsStore } from '~/lib/stores/settings';
 
 // Define tab icons mapping
@@ -155,7 +154,7 @@ export const TabManagement = () => {
                 'text-blue-500',
               )}
             >
-              <TbLayoutGrid className="w-5 h-5" />
+              <div className="i-ph:layout w-5 h-5" />
             </div>
             <div>
               <h4 className="text-md font-medium text-codinit-elements-textPrimary">Tab Management</h4>
