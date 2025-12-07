@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { bundledLanguages, codeToHtml, isSpecialLang, type BundledLanguage, type SpecialLanguage } from 'shiki';
+import type { BundledLanguage, SpecialLanguage } from 'shiki';
 import { classNames } from '~/utils/classNames';
 import { createScopedLogger } from '~/utils/logger';
 
@@ -35,16 +35,17 @@ export const CodeBlock = memo(
     };
 
     useEffect(() => {
-      let effectiveLanguage = language;
-
-      if (language && !isSpecialLang(language) && !(language in bundledLanguages)) {
-        logger.warn(`Unsupported language '${language}', falling back to plaintext`);
-        effectiveLanguage = 'plaintext';
-      }
-
-      logger.trace(`Language = ${effectiveLanguage}`);
-
       const processCode = async () => {
+        const { bundledLanguages, codeToHtml, isSpecialLang } = await import('shiki');
+
+        let effectiveLanguage = language;
+
+        if (language && !isSpecialLang(language) && !(language in bundledLanguages)) {
+          logger.warn(`Unsupported language '${language}', falling back to plaintext`);
+          effectiveLanguage = 'plaintext';
+        }
+
+        logger.trace(`Language = ${effectiveLanguage}`);
         setHTML(await codeToHtml(code, { lang: effectiveLanguage, theme }));
       };
 
