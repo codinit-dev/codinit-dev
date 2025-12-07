@@ -6,6 +6,25 @@ import http from 'isomorphic-git/http/web';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 
+const normalizeGitUrl = (url: string): string => {
+  let normalizedUrl = url.trim();
+
+  if (normalizedUrl.includes('#')) {
+    normalizedUrl = normalizedUrl.split('#')[0];
+  }
+
+  normalizedUrl = normalizedUrl
+    .replace(/\/tree\/[^/]+/, '')
+    .replace(/\/$/, '')
+    .replace(/\.git$/, '');
+
+  if (normalizedUrl.includes('github.com')) {
+    normalizedUrl = `${normalizedUrl}.git`;
+  }
+
+  return normalizedUrl;
+};
+
 const lookupSavedPassword = (url: string) => {
   const domain = url.split('/')[2];
   const gitCreds = Cookies.get(`git:${domain}`);
@@ -55,13 +74,15 @@ export function useGit() {
        * This avoids potential issues with our manual initialization
        */
 
+      const normalizedUrl = normalizeGitUrl(url);
+
       const headers: {
         [x: string]: string;
       } = {
         'User-Agent': 'codinit.dev',
       };
 
-      const auth = lookupSavedPassword(url);
+      const auth = lookupSavedPassword(normalizedUrl);
 
       if (auth) {
         headers.Authorization = `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`;
@@ -78,7 +99,7 @@ export function useGit() {
           fs,
           http,
           dir: webcontainer.workdir,
-          url,
+          url: normalizedUrl,
           depth: 1,
           singleBranch: true,
           corsProxy: '/api/git-proxy',

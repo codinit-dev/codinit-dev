@@ -162,7 +162,41 @@ declare global {
 
   console.log('Using renderer URL:', rendererURL);
 
-  const win = await createWindow(rendererURL);
+  const win = createWindow(rendererURL);
+
+  // Register window control IPC handlers immediately after window creation
+  ipcMain.handle('window-minimize', () => {
+    win.minimize();
+  });
+
+  ipcMain.handle('window-maximize', () => {
+    if (win.isMaximized()) {
+      win.unmaximize();
+    } else {
+      win.maximize();
+    }
+  });
+
+  ipcMain.handle('window-close', () => {
+    win.close();
+  });
+
+  ipcMain.handle('window-is-maximized', () => {
+    return win.isMaximized();
+  });
+
+  ipcMain.handle('window-get-platform', () => {
+    return process.platform;
+  });
+
+  // Window state change listeners
+  win.on('maximize', () => {
+    win.webContents.send('window-maximized');
+  });
+
+  win.on('unmaximize', () => {
+    win.webContents.send('window-unmaximized');
+  });
 
   app.on('activate', async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -237,40 +271,6 @@ declare global {
         console.error('Failed to remove cookie from Electron session:', error);
         return false;
       }
-    });
-
-    // Window control handlers
-    ipcMain.handle('window-minimize', () => {
-      win.minimize();
-    });
-
-    ipcMain.handle('window-maximize', () => {
-      if (win.isMaximized()) {
-        win.unmaximize();
-      } else {
-        win.maximize();
-      }
-    });
-
-    ipcMain.handle('window-close', () => {
-      win.close();
-    });
-
-    ipcMain.handle('window-is-maximized', () => {
-      return win.isMaximized();
-    });
-
-    ipcMain.handle('window-get-platform', () => {
-      return process.platform;
-    });
-
-    // Window state change listeners
-    win.on('maximize', () => {
-      win.webContents.send('window-maximized');
-    });
-
-    win.on('unmaximize', () => {
-      win.webContents.send('window-unmaximized');
     });
 
     return win;

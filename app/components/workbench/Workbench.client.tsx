@@ -197,7 +197,6 @@ export const Workbench = memo(
                 return repoUrl;
               } catch (error) {
                 console.error('Error pushing to GitHub:', error);
-                toast.error('Failed to push to GitHub');
                 throw error;
               }
             }}

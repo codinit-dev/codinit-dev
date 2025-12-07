@@ -14,10 +14,6 @@ export default class GroqProvider extends BaseProvider {
   };
 
   staticModels: ModelInfo[] = [
-    /*
-     * Essential fallback models - only the most stable/reliable ones
-     * Llama 3.3 70B: 128k context, most capable production model
-     */
     {
       name: 'llama-3.3-70b-versatile',
       label: 'Llama 3.3 70B',

@@ -34,10 +34,10 @@ PROVIDER_LIST.forEach((provider) => {
 
 export const STARTER_TEMPLATES: Template[] = [
   {
-    name: 'Next.js App Router',
-    label: 'Next.js App Router',
-    description: 'Next.js starter template using the App Router for building modern React applications',
-    githubRepo: 'codinit-dev/nextjs',
+    name: 'Next.js',
+    label: 'Next.js',
+    description: 'Next.js shadcn starter template using the App Router for building modern React applications',
+    githubRepo: 'codinit-dev/codinit-nextjs',
     icon: 'i-codinit:nextjs',
   },
   {
@@ -52,7 +52,7 @@ export const STARTER_TEMPLATES: Template[] = [
     label: 'Vite + React + shadcn/ui',
     description: 'Vite React starter with shadcn/ui components for fast development',
     githubRepo: 'codinit-dev/vite-shadcn',
-    icon: 'i-codinit:react',
+    icon: 'i-codinit:shadcn',
   },
   {
     name: 'Astro',

@@ -837,7 +837,9 @@ export class WorkbenchStore {
       const owner = githubUsername || Cookies.get('githubUsername');
 
       if (!githubToken || !owner) {
-        const error = new Error('GitHub authentication required. Please connect your GitHub account in Settings > Connections.');
+        const error = new Error(
+          'GitHub authentication required. Please connect your GitHub account in Settings > Connections.',
+        );
         (error as any).code = 'AUTH_REQUIRED';
         throw error;
       }
@@ -883,7 +885,9 @@ export class WorkbenchStore {
             console.error('Failed to update repository visibility:', visibilityError);
 
             if (visibilityError.status === 403) {
-              const error = new Error('Permission denied. Your GitHub token may not have sufficient permissions to update repository visibility.');
+              const error = new Error(
+                'Permission denied. Your GitHub token may not have sufficient permissions to update repository visibility.',
+              );
               (error as any).code = 'PERMISSION_DENIED';
               throw error;
             }
@@ -919,16 +923,20 @@ export class WorkbenchStore {
 
             if (createError.status === 422) {
               const errorMessage = createError.response?.data?.errors?.[0]?.message || createError.message;
+
               if (errorMessage.includes('name already exists')) {
                 const error = new Error(`Repository "${repoName}" already exists. Please choose a different name.`);
                 (error as any).code = 'REPO_EXISTS';
                 throw error;
               }
+
               const error = new Error(`Invalid repository name. ${errorMessage}`);
               (error as any).code = 'INVALID_REPO_NAME';
               throw error;
             } else if (createError.status === 403) {
-              const error = new Error('Permission denied. Your GitHub token may not have permission to create repositories.');
+              const error = new Error(
+                'Permission denied. Your GitHub token may not have permission to create repositories.',
+              );
               (error as any).code = 'PERMISSION_DENIED';
               throw error;
             } else if (createError.status === 401) {
@@ -1017,10 +1025,13 @@ export class WorkbenchStore {
                 const delayMs = 3000;
                 console.log(`Branch not ready yet, waiting ${delayMs}ms before retry...`);
                 await new Promise((resolve) => setTimeout(resolve, delayMs));
+
                 return pushFilesToRepo(attempt + 1);
               }
 
-              const error = new Error(`Branch "${defaultBranch}" not found. The repository may still be initializing. Please try again in a moment.`);
+              const error = new Error(
+                `Branch "${defaultBranch}" not found. The repository may still be initializing. Please try again in a moment.`,
+              );
               (error as any).code = 'BRANCH_NOT_FOUND';
               throw error;
             }
@@ -1074,7 +1085,9 @@ export class WorkbenchStore {
           }
 
           if (error.status === 409) {
-            const err = new Error('Conflict detected. The repository may have been updated by another process. Please try again.');
+            const err = new Error(
+              'Conflict detected. The repository may have been updated by another process. Please try again.',
+            );
             (err as any).code = 'CONFLICT';
             throw err;
           } else if (error.status === 422) {

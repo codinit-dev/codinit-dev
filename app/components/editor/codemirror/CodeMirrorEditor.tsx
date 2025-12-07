@@ -1,7 +1,6 @@
 import { acceptCompletion, autocompletion, closeBrackets } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { bracketMatching, foldGutter, indentOnInput, indentUnit } from '@codemirror/language';
-import { searchKeymap } from '@codemirror/search';
 import { Compartment, EditorSelection, EditorState, StateEffect, StateField, type Extension } from '@codemirror/state';
 import {
   drawSelection,
@@ -144,6 +143,11 @@ export const CodeMirrorEditor = memo(
     // Add a compartment for the env masking extension
     const [envMaskingCompartment] = useState(new Compartment());
 
+    // Add compartments for lazy-loaded extensions
+    const [searchCompartment] = useState(new Compartment());
+    const [foldGutterCompartment] = useState(new Compartment());
+    const searchLoadedRef = useRef(false);
+
     const containerRef = useRef<HTMLDivElement | null>(null);
     const viewRef = useRef<EditorView>();
     const themeRef = useRef<Theme>();
@@ -257,9 +261,11 @@ export const CodeMirrorEditor = memo(
       const theme = themeRef.current!;
 
       if (!doc) {
-        const state = newEditorState('', theme, settings, onScrollRef, debounceScroll, onSaveRef, [
+        const state = newEditorState('', theme, settings, onScrollRef, debounceScroll, onSaveRef, loadSearchExtension, [
           languageCompartment.of([]),
           envMaskingCompartment.of([]),
+          searchCompartment.of([]),
+          foldGutterCompartment.of([]),
         ]);
 
         view.setState(state);
@@ -280,10 +286,38 @@ export const CodeMirrorEditor = memo(
       let state = editorStates.get(doc.filePath);
 
       if (!state) {
-        state = newEditorState(doc.value, theme, settings, onScrollRef, debounceScroll, onSaveRef, [
-          languageCompartment.of([]),
-          envMaskingCompartment.of([createEnvMaskingExtension(() => docRef.current?.filePath)]),
-        ]);
+        const lineCount = doc.value.split('\n').length;
+        const shouldLoadFoldGutter = lineCount > 100;
+
+        state = newEditorState(
+          doc.value,
+          theme,
+          settings,
+          onScrollRef,
+          debounceScroll,
+          onSaveRef,
+          loadSearchExtension,
+          [
+            languageCompartment.of([]),
+            envMaskingCompartment.of([createEnvMaskingExtension(() => docRef.current?.filePath)]),
+            searchCompartment.of([]),
+            foldGutterCompartment.of(
+              shouldLoadFoldGutter
+                ? [
+                    foldGutter({
+                      markerDOM: (open) => {
+                        const icon = document.createElement('div');
+                        icon.className = `fold-icon ${open ? 'i-ph-caret-down-bold' : 'i-ph-caret-right-bold'}`;
+
+                        return icon;
+                      },
+                    }),
+                  ]
+                : [],
+            ),
+          ],
+          doc.filePath,
+        );
 
         editorStates.set(doc.filePath, state);
       }
@@ -310,6 +344,23 @@ export const CodeMirrorEditor = memo(
       }
     }, [doc?.value, editable, doc?.filePath, autoFocusOnDocumentChange]);
 
+    // Function to lazy-load search extension
+    const loadSearchExtension = async (view: EditorView) => {
+      if (searchLoadedRef.current) {
+        return;
+      }
+
+      try {
+        const { searchKeymap, search } = await import('@codemirror/search');
+        view.dispatch({
+          effects: searchCompartment.reconfigure([search(), keymap.of(searchKeymap)]),
+        });
+        searchLoadedRef.current = true;
+      } catch (error) {
+        logger.error('Failed to load search extension:', error);
+      }
+    };
+
     return (
       <div className={classNames('relative h-full rounded-md overflow-hidden', className)}>
         {doc?.isBinary && <BinaryContent />}
@@ -330,8 +381,34 @@ function newEditorState(
   onScrollRef: MutableRefObject<OnScrollCallback | undefined>,
   debounceScroll: number,
   onFileSaveRef: MutableRefObject<OnSaveCallback | undefined>,
+  loadSearchExtension: (view: EditorView) => Promise<void>,
   extensions: Extension[],
+  filePath?: string,
 ) {
+  // Determine if this is a code file that should have bracket matching
+  const codeFileExtensions = [
+    '.js',
+    '.ts',
+    '.tsx',
+    '.jsx',
+    '.py',
+    '.cpp',
+    '.c',
+    '.h',
+    '.hpp',
+    '.vue',
+    '.html',
+    '.css',
+    '.scss',
+    '.sass',
+    '.json',
+    '.java',
+    '.rs',
+    '.go',
+    '.php',
+  ];
+  const isCodeFile = filePath ? codeFileExtensions.some((ext) => filePath.endsWith(ext)) : true;
+
   return EditorState.create({
     doc: content,
     extensions: [
@@ -344,6 +421,14 @@ function newEditorState(
           onScrollRef.current?.({ left: view.scrollDOM.scrollLeft, top: view.scrollDOM.scrollTop });
         }, debounceScroll),
         keydown: (event, view) => {
+          // Lazy-load search extension when Cmd/Ctrl+F is pressed
+          if ((event.metaKey || event.ctrlKey) && event.key === 'f') {
+            event.preventDefault();
+            loadSearchExtension(view);
+
+            return true;
+          }
+
           if (view.state.readOnly) {
             view.dispatch({
               effects: [readOnlyTooltipStateEffect.of(event.key !== 'Escape')],
@@ -360,7 +445,6 @@ function newEditorState(
       keymap.of([
         ...defaultKeymap,
         ...historyKeymap,
-        ...searchKeymap,
         { key: 'Tab', run: acceptCompletion },
         {
           key: 'Mod-s',
@@ -395,7 +479,7 @@ function newEditorState(
       scrollPastEnd(),
       dropCursor(),
       drawSelection(),
-      bracketMatching(),
+      ...(isCodeFile ? [bracketMatching()] : []),
       EditorState.tabSize.of(settings?.tabSize ?? 2),
       indentOnInput(),
       editableTooltipField,
@@ -403,15 +487,6 @@ function newEditorState(
       EditorState.readOnly.from(editableStateField, (editable) => !editable),
       highlightActiveLineGutter(),
       highlightActiveLine(),
-      foldGutter({
-        markerDOM: (open) => {
-          const icon = document.createElement('div');
-
-          icon.className = `fold-icon ${open ? 'i-ph-caret-down-bold' : 'i-ph-caret-right-bold'}`;
-
-          return icon;
-        },
-      }),
       ...extensions,
     ],
   });

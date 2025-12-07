@@ -1,4 +1,3 @@
-// Client-side MCP types - separated from server implementation
 import { z } from 'zod';
 import type { ToolSet } from 'ai';
 

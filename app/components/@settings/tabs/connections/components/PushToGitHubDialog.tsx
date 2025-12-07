@@ -239,7 +239,6 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
       const repoUrl = await onPush(repoName, connection.user.login, connection.token, isPrivate);
       setCreatedRepoUrl(repoUrl);
 
-      // Get list of pushed files
       const files = workbenchStore.files.get();
       const filesList = Object.entries(files as FileMap)
         .filter(([, dirent]) => dirent?.type === 'file' && !dirent.isBinary)
@@ -250,9 +249,38 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
 
       setPushedFiles(filesList);
       setShowSuccessDialog(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error pushing to GitHub:', error);
-      toast.error('Failed to push to GitHub. Please check your repository name and try again.');
+
+      let errorMessage = 'Failed to push to GitHub. Please try again.';
+
+      if (error.code === 'AUTH_REQUIRED') {
+        errorMessage = error.message;
+      } else if (error.code === 'AUTH_INVALID') {
+        errorMessage = error.message;
+      } else if (error.code === 'PERMISSION_DENIED') {
+        errorMessage = error.message;
+      } else if (error.code === 'INVALID_REPO_NAME') {
+        errorMessage = error.message;
+      } else if (error.code === 'REPO_EXISTS') {
+        errorMessage = error.message;
+      } else if (error.code === 'NO_FILES') {
+        errorMessage = error.message;
+      } else if (error.code === 'NO_VALID_FILES') {
+        errorMessage = error.message;
+      } else if (error.code === 'BRANCH_NOT_FOUND') {
+        errorMessage = error.message;
+      } else if (error.code === 'CONFLICT') {
+        errorMessage = error.message;
+      } else if (error.code === 'INVALID_DATA') {
+        errorMessage = error.message;
+      } else if (error.code === 'REPO_NOT_FOUND') {
+        errorMessage = error.message;
+      } else if (error.message && error.message.length < 200) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
