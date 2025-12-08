@@ -6,6 +6,7 @@ import { createScopedLogger } from '~/utils/logger';
 import { unreachable } from '~/utils/unreachable';
 import type { ActionCallbackData } from './message-parser';
 import type { ExampleShell } from '~/utils/shell';
+import { validateCode } from './code-validator';
 
 const logger = createScopedLogger('ActionRunner');
 
@@ -346,6 +347,17 @@ export class ActionRunner {
       } catch (error) {
         logger.error('Failed to create folder\n\n', error);
       }
+    }
+
+    const validationResult = validateCode(relativePath, action.content);
+
+    if (!validationResult.isValid) {
+      logger.warn(`Code validation failed for ${relativePath}:`, validationResult.errors);
+      logger.warn('Writing file anyway, but it may contain errors');
+    }
+
+    if (validationResult.warnings.length > 0) {
+      logger.debug(`Code validation warnings for ${relativePath}:`, validationResult.warnings);
     }
 
     try {
