@@ -4,6 +4,8 @@ export interface AutocompleteState {
   atPosition: number;
 }
 
+export type ReferenceType = 'file' | 'tool';
+
 export function shouldShowAutocomplete(text: string, cursorPos: number): AutocompleteState {
   const textBeforeCursor = text.slice(0, cursorPos);
   const lastAtIndex = textBeforeCursor.lastIndexOf('@');
@@ -32,6 +34,10 @@ export function shouldShowAutocomplete(text: string, cursorPos: number): Autocom
 export function extractSearchQuery(text: string, cursorPos: number): string {
   const state = shouldShowAutocomplete(text, cursorPos);
   return state.searchQuery;
+}
+
+export function detectReferenceType(searchQuery: string): ReferenceType {
+  return /[\/\.]/.test(searchQuery) ? 'file' : 'tool';
 }
 
 function getTextWidth(text: string, font: string): number {
@@ -91,6 +97,25 @@ export function insertToolMention(
   const afterCursor = text.slice(cursorPos);
   const newText = `${beforeAt}@${toolName} ${afterCursor}`;
   const newCursorPos = state.atPosition + toolName.length + 2;
+
+  return { newText, newCursorPos };
+}
+
+export function insertFileReference(
+  text: string,
+  cursorPos: number,
+  filePath: string,
+): { newText: string; newCursorPos: number } {
+  const state = shouldShowAutocomplete(text, cursorPos);
+
+  if (!state.isOpen) {
+    return { newText: text, newCursorPos: cursorPos };
+  }
+
+  const beforeAt = text.slice(0, state.atPosition);
+  const afterCursor = text.slice(cursorPos);
+  const newText = `${beforeAt}@${filePath} ${afterCursor}`;
+  const newCursorPos = state.atPosition + filePath.length + 2;
 
   return { newText, newCursorPos };
 }
