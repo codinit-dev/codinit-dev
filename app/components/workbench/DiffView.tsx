@@ -485,7 +485,9 @@ const CodeLine = memo(
 );
 
 // Componente para exibir informações sobre o arquivo
-const FileInfo = memo(
+// Disabled: FileInfo is now rendered externally in BaseChat via DiffViewHeader
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _FileInfo = memo(
   ({
     filename,
     hasChanges,
@@ -557,14 +559,10 @@ const FileInfo = memo(
   },
 );
 
-const InlineDiffComparison = memo(({ beforeCode, afterCode, filename, language }: CodeComparisonProps) => {
+const InlineDiffComparison = memo(({ beforeCode, afterCode, language }: CodeComparisonProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [highlighter, setHighlighter] = useState<any>(null);
   const theme = useStore(themeStore);
-
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
 
   const { unifiedBlocks, hasChanges, isBinary, error } = useProcessChanges(beforeCode, afterCode);
 
@@ -602,14 +600,6 @@ const InlineDiffComparison = memo(({ beforeCode, afterCode, filename, language }
   return (
     <FullscreenOverlay isFullscreen={isFullscreen}>
       <div className="w-full h-full flex flex-col">
-        <FileInfo
-          filename={filename}
-          hasChanges={hasChanges}
-          onToggleFullscreen={toggleFullscreen}
-          isFullscreen={isFullscreen}
-          beforeCode={beforeCode}
-          afterCode={afterCode}
-        />
         <div className={diffPanelStyles}>
           {hasChanges ? (
             <div className="overflow-x-auto min-w-full">

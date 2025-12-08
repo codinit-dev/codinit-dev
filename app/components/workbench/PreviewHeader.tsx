@@ -145,7 +145,10 @@ export const PreviewHeader = memo(
             >
               <DropdownMenu.Item
                 className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
-                onClick={reloadPreview}
+                onSelect={(e) => {
+                  e.preventDefault();
+                  reloadPreview();
+                }}
               >
                 <div className="flex items-center gap-2">
                   <span className="i-lucide:rotate-cw text-current" />
@@ -154,7 +157,10 @@ export const PreviewHeader = memo(
               </DropdownMenu.Item>
               <DropdownMenu.Item
                 className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
-                onClick={() => setIsDeployDialogOpen(true)}
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setIsDeployDialogOpen(true);
+                }}
               >
                 <div className="flex items-center gap-2">
                   <span className="i-lucide:rocket text-current" />
@@ -163,7 +169,10 @@ export const PreviewHeader = memo(
               </DropdownMenu.Item>
               <DropdownMenu.Item
                 className="cursor-pointer flex items-center w-full px-4 py-2 text-sm text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundActive gap-2 rounded-md group relative"
-                onClick={handleOpenPushDialog}
+                onSelect={(e) => {
+                  e.preventDefault();
+                  handleOpenPushDialog();
+                }}
               >
                 <div className="flex items-center gap-2">
                   <span className="i-lucide:git-branch text-current" />
@@ -214,6 +223,7 @@ export const PreviewHeader = memo(
             />
           </div>
           <button
+            type="button"
             className="flex items-center bg-transparent rounded-md disabled:cursor-not-allowed enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive p-1 text-codinit-elements-textSecondary"
             onClick={reloadPreview}
           >

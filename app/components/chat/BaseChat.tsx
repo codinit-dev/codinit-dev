@@ -15,6 +15,7 @@ const Workbench = lazy(() =>
 import { ChatHeader } from '~/components/header/ChatHeader';
 import { PreviewHeader } from '~/components/workbench/PreviewHeader';
 import { CodeModeHeader } from '~/components/workbench/CodeModeHeader';
+import { DiffViewHeader } from '~/components/workbench/DiffViewHeader';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { TextShimmer } from '~/components/ui/text-shimmer';
 import { classNames } from '~/utils/classNames';
@@ -172,6 +173,12 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
     });
     const [showDeviceFrame, setShowDeviceFrame] = useState(true);
     const [isLandscape, setIsLandscape] = useState(false);
+
+    // Diff view header state
+    const [isDiffFullscreen, setIsDiffFullscreen] = useState(false);
+    const selectedFile = useStore(workbenchStore.selectedFile);
+    const currentDocument = useStore(workbenchStore.currentDocument);
+    const files = useStore(workbenchStore.files);
 
     const setIsPushDialogOpen = (_open: boolean) => {
       // Push dialog is handled by Workbench component
@@ -482,6 +489,23 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   isLandscape={isLandscape}
                   setIsLandscape={setIsLandscape}
                   setIsPushDialogOpen={setIsPushDialogOpen}
+                />
+              )}
+
+              {selectedView === 'diff' && selectedFile && currentDocument && (
+                <DiffViewHeader
+                  filename={selectedFile}
+                  beforeCode={
+                    files[selectedFile] && 'content' in files[selectedFile] ? files[selectedFile].content : ''
+                  }
+                  afterCode={currentDocument.value || ''}
+                  hasChanges={
+                    files[selectedFile] && 'content' in files[selectedFile]
+                      ? files[selectedFile].content !== currentDocument.value
+                      : false
+                  }
+                  isFullscreen={isDiffFullscreen}
+                  onToggleFullscreen={() => setIsDiffFullscreen(!isDiffFullscreen)}
                 />
               )}
             </div>
