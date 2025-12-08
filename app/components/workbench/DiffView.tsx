@@ -1,4 +1,4 @@
-import { memo, useMemo, useState, useEffect, useCallback } from 'react';
+import { memo, useMemo, useState, useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import { workbenchStore } from '~/lib/stores/workbench';
 import type { FileMap } from '~/lib/stores/files';
@@ -45,20 +45,6 @@ const FullscreenButton = memo(({ onClick, isFullscreen }: FullscreenButtonProps)
     <div className={isFullscreen ? 'i-lucide:minimize-2' : 'i-lucide:maximize-2'} />
   </button>
 ));
-
-const FullscreenOverlay = memo(({ isFullscreen, children }: { isFullscreen: boolean; children: React.ReactNode }) => {
-  if (!isFullscreen) {
-    return <>{children}</>;
-  }
-
-  return (
-    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-6">
-      <div className="w-full h-full max-w-[90vw] max-h-[90vh] bg-codinit-elements-background-depth-2 rounded-lg border border-codinit-elements-borderColor shadow-xl overflow-hidden">
-        {children}
-      </div>
-    </div>
-  );
-});
 
 const MAX_FILE_SIZE = 1024 * 1024; // 1MB
 const MAX_LINES_FOR_DIFF = 1000; // Skip detailed diff for files >1000 lines
@@ -484,8 +470,6 @@ const CodeLine = memo(
   },
 );
 
-// Componente para exibir informações sobre o arquivo
-// Disabled: FileInfo is now rendered externally in BaseChat via DiffViewHeader
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _FileInfo = memo(
   ({
@@ -560,7 +544,6 @@ const _FileInfo = memo(
 );
 
 const InlineDiffComparison = memo(({ beforeCode, afterCode, language }: CodeComparisonProps) => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [highlighter, setHighlighter] = useState<any>(null);
   const theme = useStore(themeStore);
 
@@ -598,30 +581,28 @@ const InlineDiffComparison = memo(({ beforeCode, afterCode, language }: CodeComp
   }
 
   return (
-    <FullscreenOverlay isFullscreen={isFullscreen}>
-      <div className="w-full h-full flex flex-col">
-        <div className={diffPanelStyles}>
-          {hasChanges ? (
-            <div className="overflow-x-auto min-w-full">
-              {unifiedBlocks.map((block, index) => (
-                <CodeLine
-                  key={`${block.lineNumber}-${index}`}
-                  lineNumber={block.lineNumber}
-                  content={block.content}
-                  type={block.type}
-                  highlighter={highlighter}
-                  language={language}
-                  block={block}
-                  theme={theme}
-                />
-              ))}
-            </div>
-          ) : (
-            <NoChangesView beforeCode={beforeCode} language={language} highlighter={highlighter} theme={theme} />
-          )}
-        </div>
+    <div className="w-full h-full flex flex-col">
+      <div className={diffPanelStyles}>
+        {hasChanges ? (
+          <div className="overflow-x-auto min-w-full">
+            {unifiedBlocks.map((block, index) => (
+              <CodeLine
+                key={`${block.lineNumber}-${index}`}
+                lineNumber={block.lineNumber}
+                content={block.content}
+                type={block.type}
+                highlighter={highlighter}
+                language={language}
+                block={block}
+                theme={theme}
+              />
+            ))}
+          </div>
+        ) : (
+          <NoChangesView beforeCode={beforeCode} language={language} highlighter={highlighter} theme={theme} />
+        )}
       </div>
-    </FullscreenOverlay>
+    </div>
   );
 });
 
