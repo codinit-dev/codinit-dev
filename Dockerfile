@@ -18,7 +18,7 @@ COPY . .
 EXPOSE 5173
 
 # Production image
-FROM base AS codinit-ai-production
+FROM base AS codinit-dev-production
 
 # Define non-sensitive configuration variables
 ARG OLLAMA_API_BASE_URL
@@ -45,7 +45,7 @@ RUN pnpm run build
 CMD [ "pnpm", "run", "dockerstart"]
 
 # Development image
-FROM base AS codinit-ai-development
+FROM base AS codinit-dev-development
 
 # Define non-sensitive configuration variables
 ARG OLLAMA_API_BASE_URL

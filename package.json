@@ -1,6 +1,6 @@
 {
-  "name": "codinit",
-  "description": "An AI-Powered Development Platform",
+  "name": "codinit-dev",
+  "description": "The opensource AI software engineer that builds your ideas for you.",
   "private": true,
   "license": "MIT",
   "sideEffects": false,
@@ -8,7 +8,7 @@
   "version": "1.1.18",
   "author": {
     "name": "Gerome-Elassaad",
-    "email": "gerome.e24@gmail.com"
+    "email": "contact@codinit.dev"
   },
   "scripts": {
     "deploy": "npm run build && wrangler pages deploy",
@@ -22,9 +22,9 @@
     "start:unix": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings",
     "start": "node -e \"const { spawn } = require('child_process'); const isWindows = process.platform === 'win32'; const cmd = isWindows ? 'npm run start:windows' : 'npm run start:unix'; const child = spawn(cmd, { shell: true, stdio: 'inherit' }); child.on('exit', code => process.exit(code));\"",
     "dockerstart": "bindings=$(./bindings.sh) && wrangler pages dev ./build/client $bindings --ip 0.0.0.0 --port 5173 --no-show-interactive-dev-session",
-    "dockerrun": "docker run -it -d --name codinit-ai-live -p 5173:5173 --env-file .env codinit-ai",
-    "dockerbuild:prod": "docker build -t codinit-ai:production -t codinit-ai:latest --target codinit-ai-production .",
-    "dockerbuild": "docker build -t codinit-ai:development -t codinit-ai:latest --target codinit-ai-development .",
+    "dockerrun": "docker run -it -d --name codinit-dev-live -p 5173:5173 --env-file .env codinit-dev",
+    "dockerbuild:prod": "docker build -t codinit-dev:production -t codinit-dev:latest --target codinit-dev-production .",
+    "dockerbuild": "docker build -t codinit-dev:development -t codinit-dev:latest --target codinit-dev-development .",
     "typecheck": "tsc",
     "typegen": "wrangler types",
     "preview": "pnpm run build && pnpm run start",

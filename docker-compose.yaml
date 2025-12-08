@@ -1,10 +1,10 @@
 services:
   app-prod:
-    image: codinit-ai:production
+    image: codinit-dev:production
     build:
       context: .
       dockerfile: Dockerfile
-      target: codinit-ai-production
+      target: codinit-dev-production
     ports:
       - "5173:5173"
     env_file: ".env.local"
@@ -34,9 +34,9 @@ services:
       - production
 
   app-dev:
-    image: codinit-ai:development
+    image: codinit-dev:development
     build:
-      target: codinit-ai-development
+      target: codinit-dev-development
     env_file: ".env.local"
     environment:
       - NODE_ENV=development
