@@ -13,8 +13,17 @@ interface UpdateSettings {
 }
 
 const UpdateTab = () => {
-  const { hasUpdate, currentVersion, latestVersion, releaseNotes, releaseUrl, isLoading, error, acknowledgeUpdate } =
-    useUpdateCheck();
+  const {
+    hasUpdate,
+    currentVersion,
+    latestVersion,
+    releaseNotes,
+    releaseUrl,
+    isLoading,
+    error,
+    acknowledgeUpdate,
+    manualCheck,
+  } = useUpdateCheck();
   const [updateSettings, setUpdateSettings] = useState<UpdateSettings>(() => {
     const stored = localStorage.getItem('update_settings');
     return stored
@@ -169,10 +178,7 @@ const UpdateTab = () => {
               </button>
             )}
             <button
-              onClick={() => {
-                // Trigger a manual update check by calling the hook's internal logic
-                window.location.reload();
-              }}
+              onClick={manualCheck}
               className={classNames(
                 'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
                 'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
@@ -249,22 +255,22 @@ const UpdateTab = () => {
               </a>
             )}
           </div>
-        </div>
 
-        {/* Show release notes if available */}
-        {hasUpdate && releaseNotes && (
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="i-ph:scroll text-blue-500 w-5 h-5" />
-              <p className="font-medium">Release Notes</p>
-            </div>
-            <div className="bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-lg p-4 overflow-auto max-h-[300px]">
-              <div className="prose dark:prose-invert prose-sm max-w-none">
-                <Markdown>{releaseNotes}</Markdown>
+          {/* Show release notes if available */}
+          {hasUpdate && releaseNotes && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="i-ph:scroll text-blue-500 w-5 h-5" />
+                <p className="font-medium text-codinit-elements-textPrimary">Release Notes</p>
+              </div>
+              <div className="bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-lg p-4 overflow-auto max-h-[300px]">
+                <div className="prose dark:prose-invert prose-sm max-w-none">
+                  <Markdown>{releaseNotes}</Markdown>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {error && (
           <div className="mt-4 p-4 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded">

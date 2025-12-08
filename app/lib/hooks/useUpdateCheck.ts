@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { checkForUpdates, acknowledgeUpdate } from '~/lib/api/updates';
 
@@ -20,8 +20,8 @@ export const useUpdateCheck = () => {
     }
   });
 
-  useEffect(() => {
-    const checkUpdate = async () => {
+  const checkUpdate = useCallback(
+    async (showToast = true) => {
       console.log('🔄 Checking for updates...');
       setIsLoading(true);
       setError(null);
@@ -43,15 +43,13 @@ export const useUpdateCheck = () => {
         setReleaseNotes(result.releaseNotes || '');
         setReleaseUrl(result.releaseUrl || '');
 
-        // Only show update if it's a new version and hasn't been acknowledged
         const shouldShowUpdate = result.available && result.version !== lastAcknowledgedVersion;
         setHasUpdate(shouldShowUpdate);
 
         if (result.available) {
           console.log('✨ Update available:', result.version);
 
-          // Show toast notification for new updates
-          if (shouldShowUpdate) {
+          if (shouldShowUpdate && showToast) {
             toast.info(
               `New version v${result.version} available! Please update to get the latest features and improvements.`,
               {
@@ -75,15 +73,17 @@ export const useUpdateCheck = () => {
       } finally {
         setIsLoading(false);
       }
-    };
+    },
+    [lastAcknowledgedVersion],
+  );
 
-    // Check immediately and then every 30 minutes
+  useEffect(() => {
     checkUpdate();
 
-    const interval = setInterval(checkUpdate, 30 * 60 * 1000);
+    const interval = setInterval(() => checkUpdate(), 30 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [lastAcknowledgedVersion]);
+  }, [checkUpdate]);
 
   const handleAcknowledgeUpdate = async () => {
     console.log('👆 Acknowledging update...');
@@ -120,5 +120,6 @@ export const useUpdateCheck = () => {
     isLoading,
     error,
     acknowledgeUpdate: handleAcknowledgeUpdate,
+    manualCheck: () => checkUpdate(false),
   };
 };
