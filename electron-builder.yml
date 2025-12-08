@@ -79,12 +79,7 @@ nsis:
 
 npmRebuild: false
 
-publish:
-  provider: github
-  owner: codinit-dev
-  repo: codinit-dev
-  private: false
-  releaseType: release
+publish: null
 
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/
