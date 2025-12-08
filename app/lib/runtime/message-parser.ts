@@ -87,16 +87,20 @@ interface MessageState {
 }
 
 function cleanoutMarkdownSyntax(content: string) {
-  const codeBlockRegex = /^\s*```\w*\n([\s\S]*?)\n\s*```\s*$/;
+  const codeBlockRegex = /^\s*```[\w-]*\s*\n?([\s\S]*?)\n?\s*```\s*$/;
   const match = content.match(codeBlockRegex);
 
-  // console.log('matching', !!match, content);
-
   if (match) {
-    return match[1]; // Remove common leading 4-space indent
-  } else {
-    return content;
+    return match[1].trim();
   }
+
+  const multilineCodeBlockRegex = /```[\w-]*\s*\n([\s\S]*?)```/g;
+  let cleaned = content.replace(multilineCodeBlockRegex, (_match, code) => code.trim());
+
+  const inlineCodeBlockRegex = /^```[\w-]*\s*\n?|```\s*$/gm;
+  cleaned = cleaned.replace(inlineCodeBlockRegex, '');
+
+  return cleaned.trim() !== content.trim() ? cleaned.trim() : content;
 }
 
 function cleanEscapedTags(content: string) {
