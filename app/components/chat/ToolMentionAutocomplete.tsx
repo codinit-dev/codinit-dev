@@ -1,27 +1,34 @@
-import type { ToolItem } from '~/lib/hooks/useToolMentionAutocomplete';
+import type { ToolItem, FileItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { useEffect, useRef } from 'react';
 import { classNames } from '~/utils/classNames';
+import { File } from 'lucide-react';
 
 interface ToolMentionAutocompleteProps {
   isOpen: boolean;
   tools: ToolItem[];
+  files: FileItem[];
   selectedIndex: number;
   position: { x: number; y: number } | null;
-  onSelect: (toolName: string) => void;
+  onSelectTool: (toolName: string) => void;
+  onSelectFile: (filePath: string) => void;
   onHover: (index: number) => void;
   onClose: () => void;
   searchQuery: string;
+  referenceType: 'file' | 'tool';
 }
 
 export function ToolMentionAutocomplete({
   isOpen,
   tools,
+  files,
   selectedIndex,
   position,
-  onSelect,
+  onSelectTool,
+  onSelectFile,
   onHover,
   onClose,
   searchQuery,
+  referenceType,
 }: ToolMentionAutocompleteProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +72,54 @@ export function ToolMentionAutocomplete({
 
   if (!isOpen || !position) {
     return null;
+  }
+
+  if (referenceType === 'file') {
+    return (
+      <div
+        ref={dropdownRef}
+        className="fixed z-[9999] min-w-[400px] max-w-[500px] bg-codinit-elements-bg-depth-1 border border-codinit-elements-borderColor rounded-lg shadow-lg transition-theme"
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+        }}
+      >
+        <div className="max-h-[300px] overflow-y-auto p-2">
+          {files.length === 0 ? (
+            <div className="py-4 text-center text-sm text-codinit-elements-textTertiary">
+              No files found for &quot;{searchQuery}&quot;
+            </div>
+          ) : (
+            <>
+              <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">📁 Files</div>
+              {files.map((file, index) => {
+                const isSelected = index === selectedIndex;
+
+                return (
+                  <div
+                    key={file.path}
+                    onClick={() => onSelectFile(file.relativePath)}
+                    onMouseEnter={() => onHover(index)}
+                    data-selected={isSelected}
+                    className={classNames(
+                      'cursor-pointer rounded-md px-3 py-2 mb-1 transition-colors',
+                      isSelected
+                        ? 'bg-accent-500 text-white'
+                        : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary',
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      <File size={16} className={isSelected ? 'text-white' : 'text-codinit-elements-textSecondary'} />
+                      <span className="font-medium text-sm font-mono">{file.relativePath}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </div>
+      </div>
+    );
   }
 
   const groupedTools = tools.reduce(
@@ -117,7 +172,7 @@ export function ToolMentionAutocomplete({
                   return (
                     <div
                       key={`${serverName}-${tool.name}`}
-                      onClick={() => onSelect(tool.name)}
+                      onClick={() => onSelectTool(tool.name)}
                       onMouseEnter={() => onHover(currentIndex)}
                       data-selected={isSelected}
                       className={classNames(
