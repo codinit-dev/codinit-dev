@@ -31,15 +31,21 @@ export function Header() {
           </a>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => window.open('https://github.com/codinit-dev/codinit-dev', '_blank')}
-            className="flex items-center justify-center font-medium shrink-0 rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1.5 h-9 px-2.5 bg-transparent hover:bg-white/5 dark:hover:bg-white/10 text-sm border border-white/10 dark:border-white/20 transition-colors"
-            type="button"
-            title="Star on GitHub"
+          <a
+            href="https://www.producthunt.com/products/codinit-dev?utm_source=badge-follow&utm_medium=badge&utm_source=badge-codinit-dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center shrink-0 h-9 rounded-md hover:opacity-80 transition-opacity"
+            title="Follow on Product Hunt"
           >
-            <div className="i-lucide:star text-xl text-yellow-400" />
-            <span className="text-sm text-gray-700 dark:text-gray-200">Star</span>
-          </button>
+            <img
+              src="/thirdparty/logos/follow.svg"
+              alt="CodinIT.dev - The #1 local-first open source AI software engineer | Product Hunt"
+              className="h-8"
+              width="86"
+              height="32"
+            />
+          </a>
           <button
             onClick={() => window.open('https://github.com/codinit-dev/codinit-dev/issues/new/choose', '_blank')}
             className="flex items-center justify-center font-medium shrink-0 rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed h-9 w-9 bg-transparent hover:bg-white/5 dark:hover:bg-white/10 border border-white/10 dark:border-white/20 transition-colors"
