@@ -24,7 +24,9 @@ import { MCPDialog } from '~/components/mcp/MCPDialog';
 import { McpServerSelector } from './MCPServerSelector';
 import { useToolMentionAutocomplete } from '~/lib/hooks/useToolMentionAutocomplete';
 import { ToolMentionAutocomplete } from './ToolMentionAutocomplete';
-import { insertToolMention } from '~/utils/toolMentionParser';
+import { insertToolMention, insertFileReference } from '~/utils/toolMentionParser';
+import { useStore } from '@nanostores/react';
+import { workbenchStore } from '~/lib/stores/workbench';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -75,6 +77,8 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [showPlaceholder, setShowPlaceholder] = useState(true);
   const [providerDropdownOpen, setProviderDropdownOpen] = useState(false);
 
+  const files = useStore(workbenchStore.files);
+
   const handleToolSelected = (toolName: string) => {
     if (!props.textareaRef?.current) {
       return;
@@ -101,10 +105,38 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
     });
   };
 
+  const handleFileSelected = (filePath: string) => {
+    if (!props.textareaRef?.current) {
+      return;
+    }
+
+    const textarea = props.textareaRef.current;
+    const currentCursor = textarea.selectionStart || 0;
+    const { newText, newCursorPos } = insertFileReference(props.input, currentCursor, filePath);
+
+    if (props.handleInputChange) {
+      textarea.value = newText;
+
+      const syntheticEvent = {
+        target: textarea,
+        currentTarget: textarea,
+      } as React.ChangeEvent<HTMLTextAreaElement>;
+
+      props.handleInputChange(syntheticEvent);
+    }
+
+    requestAnimationFrame(() => {
+      textarea.focus();
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    });
+  };
+
   const autocomplete = useToolMentionAutocomplete({
     input: props.input,
     textareaRef: props.textareaRef,
     onToolSelected: handleToolSelected,
+    onFileSelected: handleFileSelected,
+    files,
   });
 
   useEffect(() => {
@@ -448,12 +480,15 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
       <ToolMentionAutocomplete
         isOpen={autocomplete.isOpen}
         tools={autocomplete.filteredTools}
+        files={autocomplete.filteredFiles}
         selectedIndex={autocomplete.selectedIndex}
         position={autocomplete.dropdownPosition}
-        onSelect={autocomplete.handleToolSelect}
+        onSelectTool={autocomplete.handleToolSelect}
+        onSelectFile={autocomplete.handleFileSelect}
         onHover={autocomplete.setSelectedIndex}
         onClose={autocomplete.handleClose}
         searchQuery={autocomplete.searchQuery}
+        referenceType={autocomplete.referenceType}
       />
     </>
   );
