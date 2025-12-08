@@ -1,7 +1,3 @@
-/**
- * @note For some reason the types aren't picked up from node_modules so I declared the module here
- * with only the function that we use.
- */
 declare module 'istextorbinary' {
   export interface EncodingOpts {
     /** Defaults to 24 */
