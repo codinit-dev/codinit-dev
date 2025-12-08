@@ -32,7 +32,7 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => window.open('https://github.com/Gerome-Elassaad/codinit-app', '_blank')}
+            onClick={() => window.open('https://github.com/codinit-dev/codinit-dev', '_blank')}
             className="flex items-center justify-center font-medium shrink-0 rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1.5 h-9 px-2.5 bg-transparent hover:bg-white/5 dark:hover:bg-white/10 text-sm border border-white/10 dark:border-white/20 transition-colors"
             type="button"
             title="Star on GitHub"
@@ -41,7 +41,7 @@ export function Header() {
             <span className="text-sm text-gray-700 dark:text-gray-200">Star</span>
           </button>
           <button
-            onClick={() => window.open('https://github.com/Gerome-Elassaad/codinit-app/issues/new/choose', '_blank')}
+            onClick={() => window.open('https://github.com/codinit-dev/codinit-dev/issues/new/choose', '_blank')}
             className="flex items-center justify-center font-medium shrink-0 rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed h-9 w-9 bg-transparent hover:bg-white/5 dark:hover:bg-white/10 border border-white/10 dark:border-white/20 transition-colors"
             type="button"
             title="Report a bug"

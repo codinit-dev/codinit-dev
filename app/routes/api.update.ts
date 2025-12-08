@@ -2,7 +2,7 @@ import { json, type ActionFunction } from '@remix-run/cloudflare';
 
 // Current version - update this when releasing new versions
 const CURRENT_VERSION = '1.1.18';
-const GITHUB_REPO = 'gerome-elassaad/codinit-app';
+const GITHUB_REPO = 'codinit-dev/codinit-dev';
 
 interface GitHubRelease {
   tag_name: string;
@@ -26,7 +26,7 @@ export const action: ActionFunction = async ({ request }) => {
     const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`, {
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        'User-Agent': 'CodinIT-App',
+        'User-Agent': 'codinit-dev',
       },
     });
 

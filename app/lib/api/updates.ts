@@ -76,10 +76,10 @@ export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
     const currentVersion = apiData.currentVersion;
 
     // Fetch the latest release from GitHub
-    const response = await fetch(`https://api.github.com/repos/gerome-elassaad/codinit-app/releases/latest`, {
+    const response = await fetch(`https://api.github.com/repos/codinit-dev/codinit-dev/releases/latest`, {
       headers: {
         Accept: 'application/vnd.github.v3+json',
-        'User-Agent': 'CodinIT-App',
+        'User-Agent': 'codinit-dev',
       },
     });
 

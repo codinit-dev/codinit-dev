@@ -81,8 +81,8 @@ npmRebuild: false
 
 publish:
   provider: github
-  owner: Gerome-Elassaad
-  repo: codinit-app
+  owner: codinit-dev
+  repo: codinit-dev
   private: false
   releaseType: release
 
