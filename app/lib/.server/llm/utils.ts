@@ -88,6 +88,94 @@ export function createFilesContext(files: FileMap, useRelativePath?: boolean) {
   return `<codinitArtifact id="code-content" title="Code Content" >\n${fileContexts.join('\n')}\n</codinitArtifact>`;
 }
 
+export function extractFileReferences(text: string): string[] {
+  const pattern = /@([\w\-./]+\.\w+)/g;
+  const matches = text.matchAll(pattern);
+  const results = Array.from(matches).map((m) => m[1]);
+
+  return results.filter((ref) => {
+    if (ref.includes('/')) {
+      return true;
+    }
+
+    const parts = ref.split('.');
+    const extension = parts[parts.length - 1];
+    const commonExtensions = [
+      'js',
+      'ts',
+      'jsx',
+      'tsx',
+      'py',
+      'json',
+      'md',
+      'css',
+      'scss',
+      'html',
+      'txt',
+      'yml',
+      'yaml',
+      'xml',
+      'env',
+      'config',
+      'spec',
+      'test',
+    ];
+
+    if (commonExtensions.includes(extension.toLowerCase())) {
+      return true;
+    }
+
+    const emailPattern = /^[a-z]+\.[a-z]{2,}$/i;
+
+    if (emailPattern.test(ref)) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+export function createReferencedFilesContext(
+  referencedPaths: string[],
+  files: FileMap,
+  workDir: string = '/home/project',
+): string {
+  const fileContexts = referencedPaths
+    .map((relativePath) => {
+      const fullPath = `${workDir}/${relativePath}`;
+      const dirent = files[fullPath];
+
+      if (!dirent || dirent.type !== 'file') {
+        return '';
+      }
+
+      return `<codinitAction type="file" filePath="${relativePath}">${dirent.content}</codinitAction>`;
+    })
+    .filter((ctx) => ctx !== '');
+
+  if (fileContexts.length === 0) {
+    return '';
+  }
+
+  return `<codinitArtifact id="referenced-files" title="Referenced Files">\n${fileContexts.join('\n')}\n</codinitArtifact>`;
+}
+
+export function processFileReferences(
+  messageContent: string,
+  files: FileMap,
+): { cleanedContent: string; referencedFilesContext: string } {
+  const referencedPaths = extractFileReferences(messageContent);
+
+  const cleanedContent = messageContent.replace(/@([\w\-./]+\.\w+)/g, '$1');
+
+  const referencedFilesContext = createReferencedFilesContext(referencedPaths, files);
+
+  return {
+    cleanedContent,
+    referencedFilesContext,
+  };
+}
+
 export function extractCurrentContext(messages: Message[]) {
   const lastAssistantMessage = messages.filter((x) => x.role == 'assistant').slice(-1)[0];
 

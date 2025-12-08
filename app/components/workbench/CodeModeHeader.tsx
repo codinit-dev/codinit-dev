@@ -29,6 +29,12 @@ export const CodeModeHeader = memo(
               onClick={() => setSelectedView('preview')}
             />
             <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
+            <IconButton
+              icon="i-lucide:git-compare-arrows"
+              className="w-8 h-8"
+              title="Diff"
+              onClick={() => setSelectedView('diff')}
+            />
           </div>
           <div className="flex items-center">
             <DropdownMenu.Root>
