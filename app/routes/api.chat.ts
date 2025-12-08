@@ -10,7 +10,7 @@ import { getFilePaths, selectContext } from '~/lib/.server/llm/select-context';
 import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
 import { WORK_DIR } from '~/utils/constants';
 import { createSummary } from '~/lib/.server/llm/create-summary';
-import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
+import { extractPropertiesFromMessage, processFileReferences } from '~/lib/.server/llm/utils';
 import { MCPService } from '~/lib/services/mcpService';
 import {
   validateChatRequest,
@@ -314,6 +314,37 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             logger.debug('Processed MCP tool invocations');
           } catch (error) {
             logger.error('Failed to process MCP tool invocations:', error);
+          }
+        }
+
+        const lastUserMessage = processedMessages.filter((x) => x.role === 'user').slice(-1)[0];
+
+        if (lastUserMessage) {
+          let messageContent = '';
+
+          if (typeof lastUserMessage.content === 'string') {
+            messageContent = lastUserMessage.content;
+          } else if (Array.isArray(lastUserMessage.content)) {
+            const contentArray = lastUserMessage.content as Array<{ type: string; text?: string }>;
+            const textContent = contentArray.find((item) => item.type === 'text');
+            messageContent = textContent?.text || '';
+          }
+
+          const { cleanedContent, referencedFilesContext } = processFileReferences(messageContent, files);
+
+          if (referencedFilesContext) {
+            if (typeof lastUserMessage.content === 'string') {
+              lastUserMessage.content = cleanedContent + '\n\n' + referencedFilesContext;
+            } else if (Array.isArray(lastUserMessage.content)) {
+              const contentArray = lastUserMessage.content as Array<{ type: string; text?: string }>;
+              const textContentIndex = contentArray.findIndex((item) => item.type === 'text');
+
+              if (textContentIndex !== -1 && contentArray[textContentIndex]) {
+                contentArray[textContentIndex].text = cleanedContent + '\n\n' + referencedFilesContext;
+              }
+            }
+
+            logger.debug('Processed file references in user message');
           }
         }
 
