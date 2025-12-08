@@ -13,12 +13,14 @@ echo -e "${GREEN}Setting up LangSmith tracing for Claude Code...${NC}"
 # Prompt for API key if not set
 if [ -z "$LANGSMITH_API_KEY" ]; then
   echo -e "${YELLOW}LANGSMITH_API_KEY not found in environment${NC}"
+  # shellcheck disable=SC2162
   read -p "Enter your LangSmith API key: " LANGSMITH_API_KEY
 fi
 
 # Prompt for project name if not set
 if [ -z "$LANGSMITH_PROJECT" ]; then
   echo -e "${YELLOW}LANGSMITH_PROJECT not found in environment${NC}"
+  # shellcheck disable=SC2162
   read -p "Enter your LangSmith project name (default: claude-code-trace): " LANGSMITH_PROJECT
   LANGSMITH_PROJECT=${LANGSMITH_PROJECT:-claude-code-trace}
 fi
