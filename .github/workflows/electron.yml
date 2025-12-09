@@ -61,14 +61,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Install Linux dependencies
       - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y rpm
 
-      # Build
       - name: Build Electron app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -83,21 +81,46 @@ jobs:
           fi
         shell: bash
 
-      # Create Release
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          # Use the workflow_dispatch input tag if available, else use the Git ref name.
-          tag_name: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
-          # Only branch pushes remain drafts. For workflow_dispatch and tag pushes the release is published.
-          draft: ${{ github.event_name != 'workflow_dispatch' && github.ref_type == 'branch' }}
-          # For tag pushes, name the release as "Release <tagname>", otherwise "Electron Release".
-          name: ${{ (github.event_name == 'push' && github.ref_type == 'tag') && format('Release {0}', github.ref_name) || 'Electron Release' }}
-          files: |
+          name: electron-${{ runner.os }}-artifacts
+          path: |
             dist/*.exe
             dist/*.dmg
             dist/*.deb
             dist/*.AppImage
             dist/*.zip
+            dist/*.blockmap
+          retention-days: 1
+          if-no-files-found: warn
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          name: Release ${{ github.ref_name }}
+          files: |
+            artifacts/**/*.exe
+            artifacts/**/*.dmg
+            artifacts/**/*.deb
+            artifacts/**/*.AppImage
+            artifacts/**/*.zip
+            artifacts/**/*.blockmap
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
