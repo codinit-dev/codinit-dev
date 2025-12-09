@@ -1,5 +1,6 @@
 
-<img width="1280" height="720" alt="codinit-image" src="https://github.com/user-attachments/assets/b26a4799-0642-4d5c-9240-e8d6f7b9626b" />
+<img width="1270" height="630" alt="hero-image" src="https://github.com/user-attachments/assets/7d522f08-bbab-47ee-a47f-0b9c92445cdc" />
+
 
 <p align="center">
   <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens">
@@ -29,7 +30,7 @@ Get up and running with **CodinIT.dev** in just a few steps.
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/Gerome-Elassaad/codinit-app.git
+git clone https://github.com/codinit-dev/codinit-dev.git
 cd codinit-app
 ````
 
@@ -109,7 +110,7 @@ docker compose --profile development up
 ### Run as Desktop App
 
 Download the latest release:
-👉 [https://github.com/Gerome-Elassaad/codinit-app/releases/latest](https://github.com/Gerome-Elassaad/codinit-app/releases/latest)
+👉 [Latest Release](https://github.com/codinit-dev/codinit-dev/releases/latest)
 
 ---
 
