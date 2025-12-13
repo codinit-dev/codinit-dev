@@ -23,14 +23,11 @@ export * from './text-shimmer';
 // New components
 export * from './Breadcrumbs';
 export * from './CloseButton';
-export * from './CodeBlock';
 export * from './EmptyState';
 export * from './FileIcon';
 export * from './FilterChip';
-export * from './GradientCard';
 export * from './RepositoryStats';
 export * from './SearchInput';
-export * from './SearchResultItem';
 export * from './StatusIndicator';
 export * from './TabsWithSlider';
 
