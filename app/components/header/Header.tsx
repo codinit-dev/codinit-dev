@@ -34,8 +34,8 @@ export function Header() {
           <a href="https://fazier.com/launches/codinit" target="_blank">
             <img
               src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=6267&badge_type=daily&theme=light"
+              width="270"
               alt="Fazier badge"
-              style={{ height: '32px', width: 'auto', maxWidth: '120px' }}
             />
           </a>
           <button
