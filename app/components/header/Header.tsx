@@ -1,11 +1,13 @@
 import { useStore } from '@nanostores/react';
 import { useState } from 'react';
 import { chatStore } from '~/lib/stores/chat';
+import { themeStore } from '~/lib/stores/theme';
 import { SettingsButton } from '~/components/ui/SettingsButton';
 import { ControlPanelDialog } from '~/components/@settings';
 
 export function Header() {
   const chat = useStore(chatStore);
+  const theme = useStore(themeStore);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   if (chat.started) {
@@ -33,7 +35,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <a href="https://fazier.com/launches/codinit" target="_blank">
             <img
-              src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=6267&badge_type=daily&theme=light"
+              src={`https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=6267&badge_type=daily&variant=2&theme=${theme}`}
               width="270"
               alt="Fazier badge"
             />
