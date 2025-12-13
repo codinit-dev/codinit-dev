@@ -1,5 +1,5 @@
 appId: com.codinit.dev
-productName: CodinIT.dev
+productName: codinit-dev
 directories:
   buildResources: build
   output: dist
@@ -54,6 +54,7 @@ mac:
   entitlements: 'assets/entitlements.mac.plist'
   entitlementsInherit: 'assets/entitlements.mac.plist'
   gatekeeperAssess: false
+  artifactName: ${name}-${version}-${os}-${arch}.${ext}
 
 win:
   icon: assets/icons/icon.ico
