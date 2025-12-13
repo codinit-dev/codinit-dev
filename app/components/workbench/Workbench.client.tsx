@@ -6,9 +6,9 @@ import { toast } from 'react-toastify';
 import type { ActionRunner } from '~/lib/runtime/action-runner';
 import type { FileHistory } from '~/types/actions';
 import { DiffView } from './DiffView';
-import {
-  type OnChangeCallback as OnEditorChange,
-  type OnScrollCallback as OnEditorScroll,
+import type {
+  OnChangeCallback as OnEditorChange,
+  OnScrollCallback as OnEditorScroll,
 } from '~/components/editor/codemirror/CodeMirrorEditor';
 import { workbenchStore, type WorkbenchViewType } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
