@@ -31,19 +31,11 @@ export function Header() {
           </a>
         </div>
         <div className="flex items-center gap-2">
-          <a
-            href="https://www.producthunt.com/products/codinit-dev?utm_source=badge-follow&utm_medium=badge&utm_source=badge-codinit-dev"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center shrink-0 h-9 rounded-md hover:opacity-80 transition-opacity"
-            title="Follow on Product Hunt"
-          >
+          <a href="https://fazier.com/launches/codinit" target="_blank">
             <img
-              src="/thirdparty/logos/follow.svg"
-              alt="CodinIT.dev - The #1 local-first open source AI software engineer | Product Hunt"
-              className="h-8"
-              width="86"
-              height="32"
+              src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=6267&badge_type=daily&theme=light"
+              width="270"
+              alt="Fazier badge"
             />
           </a>
           <button
