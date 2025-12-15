@@ -46,6 +46,9 @@ export interface ActionAlert {
   timestamp?: number;
   command?: string;
   exitCode?: number;
+  isStreaming?: boolean;
+  streamingOutput?: string;
+  progress?: number;
 }
 
 export interface SupabaseAlert {
