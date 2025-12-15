@@ -30,14 +30,50 @@ export default class OpenRouterProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Claude Sonnet 4.5 via OpenRouter: 200k context
+     * Claude Opus 4.5 via OpenRouter: 200k context, maximum intelligence
      */
+    {
+      name: 'anthropic/claude-opus-4-5',
+      label: 'Claude Opus 4.5',
+      provider: 'OpenRouter',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 64000,
+    },
+
+    // Claude Sonnet 4.5 via OpenRouter: 200k context
     {
       name: 'anthropic/claude-sonnet-4-5',
       label: 'Claude Sonnet 4.5',
       provider: 'OpenRouter',
       maxTokenAllowed: 200000,
       maxCompletionTokens: 64000,
+    },
+
+    // GPT-5.2 Pro via OpenRouter: 400k context, highest accuracy
+    {
+      name: 'openai/gpt-5.2-pro',
+      label: 'GPT-5.2 Pro',
+      provider: 'OpenRouter',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
+    },
+
+    // GPT-5.2 Thinking via OpenRouter: 400k context, complex reasoning
+    {
+      name: 'openai/gpt-5.2-thinking',
+      label: 'GPT-5.2 Thinking',
+      provider: 'OpenRouter',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
+    },
+
+    // GPT-5.2 Instant via OpenRouter: 400k context, optimized for speed
+    {
+      name: 'openai/gpt-5.2-instant',
+      label: 'GPT-5.2 Instant',
+      provider: 'OpenRouter',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
     },
 
     // GPT-5.1 via OpenRouter: 128k context

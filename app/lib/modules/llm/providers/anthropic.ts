@@ -16,8 +16,17 @@ export default class AnthropicProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * Claude Sonnet 4.5: 200k context, 64k output, best balance of intelligence and speed
+     * Claude Opus 4.5: 200k context, 64k output, maximum intelligence with practical performance
      */
+    {
+      name: 'claude-opus-4-5-20251101',
+      label: 'Claude Opus 4.5',
+      provider: 'Anthropic',
+      maxTokenAllowed: 200000,
+      maxCompletionTokens: 64000,
+    },
+
+    // Claude Sonnet 4.5: 200k context, 64k output, best balance of intelligence and speed
     {
       name: 'claude-sonnet-4-5-20250929',
       label: 'Claude Sonnet 4.5',
@@ -94,7 +103,9 @@ export default class AnthropicProvider extends BaseProvider {
       // Determine completion token limits based on specific model
       let maxCompletionTokens = 128000; // default for older Claude 3 models
 
-      if (m.id?.includes('claude-sonnet-4-5') || m.id?.includes('claude-haiku-4-5')) {
+      if (m.id?.includes('claude-opus-4-5')) {
+        maxCompletionTokens = 64000; // Claude Opus 4.5: 64K output limit
+      } else if (m.id?.includes('claude-sonnet-4-5') || m.id?.includes('claude-haiku-4-5')) {
         maxCompletionTokens = 64000; // Claude 4.5 Sonnet/Haiku: 64K output limit
       } else if (m.id?.includes('claude-opus-4-1') || m.id?.includes('claude-opus-4')) {
         maxCompletionTokens = 32000; // Claude 4 Opus: 32K output limit
