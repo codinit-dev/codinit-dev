@@ -131,6 +131,9 @@ const SETTINGS_KEYS = {
   EVENT_LOGS: 'isEventLogsEnabled',
   PROMPT_ID: 'promptId',
   DEVELOPER_MODE: 'isDeveloperMode',
+  LIVE_ACTION_CONSOLE: 'liveActionConsoleEnabled',
+  DIFF_APPROVAL: 'diffApprovalEnabled',
+  VISUAL_CONTEXT_INDICATOR: 'visualContextIndicatorEnabled',
 } as const;
 
 // Initialize settings from localStorage or defaults
@@ -160,6 +163,9 @@ const getInitialSettings = () => {
     eventLogs: getStoredBoolean(SETTINGS_KEYS.EVENT_LOGS, true),
     promptId: isBrowser ? localStorage.getItem(SETTINGS_KEYS.PROMPT_ID) || 'default' : 'default',
     developerMode: getStoredBoolean(SETTINGS_KEYS.DEVELOPER_MODE, false),
+    liveActionConsole: getStoredBoolean(SETTINGS_KEYS.LIVE_ACTION_CONSOLE, true),
+    diffApproval: getStoredBoolean(SETTINGS_KEYS.DIFF_APPROVAL, false),
+    visualContextIndicator: getStoredBoolean(SETTINGS_KEYS.VISUAL_CONTEXT_INDICATOR, true),
   };
 };
 
@@ -171,6 +177,9 @@ export const autoSelectStarterTemplate = atom<boolean>(initialSettings.autoSelec
 export const enableContextOptimizationStore = atom<boolean>(initialSettings.contextOptimization);
 export const isEventLogsEnabled = atom<boolean>(initialSettings.eventLogs);
 export const promptStore = atom<string>(initialSettings.promptId);
+export const liveActionConsoleStore = atom<boolean>(initialSettings.liveActionConsole);
+export const diffApprovalStore = atom<boolean>(initialSettings.diffApproval);
+export const visualContextIndicatorStore = atom<boolean>(initialSettings.visualContextIndicator);
 
 // Helper functions to update settings with persistence
 export const updateLatestBranch = (enabled: boolean) => {
@@ -196,6 +205,21 @@ export const updateEventLogs = (enabled: boolean) => {
 export const updatePromptId = (id: string) => {
   promptStore.set(id);
   localStorage.setItem(SETTINGS_KEYS.PROMPT_ID, id);
+};
+
+export const updateLiveActionConsole = (enabled: boolean) => {
+  liveActionConsoleStore.set(enabled);
+  localStorage.setItem(SETTINGS_KEYS.LIVE_ACTION_CONSOLE, JSON.stringify(enabled));
+};
+
+export const updateDiffApproval = (enabled: boolean) => {
+  diffApprovalStore.set(enabled);
+  localStorage.setItem(SETTINGS_KEYS.DIFF_APPROVAL, JSON.stringify(enabled));
+};
+
+export const updateVisualContextIndicator = (enabled: boolean) => {
+  visualContextIndicatorStore.set(enabled);
+  localStorage.setItem(SETTINGS_KEYS.VISUAL_CONTEXT_INDICATOR, JSON.stringify(enabled));
 };
 
 // Initialize tab configuration from localStorage or defaults
