@@ -10,7 +10,7 @@ import { validateCode } from './code-validator';
 
 const logger = createScopedLogger('ActionRunner');
 
-export type ActionStatus = 'pending' | 'running' | 'complete' | 'aborted' | 'failed';
+export type ActionStatus = 'pending' | 'running' | 'complete' | 'aborted' | 'failed' | 'awaiting-approval';
 
 export type BaseActionState = BoltAction & {
   status: Exclude<ActionStatus, 'failed'>;
