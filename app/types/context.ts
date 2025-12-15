@@ -1,7 +1,12 @@
+export type FileCategory = 'component' | 'config' | 'style' | 'test' | 'api' | 'util' | 'other';
+
 export type ContextAnnotation =
   | {
       type: 'codeContext';
       files: string[];
+      categories?: Record<string, FileCategory>;
+      relevanceScores?: Record<string, number>;
+      selectionReason?: string;
     }
   | {
       type: 'chatSummary';
