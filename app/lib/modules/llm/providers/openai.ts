@@ -16,8 +16,35 @@ export default class OpenAIProvider extends BaseProvider {
   staticModels: ModelInfo[] = [
     /*
      * Essential fallback models - only the most stable/reliable ones
-     * GPT-5.1: 128k context, 16k output limit (best for coding and agentic tasks)
+     * GPT-5.2 Pro: 400k context, 128k output, highest accuracy and quality
      */
+    {
+      name: 'gpt-5.2-pro',
+      label: 'GPT-5.2 Pro',
+      provider: 'OpenAI',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
+    },
+
+    // GPT-5.2 Thinking: 400k context, 128k output, for complex reasoning and coding
+    {
+      name: 'gpt-5.2-thinking',
+      label: 'GPT-5.2 Thinking',
+      provider: 'OpenAI',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
+    },
+
+    // GPT-5.2 Instant: 400k context, 128k output, optimized for speed
+    {
+      name: 'gpt-5.2-instant',
+      label: 'GPT-5.2 Instant',
+      provider: 'OpenAI',
+      maxTokenAllowed: 400000,
+      maxCompletionTokens: 128000,
+    },
+
+    // GPT-5.1: 128k context, 16k output limit (best for coding and agentic tasks)
     {
       name: 'gpt-5.1',
       label: 'GPT-5.1',
@@ -112,6 +139,12 @@ export default class OpenAIProvider extends BaseProvider {
       // OpenAI provides context_length in their API response
       if (m.context_length) {
         contextWindow = m.context_length;
+      } else if (m.id?.includes('gpt-5.2')) {
+        contextWindow = 400000; // GPT-5.2 has 400k context
+      } else if (m.id?.includes('gpt-5.1')) {
+        contextWindow = 128000; // GPT-5.1 has 128k context
+      } else if (m.id?.includes('gpt-5')) {
+        contextWindow = 128000; // Other GPT-5 models have 128k context
       } else if (m.id?.includes('gpt-4o')) {
         contextWindow = 128000; // GPT-4o has 128k context
       } else if (m.id?.includes('gpt-4-turbo') || m.id?.includes('gpt-4-1106')) {
@@ -135,6 +168,8 @@ export default class OpenAIProvider extends BaseProvider {
         maxCompletionTokens = 32000; // Other o1 models: 32K limit
       } else if (m.id?.includes('o3') || m.id?.includes('o4')) {
         maxCompletionTokens = 100000; // o3/o4 models: 100K output limit
+      } else if (m.id?.includes('gpt-5.2')) {
+        maxCompletionTokens = 128000; // GPT-5.2: 128K output limit
       } else if (m.id?.includes('gpt-5.1')) {
         maxCompletionTokens = 16384; // GPT-5.1: 16K output limit
       } else if (m.id?.includes('gpt-5-mini')) {
@@ -155,7 +190,7 @@ export default class OpenAIProvider extends BaseProvider {
         name: m.id,
         label: `${m.id} (${Math.floor(contextWindow / 1000)}k context)`,
         provider: this.name,
-        maxTokenAllowed: Math.min(contextWindow, 128000), // Cap at 128k for safety
+        maxTokenAllowed: Math.min(contextWindow, 400000), // Cap at 400k for safety
         maxCompletionTokens,
       };
     });
