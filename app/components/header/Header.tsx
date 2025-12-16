@@ -32,8 +32,8 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <a href="https://fazier.com/launches/codinit" target="_blank">
-            <img src="/embed_image_dark.svg" alt="Fazier badge" className="h-8 hidden dark:block" />
-            <img src="/embed_image_light.svg" alt="Fazier badge" className="h-8 block dark:hidden" />
+            <img src="/rank-2-dark.svg" alt="Fazier badge" className="h-8 hidden dark:block" />
+            <img src="/rank-2-light.svg" alt="Fazier badge" className="h-8 block dark:hidden" />
           </a>
           <button
             onClick={() => window.open('https://github.com/codinit-dev/codinit-dev/issues/new/choose', '_blank')}
