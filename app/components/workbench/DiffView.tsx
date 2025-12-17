@@ -543,7 +543,7 @@ const _FileInfo = memo(
   },
 );
 
-const InlineDiffComparison = memo(({ beforeCode, afterCode, language }: CodeComparisonProps) => {
+export const InlineDiffComparison = memo(({ beforeCode, afterCode, language }: CodeComparisonProps) => {
   const [highlighter, setHighlighter] = useState<any>(null);
   const theme = useStore(themeStore);
 
