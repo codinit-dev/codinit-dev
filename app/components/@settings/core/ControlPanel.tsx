@@ -9,7 +9,6 @@ import { TabTile } from '~/components/@settings/shared/components/TabTile';
 import { SearchInterface } from '~/components/@settings/shared/components/SearchInterface';
 import { initializeSearchIndex } from '~/components/@settings/shared/utils/settingsSearch';
 import { useUpdateCheck } from '~/lib/hooks/useUpdateCheck';
-import { useFeatures } from '~/lib/hooks/useFeatures';
 import { useNotifications } from '~/lib/hooks/useNotifications';
 import { useConnectionStatus } from '~/lib/hooks/useConnectionStatus';
 import { useDebugStatus } from '~/lib/hooks/useDebugStatus';
@@ -168,7 +167,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
 
   // Status hooks
   const { hasUpdate, currentVersion, acknowledgeUpdate } = useUpdateCheck();
-  const { hasNewFeatures, unviewedFeatures, acknowledgeAllFeatures } = useFeatures();
   const { hasUnreadNotifications, unreadNotifications, markAllAsRead } = useNotifications();
   const { hasConnectionIssues, currentIssue, acknowledgeIssue } = useConnectionStatus();
   const { hasActiveWarnings, activeIssues, acknowledgeAllIssues } = useDebugStatus();
@@ -358,8 +356,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
     switch (tabId) {
       case 'update':
         return hasUpdate;
-      case 'features':
-        return hasNewFeatures;
       case 'notifications':
         return hasUnreadNotifications;
       case 'connection':
@@ -375,8 +371,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
     switch (tabId) {
       case 'update':
         return `New update available (v${currentVersion})`;
-      case 'features':
-        return `${unviewedFeatures.length} new feature${unviewedFeatures.length === 1 ? '' : 's'} to explore`;
       case 'notifications':
         return `${unreadNotifications.length} unread notification${unreadNotifications.length === 1 ? '' : 's'}`;
       case 'connection':
@@ -405,9 +399,6 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
     switch (tabId) {
       case 'update':
         acknowledgeUpdate();
-        break;
-      case 'features':
-        acknowledgeAllFeatures();
         break;
       case 'notifications':
         markAllAsRead();
