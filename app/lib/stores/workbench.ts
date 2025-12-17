@@ -23,6 +23,7 @@ import Cookies from 'js-cookie';
 import { createSampler } from '~/utils/sampler';
 import type { ActionAlert, DeployAlert, SupabaseAlert } from '~/types/actions';
 import { startAutoSave } from '~/lib/persistence/fileAutoSave';
+import { liveActionConsoleStore } from './settings';
 
 const { saveAs } = fileSaver;
 
@@ -596,6 +597,27 @@ export class WorkbenchStore {
               status: testResult.status,
             });
           }
+        },
+        (output, command) => {
+          if (this.#reloadedMessages.has(messageId)) {
+            return;
+          }
+
+          const liveConsoleEnabled = liveActionConsoleStore.get();
+
+          if (!liveConsoleEnabled) {
+            return;
+          }
+
+          this.actionAlert.set({
+            type: 'info',
+            title: 'Command Running',
+            description: `Executing: ${command}`,
+            content: output,
+            isStreaming: true,
+            streamingOutput: output,
+            command,
+          });
         },
       ),
     });

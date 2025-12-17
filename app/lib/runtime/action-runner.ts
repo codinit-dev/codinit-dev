@@ -83,6 +83,7 @@ export class ActionRunner {
   onSupabaseAlert?: (alert: SupabaseAlert) => void;
   onDeployAlert?: (alert: DeployAlert) => void;
   onTestResult?: TestResultCallback;
+  onLiveOutput?: (output: string, actionId: string) => void;
   buildOutput?: { path: string; exitCode: number; output: string };
 
   constructor(
@@ -92,6 +93,7 @@ export class ActionRunner {
     onSupabaseAlert?: (alert: SupabaseAlert) => void,
     onDeployAlert?: (alert: DeployAlert) => void,
     onTestResult?: TestResultCallback,
+    onLiveOutput?: (output: string, actionId: string) => void,
   ) {
     this.#webcontainer = webcontainerPromise;
     this.#shellTerminal = getShellTerminal;
@@ -99,6 +101,7 @@ export class ActionRunner {
     this.onSupabaseAlert = onSupabaseAlert;
     this.onDeployAlert = onDeployAlert;
     this.onTestResult = onTestResult;
+    this.onLiveOutput = onLiveOutput;
   }
 
   addAction(data: ActionCallbackData) {
@@ -272,6 +275,10 @@ export class ActionRunner {
       unreachable('Shell terminal not found');
     }
 
+    if (this.onLiveOutput && shell.liveActionStream) {
+      this.#monitorLiveOutput(shell.liveActionStream, action.content);
+    }
+
     const resp = await shell.executeCommand(this.runnerId.get(), action.content, () => {
       logger.debug(`[${action.type}]:Aborting Action\n\n`, action);
       action.abort();
@@ -295,6 +302,28 @@ export class ActionRunner {
 
     if (resp?.exitCode != 0) {
       throw new ActionCommandError(`Failed To Execute Shell Command`, resp?.output || 'No Output Available');
+    }
+  }
+
+  async #monitorLiveOutput(stream: ReadableStreamDefaultReader<string>, command: string) {
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { value, done } = await stream.read();
+
+        if (done) {
+          break;
+        }
+
+        buffer += value || '';
+
+        if (this.onLiveOutput) {
+          this.onLiveOutput(buffer, command);
+        }
+      }
+    } catch (error) {
+      logger.error('Live output monitoring error:', error);
     }
   }
 
