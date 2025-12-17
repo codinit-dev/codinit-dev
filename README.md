@@ -33,29 +33,33 @@ Get up and running in minutes.
 
 1️⃣ Clone the Repository
 
+```
 git clone https://github.com/codinit-dev/codinit-dev.git
 cd codinit-dev
+```
 
 2️⃣ Install Dependencies
 
+```
 # npm
 npm install
 
 # or pnpm
 pnpm install
+```
+
 
 3️⃣ Configure Environment
 
 Create a .env file and add your preferred AI provider keys:
 
-OPENAI_API_KEY=your_key_here
-ANTHROPIC_API_KEY=your_key_here
-
 (You can mix and match multiple providers.)
 
 4️⃣ Run the Dev Server
 
+```
 pnpm run dev
+```
 
 The app will be available at: 👉 http://localhost:5173
 
@@ -94,16 +98,15 @@ Ollama · LM Studio · OpenAI‑compatible local endpoints
 
 Use one provider or switch dynamically per task.
 
-
 ---
 
 🖥️ Desktop & Docker Usage
 
 Run with Docker
-
+```
 npm run dockerbuild
 docker compose --profile development up
-
+```
 Run as a Desktop App
 
 Download the latest prebuilt release: 👉 https://github.com/codinit-dev/codinit-dev/releases/latest
