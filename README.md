@@ -1,10 +1,8 @@
-
-<img width="1270" height="630" alt="hero-image" src="https://github.com/user-attachments/assets/7d522f08-bbab-47ee-a47f-0b9c92445cdc" />
-
-
 <p align="center">
-  <a href="https://huntscreens.com/en/products/codinit" target="_blank" title="Featured on HuntScreens">
-    <img src="https://shot.huntscreens.com/badge.svg" alt="Featured on HuntScreens" width="240" height="60"/>
+  <img width="1270" height="630" alt="CodinIT.dev Hero" src="https://github.com/user-attachments/assets/7d522f08-bbab-47ee-a47f-0b9c92445cdc" />
+</p><p align="center">
+  <a href="https://fazier.com/launches/codinit" target="_blank">
+    <img src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=6267&badge_type=weekly&theme=light" width="270" alt="Fazier badge" />
   </a>
   <br/><br/>
   <a href="https://sourceforge.net/projects/codinit-dev/files/latest/download">
@@ -14,115 +12,100 @@
          height="48"
          srcset="https://a.fsdn.com/con/app/sf-download-button?button_size=2x 2x">
   </a>
+</p><p align="center">
+  <strong>⚡ CodinIT.dev — Open‑Source AI App Builder ⚡</strong><br/>
+  Build, manage, and deploy intelligent applications faster — directly from your browser or desktop.
 </p>
+---
 
-<p align="center">
-  <strong>⚡ CodinIT.dev — OpenSource AI App Builder ⚡</strong><br/>
-  Build, manage, and deploy intelligent applications directly from your browser or desktop.
-</p>
+✨ What is CodinIT.dev?
+
+CodinIT.dev is an open‑source, AI‑powered full‑stack development platform designed to help you build modern Node.js applications with speed and precision. It combines code generation, project management, and deployment tools into a single workflow — powered by your choice of AI providers.
+
+Whether you’re prototyping, scaling a SaaS product, or experimenting with local LLMs, CodinIT.dev adapts to your stack and your workflow.
+
 
 ---
 
-## 🚀 Quick Start
+🚀 Quick Start
 
-Get up and running with **CodinIT.dev** in just a few steps.
+Get up and running in minutes.
 
-### 1️⃣ Clone the Repository
+1️⃣ Clone the Repository
 
-```bash
 git clone https://github.com/codinit-dev/codinit-dev.git
-cd codinit-app
-````
+cd codinit-dev
 
-### Install Dependencies
+2️⃣ Install Dependencies
 
-```bash
 # npm
 npm install
 
 # or pnpm
 pnpm install
 
-# or yarn
-yarn install
-```
+3️⃣ Configure Environment
 
-### 2️⃣ Set Up the Database
+Create a .env file and add your preferred AI provider keys:
 
-Ensure you have a PostgreSQL database running. (Supabase recommended.)
+OPENAI_API_KEY=your_key_here
+ANTHROPIC_API_KEY=your_key_here
 
-### 3️⃣ Configure Environment
+(You can mix and match multiple providers.)
 
-```bash
-cp .env.example .env.local
-```
+4️⃣ Run the Dev Server
 
-Add your keys:
-
-```bash
-OPENAI_API_KEY=your_openai_key
-ANTHROPIC_API_KEY=your_anthropic_key
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-### 4️⃣ Run the Dev Server
-
-```bash
 pnpm run dev
-```
 
-The app will be available at:
-👉 [http://localhost:5173](http://localhost:5173)
+The app will be available at: 👉 http://localhost:5173
 
----
-
-## 🧩 Key Features
-
-* 🧠 AI-powered full-stack development for Node.js apps
-* 🌐 Integrations with 19+ AI providers
-* 🖥️ Web + Desktop (Electron) support
-* 🐳 Docker-ready, deployable to Vercel/Netlify/GitHub Pages
-* 🔍 Built-in search, diff view, and file locking system
-* 🧰 Supabase integration, data visualization, and voice prompting
 
 ---
 
-## 🔑 API Providers
+🧩 Key Features
 
-**Cloud Providers:**
-OpenAI, Anthropic, Google, Groq, xAI, DeepSeek, Cohere, Mistral, Together, Perplexity, HuggingFace, OpenRouter, and more.
+🧠 AI‑powered full‑stack development for Node.js apps
 
-**Local:**
-Ollama, LM Studio, OpenAI-compatible local endpoints.
+🌐 19+ AI provider integrations (cloud & local)
+
+🖥️ Web + Desktop (Electron) support
+
+🐳 Docker‑ready — deploy to Vercel, Netlify, or GitHub Pages
+
+🔍 Built‑in search, diff viewer & file‑locking
+
+🧰 Supabase integration, data visualization & voice prompting
+
+🔐 Provider‑agnostic architecture — no vendor lock‑in
+
+
 
 ---
 
-## 🖥️ Desktop & Docker Options
+🔑 Supported AI Providers
 
-### Run via Docker
+☁️ Cloud Providers
 
-```bash
+OpenAI · Anthropic · Google · Groq · xAI · DeepSeek · Cohere · Mistral · Together · Perplexity · HuggingFace · OpenRouter · and more
+
+🏠 Local Providers
+
+Ollama · LM Studio · OpenAI‑compatible local endpoints
+
+Use one provider or switch dynamically per task.
+
+
+---
+
+🖥️ Desktop & Docker Usage
+
+Run with Docker
+
 npm run dockerbuild
 docker compose --profile development up
-```
 
-### Run as Desktop App
+Run as a Desktop App
 
-Download the latest release:
-👉 [Latest Release](https://github.com/codinit-dev/codinit-dev/releases/latest)
+Download the latest prebuilt release: 👉 https://github.com/codinit-dev/codinit-dev/releases/latest
 
----
-
-## 🤝 Contributing
-
-We welcome contributions!
-Open an issue, submit a PR, or join discussions to help shape the future of CodinIT.dev.
-
----
-
-<p align="center">
-  <strong>CodinIT.dev — Build Faster. Code Smarter.</strong><br/>
-  <a href="https://codinit.dev/download">Download the latest version →</a>
-</p>
-
+Available for macOS, Windows, and Linux.
