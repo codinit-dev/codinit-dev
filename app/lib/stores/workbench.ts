@@ -21,9 +21,9 @@ import { extractRelativePath } from '~/utils/diff';
 import { description } from '~/lib/persistence';
 import Cookies from 'js-cookie';
 import { createSampler } from '~/utils/sampler';
-import type { ActionAlert, DeployAlert, SupabaseAlert } from '~/types/actions';
+import type { ActionAlert, DeployAlert, SupabaseAlert, FileAction } from '~/types/actions';
 import { startAutoSave } from '~/lib/persistence/fileAutoSave';
-import { liveActionConsoleStore } from './settings';
+import { liveActionConsoleStore, diffApprovalStore } from './settings';
 
 const { saveAs } = fileSaver;
 
@@ -108,6 +108,15 @@ export class WorkbenchStore {
     import.meta.hot?.data.supabaseAlert ?? atom<SupabaseAlert | undefined>(undefined);
   deployAlert: WritableAtom<DeployAlert | undefined> =
     import.meta.hot?.data.deployAlert ?? atom<DeployAlert | undefined>(undefined);
+  pendingApproval: WritableAtom<{
+    actionId: string;
+    messageId: string;
+    artifactId: string;
+    filePath: string;
+    beforeContent: string;
+    afterContent: string;
+    action: FileAction;
+  } | null> = import.meta.hot?.data.pendingApproval ?? atom(null);
   modifiedFiles = new Set<string>();
   artifactIdList: string[] = [];
   #globalExecutionQueue = Promise.resolve();
@@ -124,6 +133,7 @@ export class WorkbenchStore {
       import.meta.hot.data.actionAlert = this.actionAlert;
       import.meta.hot.data.supabaseAlert = this.supabaseAlert;
       import.meta.hot.data.deployAlert = this.deployAlert;
+      import.meta.hot.data.pendingApproval = this.pendingApproval;
 
       // Ensure binary files are properly preserved across hot reloads
       const filesMap = this.files.get();
@@ -730,6 +740,48 @@ export class WorkbenchStore {
       return;
     }
 
+    if (data.action.type === 'file' && !isStreaming && diffApprovalStore.get()) {
+      const wc = await webcontainer;
+      const fullPath = path.join(wc.workdir, data.action.filePath);
+
+      let beforeContent = '';
+      const existingFile = this.files.get()[fullPath];
+
+      if (existingFile && existingFile.type === 'file') {
+        beforeContent = existingFile.content;
+      } else {
+        try {
+          const fileContent = await wc.fs.readFile(fullPath, 'utf-8');
+          beforeContent = fileContent;
+        } catch {
+          beforeContent = '';
+        }
+      }
+
+      const afterContent = data.action.content;
+
+      if (beforeContent !== afterContent) {
+        this.pendingApproval.set({
+          actionId: data.actionId,
+          messageId,
+          artifactId: data.artifactId,
+          filePath: fullPath,
+          beforeContent,
+          afterContent,
+          action: data.action,
+        });
+
+        const actions = artifact.runner.actions.get();
+        const currentAction = actions[data.actionId];
+
+        if (currentAction) {
+          artifact.runner.actions.setKey(data.actionId, { ...currentAction, status: 'awaiting-approval' });
+        }
+
+        return;
+      }
+    }
+
     if (data.action.type === 'file') {
       const wc = await webcontainer;
       const fullPath = path.join(wc.workdir, data.action.filePath);
@@ -766,6 +818,73 @@ export class WorkbenchStore {
       }
     } else {
       await artifact.runner.runAction(data);
+    }
+  }
+
+  async approveFileChange() {
+    const pending = this.pendingApproval.get();
+
+    if (!pending) {
+      return;
+    }
+
+    const { actionId, messageId, artifactId, action } = pending;
+
+    this.pendingApproval.set(null);
+
+    const artifact = this.#getArtifact(messageId);
+
+    if (!artifact) {
+      unreachable('Artifact not found');
+    }
+
+    const actions = artifact.runner.actions.get();
+    const currentAction = actions[actionId];
+
+    if (currentAction) {
+      artifact.runner.actions.setKey(actionId, { ...currentAction, status: 'running' });
+    }
+
+    const wasEnabled = diffApprovalStore.get();
+    diffApprovalStore.set(false);
+
+    try {
+      await this._runAction(
+        {
+          messageId,
+          artifactId,
+          actionId,
+          action,
+        },
+        false,
+      );
+    } finally {
+      diffApprovalStore.set(wasEnabled);
+    }
+  }
+
+  async rejectFileChange() {
+    const pending = this.pendingApproval.get();
+
+    if (!pending) {
+      return;
+    }
+
+    const { actionId, messageId } = pending;
+
+    this.pendingApproval.set(null);
+
+    const artifact = this.#getArtifact(messageId);
+
+    if (!artifact) {
+      unreachable('Artifact not found');
+    }
+
+    const actions = artifact.runner.actions.get();
+    const currentAction = actions[actionId];
+
+    if (currentAction) {
+      artifact.runner.actions.setKey(actionId, { ...currentAction, status: 'aborted' });
     }
   }
 

@@ -33,13 +33,11 @@ import NotificationsTab from '~/components/@settings/tabs/notifications/Notifica
 import FeaturesTab from '~/components/@settings/tabs/features/FeaturesTab';
 import { DataTab } from '~/components/@settings/tabs/data/DataTab';
 import DebugTab from '~/components/@settings/tabs/debug/DebugTab';
-import { EventLogsTab } from '~/components/@settings/tabs/event-logs/EventLogsTab';
 import UpdateTab from '~/components/@settings/tabs/update/UpdateTab';
 import ConnectionsTab from '~/components/@settings/tabs/connections/ConnectionsTab';
 import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/CloudProvidersTab';
 import ServiceStatusTab from '~/components/@settings/tabs/providers/status/ServiceStatusTab';
 import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
-import TaskManagerTab from '~/components/@settings/tabs/task-manager/TaskManagerTab';
 import ApiKeysTab from '~/components/@settings/tabs/api-keys/APIKeysTab';
 
 interface ControlPanelProps {
@@ -347,12 +345,8 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <ConnectionsTab />;
       case 'debug':
         return <DebugTab />;
-      case 'event-logs':
-        return <EventLogsTab />;
       case 'update':
         return <UpdateTab />;
-      case 'task-manager':
-        return <TaskManagerTab />;
       case 'service-status':
         return <ServiceStatusTab />;
       default:

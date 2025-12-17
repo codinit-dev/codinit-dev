@@ -5,7 +5,6 @@ import { TAB_LABELS } from '~/components/@settings/core/constants';
 import type { TabType } from '~/components/@settings/core/types';
 import { TextShimmer } from '~/components/ui/text-shimmer';
 
-// Lazy load all tab components
 const ProfileTab = lazy(() =>
   import('~/components/@settings/tabs/profile/ProfileTab').then((module) => ({ default: module.default })),
 );
@@ -42,14 +41,8 @@ const ConnectionsTab = lazy(() =>
 const DebugTab = lazy(() =>
   import('~/components/@settings/tabs/debug/DebugTab').then((module) => ({ default: module.default })),
 );
-const EventLogsTab = lazy(() =>
-  import('~/components/@settings/tabs/event-logs/EventLogsTab').then((module) => ({ default: module.EventLogsTab })),
-);
 const UpdateTab = lazy(() =>
   import('~/components/@settings/tabs/update/UpdateTab').then((module) => ({ default: module.default })),
-);
-const TaskManagerTab = lazy(() =>
-  import('~/components/@settings/tabs/task-manager/TaskManagerTab').then((module) => ({ default: module.default })),
 );
 const ApiKeysTab = lazy(() =>
   import('~/components/@settings/tabs/api-keys/APIKeysTab').then((module) => ({ default: module.default })),
@@ -92,12 +85,8 @@ function TabContent({ tab }: { tab: TabType }) {
       return <ConnectionsTab />;
     case 'debug':
       return <DebugTab />;
-    case 'event-logs':
-      return <EventLogsTab />;
     case 'update':
       return <UpdateTab />;
-    case 'task-manager':
-      return <TaskManagerTab />;
     case 'api-keys':
       return <ApiKeysTab />;
     default:
