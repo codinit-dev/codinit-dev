@@ -148,7 +148,15 @@ export default function LocalProvidersTab() {
     try {
       setIsLoadingModels(true);
 
-      const response = await fetch('http://127.0.0.1:11434/api/tags');
+      const ollamaProvider = filteredProviders.find((p) => p.name === 'Ollama');
+      const baseUrl = ollamaProvider?.settings.baseUrl || OLLAMA_API_URL;
+
+      const response = await fetch(`${baseUrl}/api/tags`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const data = (await response.json()) as { models: OllamaModel[] };
 
       setOllamaModels(
@@ -159,6 +167,9 @@ export default function LocalProvidersTab() {
       );
     } catch (error) {
       console.error('Error fetching Ollama models:', error);
+
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error occurred';
+      toast(`Failed to fetch Ollama models: ${errorMsg}`);
     } finally {
       setIsLoadingModels(false);
     }
@@ -166,7 +177,10 @@ export default function LocalProvidersTab() {
 
   const updateOllamaModel = async (modelName: string): Promise<boolean> => {
     try {
-      const response = await fetch(`${OLLAMA_API_URL}/api/pull`, {
+      const ollamaProvider = filteredProviders.find((p) => p.name === 'Ollama');
+      const baseUrl = ollamaProvider?.settings.baseUrl || OLLAMA_API_URL;
+
+      const response = await fetch(`${baseUrl}/api/pull`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: modelName }),
@@ -218,7 +232,7 @@ export default function LocalProvidersTab() {
         }
       }
 
-      const updatedResponse = await fetch('http://127.0.0.1:11434/api/tags');
+      const updatedResponse = await fetch(`${baseUrl}/api/tags`);
       const updatedData = (await updatedResponse.json()) as { models: OllamaModel[] };
       const updatedModel = updatedData.models.find((m) => m.name === modelName);
 
@@ -275,7 +289,10 @@ export default function LocalProvidersTab() {
 
   const handleDeleteOllamaModel = async (modelName: string) => {
     try {
-      const response = await fetch(`${OLLAMA_API_URL}/api/delete`, {
+      const ollamaProvider = filteredProviders.find((p) => p.name === 'Ollama');
+      const baseUrl = ollamaProvider?.settings.baseUrl || OLLAMA_API_URL;
+
+      const response = await fetch(`${baseUrl}/api/delete`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

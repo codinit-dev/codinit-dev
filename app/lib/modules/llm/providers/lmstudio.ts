@@ -42,12 +42,32 @@ export default class LMStudioProvider extends BaseProvider {
        */
       const isDocker = process?.env?.RUNNING_IN_DOCKER === 'true' || serverEnv?.RUNNING_IN_DOCKER === 'true';
 
-      baseUrl = isDocker ? baseUrl.replace('localhost', 'host.docker.internal') : baseUrl;
-      baseUrl = isDocker ? baseUrl.replace('127.0.0.1', 'host.docker.internal') : baseUrl;
+      if (isDocker) {
+        try {
+          const url = new URL(baseUrl);
+          if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+            url.hostname = 'host.docker.internal';
+            baseUrl = url.toString().replace(/\/$/, '');
+          }
+        } catch (error) {
+          logger.warn('Failed to parse LMStudio baseUrl for Docker mapping:', error);
+        }
+      }
     }
 
     const response = await fetch(`${baseUrl}/v1/models`);
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch LMStudio models: HTTP ${response.status} ${response.statusText}`,
+      );
+    }
+
     const data = (await response.json()) as { data: Array<{ id: string }> };
+
+    if (!data || !Array.isArray(data.data)) {
+      throw new Error('Invalid response from LMStudio API: missing data array');
+    }
 
     return data.data.map((model) => ({
       name: model.id,
@@ -78,9 +98,16 @@ export default class LMStudioProvider extends BaseProvider {
 
     const isDocker = process?.env?.RUNNING_IN_DOCKER === 'true' || serverEnv?.RUNNING_IN_DOCKER === 'true';
 
-    if (typeof window === 'undefined') {
-      baseUrl = isDocker ? baseUrl.replace('localhost', 'host.docker.internal') : baseUrl;
-      baseUrl = isDocker ? baseUrl.replace('127.0.0.1', 'host.docker.internal') : baseUrl;
+    if (typeof window === 'undefined' && isDocker) {
+      try {
+        const url = new URL(baseUrl);
+        if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+          url.hostname = 'host.docker.internal';
+          baseUrl = url.toString().replace(/\/$/, '');
+        }
+      } catch (error) {
+        logger.warn('Failed to parse LMStudio baseUrl for Docker mapping:', error);
+      }
     }
 
     logger.debug('LMStudio Base Url used: ', baseUrl);

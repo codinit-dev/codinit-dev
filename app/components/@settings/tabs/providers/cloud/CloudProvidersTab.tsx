@@ -44,7 +44,7 @@ const PROVIDER_ICONS: Record<ProviderName, string> = {
 // Update PROVIDER_DESCRIPTIONS to use the same type
 const PROVIDER_DESCRIPTIONS: Partial<Record<ProviderName, string>> = {
   Anthropic: 'Access Claude and other Anthropic models',
-  OpenAI: 'Use GPT-4, GPT-3.5, and other OpenAI models',
+  OpenAI: 'Use GPT-5.2, GPT-4.5, and other OpenAI models',
 };
 
 const CloudProvidersTab = () => {
