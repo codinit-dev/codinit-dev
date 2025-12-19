@@ -113,6 +113,7 @@ export class LLMManager {
     provider: BaseProvider,
     apiKeys?: Record<string, string>,
     serverEnv?: Record<string, string>,
+    providerSettings?: Record<string, IProviderSetting>,
   ): boolean {
     // Check if provider has API key configuration
     const config = provider.config;
@@ -128,7 +129,10 @@ export class LLMManager {
     // For local providers like Ollama and LMStudio, check if baseUrl is configured
     if (provider.name === 'Ollama' || provider.name === 'LMStudio') {
       const baseUrlKey = provider.name === 'Ollama' ? 'OLLAMA_API_BASE_URL' : 'LMSTUDIO_API_BASE_URL';
-      const hasBaseUrl = apiKeys?.[baseUrlKey] || serverEnv?.[baseUrlKey];
+      const hasBaseUrl =
+        providerSettings?.[provider.name]?.baseUrl ||
+        apiKeys?.[baseUrlKey] ||
+        serverEnv?.[baseUrlKey];
 
       if (!hasBaseUrl) {
         return false;
@@ -217,7 +221,7 @@ export class LLMManager {
 
           // Check if provider has required configuration before attempting fetch
           const providerConfig = providerSettings?.[provider.name];
-          const hasRequiredConfig = this._hasRequiredConfiguration(provider, apiKeys, serverEnv);
+          const hasRequiredConfig = this._hasRequiredConfiguration(provider, apiKeys, serverEnv, providerSettings);
 
           if (!hasRequiredConfig) {
             logger.debug(`Skipping ${provider.name}: missing required configuration`);
