@@ -62,13 +62,11 @@ export const DEFAULT_TAB_CONFIG = [
   { id: 'local-providers', visible: true, window: 'user' as const, order: 3 },
   { id: 'connection', visible: true, window: 'user' as const, order: 4 },
   { id: 'notifications', visible: true, window: 'user' as const, order: 5 },
-  { id: 'event-logs', visible: true, window: 'user' as const, order: 6 },
 
   // User Window Tabs (In dropdown, initially hidden)
   { id: 'profile', visible: false, window: 'user' as const, order: 7 },
   { id: 'settings', visible: false, window: 'user' as const, order: 8 },
   { id: 'api-keys', visible: true, window: 'user' as const, order: 9 },
-  { id: 'task-manager', visible: false, window: 'user' as const, order: 10 },
   { id: 'service-status', visible: false, window: 'user' as const, order: 11 },
 
   // User Window Tabs (Hidden, controlled by TaskManagerTab)
@@ -82,11 +80,9 @@ export const DEFAULT_TAB_CONFIG = [
   { id: 'local-providers', visible: true, window: 'developer' as const, order: 3 },
   { id: 'connection', visible: true, window: 'developer' as const, order: 4 },
   { id: 'notifications', visible: true, window: 'developer' as const, order: 5 },
-  { id: 'event-logs', visible: true, window: 'developer' as const, order: 6 },
   { id: 'profile', visible: true, window: 'developer' as const, order: 7 },
   { id: 'settings', visible: true, window: 'developer' as const, order: 8 },
   { id: 'api-keys', visible: true, window: 'developer' as const, order: 9 },
-  { id: 'task-manager', visible: true, window: 'developer' as const, order: 10 },
   { id: 'service-status', visible: true, window: 'developer' as const, order: 11 },
   { id: 'debug', visible: true, window: 'developer' as const, order: 12 },
   { id: 'update', visible: true, window: 'developer' as const, order: 13 },

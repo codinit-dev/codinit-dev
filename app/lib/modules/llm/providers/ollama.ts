@@ -86,6 +86,7 @@ export default class OllamaProvider extends BaseProvider {
       if (isDocker) {
         try {
           const url = new URL(baseUrl);
+
           if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
             url.hostname = 'host.docker.internal';
             baseUrl = url.toString().replace(/\/$/, '');
@@ -99,9 +100,7 @@ export default class OllamaProvider extends BaseProvider {
     const response = await fetch(`${baseUrl}/api/tags`);
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch Ollama models: HTTP ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch Ollama models: HTTP ${response.status} ${response.statusText}`);
     }
 
     const data = (await response.json()) as OllamaApiResponse;
@@ -147,6 +146,7 @@ export default class OllamaProvider extends BaseProvider {
     if (isDocker) {
       try {
         const url = new URL(baseUrl);
+
         if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
           url.hostname = 'host.docker.internal';
           baseUrl = url.toString().replace(/\/$/, '');

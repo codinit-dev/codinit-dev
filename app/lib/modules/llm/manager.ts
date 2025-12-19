@@ -129,10 +129,7 @@ export class LLMManager {
     // For local providers like Ollama and LMStudio, check if baseUrl is configured
     if (provider.name === 'Ollama' || provider.name === 'LMStudio') {
       const baseUrlKey = provider.name === 'Ollama' ? 'OLLAMA_API_BASE_URL' : 'LMSTUDIO_API_BASE_URL';
-      const hasBaseUrl =
-        providerSettings?.[provider.name]?.baseUrl ||
-        apiKeys?.[baseUrlKey] ||
-        serverEnv?.[baseUrlKey];
+      const hasBaseUrl = providerSettings?.[provider.name]?.baseUrl || apiKeys?.[baseUrlKey] || serverEnv?.[baseUrlKey];
 
       if (!hasBaseUrl) {
         return false;
