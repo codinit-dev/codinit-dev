@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Dialog, DialogRoot, DialogTitle, DialogDescription, DialogButton } from '~/components/ui/Dialog';
 import { classNames } from '~/utils/classNames';
 import { Markdown } from '~/components/chat/Markdown';
+import { GITHUB_REPOSITORY } from '~/lib/version';
 
 interface UpdateSettings {
   autoUpdate: boolean;
@@ -232,7 +233,7 @@ const UpdateTab = () => {
                 </p>
               )}
               <p className="mt-1">
-                Updates are checked from: <span className="font-mono">codinit-dev/codinit-dev</span> (GitHub releases)
+                Updates are checked from: <span className="font-mono">{GITHUB_REPOSITORY}</span> (GitHub releases)
               </p>
             </div>
             {hasUpdate && releaseUrl && (
@@ -295,8 +296,8 @@ const UpdateTab = () => {
           <DialogDescription>
             <div className="mt-4">
               <p className="text-sm text-codinit-elements-textSecondary mb-4">
-                A new version ({latestVersion}) is available from{' '}
-                <span className="font-mono">codinit-dev/codinit-dev</span> on GitHub.
+                A new version ({latestVersion}) is available from <span className="font-mono">{GITHUB_REPOSITORY}</span>{' '}
+                on GitHub.
               </p>
 
               {releaseUrl && (
