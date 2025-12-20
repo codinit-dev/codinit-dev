@@ -69,7 +69,6 @@ jobs:
 
       - name: Build Electron app
         env:
-          GH_TOKEN: ${{ secrets.TOKEN }}
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
