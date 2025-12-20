@@ -11,13 +11,6 @@ export interface UpdateCheckResult {
   };
 }
 
-interface GitHubRelease {
-  tag_name: string;
-  html_url: string;
-  body: string;
-  published_at: string;
-}
-
 interface ApiUpdateResponse {
   updateAvailable: boolean;
   currentVersion: string;
@@ -29,33 +22,8 @@ interface ApiUpdateResponse {
   message?: string;
 }
 
-function compareVersions(v1: string, v2: string): number {
-  // Remove 'v' prefix if present
-  const version1 = v1.replace(/^v/, '');
-  const version2 = v2.replace(/^v/, '');
-
-  const parts1 = version1.split('.').map(Number);
-  const parts2 = version2.split('.').map(Number);
-
-  for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
-    const part1 = parts1[i] || 0;
-    const part2 = parts2[i] || 0;
-
-    if (part1 > part2) {
-      return 1;
-    }
-
-    if (part1 < part2) {
-      return -1;
-    }
-  }
-
-  return 0;
-}
-
 export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
   try {
-    // Get update info from the API route
     const apiResponse = await fetch('/api/update', {
       method: 'POST',
       headers: {
@@ -64,70 +32,59 @@ export const checkForUpdates = async (): Promise<UpdateCheckResult> => {
     });
 
     if (!apiResponse.ok) {
+      if (apiResponse.status === 403) {
+        const resetTime = apiResponse.headers.get('X-RateLimit-Reset');
+
+        return {
+          available: false,
+          version: 'unknown',
+          currentVersion: 'unknown',
+          error: {
+            type: 'rate_limit',
+            message: `GitHub API rate limit exceeded. ${resetTime ? `Resets at ${new Date(parseInt(resetTime) * 1000).toLocaleTimeString()}` : 'Try again later.'}`,
+          },
+        };
+      }
+
       throw new Error(`API request failed: ${apiResponse.status}`);
     }
 
     const apiData = (await apiResponse.json()) as ApiUpdateResponse;
 
     if (apiData.error) {
-      throw new Error(apiData.message || 'API returned an error');
-    }
+      const errorMessage = apiData.message || 'API returned an error';
+      let errorType: 'rate_limit' | 'network' | 'auth' | 'unknown' = 'unknown';
 
-    const currentVersion = apiData.currentVersion;
-
-    // Fetch the latest release from GitHub
-    const response = await fetch(`https://api.github.com/repos/codinit-dev/codinit-dev/releases/latest`, {
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        'User-Agent': 'codinit-dev',
-      },
-    });
-
-    if (!response.ok) {
-      // If no releases found or repo doesn't exist
-      if (response.status === 404) {
-        return {
-          available: false,
-          version: currentVersion,
-          currentVersion,
-        };
+      if (errorMessage.toLowerCase().includes('rate limit')) {
+        errorType = 'rate_limit';
+      } else if (errorMessage.toLowerCase().includes('network') || errorMessage.toLowerCase().includes('fetch')) {
+        errorType = 'network';
+      } else if (errorMessage.toLowerCase().includes('auth') || errorMessage.toLowerCase().includes('403')) {
+        errorType = 'auth';
       }
 
-      // Check for rate limiting
-      if (response.status === 403) {
-        const resetTime = response.headers.get('X-RateLimit-Reset');
-        return {
-          available: false,
-          version: currentVersion,
-          currentVersion,
-          error: {
-            type: 'rate_limit',
-            message: `GitHub API rate limit exceeded. ${resetTime ? `Resets at ${new Date(parseInt(resetTime) * 1000).toLocaleTimeString()}` : ''}`,
-          },
-        };
-      }
-
-      throw new Error(`GitHub API returned ${response.status}`);
+      return {
+        available: false,
+        version: apiData.currentVersion,
+        currentVersion: apiData.currentVersion,
+        error: {
+          type: errorType,
+          message: errorMessage,
+        },
+      };
     }
-
-    const release = (await response.json()) as GitHubRelease;
-    const latestVersion = release.tag_name.replace(/^v/, ''); // Remove 'v' prefix if present
-
-    // Compare versions
-    const updateAvailable = compareVersions(latestVersion, currentVersion) > 0;
 
     return {
-      available: updateAvailable,
-      version: latestVersion,
-      currentVersion,
-      releaseNotes: release.body,
-      releaseUrl: release.html_url,
-      publishedAt: release.published_at,
+      available: apiData.updateAvailable,
+      version: apiData.latestVersion || apiData.currentVersion,
+      currentVersion: apiData.currentVersion,
+      releaseNotes: apiData.releaseNotes,
+      releaseUrl: apiData.releaseUrl,
+      publishedAt: apiData.publishedAt,
     };
   } catch (error) {
     console.error('Error checking for updates:', error);
 
-    // Determine error type
     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     const isNetworkError =
       errorMessage.toLowerCase().includes('network') ||
