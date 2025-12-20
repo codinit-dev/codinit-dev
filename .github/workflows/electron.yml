@@ -69,7 +69,7 @@ jobs:
 
       - name: Build Electron app
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TOKEN }}
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
@@ -92,6 +92,7 @@ jobs:
             dist/*.AppImage
             dist/*.zip
             dist/*.blockmap
+            dist/*.yml
           retention-days: 1
           if-no-files-found: warn
 
@@ -122,5 +123,6 @@ jobs:
             artifacts/**/*.AppImage
             artifacts/**/*.zip
             artifacts/**/*.blockmap
+            artifacts/**/*.yml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}

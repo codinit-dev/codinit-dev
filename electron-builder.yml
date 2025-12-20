@@ -80,7 +80,10 @@ nsis:
 
 npmRebuild: false
 
-publish: null
+publish:
+  provider: github
+  owner: codinit-dev
+  repo: codinit-dev
 
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

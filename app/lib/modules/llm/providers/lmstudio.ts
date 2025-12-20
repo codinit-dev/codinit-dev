@@ -45,6 +45,7 @@ export default class LMStudioProvider extends BaseProvider {
       if (isDocker) {
         try {
           const url = new URL(baseUrl);
+
           if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
             url.hostname = 'host.docker.internal';
             baseUrl = url.toString().replace(/\/$/, '');
@@ -58,9 +59,7 @@ export default class LMStudioProvider extends BaseProvider {
     const response = await fetch(`${baseUrl}/v1/models`);
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch LMStudio models: HTTP ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch LMStudio models: HTTP ${response.status} ${response.statusText}`);
     }
 
     const data = (await response.json()) as { data: Array<{ id: string }> };
@@ -101,6 +100,7 @@ export default class LMStudioProvider extends BaseProvider {
     if (typeof window === 'undefined' && isDocker) {
       try {
         const url = new URL(baseUrl);
+
         if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
           url.hostname = 'host.docker.internal';
           baseUrl = url.toString().replace(/\/$/, '');
