@@ -115,6 +115,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
           draft: false
           name: Release ${{ github.ref_name }}
+          fail_on_unmatched_files: false
           files: |
             artifacts/**/*.exe
             artifacts/**/*.dmg
@@ -122,6 +123,7 @@ jobs:
             artifacts/**/*.AppImage
             artifacts/**/*.zip
             artifacts/**/*.blockmap
-            artifacts/**/*.yml
+            artifacts/**/latest.yml
+            artifacts/**/latest-*.yml
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
