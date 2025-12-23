@@ -42,10 +42,10 @@ export class LLMManager {
        * const providerModules = import.meta.glob('./providers/*.ts', { eager: true });
        */
 
-      logger.debug('Starting provider registration...');
+      logger.debug('CodinIT: Initializing AI provider registration...');
 
       const exportedItems = Object.values(providers);
-      logger.debug(`Found ${exportedItems.length} exported items in registry`);
+      logger.debug(`CodinIT: Discovered ${exportedItems.length} provider modules in registry`);
 
       let registeredCount = 0;
 
@@ -63,10 +63,10 @@ export class LLMManager {
         }
       }
 
-      logger.info(`Successfully registered ${registeredCount} providers`);
+      logger.info(`CodinIT: Successfully registered ${registeredCount} AI providers`);
 
       if (registeredCount === 0) {
-        logger.error('WARNING: No providers were registered! This will cause model list to be empty.');
+        logger.error('CodinIT WARNING: No AI providers were registered! Model list will be empty.');
       }
     } catch (error) {
       logger.error('Error registering providers:', error);
@@ -79,7 +79,7 @@ export class LLMManager {
       return;
     }
 
-    logger.info('Registering Provider: ', provider.name);
+    logger.info('CodinIT: Activating AI Provider -', provider.name);
     this._providers.set(provider.name, provider);
     this._modelList = [...this._modelList, ...provider.staticModels];
   }
@@ -173,14 +173,14 @@ export class LLMManager {
   }): Promise<ModelInfo[]> {
     const { apiKeys, providerSettings, serverEnv } = options;
 
-    logger.debug('updateModelList called', {
+    logger.debug('CodinIT: Updating AI model catalog', {
       hasApiKeys: !!apiKeys && Object.keys(apiKeys).length > 0,
       hasServerEnv: !!serverEnv && Object.keys(serverEnv).length > 0,
       registeredProviders: this._providers.size,
     });
 
     if (this._providers.size === 0) {
-      logger.warn('No providers registered! Models will be empty.');
+      logger.warn('CodinIT: No AI providers available! Model catalog will be empty.');
       return [];
     }
 
@@ -191,14 +191,14 @@ export class LLMManager {
     }
 
     const staticModels = Array.from(this._providers.values()).flatMap((p) => p.staticModels || []);
-    logger.debug(`Total static models available: ${staticModels.length}`);
+    logger.debug(`CodinIT: ${staticModels.length} base AI models loaded`);
 
     // Get dynamic models from all providers that support them
     const dynamicModels = await Promise.all(
       Array.from(this._providers.values())
         .filter((provider) => {
           if (!enabledProviders.includes(provider.name)) {
-            logger.debug(`Skipping ${provider.name}: provider disabled`);
+            logger.debug(`CodinIT: Skipping ${provider.name} (disabled in settings)`);
             return false;
           }
 
@@ -212,7 +212,7 @@ export class LLMManager {
           const cachedModels = provider.getModelsFromCache(options);
 
           if (cachedModels) {
-            logger.debug(`Found ${cachedModels.length} cached models for ${provider.name}`);
+            logger.debug(`CodinIT: Using ${cachedModels.length} cached models from ${provider.name}`);
             return cachedModels;
           }
 
@@ -221,14 +221,14 @@ export class LLMManager {
           const hasRequiredConfig = this._hasRequiredConfiguration(provider, apiKeys, serverEnv, providerSettings);
 
           if (!hasRequiredConfig) {
-            logger.debug(`Skipping ${provider.name}: missing required configuration`);
+            logger.debug(`CodinIT: Skipping ${provider.name} (missing API configuration)`);
             return [];
           }
 
           const dynamicModels = await provider
             .getDynamicModels(apiKeys, providerConfig, serverEnv)
             .then((models) => {
-              logger.info(`Caching ${models.length} dynamic models for ${provider.name}`);
+              logger.info(`CodinIT: Cached ${models.length} AI models from ${provider.name}`);
               provider.storeDynamicModels(options, models);
 
               return models;
@@ -239,7 +239,7 @@ export class LLMManager {
               const providerStaticModels = provider.staticModels || [];
 
               if (providerStaticModels.length > 0) {
-                logger.info(`${provider.name}: Falling back to ${providerStaticModels.length} static models`);
+                logger.info(`CodinIT: ${provider.name} - Using ${providerStaticModels.length} fallback models`);
               }
 
               return [];
@@ -254,7 +254,7 @@ export class LLMManager {
     const filteredStaticModels = staticModels.filter((m) => !dynamicModelKeys.includes(`${m.name}-${m.provider}`));
 
     logger.debug(
-      `Dynamic models fetched: ${dynamicModelsFlat.length}, Static models to add: ${filteredStaticModels.length}`,
+      `CodinIT: Retrieved ${dynamicModelsFlat.length} dynamic + ${filteredStaticModels.length} static AI models`,
     );
 
     // Combine static and dynamic models
@@ -262,7 +262,7 @@ export class LLMManager {
     modelList.sort((a, b) => a.name.localeCompare(b.name));
     this._modelList = modelList;
 
-    logger.info(`Total models available: ${modelList.length}`);
+    logger.info(`CodinIT: AI model catalog ready with ${modelList.length} total models`);
 
     return modelList;
   }
