@@ -15,6 +15,7 @@ const TAB_ICONS: Record<TabType, string> = {
   settings: 'i-ph:gear-six-fill',
   notifications: 'i-ph:bell-fill',
   features: 'i-ph:star-fill',
+  agent: 'i-ph:robot-fill',
   data: 'i-ph:database-fill',
   'cloud-providers': 'i-ph:cloud-fill',
   'local-providers': 'i-ph:desktop-fill',

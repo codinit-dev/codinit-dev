@@ -71,6 +71,7 @@ const TAB_DESCRIPTIONS: Record<TabType, string> = {
   settings: 'Configure application preferences',
   notifications: 'View and manage your notifications',
   features: 'Explore new and upcoming features',
+  agent: 'Configure autonomous agent behavior',
   data: 'Manage your data and storage',
   'cloud-providers': 'Configure cloud AI providers and models',
   'local-providers': 'Configure local AI providers and models',
@@ -331,6 +332,8 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <NotificationsTab />;
       case 'features':
         return <FeaturesTab />;
+      case 'agent':
+        return null;
       case 'data':
         return <DataTab />;
       case 'cloud-providers':

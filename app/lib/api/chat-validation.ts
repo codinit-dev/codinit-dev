@@ -31,6 +31,7 @@ const chatRequestSchema = z.object({
   designScheme: z.any().optional(),
   supabase: supabaseConfigSchema.optional(),
   enableMCPTools: z.boolean().default(false),
+  agentMode: z.boolean().default(false),
 });
 
 export interface ValidatedChatRequest {
@@ -48,6 +49,7 @@ export interface ValidatedChatRequest {
     };
   };
   enableMCPTools: boolean;
+  agentMode: boolean;
 }
 
 export function validateChatRequest(data: unknown): ValidatedChatRequest {
