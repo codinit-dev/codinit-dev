@@ -22,6 +22,7 @@ import { description } from '~/lib/persistence';
 import Cookies from 'js-cookie';
 import { createSampler } from '~/utils/sampler';
 import type { ActionAlert, DeployAlert, SupabaseAlert, FileAction } from '~/types/actions';
+import type { AgentExecution } from '~/types/agent';
 import { startAutoSave } from '~/lib/persistence/fileAutoSave';
 import { liveActionConsoleStore, diffApprovalStore } from './settings';
 
@@ -83,7 +84,7 @@ export type TestArtifactUpdateState = Pick<
 
 type Artifacts = MapStore<Record<string, ArtifactState>>;
 
-export type WorkbenchViewType = 'code' | 'diff' | 'preview' | 'progress';
+export type WorkbenchViewType = 'code' | 'diff' | 'preview' | 'progress' | 'agent';
 
 export class WorkbenchStore {
   #previewsStore = new PreviewsStore(webcontainer);
@@ -97,8 +98,10 @@ export class WorkbenchStore {
   thinkingArtifacts: MapStore<Record<string, ThinkingArtifactState>> =
     import.meta.hot?.data.thinkingArtifacts ?? map({});
   testArtifacts: MapStore<Record<string, TestArtifactState>> = import.meta.hot?.data.testArtifacts ?? map({});
+  agentState: MapStore<Record<string, AgentExecution>> = import.meta.hot?.data.agentState ?? map({});
 
   showWorkbench: WritableAtom<boolean> = import.meta.hot?.data.showWorkbench ?? atom(false);
+  currentAgentExecution: WritableAtom<string | null> = import.meta.hot?.data.currentAgentExecution ?? atom(null);
   currentView: WritableAtom<WorkbenchViewType> = import.meta.hot?.data.currentView ?? atom('code');
   currentArtifactMessageId: WritableAtom<string | null> = import.meta.hot?.data.currentArtifactMessageId ?? atom(null);
   unsavedFiles: WritableAtom<Set<string>> = import.meta.hot?.data.unsavedFiles ?? atom(new Set<string>());
@@ -126,9 +129,11 @@ export class WorkbenchStore {
       import.meta.hot.data.artifacts = this.artifacts;
       import.meta.hot.data.thinkingArtifacts = this.thinkingArtifacts;
       import.meta.hot.data.testArtifacts = this.testArtifacts;
+      import.meta.hot.data.agentState = this.agentState;
       import.meta.hot.data.unsavedFiles = this.unsavedFiles;
       import.meta.hot.data.showWorkbench = this.showWorkbench;
       import.meta.hot.data.currentView = this.currentView;
+      import.meta.hot.data.currentAgentExecution = this.currentAgentExecution;
       import.meta.hot.data.currentArtifactMessageId = this.currentArtifactMessageId;
       import.meta.hot.data.actionAlert = this.actionAlert;
       import.meta.hot.data.supabaseAlert = this.supabaseAlert;
