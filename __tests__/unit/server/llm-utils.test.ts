@@ -1,6 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { extractFileReferences, createReferencedFilesContext, processFileReferences } from '~/lib/.server/llm/utils';
+import {
+  extractFileReferences,
+  createReferencedFilesContext,
+  processFileReferences,
+  extractPropertiesFromMessage,
+  simplifyCodinitActions,
+  createFilesContext,
+  extractCurrentContext,
+} from '~/lib/.server/llm/utils';
 import type { FileMap } from '~/lib/.server/llm/constants';
+import type { Message } from 'ai';
 
 describe('LLM Utils - File References', () => {
   describe('extractFileReferences', () => {
@@ -265,6 +274,399 @@ Can you fix it to properly import from @app/utils.ts?`;
       expect(result.referencedFilesContext).toContain('<codinitArtifact');
       expect(result.referencedFilesContext).toContain('<codinitAction type="file"');
       expect(result.referencedFilesContext.match(/<codinitAction/g)?.length).toBe(2);
+    });
+  });
+});
+
+describe('LLM Utils - Message Processing', () => {
+  describe('extractPropertiesFromMessage', () => {
+    it('should extract model and provider from message content', () => {
+      const message = {
+        role: 'user' as const,
+        content: '[Model: gpt-4]\n\n[Provider: OpenAI]\n\nHello world',
+      };
+      const result = extractPropertiesFromMessage(message);
+      expect(result.model).toBe('gpt-4');
+      expect(result.provider).toBe('OpenAI');
+      expect(result.content).toBe('Hello world');
+    });
+
+    it('should use default model when not specified', () => {
+      const message = {
+        role: 'user' as const,
+        content: '[Provider: Anthropic]\n\nHello world',
+      };
+      const result = extractPropertiesFromMessage(message);
+      expect(result.model).toBe('claude-4-5-sonnet-latest');
+      expect(result.provider).toBe('Anthropic');
+    });
+
+    it('should use default provider when not specified', () => {
+      const message = {
+        role: 'user' as const,
+        content: '[Model: gpt-4]\n\nHello world',
+      };
+      const result = extractPropertiesFromMessage(message);
+      expect(result.model).toBe('gpt-4');
+      expect(result.provider).toBe('Anthropic');
+    });
+
+    it('should handle plain text without model or provider', () => {
+      const message = {
+        role: 'user' as const,
+        content: 'Hello world',
+      };
+      const result = extractPropertiesFromMessage(message);
+      expect(result.model).toBe('claude-4-5-sonnet-latest');
+      expect(result.provider).toBe('Anthropic');
+      expect(result.content).toBe('Hello world');
+    });
+
+    it('should handle array content with text type', () => {
+      const message = {
+        role: 'user' as const,
+        content: [{ type: 'text' as const, text: '[Model: gpt-4]\n\n[Provider: OpenAI]\n\nHello' }],
+      } as any;
+      const result = extractPropertiesFromMessage(message);
+      expect(result.model).toBe('gpt-4');
+      expect(result.provider).toBe('OpenAI');
+    });
+
+    it('should handle array content with image and text', () => {
+      const message = {
+        role: 'user' as const,
+        content: [
+          { type: 'text' as const, text: '[Model: gpt-4]\n\nDescribe this image' },
+          { type: 'image_url' as const, image_url: { url: 'https://example.com/image.png' } },
+        ],
+      } as any;
+      const result = extractPropertiesFromMessage(message);
+      expect(result.model).toBe('gpt-4');
+      expect(Array.isArray(result.content)).toBe(true);
+
+      if (Array.isArray(result.content)) {
+        expect(result.content[0].type).toBe('text');
+        expect(result.content[1].type).toBe('image_url');
+      }
+    });
+
+    it('should remove model and provider tags from cleaned content', () => {
+      const message = {
+        role: 'user' as const,
+        content: '[Model: gpt-4]\n\n[Provider: OpenAI]\n\nActual message',
+      };
+      const result = extractPropertiesFromMessage(message);
+      expect(result.content).toBe('Actual message');
+      expect(result.content).not.toContain('[Model:');
+      expect(result.content).not.toContain('[Provider:');
+    });
+
+    it('should handle empty text in array content', () => {
+      const message = {
+        role: 'user' as const,
+        content: [{ type: 'text' as const, text: '' }],
+      } as any;
+      const result = extractPropertiesFromMessage(message);
+      expect(result.model).toBe('claude-4-5-sonnet-latest');
+      expect(result.provider).toBe('Anthropic');
+    });
+  });
+
+  describe('simplifyCodinitActions', () => {
+    it('should simplify codinitAction tags with type="file"', () => {
+      const input =
+        '<codinitAction type="file" filePath="/src/index.ts">console.log("hello");\nconsole.log("world");</codinitAction>';
+      const result = simplifyCodinitActions(input);
+      expect(result).toContain('...');
+      expect(result).not.toContain('console.log("hello")');
+    });
+
+    it('should preserve non-file action types', () => {
+      const input = '<codinitAction type="shell">npm install</codinitAction>';
+      const result = simplifyCodinitActions(input);
+      expect(result).toBe(input);
+    });
+
+    it('should handle multiple file actions', () => {
+      const input = `<codinitAction type="file" filePath="/src/a.ts">content a</codinitAction>
+<codinitAction type="file" filePath="/src/b.ts">content b</codinitAction>`;
+      const result = simplifyCodinitActions(input);
+      expect(result).not.toContain('content a');
+      expect(result).not.toContain('content b');
+      expect(result.match(/\.\.\./g)?.length).toBe(2);
+    });
+
+    it('should handle mixed action types', () => {
+      const input = `<codinitAction type="file" filePath="/src/index.ts">file content</codinitAction>
+<codinitAction type="shell">npm test</codinitAction>`;
+      const result = simplifyCodinitActions(input);
+      expect(result).not.toContain('file content');
+      expect(result).toContain('npm test');
+    });
+
+    it('should handle multiline file content', () => {
+      const input = `<codinitAction type="file" filePath="/src/index.ts">
+function hello() {
+  console.log("world");
+}
+</codinitAction>`;
+      const result = simplifyCodinitActions(input);
+      expect(result).toContain('...');
+      expect(result).not.toContain('function hello');
+    });
+
+    it('should return original string if no file actions found', () => {
+      const input = 'No codinit actions here';
+      const result = simplifyCodinitActions(input);
+      expect(result).toBe(input);
+    });
+
+    it('should preserve attributes in opening tag', () => {
+      const input = '<codinitAction type="file" filePath="/test.ts" otherAttr="value">content</codinitAction>';
+      const result = simplifyCodinitActions(input);
+      expect(result).toContain('type="file"');
+      expect(result).toContain('filePath="/test.ts"');
+    });
+  });
+
+  describe('createFilesContext', () => {
+    const mockFiles: FileMap = {
+      '/home/project/src/index.ts': {
+        type: 'file',
+        content: 'export const hello = "world";',
+        isBinary: false,
+      },
+      '/home/project/src/utils.ts': {
+        type: 'file',
+        content: 'export function add(a: number, b: number) {\n  return a + b;\n}',
+        isBinary: false,
+      },
+      '/home/project/node_modules/package/index.js': {
+        type: 'file',
+        content: 'module.exports = {};',
+        isBinary: false,
+      },
+      '/home/project/.git/config': {
+        type: 'file',
+        content: '[core]\n  repositoryformatversion = 0',
+        isBinary: false,
+      },
+      '/home/project/src': {
+        type: 'folder',
+      },
+    };
+
+    it('should create context for all non-ignored files', () => {
+      const result = createFilesContext(mockFiles);
+      expect(result).toContain('<codinitArtifact id="code-content"');
+      expect(result).toContain('src/index.ts');
+      expect(result).toContain('export const hello');
+    });
+
+    it('should ignore node_modules files', () => {
+      const result = createFilesContext(mockFiles);
+      expect(result).not.toContain('node_modules');
+    });
+
+    it('should ignore .git files', () => {
+      const result = createFilesContext(mockFiles);
+      expect(result).not.toContain('.git');
+    });
+
+    it('should skip folders', () => {
+      const result = createFilesContext(mockFiles);
+      const folderReferences = result.match(/filePath="src"/g);
+      expect(folderReferences).toBeNull();
+    });
+
+    it('should use full path by default', () => {
+      const result = createFilesContext(mockFiles, false);
+      expect(result).toContain('/home/project/src/index.ts');
+    });
+
+    it('should use relative path when specified', () => {
+      const result = createFilesContext(mockFiles, true);
+      expect(result).toContain('src/index.ts');
+      expect(result).not.toContain('/home/project/src/index.ts');
+    });
+
+    it('should preserve file content formatting', () => {
+      const result = createFilesContext(mockFiles);
+      expect(result).toContain('export function add');
+      expect(result).toContain('return a + b;');
+    });
+
+    it('should wrap content in codinitArtifact', () => {
+      const result = createFilesContext(mockFiles);
+      expect(result).toMatch(/^<codinitArtifact/);
+      expect(result).toMatch(/<\/codinitArtifact>$/);
+    });
+
+    it('should use codinitAction for each file', () => {
+      const result = createFilesContext(mockFiles);
+      const actionCount = (result.match(/<codinitAction type="file"/g) || []).length;
+      expect(actionCount).toBeGreaterThan(0);
+    });
+  });
+
+  describe('extractCurrentContext', () => {
+    it('should extract codeContext from last assistant message', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'user',
+          content: 'Hello',
+        },
+        {
+          id: '2',
+          role: 'assistant',
+          content: 'Hi there',
+          annotations: [
+            {
+              type: 'codeContext',
+              files: ['src/index.ts'],
+            },
+          ],
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.codeContext).toBeDefined();
+      expect(result.codeContext?.type).toBe('codeContext');
+    });
+
+    it('should extract chatSummary from last assistant message', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'user',
+          content: 'Hello',
+        },
+        {
+          id: '2',
+          role: 'assistant',
+          content: 'Hi',
+          annotations: [
+            {
+              type: 'chatSummary',
+              summary: 'User greeted the assistant',
+            },
+          ],
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.summary).toBeDefined();
+      expect(result.summary?.type).toBe('chatSummary');
+    });
+
+    it('should return undefined when no assistant messages', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'user',
+          content: 'Hello',
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.summary).toBeUndefined();
+      expect(result.codeContext).toBeUndefined();
+    });
+
+    it('should return undefined when assistant message has no annotations', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'user',
+          content: 'Hello',
+        },
+        {
+          id: '2',
+          role: 'assistant',
+          content: 'Hi',
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.summary).toBeUndefined();
+      expect(result.codeContext).toBeUndefined();
+    });
+
+    it('should use last assistant message when multiple exist', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'assistant',
+          content: 'First',
+          annotations: [
+            {
+              type: 'codeContext',
+              files: ['old.ts'],
+            },
+          ],
+        },
+        {
+          id: '2',
+          role: 'assistant',
+          content: 'Second',
+          annotations: [
+            {
+              type: 'codeContext',
+              files: ['new.ts'],
+            },
+          ],
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.codeContext).toBeDefined();
+    });
+
+    it('should handle annotations with invalid objects', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'assistant',
+          content: 'Hi',
+          annotations: [null, 'string', 123] as any,
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.summary).toBeUndefined();
+      expect(result.codeContext).toBeUndefined();
+    });
+
+    it('should skip annotations without type property', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'assistant',
+          content: 'Hi',
+          annotations: [{ data: 'some data' }, { type: 'codeContext', files: [] }],
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.codeContext).toBeDefined();
+    });
+
+    it('should break on first matching annotation', () => {
+      const messages: Message[] = [
+        {
+          id: '1',
+          role: 'assistant',
+          content: 'Hi',
+          annotations: [
+            { type: 'codeContext', files: ['first.ts'] },
+            { type: 'chatSummary', summary: 'should not reach' },
+          ],
+        },
+      ];
+      const result = extractCurrentContext(messages);
+      expect(result.codeContext).toBeDefined();
+      expect(result.summary).toBeUndefined();
+    });
+
+    it('should handle empty messages array', () => {
+      const messages: Message[] = [];
+      const result = extractCurrentContext(messages);
+      expect(result.summary).toBeUndefined();
+      expect(result.codeContext).toBeUndefined();
     });
   });
 });
