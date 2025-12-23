@@ -46,26 +46,12 @@ export type FileMap = Record<string, Dirent | undefined>;
 export class FilesStore {
   #webcontainer: Promise<WebContainer>;
 
-  /**
-   * Tracks the number of files without folders.
-   */
   #size = 0;
 
-  /**
-   * @note Keeps track all modified files with their original content since the last user message.
-   * Needs to be reset when the user sends another message and all changes have to be submitted
-   * for the model to be aware of the changes.
-   */
   #modifiedFiles: Map<string, string> = import.meta.hot?.data.modifiedFiles ?? new Map();
 
-  /**
-   * Keeps track of deleted files and folders to prevent them from reappearing on reload
-   */
   #deletedPaths: Set<string> = import.meta.hot?.data.deletedPaths ?? new Set();
 
-  /**
-   * Map of files that matches the state of WebContainer.
-   */
   files: MapStore<FileMap> = import.meta.hot?.data.files ?? map({});
 
   get filesCount() {
@@ -75,7 +61,6 @@ export class FilesStore {
   constructor(webcontainerPromise: Promise<WebContainer>) {
     this.#webcontainer = webcontainerPromise;
 
-    // Load deleted paths from localStorage if available
     try {
       if (typeof localStorage !== 'undefined') {
         const deletedPathsJson = localStorage.getItem('codinit-deleted-paths');
@@ -92,21 +77,17 @@ export class FilesStore {
       logger.error('Failed to load deleted paths from localStorage', error);
     }
 
-    // Load locked files from localStorage
     this.#loadLockedFiles();
 
     if (import.meta.hot) {
-      // Persist our state across hot reloads
       import.meta.hot.data.files = this.files;
       import.meta.hot.data.modifiedFiles = this.#modifiedFiles;
       import.meta.hot.data.deletedPaths = this.#deletedPaths;
     }
 
-    // Listen for URL changes to detect chat ID changes
     if (typeof window !== 'undefined') {
       let lastChatId = getCurrentChatId();
 
-      // Listen to navigation events instead of observing entire DOM
       const handleNavigation = () => {
         const currentChatId = getCurrentChatId();
 
@@ -124,22 +105,15 @@ export class FilesStore {
     this.#init();
   }
 
-  /**
-   * Load locked files and folders from localStorage and update the file objects
-   * @param chatId Optional chat ID to load locks for (defaults to current chat)
-   */
   #loadLockedFiles(chatId?: string) {
     try {
       const currentChatId = chatId || getCurrentChatId();
       const startTime = performance.now();
 
-      // Migrate any legacy locks to the current chat
       migrateLegacyLocks(currentChatId);
 
-      // Get all locked items for this chat (uses optimized cache)
       const lockedItems = getLockedItemsForChat(currentChatId);
 
-      // Split into files and folders
       const lockedFiles = lockedItems.filter((item) => !item.isFolder);
       const lockedFolders = lockedItems.filter((item) => item.isFolder);
 
@@ -148,14 +122,11 @@ export class FilesStore {
         return;
       }
 
-      logger.info(
-        `CodinIT: Workspace has ${lockedFiles.length} locked files + ${lockedFolders.length} locked folders`,
-      );
+      logger.info(`CodinIT: Workspace has ${lockedFiles.length} locked files + ${lockedFolders.length} locked folders`);
 
       const currentFiles = this.files.get();
       const updates: FileMap = {};
 
-      // Process file locks
       for (const lockedFile of lockedFiles) {
         const file = currentFiles[lockedFile.path];
 
@@ -167,7 +138,6 @@ export class FilesStore {
         }
       }
 
-      // Process folder locks
       for (const lockedFolder of lockedFolders) {
         const folder = currentFiles[lockedFolder.path];
 
@@ -177,7 +147,6 @@ export class FilesStore {
             isLocked: true,
           };
 
-          // Also mark all files within the folder as locked
           this.#applyLockToFolderContents(currentFiles, updates, lockedFolder.path);
         }
       }
@@ -193,12 +162,6 @@ export class FilesStore {
     }
   }
 
-  /**
-   * Apply a lock to all files within a folder
-   * @param currentFiles Current file map
-   * @param updates Updates to apply
-   * @param folderPath Path of the folder to lock
-   */
   #applyLockToFolderContents(currentFiles: FileMap, updates: FileMap, folderPath: string) {
     const folderPrefix = folderPath.endsWith('/') ? folderPath : `${folderPath}/`;
 

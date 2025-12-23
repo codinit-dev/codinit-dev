@@ -1,10 +1,3 @@
-/*
- *!---------------------------------------------------------------------------------------------
- *  Copyright (c) StackBlitz. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------
- */
-
 import * as React from 'react';
 import {
   type ReactNode,

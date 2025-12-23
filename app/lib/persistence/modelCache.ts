@@ -65,15 +65,18 @@ export function loadModelsFromCache(provider: string, cacheId: string): ModelInf
       logger.debug(`CodinIT: Cache version mismatch for ${provider}, invalidating`);
       delete storage.providers[provider];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+
       return null;
     }
 
     // Check if cache is expired
     const age = Date.now() - cached.timestamp;
+
     if (age > CACHE_TTL_MS) {
       logger.debug(`CodinIT: Cache expired for ${provider} (age: ${Math.round(age / 1000 / 60)} minutes)`);
       delete storage.providers[provider];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+
       return null;
     }
 
@@ -82,10 +85,12 @@ export function loadModelsFromCache(provider: string, cacheId: string): ModelInf
       logger.debug(`CodinIT: Cache ID mismatch for ${provider}, invalidating`);
       delete storage.providers[provider];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+
       return null;
     }
 
     logger.debug(`CodinIT: Loaded ${cached.models.length} models for ${provider} from localStorage`);
+
     return cached.models;
   } catch (error) {
     logger.error(`CodinIT: Failed to load models for ${provider} from localStorage`, error);

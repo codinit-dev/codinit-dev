@@ -1,7 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { validateCode } from '~/lib/runtime/code-validator';
 
 describe('code-validator', () => {
+  beforeAll(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  });
+
+  afterAll(() => {
+    vi.restoreAllMocks();
+  });
   describe('validateCode - General', () => {
     it('should detect placeholder comments', () => {
       const code = `
