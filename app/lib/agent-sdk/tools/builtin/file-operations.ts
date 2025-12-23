@@ -44,7 +44,9 @@ export const readFileTool = createTool(
   }),
   async (args, ctx) => {
     logger.info(`Reading file: ${args.path}`);
+
     const content = await ctx.webcontainer.fs.readFile(args.path, args.encoding as 'utf8');
+
     return { path: args.path, content, encoding: args.encoding };
   },
 );
@@ -59,6 +61,7 @@ export const writeFileTool = createTool(
   async (args, ctx) => {
     logger.info(`Writing file: ${args.path}`);
     await ctx.webcontainer.fs.writeFile(args.path, args.content);
+
     return { path: args.path, bytesWritten: args.content.length };
   },
   15000,
@@ -96,6 +99,7 @@ export const listFilesTool = createTool(
     };
 
     const files = await listDir(args.path, args.recursive);
+
     return { path: args.path, files, count: files.length };
   },
 );
@@ -131,6 +135,7 @@ export const createDirectoryTool = createTool(
   async (args, ctx) => {
     logger.info(`Creating directory: ${args.path}`);
     await ctx.webcontainer.fs.mkdir(args.path, { recursive: args.recursive ?? true });
+
     return { path: args.path, created: true };
   },
   5000,
