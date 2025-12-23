@@ -75,10 +75,18 @@ export default class HyperbolicProvider extends BaseProvider {
       },
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Hyperbolic API error (${response.status}): ${errorText.substring(0, 200)}`);
+    }
+
     const res = (await response.json()) as any;
 
+    // Check for OpenAI-compatible format with data array
     if (!res.data || !Array.isArray(res.data)) {
-      throw new Error(`Unexpected API response format: missing or invalid data array`);
+      // Log the actual response structure for debugging
+      const responsePreview = JSON.stringify(res).substring(0, 300);
+      throw new Error(`Unexpected API response format: missing or invalid data array. Response: ${responsePreview}`);
     }
 
     const data = res.data.filter((model: any) => model.object === 'model' && model.supports_chat);
