@@ -1,4 +1,4 @@
-# Contributing to CodinIT (codinit-dev)
+# Contributing
 
 Download desktop app --> [latest release](https://github.com/codinit-dev/codinit-dev/releases/latest)
 
