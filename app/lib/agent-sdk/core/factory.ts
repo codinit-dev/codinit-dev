@@ -35,11 +35,11 @@ export class AgentFactory {
 
     const llmManager = LLMManager.getInstance(this._dependencies.env || {});
 
-    const { PlanExecuteReasoning } = await import('../reasoning/plan-execute');
-    const { ToolExecutor } = await import('../tools/executor');
+    const { PlanExecuteReasoning: planExecuteReasoningClass } = await import('../reasoning/plan-execute');
+    const { ToolExecutor: toolExecutorClass } = await import('../tools/executor');
 
-    const reasoningPattern = new PlanExecuteReasoning(llmManager, validatedConfig);
-    const toolExecutorInstance = new ToolExecutor();
+    const reasoningPattern = new planExecuteReasoningClass(llmManager, validatedConfig);
+    const toolExecutorInstance = new toolExecutorClass();
 
     let streamManager;
     let contextManager;
@@ -47,19 +47,19 @@ export class AgentFactory {
     let errorHandler;
 
     if (validatedConfig.enableMemory) {
-      const { ContextManager } = await import('../memory/context-manager');
-      contextManager = new ContextManager(validatedConfig.tokenBudget);
+      const { ContextManager: contextManagerClass } = await import('../memory/context-manager');
+      contextManager = new contextManagerClass(validatedConfig.tokenBudget);
     }
 
     if (validatedConfig.enableCheckpointing) {
-      const { CheckpointManager } = await import('../memory/checkpoint-manager');
-      checkpointManager = new CheckpointManager();
+      const { CheckpointManager: checkpointManagerClass } = await import('../memory/checkpoint-manager');
+      checkpointManager = new checkpointManagerClass();
       await checkpointManager.initialize();
     }
 
     if (validatedConfig.enableSelfCorrection) {
-      const { ErrorHandler } = await import('../error-handling/error-handler');
-      errorHandler = new ErrorHandler(llmManager);
+      const { ErrorHandler: errorHandlerClass } = await import('../error-handling/error-handler');
+      errorHandler = new errorHandlerClass(llmManager);
     }
 
     agent.initialize({
