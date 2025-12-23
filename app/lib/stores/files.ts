@@ -144,12 +144,12 @@ export class FilesStore {
       const lockedFolders = lockedItems.filter((item) => item.isFolder);
 
       if (lockedItems.length === 0) {
-        logger.info(`No locked items found for chat ID: ${currentChatId}`);
+        logger.info(`CodinIT: No locked files in this workspace`);
         return;
       }
 
       logger.info(
-        `Found ${lockedFiles.length} locked files and ${lockedFolders.length} locked folders for chat ID: ${currentChatId}`,
+        `CodinIT: Workspace has ${lockedFiles.length} locked files + ${lockedFolders.length} locked folders`,
       );
 
       const currentFiles = this.files.get();
