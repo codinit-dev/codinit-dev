@@ -17,6 +17,7 @@ import { renderLogger } from '~/utils/logger';
 import { EditorPanel } from './EditorPanel';
 import { Preview } from './Preview';
 import { ProgressIndicator } from './ProgressIndicator';
+import { AgentProgressPanel } from './AgentProgressPanel';
 import useViewport from '~/lib/hooks';
 import { PushToGitHubDialog } from '~/components/@settings/tabs/connections/components/PushToGitHubDialog';
 import { usePreviewStore } from '~/lib/stores/previews';
@@ -172,6 +173,9 @@ export const Workbench = memo(
                   </View>
                   <View initial={{ x: '100%' }} animate={{ x: selectedView === 'progress' ? '0%' : '100%' }}>
                     <ProgressIndicator />
+                  </View>
+                  <View initial={{ x: '100%' }} animate={{ x: selectedView === 'agent' ? '0%' : '100%' }}>
+                    <AgentProgressPanel />
                   </View>
                 </div>
               </div>
