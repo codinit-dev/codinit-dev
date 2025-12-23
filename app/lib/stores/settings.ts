@@ -134,6 +134,10 @@ const SETTINGS_KEYS = {
   LIVE_ACTION_CONSOLE: 'liveActionConsoleEnabled',
   DIFF_APPROVAL: 'diffApprovalEnabled',
   VISUAL_CONTEXT_INDICATOR: 'visualContextIndicatorEnabled',
+  AGENT_MODE: 'agentModeEnabled',
+  AGENT_MAX_ITERATIONS: 'agentMaxIterations',
+  AGENT_TOKEN_BUDGET: 'agentTokenBudget',
+  AGENT_SELF_CORRECTION: 'agentSelfCorrectionEnabled',
 } as const;
 
 // Initialize settings from localStorage or defaults
@@ -156,6 +160,25 @@ const getInitialSettings = () => {
     }
   };
 
+  const getStoredNumber = (key: string, defaultValue: number): number => {
+    if (!isBrowser) {
+      return defaultValue;
+    }
+
+    const stored = localStorage.getItem(key);
+
+    if (stored === null) {
+      return defaultValue;
+    }
+
+    try {
+      const parsed = parseInt(stored, 10);
+      return isNaN(parsed) ? defaultValue : parsed;
+    } catch {
+      return defaultValue;
+    }
+  };
+
   return {
     latestBranch: getStoredBoolean(SETTINGS_KEYS.LATEST_BRANCH, false),
     autoSelectTemplate: getStoredBoolean(SETTINGS_KEYS.AUTO_SELECT_TEMPLATE, true),
@@ -166,6 +189,10 @@ const getInitialSettings = () => {
     liveActionConsole: getStoredBoolean(SETTINGS_KEYS.LIVE_ACTION_CONSOLE, true),
     diffApproval: getStoredBoolean(SETTINGS_KEYS.DIFF_APPROVAL, false),
     visualContextIndicator: getStoredBoolean(SETTINGS_KEYS.VISUAL_CONTEXT_INDICATOR, true),
+    agentMode: getStoredBoolean(SETTINGS_KEYS.AGENT_MODE, false),
+    agentMaxIterations: getStoredNumber(SETTINGS_KEYS.AGENT_MAX_ITERATIONS, 20),
+    agentTokenBudget: getStoredNumber(SETTINGS_KEYS.AGENT_TOKEN_BUDGET, 200000),
+    agentSelfCorrection: getStoredBoolean(SETTINGS_KEYS.AGENT_SELF_CORRECTION, true),
   };
 };
 
@@ -180,6 +207,10 @@ export const promptStore = atom<string>(initialSettings.promptId);
 export const liveActionConsoleStore = atom<boolean>(initialSettings.liveActionConsole);
 export const diffApprovalStore = atom<boolean>(initialSettings.diffApproval);
 export const visualContextIndicatorStore = atom<boolean>(initialSettings.visualContextIndicator);
+export const agentModeStore = atom<boolean>(initialSettings.agentMode);
+export const agentMaxIterationsStore = atom<number>(initialSettings.agentMaxIterations);
+export const agentTokenBudgetStore = atom<number>(initialSettings.agentTokenBudget);
+export const agentSelfCorrectionStore = atom<boolean>(initialSettings.agentSelfCorrection);
 
 // Helper functions to update settings with persistence
 export const updateLatestBranch = (enabled: boolean) => {
@@ -220,6 +251,26 @@ export const updateDiffApproval = (enabled: boolean) => {
 export const updateVisualContextIndicator = (enabled: boolean) => {
   visualContextIndicatorStore.set(enabled);
   localStorage.setItem(SETTINGS_KEYS.VISUAL_CONTEXT_INDICATOR, JSON.stringify(enabled));
+};
+
+export const updateAgentMode = (enabled: boolean) => {
+  agentModeStore.set(enabled);
+  localStorage.setItem(SETTINGS_KEYS.AGENT_MODE, JSON.stringify(enabled));
+};
+
+export const updateAgentMaxIterations = (value: number) => {
+  agentMaxIterationsStore.set(value);
+  localStorage.setItem(SETTINGS_KEYS.AGENT_MAX_ITERATIONS, value.toString());
+};
+
+export const updateAgentTokenBudget = (value: number) => {
+  agentTokenBudgetStore.set(value);
+  localStorage.setItem(SETTINGS_KEYS.AGENT_TOKEN_BUDGET, value.toString());
+};
+
+export const updateAgentSelfCorrection = (enabled: boolean) => {
+  agentSelfCorrectionStore.set(enabled);
+  localStorage.setItem(SETTINGS_KEYS.AGENT_SELF_CORRECTION, JSON.stringify(enabled));
 };
 
 // Initialize tab configuration from localStorage or defaults
