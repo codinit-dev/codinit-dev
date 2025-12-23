@@ -202,7 +202,12 @@ export default function AgentTab() {
         </SettingsPanel>
       </SettingsSection>
 
-      <SettingsSection title="Agent Information" description="Learn more about autonomous agents" icon="i-ph:info" delay={0.3}>
+      <SettingsSection
+        title="Agent Information"
+        description="Learn more about autonomous agents"
+        icon="i-ph:info"
+        delay={0.3}
+      >
         <SettingsPanel variant="highlight" className="p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-4">

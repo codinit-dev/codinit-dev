@@ -17,6 +17,9 @@ const NotificationsTab = lazy(() =>
 const FeaturesTab = lazy(() =>
   import('~/components/@settings/tabs/features/FeaturesTab').then((module) => ({ default: module.default })),
 );
+const AgentTab = lazy(() =>
+  import('~/components/@settings/tabs/agent/AgentTab').then((module) => ({ default: module.default })),
+);
 const DataTab = lazy(() =>
   import('~/components/@settings/tabs/data/DataTab').then((module) => ({ default: module.DataTab })),
 );
@@ -73,6 +76,8 @@ function TabContent({ tab }: { tab: TabType }) {
       return <NotificationsTab />;
     case 'features':
       return <FeaturesTab />;
+    case 'agent':
+      return <AgentTab />;
     case 'data':
       return <DataTab />;
     case 'cloud-providers':
