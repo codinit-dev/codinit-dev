@@ -12,7 +12,6 @@ export { ContextManager } from './memory/context-manager';
 export { CheckpointManager } from './memory/checkpoint-manager';
 
 export { StreamManager } from './streaming/stream-manager';
-export type { StreamEvent } from './streaming/types';
 
 export { ErrorHandler } from './error-handling/error-handler';
 

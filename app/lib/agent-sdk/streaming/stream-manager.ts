@@ -11,183 +11,75 @@ export class StreamManager {
     this._dataStream = dataStream;
   }
 
-  emitPlanGenerated(plan: Plan): void {
+  private _emit(type: string, data: any, eventName?: string): void {
     try {
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-plan',
-        steps: plan.steps,
-        estimatedComplexity: plan.estimatedComplexity,
-        estimatedTokens: plan.estimatedTokens,
-      } as any);
-
-      this._dataStream.writeData({
-        type: 'agent-progress',
-        phase: 'planning',
-        status: 'complete',
-        message: `Plan generated with ${plan.steps.length} steps`,
-      });
-
-      logger.debug('Emitted plan generated event');
+      this._dataStream.writeMessageAnnotation({ type, ...data } as any);
+      logger.debug(eventName || `Emitted ${type}`);
     } catch (error) {
-      logger.error('Failed to emit plan generated:', error);
+      logger.error(`Failed to emit ${type}:`, error);
     }
   }
 
-  emitStepStarted(step: PlanStep): void {
+  private _emitProgress(phase: string, status: string, message?: string): void {
     try {
-      this._dataStream.writeData({
-        type: 'agent-progress',
-        phase: 'execution',
-        step: step.number,
-        description: step.description,
-        status: 'in-progress',
-      });
-
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-step-start',
-        stepNumber: step.number,
-        description: step.description,
-        tools: step.tools,
-      });
-
-      logger.debug(`Emitted step started: ${step.number}`);
-    } catch (error) {
-      logger.error('Failed to emit step started:', error);
-    }
-  }
-
-  emitToolCall(call: ToolCall): void {
-    try {
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-tool-call',
-        toolCallId: call.id,
-        toolName: call.name,
-        arguments: call.arguments,
-        timestamp: call.timestamp,
-      });
-
-      logger.debug(`Emitted tool call: ${call.name}`);
-    } catch (error) {
-      logger.error('Failed to emit tool call:', error);
-    }
-  }
-
-  emitToolResult(result: ToolResult): void {
-    try {
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-tool-result',
-        toolCallId: result.toolCallId,
-        success: result.success,
-        output: result.output,
-        error: result.error,
-        duration: result.duration,
-      } as any);
-
-      logger.debug(`Emitted tool result for: ${result.toolCallId}`);
-    } catch (error) {
-      logger.error('Failed to emit tool result:', error);
-    }
-  }
-
-  emitObservation(observation: Observation): void {
-    try {
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-observation',
-        content: observation.content,
-        success: observation.success,
-        timestamp: observation.timestamp,
-        metadata: observation.metadata,
-      } as any);
-
-      logger.debug('Emitted observation');
-    } catch (error) {
-      logger.error('Failed to emit observation:', error);
-    }
-  }
-
-  emitReflection(reflection: Reflection): void {
-    try {
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-reflection',
-        goalAchieved: reflection.goalAchieved,
-        issues: reflection.issues,
-        nextActions: reflection.nextActions,
-        shouldContinue: reflection.shouldContinue,
-        timestamp: reflection.timestamp,
-      });
-
-      this._dataStream.writeData({
-        type: 'agent-progress',
-        phase: 'reflection',
-        status: 'complete',
-        message: reflection.goalAchieved ? 'Goal achieved' : 'Continuing execution',
-      });
-
-      logger.debug('Emitted reflection');
-    } catch (error) {
-      logger.error('Failed to emit reflection:', error);
-    }
-  }
-
-  emitError(error: string, recoverable: boolean = false): void {
-    try {
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-error',
-        error,
-        recoverable,
-        timestamp: Date.now(),
-      });
-
-      this._dataStream.writeData({
-        type: 'agent-progress',
-        phase: 'error',
-        status: 'failed',
-        message: error,
-      });
-
-      logger.error('Emitted error:', error);
-    } catch (emitError) {
-      logger.error('Failed to emit error:', emitError);
-    }
-  }
-
-  emitComplete(result: AgentResult): void {
-    try {
-      this._dataStream.writeMessageAnnotation({
-        type: 'agent-complete',
-        success: result.success,
-        output: result.output,
-        artifacts: result.artifacts,
-        tokensUsed: result.tokensUsed,
-        iterations: result.iterations,
-        duration: result.duration,
-        error: result.error,
-      } as any);
-
-      this._dataStream.writeData({
-        type: 'agent-progress',
-        phase: 'complete',
-        status: result.success ? 'complete' : 'failed',
-        message: result.success ? 'Agent execution completed' : 'Agent execution failed',
-      });
-
-      logger.info('Emitted completion event');
-    } catch (error) {
-      logger.error('Failed to emit complete:', error);
-    }
-  }
-
-  emitProgress(phase: string, status: string, message?: string): void {
-    try {
-      this._dataStream.writeData({
-        type: 'agent-progress',
-        phase,
-        status,
-        message,
-        timestamp: Date.now(),
-      } as any);
+      this._dataStream.writeData({ type: 'agent-progress', phase, status, message, timestamp: Date.now() } as any);
     } catch (error) {
       logger.error('Failed to emit progress:', error);
     }
+  }
+
+  emitPlanGenerated(plan: Plan): void {
+    this._emit('agent-plan', {
+      steps: plan.steps,
+      estimatedComplexity: plan.estimatedComplexity,
+      estimatedTokens: plan.estimatedTokens,
+    });
+    this._emitProgress('planning', 'complete', `Plan generated with ${plan.steps.length} steps`);
+  }
+
+  emitStepStarted(step: PlanStep): void {
+    this._emit('agent-step-start', { stepNumber: step.number, description: step.description, tools: step.tools });
+    this._emitProgress('execution', 'in-progress', step.description);
+  }
+
+  emitToolCall(call: ToolCall): void {
+    this._emit(
+      'agent-tool-call',
+      { toolCallId: call.id, toolName: call.name, arguments: call.arguments, timestamp: call.timestamp },
+      `tool call: ${call.name}`,
+    );
+  }
+
+  emitToolResult(result: ToolResult): void {
+    this._emit('agent-tool-result', result, `tool result: ${result.toolCallId}`);
+  }
+
+  emitObservation(observation: Observation): void {
+    this._emit('agent-observation', observation);
+  }
+
+  emitReflection(reflection: Reflection): void {
+    this._emit('agent-reflection', reflection);
+    this._emitProgress('reflection', 'complete', reflection.goalAchieved ? 'Goal achieved' : 'Continuing execution');
+  }
+
+  emitError(error: string, recoverable = false): void {
+    this._emit('agent-error', { error, recoverable, timestamp: Date.now() });
+    this._emitProgress('error', 'failed', error);
+    logger.error('Agent error:', error);
+  }
+
+  emitComplete(result: AgentResult): void {
+    this._emit('agent-complete', result);
+    this._emitProgress(
+      'complete',
+      result.success ? 'complete' : 'failed',
+      result.success ? 'Execution completed' : 'Execution failed',
+    );
+    logger.info('Agent execution completed');
+  }
+
+  emitProgress(phase: string, status: string, message?: string): void {
+    this._emitProgress(phase, status, message);
   }
 }
