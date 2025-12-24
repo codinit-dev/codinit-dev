@@ -22,11 +22,12 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import { McpTools } from '~/components/mcp/MCPTools';
 import { MCPDialog } from '~/components/mcp/MCPDialog';
 import { McpServerSelector } from './MCPServerSelector';
-import { useToolMentionAutocomplete } from '~/lib/hooks/useToolMentionAutocomplete';
+import { useToolMentionAutocomplete, type CommandItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { ToolMentionAutocomplete } from './ToolMentionAutocomplete';
 import { insertToolMention, insertFileReference } from '~/utils/toolMentionParser';
 import { useStore } from '@nanostores/react';
 import { workbenchStore } from '~/lib/stores/workbench';
+import { updateAgentMode } from '~/lib/stores/settings';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -131,11 +132,19 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
     });
   };
 
+  const handleCommandSelected = (command: CommandItem) => {
+    if (command.action === 'agent-mode') {
+      updateAgentMode(true);
+      toast.success('Agent mode enabled for this conversation');
+    }
+  };
+
   const autocomplete = useToolMentionAutocomplete({
     input: props.input,
     textareaRef: props.textareaRef,
     onToolSelected: handleToolSelected,
     onFileSelected: handleFileSelected,
+    onCommandSelected: handleCommandSelected,
     files,
   });
 
@@ -481,10 +490,12 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         isOpen={autocomplete.isOpen}
         tools={autocomplete.filteredTools}
         files={autocomplete.filteredFiles}
+        commands={autocomplete.filteredCommands}
         selectedIndex={autocomplete.selectedIndex}
         position={autocomplete.dropdownPosition}
         onSelectTool={autocomplete.handleToolSelect}
         onSelectFile={autocomplete.handleFileSelect}
+        onSelectCommand={autocomplete.handleCommandSelect}
         onHover={autocomplete.setSelectedIndex}
         onClose={autocomplete.handleClose}
         searchQuery={autocomplete.searchQuery}

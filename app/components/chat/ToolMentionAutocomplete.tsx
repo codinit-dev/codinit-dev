@@ -1,4 +1,4 @@
-import type { ToolItem, FileItem } from '~/lib/hooks/useToolMentionAutocomplete';
+import type { ToolItem, FileItem, CommandItem } from '~/lib/hooks/useToolMentionAutocomplete';
 import { useEffect, useRef } from 'react';
 import { classNames } from '~/utils/classNames';
 import { File } from 'lucide-react';
@@ -7,10 +7,12 @@ interface ToolMentionAutocompleteProps {
   isOpen: boolean;
   tools: ToolItem[];
   files: FileItem[];
+  commands: CommandItem[];
   selectedIndex: number;
   position: { x: number; y: number } | null;
   onSelectTool: (toolName: string) => void;
   onSelectFile: (filePath: string) => void;
+  onSelectCommand: (command: CommandItem) => void;
   onHover: (index: number) => void;
   onClose: () => void;
   searchQuery: string;
@@ -21,10 +23,12 @@ export function ToolMentionAutocomplete({
   isOpen,
   tools,
   files,
+  commands,
   selectedIndex,
   position,
   onSelectTool,
   onSelectFile,
+  onSelectCommand,
   onHover,
   onClose,
   searchQuery,
@@ -139,6 +143,7 @@ export function ToolMentionAutocomplete({
   const showServerGroups = serverNames.length > 1;
 
   let globalIndex = 0;
+  const hasResults = commands.length > 0 || tools.length > 0;
 
   return (
     <div
@@ -150,29 +155,23 @@ export function ToolMentionAutocomplete({
       }}
     >
       <div className="max-h-[300px] overflow-y-auto p-2">
-        {tools.length === 0 ? (
+        {!hasResults ? (
           <div className="py-4 text-center text-sm text-codinit-elements-textTertiary">
-            No tools found for &quot;{searchQuery}&quot;
+            No results found for &quot;{searchQuery}&quot;
           </div>
         ) : (
-          serverNames.map((serverName) => {
-            const serverTools = groupedTools[serverName];
-
-            return (
-              <div key={serverName} className="mb-2">
-                {showServerGroups && (
-                  <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">
-                    📦 {serverName}
-                  </div>
-                )}
-                {serverTools.map((tool) => {
+          <>
+            {commands.length > 0 && (
+              <div className="mb-2">
+                <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">Commands</div>
+                {commands.map((command) => {
                   const currentIndex = globalIndex++;
                   const isSelected = currentIndex === selectedIndex;
 
                   return (
                     <div
-                      key={`${serverName}-${tool.name}`}
-                      onClick={() => onSelectTool(tool.name)}
+                      key={command.name}
+                      onClick={() => onSelectCommand(command)}
                       onMouseEnter={() => onHover(currentIndex)}
                       data-selected={isSelected}
                       className={classNames(
@@ -184,17 +183,19 @@ export function ToolMentionAutocomplete({
                     >
                       <div className="flex flex-col gap-1 w-full">
                         <div className="flex items-center gap-2">
-                          <span className="text-base">🔧</span>
-                          <span className="font-medium text-sm">{tool.name}</span>
+                          <div className={classNames(command.icon, 'text-base')} />
+                          <span className="font-medium text-sm">{command.name}</span>
                         </div>
-                        {tool.description && (
+                        {command.description && (
                           <div
                             className={classNames(
                               'text-xs ml-6',
                               isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary',
                             )}
                           >
-                            {tool.description.length > 100 ? `${tool.description.slice(0, 100)}...` : tool.description}
+                            {command.description.length > 100
+                              ? `${command.description.slice(0, 100)}...`
+                              : command.description}
                           </div>
                         )}
                       </div>
@@ -202,8 +203,59 @@ export function ToolMentionAutocomplete({
                   );
                 })}
               </div>
-            );
-          })
+            )}
+            {serverNames.map((serverName) => {
+              const serverTools = groupedTools[serverName];
+
+              return (
+                <div key={serverName} className="mb-2">
+                  {showServerGroups && (
+                    <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">
+                      📦 {serverName}
+                    </div>
+                  )}
+                  {serverTools.map((tool) => {
+                    const currentIndex = globalIndex++;
+                    const isSelected = currentIndex === selectedIndex;
+
+                    return (
+                      <div
+                        key={`${serverName}-${tool.name}`}
+                        onClick={() => onSelectTool(tool.name)}
+                        onMouseEnter={() => onHover(currentIndex)}
+                        data-selected={isSelected}
+                        className={classNames(
+                          'cursor-pointer rounded-md px-3 py-2 mb-1 transition-colors',
+                          isSelected
+                            ? 'bg-accent-500 text-white'
+                            : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary',
+                        )}
+                      >
+                        <div className="flex flex-col gap-1 w-full">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base">🔧</span>
+                            <span className="font-medium text-sm">{tool.name}</span>
+                          </div>
+                          {tool.description && (
+                            <div
+                              className={classNames(
+                                'text-xs ml-6',
+                                isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary',
+                              )}
+                            >
+                              {tool.description.length > 100
+                                ? `${tool.description.slice(0, 100)}...`
+                                : tool.description}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </>
         )}
       </div>
     </div>
