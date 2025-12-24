@@ -334,7 +334,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           <div className="flex mx-1.5 gap-2 items-center justify-between rounded-lg rounded-b-none border border-b-none border-codinit-elements-borderColor bg-gradient-to-r from-green-500/10 to-emerald-600/10 text-codinit-elements-textPrimary py-1.5 px-3 font-medium text-xs transition-theme">
             <div className="flex gap-2 items-center">
               <div className="i-ph:robot-fill text-green-500 text-base" />
-              <span>Agent Mode Active - AI will autonomously plan and execute</span>
+              <span>Agent Mode Enabled</span>
             </div>
             <button
               className="bg-transparent text-green-500 hover:text-green-600 pointer-auto transition-colors"
