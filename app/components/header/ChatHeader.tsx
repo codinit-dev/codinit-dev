@@ -2,7 +2,6 @@ import { useStore } from '@nanostores/react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { chatStore } from '~/lib/stores/chat';
 import { ChatDescription } from '~/lib/persistence/ChatDescription.client';
-import { AgentModeToggle } from '~/components/chat/AgentModeToggle';
 
 export function ChatHeader() {
   const chat = useStore(chatStore);
@@ -26,7 +25,6 @@ export function ChatHeader() {
       <div className="flex-1 pl-2 pr-4 truncate text-codinit-elements-textPrimary">
         <ClientOnly>{() => <ChatDescription />}</ClientOnly>
       </div>
-      <ClientOnly>{() => <AgentModeToggle />}</ClientOnly>
       <button
         onClick={() => window.open('https://github.com/codinit-dev/codinit-dev/issues/new/choose', '_blank')}
         className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 relative gap-1 h-9 focus-visible:outline-codinit-ds-brandHighlight bg-transparent hover:bg-codinit-ds-inverseSurface/7 text-codinit-ds-textPrimary hover:text-codinit-ds-brandHighlight text-sm px-2 transition-colors"

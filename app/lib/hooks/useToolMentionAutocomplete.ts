@@ -19,26 +19,37 @@ export interface FileItem {
   type: 'file';
 }
 
+export interface CommandItem {
+  name: string;
+  description: string;
+  icon: string;
+  action: 'agent-mode' | 'mcp-tool';
+  type: 'command';
+}
+
 interface UseToolMentionAutocompleteOptions {
   input: string;
   textareaRef: React.RefObject<HTMLTextAreaElement> | undefined;
   onToolSelected: (toolName: string) => void;
   onFileSelected?: (filePath: string) => void;
+  onCommandSelected?: (command: CommandItem) => void;
   files?: FileMap;
 }
 
-export type ReferenceItem = ToolItem | FileItem;
+export type ReferenceItem = ToolItem | FileItem | CommandItem;
 
 interface UseToolMentionAutocompleteReturn {
   isOpen: boolean;
   searchQuery: string;
   filteredTools: ToolItem[];
   filteredFiles: FileItem[];
+  filteredCommands: CommandItem[];
   selectedIndex: number;
   dropdownPosition: { x: number; y: number } | null;
   handleKeyDown: (e: React.KeyboardEvent) => boolean;
   handleToolSelect: (toolName: string) => void;
   handleFileSelect: (filePath: string) => void;
+  handleCommandSelect: (command: CommandItem) => void;
   handleClose: () => void;
   setSelectedIndex: (index: number) => void;
   referenceType: 'file' | 'tool';
@@ -130,10 +141,39 @@ function fuzzyFilterFiles(files: FileItem[], query: string): FileItem[] {
   return results.map((result) => result.item).slice(0, 50);
 }
 
+function getAvailableCommands(): CommandItem[] {
+  return [
+    {
+      name: 'agent',
+      description: 'Enable autonomous agent mode with Plan-Execute reasoning for complex tasks',
+      icon: 'i-ph:robot-fill',
+      action: 'agent-mode',
+      type: 'command',
+    },
+  ];
+}
+
+function fuzzyFilterCommands(commands: CommandItem[], query: string): CommandItem[] {
+  if (!query) {
+    return commands;
+  }
+
+  const fuse = new Fuse(commands, {
+    keys: ['name', 'description'],
+    threshold: 0.3,
+    distance: 100,
+    includeScore: true,
+  });
+
+  const results = fuse.search(query);
+
+  return results.map((result) => result.item);
+}
+
 export function useToolMentionAutocomplete(
   options: UseToolMentionAutocompleteOptions,
 ): UseToolMentionAutocompleteReturn {
-  const { input, textareaRef, onToolSelected, onFileSelected, files } = options;
+  const { input, textareaRef, onToolSelected, onFileSelected, onCommandSelected, files } = options;
 
   const serverTools = useMCPStore((state) => state.serverTools);
   const selectedMCP = useMCPStore((state) => state.selectedMCP);
@@ -158,6 +198,10 @@ export function useToolMentionAutocomplete(
     return getAvailableFiles(files);
   }, [files]);
 
+  const availableCommands = useMemo(() => {
+    return getAvailableCommands();
+  }, []);
+
   const filteredTools = useMemo(() => {
     if (referenceType === 'file') {
       return [];
@@ -173,6 +217,14 @@ export function useToolMentionAutocomplete(
 
     return fuzzyFilterFiles(availableFiles, searchQuery);
   }, [availableFiles, searchQuery, referenceType]);
+
+  const filteredCommands = useMemo(() => {
+    if (referenceType === 'file') {
+      return [];
+    }
+
+    return fuzzyFilterCommands(availableCommands, searchQuery);
+  }, [availableCommands, searchQuery, referenceType]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -211,18 +263,29 @@ export function useToolMentionAutocomplete(
     [onFileSelected, handleClose],
   );
 
+  const handleCommandSelect = useCallback(
+    (command: CommandItem) => {
+      if (onCommandSelected) {
+        onCommandSelected(command);
+      }
+
+      handleClose();
+    },
+    [onCommandSelected, handleClose],
+  );
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent): boolean => {
-      const items = referenceType === 'file' ? filteredFiles : filteredTools;
+      const allItems = referenceType === 'file' ? filteredFiles : [...filteredCommands, ...filteredTools];
 
-      if (!isOpen || items.length === 0) {
+      if (!isOpen || allItems.length === 0) {
         return false;
       }
 
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex((prev) => Math.min(prev + 1, items.length - 1));
+          setSelectedIndex((prev) => Math.min(prev + 1, allItems.length - 1));
           return true;
 
         case 'ArrowUp':
@@ -232,13 +295,19 @@ export function useToolMentionAutocomplete(
 
         case 'Enter':
         case 'Tab':
-          if (items[selectedIndex]) {
+          if (allItems[selectedIndex]) {
             e.preventDefault();
 
             if (referenceType === 'file') {
-              handleFileSelect((items[selectedIndex] as FileItem).relativePath);
+              handleFileSelect((allItems[selectedIndex] as FileItem).relativePath);
             } else {
-              handleToolSelect((items[selectedIndex] as ToolItem).name);
+              const selectedItem = allItems[selectedIndex];
+
+              if ('type' in selectedItem && selectedItem.type === 'command') {
+                handleCommandSelect(selectedItem as CommandItem);
+              } else {
+                handleToolSelect((selectedItem as ToolItem).name);
+              }
             }
 
             return true;
@@ -259,9 +328,11 @@ export function useToolMentionAutocomplete(
       isOpen,
       filteredTools,
       filteredFiles,
+      filteredCommands,
       selectedIndex,
       handleToolSelect,
       handleFileSelect,
+      handleCommandSelect,
       handleClose,
       referenceType,
     ],
@@ -272,11 +343,13 @@ export function useToolMentionAutocomplete(
     searchQuery,
     filteredTools,
     filteredFiles,
+    filteredCommands,
     selectedIndex,
     dropdownPosition,
     handleKeyDown,
     handleToolSelect,
     handleFileSelect,
+    handleCommandSelect,
     handleClose,
     setSelectedIndex,
     referenceType,
