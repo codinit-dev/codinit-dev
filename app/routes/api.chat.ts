@@ -18,6 +18,9 @@ import {
   getHttpStatusForError,
   type ValidatedChatRequest,
 } from '~/lib/api/chat-validation';
+import { AgentFactory } from '~/lib/agent-sdk';
+import { StreamManager } from '~/lib/agent-sdk/streaming/stream-manager';
+import { webcontainer } from '~/lib/webcontainer';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -58,13 +61,102 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     });
   }
 
-  const { messages, files, promptId, contextOptimization, supabase, designScheme, enableMCPTools } = validatedRequest;
+  const { messages, files, promptId, contextOptimization, supabase, designScheme, enableMCPTools, agentMode } =
+    validatedRequest;
 
   const cookieHeader = request.headers.get('Cookie');
   const apiKeys = JSON.parse(parseCookies(cookieHeader || '').apiKeys || '{}');
   const providerSettings: Record<string, IProviderSetting> = JSON.parse(
     parseCookies(cookieHeader || '').providers || '{}',
   );
+
+  if (agentMode) {
+    logger.info('Agent mode enabled - routing to agent execution');
+
+    try {
+      const lastUserMessage = messages.filter((m) => m.role === 'user').slice(-1)[0];
+      const task = lastUserMessage?.content || '';
+
+      if (!task) {
+        throw new Error('No task provided for agent execution');
+      }
+
+      const dataStream = createDataStream({
+        async execute(dataStream) {
+          try {
+            const env = context.cloudflare?.env || {};
+            const factory = AgentFactory.getInstance({ env: env as unknown as Record<string, string> });
+
+            const agentConfig = {
+              name: 'CodinIT Agent',
+              reasoningPattern: 'plan-execute' as const,
+              enableSelfCorrection: true,
+              enableMemory: true,
+              enableCheckpointing: false,
+            };
+
+            const agent = await factory.create(agentConfig);
+            const streamManager = new StreamManager(dataStream);
+
+            agent.onPlanGenerated((plan) => streamManager.emitPlanGenerated(plan));
+            agent.onStepStarted((step) => streamManager.emitStepStarted(step));
+            agent.onToolCall((call) => streamManager.emitToolCall(call));
+            agent.onObservation((observation) => streamManager.emitObservation(observation));
+            agent.onReflection((reflection) => streamManager.emitReflection(reflection));
+            agent.onStatusChange((status) => streamManager.emitProgress('agent', status, `Agent status: ${status}`));
+
+            const container = await webcontainer;
+            const agentContext = {
+              apiKeys,
+              files,
+              webcontainer: container,
+              workingDirectory: '/home/project',
+            };
+
+            logger.info('Starting agent execution for task:', task);
+
+            const result = await agent.execute(task, agentContext);
+
+            streamManager.emitComplete(result);
+
+            logger.info('Agent execution completed:', {
+              success: result.success,
+              iterations: result.iterations,
+              duration: result.duration,
+            });
+          } catch (error: any) {
+            logger.error('Agent execution error:', error);
+
+            dataStream.writeMessageAnnotation({
+              type: 'agent-error',
+              error: error.message || 'Unknown error',
+              recoverable: false,
+              timestamp: Date.now(),
+            });
+
+            dataStream.writeData({
+              type: 'agent-progress',
+              phase: 'error',
+              status: 'failed',
+              message: error.message || 'Agent execution failed',
+              timestamp: Date.now(),
+            });
+          }
+        },
+      });
+
+      return new Response(dataStream, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/event-stream; charset=utf-8',
+          Connection: 'keep-alive',
+          'Cache-Control': 'no-cache',
+        },
+      });
+    } catch (error: any) {
+      logger.error('Agent mode error, falling back to normal chat:', error);
+    }
+  }
 
   const stream = new SwitchableStream();
 
