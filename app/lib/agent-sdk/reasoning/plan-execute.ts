@@ -91,6 +91,7 @@ export class PlanExecuteReasoning implements ReasoningPattern {
         ],
 
         apiKeys: context.apiKeys || {},
+        providerSettings: context.providerSettings || {},
         options: {},
       });
 
@@ -155,6 +156,7 @@ export class PlanExecuteReasoning implements ReasoningPattern {
         ],
 
         apiKeys: context.apiKeys || {},
+        providerSettings: context.providerSettings || {},
         options: {},
       });
 

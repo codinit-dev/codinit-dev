@@ -75,11 +75,22 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
 
     try {
       const lastUserMessage = messages.filter((m) => m.role === 'user').slice(-1)[0];
-      const task = lastUserMessage?.content || '';
+      let task = lastUserMessage?.content || '';
+      let currentModel = 'claude-sonnet-4.5';
+      let currentProvider = 'Anthropic';
+
+      if (lastUserMessage) {
+        const { model, provider, content } = extractPropertiesFromMessage(lastUserMessage);
+        currentModel = model;
+        currentProvider = provider;
+        task = content;
+      }
 
       if (!task) {
         throw new Error('No task provided for agent execution');
       }
+
+      logger.info(`Agent using model: ${currentModel} from provider: ${currentProvider}`);
 
       const dataStream = createDataStream({
         async execute(dataStream) {
@@ -108,6 +119,9 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
             const container = await webcontainer;
             const agentContext = {
               apiKeys,
+              providerSettings,
+              model: currentModel,
+              provider: currentProvider,
               files,
               webcontainer: container,
               workingDirectory: '/home/project',

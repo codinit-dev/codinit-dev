@@ -128,6 +128,9 @@ export type AgentResult = z.infer<typeof AGENT_RESULT_SCHEMA>;
 
 export interface AgentContext {
   apiKeys: Record<string, string>;
+  providerSettings?: Record<string, any>;
+  model?: string;
+  provider?: string;
   files?: Record<string, any>;
   webcontainer?: any;
   workingDirectory?: string;
