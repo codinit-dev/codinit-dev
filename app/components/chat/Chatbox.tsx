@@ -27,7 +27,7 @@ import { ToolMentionAutocomplete } from './ToolMentionAutocomplete';
 import { insertToolMention, insertFileReference } from '~/utils/toolMentionParser';
 import { useStore } from '@nanostores/react';
 import { workbenchStore } from '~/lib/stores/workbench';
-import { updateAgentMode } from '~/lib/stores/settings';
+import { updateAgentMode, agentModeStore } from '~/lib/stores/settings';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -79,6 +79,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   const [providerDropdownOpen, setProviderDropdownOpen] = useState(false);
 
   const files = useStore(workbenchStore.files);
+  const agentMode = useStore(agentModeStore);
 
   const handleToolSelected = (toolName: string) => {
     if (!props.textareaRef?.current) {
@@ -133,9 +134,54 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
   };
 
   const handleCommandSelected = (command: CommandItem) => {
+    if (!props.textareaRef?.current) {
+      return;
+    }
+
+    const textarea = props.textareaRef.current;
+    const input = props.input;
+    const cursorPos = textarea.selectionStart || 0;
+
+    const atIndex = input.lastIndexOf('@', cursorPos - 1);
+
+    if (atIndex === -1) {
+      return;
+    }
+
+    const beforeAt = input.slice(0, atIndex);
+    const afterMention = input.slice(cursorPos);
+    const newText = beforeAt + afterMention;
+    const newCursorPos = atIndex;
+
     if (command.action === 'agent-mode') {
       updateAgentMode(true);
-      toast.success('Agent mode enabled for this conversation');
+
+      if (props.handleInputChange) {
+        textarea.value = newText;
+
+        const syntheticEvent = {
+          target: textarea,
+          currentTarget: textarea,
+        } as React.ChangeEvent<HTMLTextAreaElement>;
+
+        props.handleInputChange(syntheticEvent);
+      }
+
+      requestAnimationFrame(() => {
+        textarea.focus();
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+      });
+
+      toast.success(
+        <div className="flex items-center gap-2">
+          <div className="i-ph:robot-fill text-lg" />
+          <span>Agent mode enabled - AI will autonomously plan and execute your task</span>
+        </div>,
+        {
+          autoClose: 3000,
+          className: 'bg-gradient-to-r from-green-500 to-emerald-600',
+        },
+      );
     }
   };
 
@@ -281,6 +327,24 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               onClick={() => props.setSelectedElement?.(null)}
             >
               Clear
+            </button>
+          </div>
+        )}
+        {agentMode && (
+          <div className="flex mx-1.5 gap-2 items-center justify-between rounded-lg rounded-b-none border border-b-none border-codinit-elements-borderColor bg-gradient-to-r from-green-500/10 to-emerald-600/10 text-codinit-elements-textPrimary py-1.5 px-3 font-medium text-xs transition-theme">
+            <div className="flex gap-2 items-center">
+              <div className="i-ph:robot-fill text-green-500 text-base" />
+              <span>Agent Mode Active - AI will autonomously plan and execute</span>
+            </div>
+            <button
+              className="bg-transparent text-green-500 hover:text-green-600 pointer-auto transition-colors"
+              onClick={() => {
+                updateAgentMode(false);
+                toast.info('Agent mode disabled');
+              }}
+              title="Disable agent mode"
+            >
+              <div className="i-ph:x text-sm" />
             </button>
           </div>
         )}
