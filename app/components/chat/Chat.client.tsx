@@ -638,6 +638,23 @@ export const ChatImpl = memo(
       }
     }, []);
 
+    useEffect(() => {
+      if (agentMode && chatData && chatData.length > 0) {
+        const hasAgentEvent = chatData.some(
+          (data: any) =>
+            data.type === 'agent-progress' ||
+            data.type === 'agent-plan' ||
+            data.type === 'agent-step' ||
+            data.type === 'agent-observation',
+        );
+
+        if (hasAgentEvent && workbenchStore.currentView.get() !== 'agent') {
+          logger.info('Agent execution detected - switching to agent view');
+          workbenchStore.currentView.set('agent');
+        }
+      }
+    }, [chatData, agentMode]);
+
     const handleModelChange = (newModel: string) => {
       setModel(newModel);
       Cookies.set('selectedModel', newModel, { expires: 30 });
