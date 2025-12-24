@@ -29,6 +29,7 @@ import type { ElementInfo } from '~/components/workbench/Inspector';
 import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
 import { useMCPStore } from '~/lib/stores/mcp';
 import type { LlmErrorAlertType } from '~/types/actions';
+import { agentModeStore } from '~/lib/stores/settings';
 
 const logger = createScopedLogger('Chat');
 
@@ -122,6 +123,7 @@ export const ChatImpl = memo(
     const [selectedElement, setSelectedElement] = useState<ElementInfo | null>(null);
     const mcpSettings = useMCPStore((state) => state.settings);
     const selectedMCP = useMCPStore((state) => state.selectedMCP);
+    const agentMode = useStore(agentModeStore);
 
     const {
       messages,
@@ -157,6 +159,7 @@ export const ChatImpl = memo(
         maxLLMSteps: mcpSettings.maxLLMSteps,
         enableMCPTools: mcpSettings.enabled,
         selectedMCP,
+        agentMode,
       },
       sendExtraMessageFields: true,
       onError: (e) => {
