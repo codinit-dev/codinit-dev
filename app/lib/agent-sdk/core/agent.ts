@@ -258,7 +258,7 @@ export class Agent {
     }
   }
 
-  private async _generatePlan(task: string, _context: AgentContext): Promise<Plan> {
+  private async _generatePlan(task: string, context: AgentContext): Promise<Plan> {
     if (!this._reasoningPattern) {
       throw new Error('Reasoning pattern not initialized');
     }
@@ -268,6 +268,10 @@ export class Agent {
       currentState: this._state,
       availableTools: this._toolExecutor?.getAvailableTools() || [],
       previousResults: [],
+      apiKeys: context.apiKeys,
+      files: context.files,
+      webcontainer: context.webcontainer,
+      workingDirectory: context.workingDirectory,
     };
 
     return await this._reasoningPattern.generatePlan(task, reasoningContext);
@@ -292,7 +296,7 @@ export class Agent {
     return results;
   }
 
-  private async _executeStep(step: PlanStep, _context: AgentContext): Promise<any> {
+  private async _executeStep(step: PlanStep, context: AgentContext): Promise<any> {
     if (!this._reasoningPattern) {
       throw new Error('Reasoning pattern not initialized');
     }
@@ -302,12 +306,16 @@ export class Agent {
       currentState: this._state,
       availableTools: this._toolExecutor?.getAvailableTools() || [],
       previousResults: [],
+      apiKeys: context.apiKeys,
+      files: context.files,
+      webcontainer: context.webcontainer,
+      workingDirectory: context.workingDirectory,
     };
 
     return await this._reasoningPattern.executeStep(step, reasoningContext);
   }
 
-  private async _reflect(results: any[], task: string, _context: AgentContext): Promise<Reflection> {
+  private async _reflect(results: any[], task: string, context: AgentContext): Promise<Reflection> {
     if (!this._reasoningPattern) {
       throw new Error('Reasoning pattern not initialized');
     }
@@ -317,6 +325,10 @@ export class Agent {
       currentState: this._state,
       availableTools: this._toolExecutor?.getAvailableTools() || [],
       previousResults: results,
+      apiKeys: context.apiKeys,
+      files: context.files,
+      webcontainer: context.webcontainer,
+      workingDirectory: context.workingDirectory,
     };
 
     return await this._reasoningPattern.reflect(results, task, reasoningContext);

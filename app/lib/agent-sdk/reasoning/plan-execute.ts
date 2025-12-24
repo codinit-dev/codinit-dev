@@ -90,7 +90,7 @@ export class PlanExecuteReasoning implements ReasoningPattern {
           },
         ],
 
-        apiKeys: {},
+        apiKeys: context.apiKeys || {},
         options: {},
       });
 
@@ -129,7 +129,7 @@ export class PlanExecuteReasoning implements ReasoningPattern {
     };
   }
 
-  async reflect(results: StepResult[], goal: string, _context: ReasoningContext): Promise<Reflection> {
+  async reflect(results: StepResult[], goal: string, context: ReasoningContext): Promise<Reflection> {
     logger.info('Reflecting on execution results');
 
     const executedSteps = results.map((r) => `Step ${r.stepNumber}: ${r.success ? 'Success' : 'Failed'}`).join('\n');
@@ -154,7 +154,7 @@ export class PlanExecuteReasoning implements ReasoningPattern {
           },
         ],
 
-        apiKeys: {},
+        apiKeys: context.apiKeys || {},
         options: {},
       });
 
