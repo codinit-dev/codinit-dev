@@ -27,6 +27,7 @@ import { ToolMentionAutocomplete } from './ToolMentionAutocomplete';
 import { insertToolMention, insertFileReference } from '~/utils/toolMentionParser';
 import { useStore } from '@nanostores/react';
 import { workbenchStore } from '~/lib/stores/workbench';
+import { proStore, toggleFeature } from '~/lib/stores/pro';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -69,6 +70,11 @@ interface ChatBoxProps {
   setDesignScheme?: (scheme: DesignScheme) => void;
   selectedElement?: ElementInfo | null;
   setSelectedElement?: ((element: ElementInfo | null) => void) | undefined;
+  codinit_options?: {
+    enable_web_search?: boolean;
+    enable_lazy_edits?: boolean;
+    files?: boolean;
+  };
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -285,11 +291,11 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           )}
           onDragEnter={(e) => {
             e.preventDefault();
-            e.currentTarget.style.border = '2px solid #1488fc';
+            e.currentTarget.style.border = '2px solid var(--codinit-elements-borderColorActive)';
           }}
           onDragOver={(e) => {
             e.preventDefault();
-            e.currentTarget.style.border = '2px solid #1488fc';
+            e.currentTarget.style.border = '2px solid var(--codinit-elements-borderColorActive)';
           }}
           onDragLeave={(e) => {
             e.preventDefault();
@@ -412,6 +418,46 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             >
               <div className={`i-ph:chats text-xl`} />
               {props.chatMode === 'discuss' ? <span>Discuss</span> : <span />}
+            </IconButton>
+            <IconButton
+              title="Web Search"
+              className={classNames(
+                'transition-all flex items-center gap-1 px-1.5',
+                props.provider?.name !== 'CodinIT' ? 'opacity-50 grayscale' : '',
+                proStore.get().features.webSearch
+                  ? '!bg-codinit-elements-item-backgroundAccent !text-codinit-elements-item-contentAccent'
+                  : 'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault',
+              )}
+              onClick={() => {
+                if (props.provider?.name !== 'CodinIT') {
+                  toast.info('Web Search is a Pro feature available with CodinIT Pro provider.');
+                  return;
+                }
+
+                toggleFeature('webSearch');
+              }}
+            >
+              <div className="i-ph:globe text-xl" />
+            </IconButton>
+            <IconButton
+              title="Lazy Edits"
+              className={classNames(
+                'transition-all flex items-center gap-1 px-1.5',
+                props.provider?.name !== 'CodinIT' ? 'opacity-50 grayscale' : '',
+                proStore.get().features.lazyEdits
+                  ? '!bg-codinit-elements-item-backgroundAccent !text-codinit-elements-item-contentAccent'
+                  : 'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault',
+              )}
+              onClick={() => {
+                if (props.provider?.name !== 'CodinIT') {
+                  toast.info('Lazy Edits is a Pro feature available with CodinIT Pro provider.');
+                  return;
+                }
+
+                toggleFeature('lazyEdits');
+              }}
+            >
+              <div className="i-ph:magic-wand text-xl" />
             </IconButton>
             <ClientOnly>
               {() =>

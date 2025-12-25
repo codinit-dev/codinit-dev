@@ -39,6 +39,7 @@ import type { ProgressAnnotation } from '~/types/context';
 import { SupabaseChatAlert } from '~/components/chat/SupabaseAlert';
 import { expoUrlAtom } from '~/lib/stores/qrCodeStore';
 import { useStore } from '@nanostores/react';
+import { proStore } from '~/lib/stores/pro';
 import { StickToBottom, useStickToBottomContext } from '~/lib/hooks';
 import { ChatBox } from './Chatbox';
 import type { DesignScheme } from '~/types/design-scheme';
@@ -448,7 +449,7 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
 
         {/* Unified Header Container - spans full width */}
         {chatStarted && (
-          <div className="flex bg-codinit-elements-background-depth-1">
+          <div className="flex bg-codinit-elements-background-depth-1 border-b border-codinit-elements-borderColor z-10">
             {/* Chat Header Section - constrained to chat width */}
             <div className="w-[var(--chat-min-width)]">
               <ChatHeader />
@@ -775,6 +776,11 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   setDesignScheme={setDesignScheme}
                   selectedElement={selectedElement}
                   setSelectedElement={setSelectedElement}
+                  codinit_options={{
+                    enable_web_search: proStore.get().features.webSearch,
+                    enable_lazy_edits: proStore.get().features.lazyEdits,
+                    files: uploadedFiles.length > 0,
+                  }}
                 />
               </div>
             </StickToBottom>
