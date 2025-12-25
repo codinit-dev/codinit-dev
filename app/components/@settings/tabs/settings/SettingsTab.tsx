@@ -6,6 +6,8 @@ import { SettingsSection } from '~/components/@settings/shared/components/Settin
 import { SettingsGroup, SettingsPanel } from '~/components/@settings/shared/components/SettingsPanel';
 import type { UserProfile } from '~/components/@settings/core/types';
 import { isMac } from '~/utils/os';
+import { useStore } from '@nanostores/react';
+import { proStore, verifyProKey } from '~/lib/stores/pro';
 
 // Helper to get modifier key symbols/text
 const getModifierSymbol = (modifier: string): string => {
@@ -214,6 +216,96 @@ export default function SettingsTab() {
           </div>
         </SettingsPanel>
       </SettingsSection>
+      <ProSettingsSection />
     </div>
+  );
+}
+
+function ProSettingsSection() {
+  const [apiKey, setApiKey] = useState('');
+  const proState = useStore(proStore);
+  const [loading, setLoading] = useState(false);
+
+  const handleVerify = async () => {
+    setLoading(true);
+
+    try {
+      await verifyProKey(apiKey);
+      toast.success('CodinIT Pro verified!');
+    } catch {
+      toast.error('Verification failed. Check your API key and backend status.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <SettingsSection
+      title="CodinIT Pro"
+      description="Manage your Pro subscription and API tokens"
+      icon="i-ph:sparkle-fill"
+      delay={0.25}
+    >
+      <SettingsPanel variant="highlight" className="p-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="i-ph:certificate-fill w-8 h-8 text-blue-500" />
+              <div>
+                <h4 className="text-base font-semibold text-codinit-elements-textPrimary">
+                  Status: {proState.isPro ? 'Pro Active' : 'Free Tier'}
+                </h4>
+                {proState.isPro && (
+                  <p className="text-sm text-codinit-elements-textSecondary">
+                    Credits: {proState.credits.total - proState.credits.used} remaining
+                  </p>
+                )}
+              </div>
+            </div>
+            {!proState.isPro && (
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-bold hover:bg-blue-600 transition-colors"
+                onClick={() => window.open('https://codinit.dev/pro', '_blank')}
+              >
+                Upgrade to Pro
+              </button>
+            )}
+          </div>
+
+          <div className="space-y-2 pt-4 border-t border-gray-200/50 dark:border-gray-700/50">
+            <label className="text-xs font-bold text-codinit-elements-textSecondary uppercase tracking-wider">
+              CodinIT Pro API Key
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="Enter your Pro API key..."
+                className={classNames(
+                  'flex-1 px-4 py-2 rounded-lg text-sm',
+                  'bg-white dark:bg-[#0F0F0F]',
+                  'border border-gray-200 dark:border-[#2A2A2A]',
+                  'text-codinit-elements-textPrimary',
+                  'focus:outline-none focus:ring-2 focus:ring-blue-500/30',
+                )}
+              />
+              <button
+                disabled={loading || !apiKey}
+                onClick={handleVerify}
+                className={classNames(
+                  'px-4 py-2 rounded-lg text-sm font-bold transition-all',
+                  'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent',
+                  'disabled:opacity-50 disabled:cursor-not-allowed',
+                  loading ? 'animate-pulse' : '',
+                )}
+              >
+                {loading ? 'Verifying...' : 'Verify'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </SettingsPanel>
+    </SettingsSection>
   );
 }
