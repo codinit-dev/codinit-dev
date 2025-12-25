@@ -33,40 +33,62 @@
 
 /* Estilos para as linhas de diff */
 .diff-block-added {
-  @apply bg-green-500/20 border-l-4 border-green-500;
+  background-color: rgba(34, 197, 94, 0.2);
+  border-left: 4px solid rgb(34, 197, 94);
 }
 
 .diff-block-removed {
-  @apply bg-red-500/20 border-l-4 border-red-500;
+  background-color: rgba(239, 68, 68, 0.2);
+  border-left: 4px solid rgb(239, 68, 68);
 }
 
 /* Melhorar contraste para mudanças */
-.diff-panel-content .group:hover .diff-block-added {
-  @apply bg-green-500/30;
+.diff-panel-content .diff-line:hover .diff-block-added {
+  background-color: rgba(34, 197, 94, 0.3);
 }
 
-.diff-panel-content .group:hover .diff-block-removed {
-  @apply bg-red-500/30;
+.diff-panel-content .diff-line:hover .diff-block-removed {
+  background-color: rgba(239, 68, 68, 0.3);
 }
 
 /* Estilos unificados para ambas as visualizações */
 .diff-line {
-  @apply flex group min-w-fit transition-colors duration-150;
+  display: flex;
+  min-width: fit-content;
+  transition: background-color 150ms ease;
 }
 
 .diff-line-number {
-  @apply w-12 shrink-0 pl-2 py-0.5 text-left font-mono text-codinit-elements-textTertiary border-r border-codinit-elements-borderColor bg-codinit-elements-background-depth-1;
+  width: 3rem;
+  flex-shrink: 0;
+  padding: 0.125rem 0 0.125rem 0.5rem;
+  text-align: left;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  color: var(--codinit-elements-textTertiary);
+  border-right: 1px solid var(--codinit-elements-borderColor);
+  background-color: var(--codinit-elements-background-depth-1);
 }
 
 .diff-line-content {
-  @apply px-4 py-0.5 font-mono whitespace-pre flex-1 group-hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textPrimary;
+  padding: 0.125rem 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  white-space: pre;
+  flex: 1;
+  color: var(--codinit-elements-textPrimary);
+  transition: background-color 150ms ease;
+}
+
+.diff-line:hover .diff-line-content {
+  background-color: var(--codinit-elements-background-depth-2);
 }
 
 /* Cores específicas para adições/remoções */
 .diff-added {
-  @apply bg-green-500/20 border-l-4 border-green-500;
+  background-color: rgba(34, 197, 94, 0.2);
+  border-left: 4px solid rgb(34, 197, 94);
 }
 
 .diff-removed {
-  @apply bg-red-500/20 border-l-4 border-red-500;
+  background-color: rgba(239, 68, 68, 0.2);
+  border-left: 4px solid rgb(239, 68, 68);
 }

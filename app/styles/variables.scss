@@ -62,9 +62,9 @@
 
   --codinit-elements-icon-success: theme('colors.green.500');
   --codinit-elements-icon-error: theme('colors.red.500');
-  --codinit-elements-icon-primary: #cccccc; /* Changed from theme('colors.gray.950') to low-contrast gray */
-  --codinit-elements-icon-secondary: #a0a0a0; /* Changed from theme('colors.gray.600') to dimmer gray */
-  --codinit-elements-icon-tertiary: #888888; /* Changed from theme('colors.gray.500') to softer gray */
+  --codinit-elements-icon-primary: theme('colors.gray.950');
+  --codinit-elements-icon-secondary: theme('colors.gray.600');
+  --codinit-elements-icon-tertiary: theme('colors.gray.500');
 
   --codinit-elements-dividerColor: theme('colors.gray.100');
 
@@ -136,13 +136,19 @@
 :root,
 :root[data-theme='dark'] {
   /* Pure neutral gray with blue accents - improved contrast */
-  --codinit-elements-borderColor: #3a3a3a; /* Neutral gray border - slightly lighter for visibility */
-  --codinit-elements-borderColorActive: #3b82f6; /* Blue active border */
+  --codinit-elements-borderColor: #3a3a3a;
+  /* Neutral gray border - slightly lighter for visibility */
+  --codinit-elements-borderColorActive: #3b82f6;
+  /* Blue active border */
 
-  --codinit-elements-bg-depth-1: #121212; /* Main background - darker base */
-  --codinit-elements-bg-depth-2: #1a1a1a; /* Content surfaces */
-  --codinit-elements-bg-depth-3: #242424; /* Distinction elements */
-  --codinit-elements-bg-depth-4: #2e2e2e; /* Buttons/inputs - more contrast */
+  --codinit-elements-bg-depth-1: #121212;
+  /* Main background - darker base */
+  --codinit-elements-bg-depth-2: #1a1a1a;
+  /* Content surfaces */
+  --codinit-elements-bg-depth-3: #242424;
+  /* Distinction elements */
+  --codinit-elements-bg-depth-4: #2e2e2e;
+  /* Buttons/inputs - more contrast */
 
   /* Aliases for background-depth variables */
   --codinit-elements-background-depth-1: var(--codinit-elements-bg-depth-1);
@@ -151,21 +157,31 @@
   --codinit-elements-background-depth-4: var(--codinit-elements-bg-depth-4);
 
   /* Optimized contrast for text */
-  --codinit-elements-textPrimary: #ffffff; /* Pure white for better readability */
-  --codinit-elements-textSecondary: #cccccc; /* Neutral gray */
-  --codinit-elements-textTertiary: #999999; /* Muted neutral */
+  --codinit-elements-textPrimary: #ffffff;
+  /* Pure white for better readability */
+  --codinit-elements-textSecondary: #cccccc;
+  /* Neutral gray */
+  --codinit-elements-textTertiary: #999999;
+  /* Muted neutral */
 
-  --codinit-elements-code-background: #0a0a0a; /* Dark code background */
-  --codinit-elements-code-text: #f0f6fc; /* Bright code text */
+  --codinit-elements-code-background: #0a0a0a;
+  /* Dark code background */
+  --codinit-elements-code-text: #f0f6fc;
+  /* Bright code text */
 
   /* Primary Button - Blue accent */
-  --codinit-elements-button-primary-background: #3b82f6; /* Blue background */
-  --codinit-elements-button-primary-backgroundHover: #2563eb; /* Darker blue on hover */
-  --codinit-elements-button-primary-text: #ffffff; /* White text for max contrast */
+  --codinit-elements-button-primary-background: #3b82f6;
+  /* Blue background */
+  --codinit-elements-button-primary-backgroundHover: #2563eb;
+  /* Darker blue on hover */
+  --codinit-elements-button-primary-text: #ffffff;
+  /* White text for max contrast */
 
   /* Secondary Button - Neutral gray with better contrast */
-  --codinit-elements-button-secondary-background: #2e2e2e; /* Matches depth-4 for visibility on containers */
-  --codinit-elements-button-secondary-backgroundHover: #3a3a3a; /* Lighter hover for clear feedback */
+  --codinit-elements-button-secondary-background: #2e2e2e;
+  /* Matches depth-4 for visibility on containers */
+  --codinit-elements-button-secondary-backgroundHover: #3a3a3a;
+  /* Lighter hover for clear feedback */
   --codinit-elements-button-secondary-text: #e0e0e0;
 
   /* Danger Button - Remains prominent */
@@ -175,21 +191,30 @@
 
   /* Item backgrounds and content - neutral gray with improved contrast */
   --codinit-elements-item-contentDefault: #a0a0a0;
-  --codinit-elements-item-contentActive: #ffffff; /* White for active */
-  --codinit-elements-item-contentAccent: #d0d0d0; /* Neutral gray accent */
-  --codinit-elements-item-contentDanger: #f85149; /* Remains prominent */
-  --codinit-elements-item-backgroundDefault: transparent; /* Transparent for layering */
-  --codinit-elements-item-backgroundActive: #2e2e2e; /* Matches depth-4 for clear hover/active */
-  --codinit-elements-item-backgroundAccent: rgba(204, 204, 204, 0.08); /* Subtle neutral accent background */
+  --codinit-elements-item-contentActive: #ffffff;
+  /* White for active */
+  --codinit-elements-item-contentAccent: #d0d0d0;
+  /* Neutral gray accent */
+  --codinit-elements-item-contentDanger: #f85149;
+  /* Remains prominent */
+  --codinit-elements-item-backgroundDefault: transparent;
+  /* Transparent for layering */
+  --codinit-elements-item-backgroundActive: #2e2e2e;
+  /* Matches depth-4 for clear hover/active */
+  --codinit-elements-item-backgroundAccent: rgba(204, 204, 204, 0.08);
+  /* Subtle neutral accent background */
   --codinit-elements-item-backgroundDanger: rgba(248, 81, 73, 0.1);
 
   /* Loader - Higher contrast */
-  --codinit-elements-loader-background: rgba(255, 255, 255, 0.1); /* Slightly more opaque */
-  --codinit-elements-loader-progress: #79c0ff; /* Brighter progress color */
+  --codinit-elements-loader-background: rgba(255, 255, 255, 0.1);
+  /* Slightly more opaque */
+  --codinit-elements-loader-progress: #79c0ff;
+  /* Brighter progress color */
 
   /* Artifacts - Neutral gray aligned with new depth system */
   --codinit-elements-artifacts-background: var(--codinit-elements-bg-depth-1);
-  --codinit-elements-artifacts-backgroundHover: rgba(255, 255, 255, 0.06); /* Subtle hover */
+  --codinit-elements-artifacts-backgroundHover: rgba(255, 255, 255, 0.06);
+  /* Subtle hover */
   --codinit-elements-artifacts-borderColor: var(--codinit-elements-borderColor);
   --codinit-elements-artifacts-inlineCode-background: var(--codinit-elements-bg-depth-3);
   --codinit-elements-artifacts-inlineCode-text: #ffffff;
@@ -200,87 +225,130 @@
 
   /* Messages - Neutral gray aligned with new depth system */
   --codinit-elements-messages-background: var(--codinit-elements-bg-depth-2);
-  --codinit-elements-messages-linkColor: #d0d0d0; /* Slightly brighter link */
-  --codinit-elements-messages-code-background: #0a0a0a; /* Darker code background */
+  --codinit-elements-messages-linkColor: #d0d0d0;
+  /* Slightly brighter link */
+  --codinit-elements-messages-code-background: #0a0a0a;
+  /* Darker code background */
   --codinit-elements-messages-inlineCode-background: var(--codinit-elements-bg-depth-3);
   --codinit-elements-messages-inlineCode-text: var(--codinit-elements-textPrimary);
 
   /* Icons - Adjusted for dark theme contrast */
-  --codinit-elements-icon-success: #56d364; /* Remains green */
-  --codinit-elements-icon-error: #f85149; /* Remains red */
-  --codinit-elements-icon-primary: #f0f6fc; /* Bright white */
-  --codinit-elements-icon-secondary: #c9d1d9; /* Bright */
-  --codinit-elements-icon-tertiary: #8b949e; /* Subtle */
+  --codinit-elements-icon-success: #56d364;
+  /* Remains green */
+  --codinit-elements-icon-error: #f85149;
+  /* Remains red */
+  --codinit-elements-icon-primary: #f0f6fc;
+  /* Bright white */
+  --codinit-elements-icon-secondary: #c9d1d9;
+  /* Bright */
+  --codinit-elements-icon-tertiary: #8b949e;
+  /* Subtle */
 
-  --codinit-elements-dividerColor: #333333; /* Aligned with border color */
+  --codinit-elements-dividerColor: #333333;
+  /* Aligned with border color */
 
-  --codinit-elements-prompt-background: rgba(18, 18, 18, 0.85); /* Aligned with depth-1 */
+  --codinit-elements-prompt-background: rgba(18, 18, 18, 0.85);
+  /* Aligned with depth-1 */
 
   /* Sidebar - Blue accent */
-  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(59, 130, 246, 0.1); /* Blue accent background */
-  --codinit-elements-sidebar-buttonBackgroundHover: rgba(59, 130, 246, 0.15); /* Blue hover */
-  --codinit-elements-sidebar-buttonText: #3b82f6; /* Blue accent */
+  --codinit-elements-sidebar-buttonBackgroundDefault: rgba(59, 130, 246, 0.1);
+  /* Blue accent background */
+  --codinit-elements-sidebar-buttonBackgroundHover: rgba(59, 130, 246, 0.15);
+  /* Blue hover */
+  --codinit-elements-sidebar-buttonText: #3b82f6;
+  /* Blue accent */
 
   /* Preview Address Bar - Compatible with undertone */
-  --codinit-elements-preview-addressBar-background: var(
-    --codinit-elements-bg-depth-2
-  ); /* Use depth-2 for consistency */
-  --codinit-elements-preview-addressBar-backgroundHover: rgba(255, 255, 255, 0.05); /* Subtle hover */
-  --codinit-elements-preview-addressBar-backgroundActive: var(
-    --codinit-elements-bg-depth-1
-  ); /* Use depth-1 for active */
+  --codinit-elements-preview-addressBar-background: var(--codinit-elements-bg-depth-2);
+  /* Use depth-2 for consistency */
+  --codinit-elements-preview-addressBar-backgroundHover: rgba(255, 255, 255, 0.05);
+  /* Subtle hover */
+  --codinit-elements-preview-addressBar-backgroundActive: var(--codinit-elements-bg-depth-1);
+  /* Use depth-1 for active */
   --codinit-elements-preview-addressBar-text: var(--codinit-elements-textSecondary);
   --codinit-elements-preview-addressBar-textActive: var(--codinit-elements-textPrimary);
 
   /* Terminals - Neutral gray */
-  --codinit-elements-terminals-background: var(--codinit-elements-bg-depth-1); /* Use depth-1 for terminal background */
-  --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-3); /* Use depth-3 for buttons */
+  --codinit-elements-terminals-background: var(--codinit-elements-bg-depth-1);
+  /* Use depth-1 for terminal background */
+  --codinit-elements-terminals-buttonBackground: var(--codinit-elements-bg-depth-3);
+  /* Use depth-3 for buttons */
 
-  --codinit-elements-cta-background: var(--codinit-elements-bg-depth-3); /* Use depth-3 for CTA */
+  --codinit-elements-cta-background: var(--codinit-elements-bg-depth-3);
+  /* Use depth-3 for CTA */
   --codinit-elements-cta-text: #ffffff;
 
   /* Terminal Colors - Pure neutral gray */
-  --codinit-terminal-background: var(--codinit-elements-terminals-background); /* Inherit from terminal background */
-  --codinit-terminal-foreground: #ffffff; /* Pure white foreground */
-  --codinit-terminal-selection-background: rgba(204, 204, 204, 0.2); /* Neutral gray selection */
-  --codinit-terminal-black: #000000; /* Pure black */
-  --codinit-terminal-red: #ff7b72; /* Brighter red */
-  --codinit-terminal-green: #76d974; /* Brighter green */
-  --codinit-terminal-yellow: #e2e27a; /* Brighter yellow */
-  --codinit-terminal-blue: #63a3ff; /* Brighter blue */
-  --codinit-terminal-magenta: #ff79c6; /* Brighter magenta */
-  --codinit-terminal-cyan: #98d4ca; /* Brighter cyan */
-  --codinit-terminal-white: #ffffff; /* Pure white */
-  --codinit-terminal-brightBlack: #555555; /* Neutral gray */
-  --codinit-terminal-brightRed: #ff7b72; /* Brighter red */
-  --codinit-terminal-brightGreen: #76d974; /* Brighter green */
-  --codinit-terminal-brightYellow: #e2e27a; /* Brighter yellow */
-  --codinit-terminal-brightBlue: #63a3ff; /* Brighter blue */
-  --codinit-terminal-brightMagenta: #ff79c6; /* Brighter magenta */
-  --codinit-terminal-brightCyan: #98d4ca; /* Brighter cyan */
-  --codinit-terminal-brightWhite: #ffffff; /* Pure white */
-  --modern-scrollbar-thumb-background: rgba(153, 153, 153, 0.3); /* Neutral gray thumb */
-  --modern-scrollbar-thumb-backgroundHover: rgba(153, 153, 153, 0.5); /* More opaque on hover */
+  --codinit-terminal-background: var(--codinit-elements-terminals-background);
+  /* Inherit from terminal background */
+  --codinit-terminal-foreground: #ffffff;
+  /* Pure white foreground */
+  --codinit-terminal-selection-background: rgba(204, 204, 204, 0.2);
+  /* Neutral gray selection */
+  --codinit-terminal-black: #000000;
+  /* Pure black */
+  --codinit-terminal-red: #ff7b72;
+  /* Brighter red */
+  --codinit-terminal-green: #76d974;
+  /* Brighter green */
+  --codinit-terminal-yellow: #e2e27a;
+  /* Brighter yellow */
+  --codinit-terminal-blue: #63a3ff;
+  /* Brighter blue */
+  --codinit-terminal-magenta: #ff79c6;
+  /* Brighter magenta */
+  --codinit-terminal-cyan: #98d4ca;
+  /* Brighter cyan */
+  --codinit-terminal-white: #ffffff;
+  /* Pure white */
+  --codinit-terminal-brightBlack: #555555;
+  /* Neutral gray */
+  --codinit-terminal-brightRed: #ff7b72;
+  /* Brighter red */
+  --codinit-terminal-brightGreen: #76d974;
+  /* Brighter green */
+  --codinit-terminal-brightYellow: #e2e27a;
+  /* Brighter yellow */
+  --codinit-terminal-brightBlue: #63a3ff;
+  /* Brighter blue */
+  --codinit-terminal-brightMagenta: #ff79c6;
+  /* Brighter magenta */
+  --codinit-terminal-brightCyan: #98d4ca;
+  /* Brighter cyan */
+  --codinit-terminal-brightWhite: #ffffff;
+  /* Pure white */
+  --modern-scrollbar-thumb-background: rgba(153, 153, 153, 0.3);
+  /* Neutral gray thumb */
+  --modern-scrollbar-thumb-backgroundHover: rgba(153, 153, 153, 0.5);
+  /* More opaque on hover */
 
   /* Command/Dialog popover variables - Dark Theme - neutral gray aligned */
-  --background: 0 0% 7%; /* #121212 */
+  --background: 0 0% 7%;
+  /* #121212 */
   --foreground: 0 0% 98%;
-  --card: 0 0% 10%; /* #1a1a1a */
+  --card: 0 0% 10%;
+  /* #1a1a1a */
   --card-foreground: 0 0% 98%;
-  --popover: 0 0% 10%; /* #1a1a1a */
+  --popover: 0 0% 10%;
+  /* #1a1a1a */
   --popover-foreground: 0 0% 98%;
   --primary: 217.2 91.2% 59.8%;
   --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 14%; /* #242424 */
+  --secondary: 0 0% 14%;
+  /* #242424 */
   --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14%; /* #242424 */
+  --muted: 0 0% 14%;
+  /* #242424 */
   --muted-foreground: 0 0% 64%;
-  --accent: 0 0% 18%; /* #2e2e2e */
+  --accent: 0 0% 18%;
+  /* #2e2e2e */
   --accent-foreground: 0 0% 98%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 23%; /* #3a3a3a */
-  --input: 0 0% 18%; /* #2e2e2e */
+  --border: 0 0% 23%;
+  /* #3a3a3a */
+  --input: 0 0% 18%;
+  /* #2e2e2e */
   --ring: 217.2 91.2% 59.8%;
 }
 
@@ -290,7 +358,7 @@
  * Hierarchy: Element Token -> (Element Token | Color Tokens) -> Primitives
  */
 :root {
-  --header-height: 54px;
+  --header-height: 48px;
   --chat-max-width: 36rem;
   --chat-min-width: 533px;
   --workbench-width: min(calc(100% - var(--chat-min-width)), 3000px);
