@@ -134,7 +134,7 @@ export const Workbench = memo(
         >
           <div
             className={classNames(
-              'fixed top-[calc(var(--header-height)+0.1rem)] bottom-6 w-[var(--workbench-inner-width)] z-0 transition-[left,width] duration-200 codinit-ease-cubic-bezier',
+              'fixed top-[var(--header-height)] bottom-0 w-[var(--workbench-inner-width)] z-0 transition-[left,width] duration-200 codinit-ease-cubic-bezier',
               {
                 'w-full': isSmallViewport,
                 'left-0': showWorkbench && isSmallViewport,
@@ -143,8 +143,8 @@ export const Workbench = memo(
               },
             )}
           >
-            <div className="absolute inset-0 px-2 lg:px-6">
-              <div className="h-full flex flex-col bg-codinit-elements-background-depth-1 overflow-hidden">
+            <div className="absolute inset-0">
+              <div className="h-full flex flex-col bg-codinit-elements-background-depth-1 border-l border-codinit-elements-borderColor overflow-hidden">
                 <div className="relative flex-1 overflow-hidden">
                   <View initial={{ x: '0%' }} animate={{ x: selectedView === 'code' ? '0%' : '-100%' }}>
                     <EditorPanel
