@@ -31,6 +31,13 @@ const chatRequestSchema = z.object({
   designScheme: z.any().optional(),
   supabase: supabaseConfigSchema.optional(),
   enableMCPTools: z.boolean().default(false),
+  codinit_options: z
+    .object({
+      enable_web_search: z.boolean().optional(),
+      enable_lazy_edits: z.boolean().optional(),
+      files: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 export interface ValidatedChatRequest {
@@ -48,6 +55,11 @@ export interface ValidatedChatRequest {
     };
   };
   enableMCPTools: boolean;
+  codinit_options?: {
+    enable_web_search?: boolean;
+    enable_lazy_edits?: boolean;
+    files?: boolean;
+  };
 }
 
 export function validateChatRequest(data: unknown): ValidatedChatRequest {

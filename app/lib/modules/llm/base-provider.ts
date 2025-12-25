@@ -154,6 +154,7 @@ export abstract class BaseProvider implements ProviderInfo {
     serverEnv?: Env;
     apiKeys?: Record<string, string>;
     providerSettings?: Record<string, IProviderSetting>;
+    codinit_options?: any;
   }): LanguageModelV1;
 }
 

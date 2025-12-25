@@ -1,4 +1,5 @@
 import AnthropicProvider from './providers/anthropic';
+import CodinITProvider from './providers/codinit';
 import DeepseekProvider from './providers/deepseek';
 import GoogleProvider from './providers/google';
 import GroqProvider from './providers/groq';
@@ -19,6 +20,7 @@ import GithubProvider from './providers/github';
 
 export {
   AnthropicProvider,
+  CodinITProvider,
   DeepseekProvider,
   GoogleProvider,
   GroqProvider,

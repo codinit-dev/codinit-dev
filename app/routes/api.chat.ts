@@ -276,6 +276,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
               summary,
               messageSliceId,
               designScheme,
+              codinit_options: validatedRequest.codinit_options,
             });
 
             stream.switchSource(result.toDataStream());
@@ -361,6 +362,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           summary,
           messageSliceId,
           designScheme,
+          codinit_options: validatedRequest.codinit_options,
         });
 
         (async () => {
