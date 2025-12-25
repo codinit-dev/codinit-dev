@@ -493,11 +493,12 @@ export const Preview = memo(() => {
             </div>
           ) : (
             <div className="flex w-full h-full justify-center items-center bg-codinit-elements-background-depth-1 text-codinit-elements-textPrimary">
-              <div className="text-center">
+              <div className="text-center p-8 rounded-2xl bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor shadow-inner">
                 <TextShimmer>
-                  <div className="text-lg font-medium mb-2">No Preview Available</div>
-                  <div className="text-sm text-codinit-elements-textSecondary">
-                    Start a development server to see your app
+                  <div className="i-lucide:monitor-off w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <div className="text-xl font-semibold mb-2 tracking-tight">Ready to Build?</div>
+                  <div className="text-sm text-codinit-elements-textSecondary max-w-[200px] mx-auto leading-relaxed">
+                    Start a development server or prompt the AI to see your app in action.
                   </div>
                 </TextShimmer>
               </div>

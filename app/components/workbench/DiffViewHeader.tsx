@@ -49,24 +49,22 @@ export const DiffViewHeader = memo(
     const showStats = additions > 0 || deletions > 0;
 
     return (
-      <div className="flex relative items-center gap-2 py-2 h-12 pl-2 pr-3 z-50">
+      <div className="flex relative items-center gap-2 h-12 pl-4 pr-3 z-50">
         {/* Toggle Buttons Section */}
-        <div className="flex items-center gap-2 ml-8">
-          <div className="flex items-center gap-1">
-            <IconButton
-              icon="i-lucide:eye"
-              className="w-8 h-8"
-              title="Preview"
-              onClick={() => setSelectedView('preview')}
-            />
-            <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
-            <IconButton
-              icon="i-lucide:git-compare-arrows"
-              className="w-8 h-8"
-              title="Diff"
-              onClick={() => setSelectedView('diff')}
-            />
-          </div>
+        <div className="flex items-center gap-1">
+          <IconButton
+            icon="i-lucide:eye"
+            className="w-8 h-8"
+            title="Preview"
+            onClick={() => setSelectedView('preview')}
+          />
+          <IconButton icon="i-lucide:code" className="w-8 h-8" title="Code" onClick={() => setSelectedView('code')} />
+          <IconButton
+            icon="i-lucide:git-compare-arrows"
+            className="w-8 h-8 rounded-md bg-codinit-elements-item-backgroundActive text-codinit-elements-item-contentAccent"
+            title="Diff"
+            onClick={() => setSelectedView('diff')}
+          />
           <div className="flex items-center">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>

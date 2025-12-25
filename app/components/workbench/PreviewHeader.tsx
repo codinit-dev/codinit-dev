@@ -112,12 +112,12 @@ export const PreviewHeader = memo(
     };
 
     return (
-      <div className="flex relative items-center gap-2 py-2 h-12 pl-2 pr-3">
+      <div className="flex relative items-center gap-2 h-12 pl-4 pr-3">
         {/* Toggle Buttons Section */}
-        <div className="flex items-center gap-1 ml-8">
+        <div className="flex items-center gap-1">
           <IconButton
             icon="i-lucide:eye"
-            className="w-8 h-8"
+            className="w-8 h-8 rounded-md bg-codinit-elements-item-backgroundActive text-codinit-elements-item-contentAccent"
             title="Preview"
             onClick={() => setSelectedView('preview')}
           />
@@ -130,13 +130,7 @@ export const PreviewHeader = memo(
           />
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <button
-                type="button"
-                className="flex items-center justify-center w-8 h-8 text-codinit-elements-item-contentDefault bg-transparent hover:text-codinit-elements-item-contentActive rounded-md hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-500/50 transition-colors"
-                title="More Options"
-              >
-                <span className="i-lucide:settings size-4"></span>
-              </button>
+              <IconButton icon="i-lucide:settings" className="w-8 h-8" title="More Options" />
             </DropdownMenu.Trigger>
             <DropdownMenu.Content
               className="min-w-[240px] z-[999] bg-codinit-elements-background-depth-3 rounded-lg shadow-xl border border-codinit-elements-borderColor animate-in fade-in-0 zoom"
@@ -184,7 +178,7 @@ export const PreviewHeader = memo(
         </div>
 
         {/* Address Bar */}
-        <div className="absolute w-[calc(100%-390px)] xl:w-full xl:max-w-[400px] left-[calc(50%-40px)] -translate-x-1/2 group flex items-center gap-0 flex-grow bg-codinit-elements-preview-addressBar-background border border-codinit-elements-borderColor text-codinit-elements-preview-addressBar-text rounded-full h-8 py-0.5 pl-1 pr-2 hover:bg-codinit-elements-preview-addressBar-backgroundHover hover:focus-within:bg-codinit-elements-preview-addressBar-backgroundActive focus-within:bg-codinit-elements-preview-addressBar-backgroundActive focus-within-border-codinit-elements-borderColorActive focus-within:text-codinit-elements-preview-addressBar-textActive">
+        <div className="absolute w-[calc(100%-390px)] xl:w-full xl:max-w-[440px] left-1/2 -translate-x-1/2 group flex items-center gap-0 flex-grow bg-codinit-elements-preview-addressBar-background/50 backdrop-blur-md border border-codinit-elements-borderColor text-codinit-elements-preview-addressBar-text rounded-lg h-8 py-0.5 pl-1 pr-2 hover:bg-codinit-elements-preview-addressBar-backgroundHover hover:focus-within:bg-codinit-elements-preview-addressBar-backgroundActive focus-within:bg-codinit-elements-preview-addressBar-backgroundActive focus-within:border-codinit-elements-borderColorActive focus-within:text-codinit-elements-preview-addressBar-textActive transition-all duration-300 shadow-sm">
           <div className="flex gap-1.5 w-full pl-3 pr-3 py-1">
             <PortDropdown
               activePreviewIndex={activePreviewIndex}
@@ -222,20 +216,17 @@ export const PreviewHeader = memo(
               disabled={!activePreview}
             />
           </div>
-          <button
-            type="button"
-            className="flex items-center bg-transparent rounded-md disabled:cursor-not-allowed enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive p-1 text-codinit-elements-textSecondary"
+          <IconButton
+            icon="i-lucide:rotate-cw"
             onClick={reloadPreview}
-          >
-            <span className="i-lucide:rotate-cw text-current"></span>
-          </button>
-          <button
-            className="flex items-center bg-transparent rounded-md disabled:cursor-not-allowed enabled:hover:text-codinit-elements-item-contentActive enabled:hover:bg-codinit-elements-item-backgroundActive p-1 text-codinit-elements-textSecondary"
-            type="button"
+            className="text-codinit-elements-textSecondary"
+            disabled={!activePreview}
+          />
+          <IconButton
+            icon="i-lucide:more-horizontal"
             onClick={() => setIsWindowSizeDropdownOpen(!isWindowSizeDropdownOpen)}
-          >
-            <span className="i-lucide:more-horizontal text-current"></span>
-          </button>
+            className="text-codinit-elements-textSecondary"
+          />
         </div>
 
         {/* Right Action Buttons */}
@@ -338,25 +329,19 @@ export const PreviewHeader = memo(
               </IconButton>
             </div>
 
-            {/* Deploy Dialog Button */}
-            <button
-              className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive hover:bg-codinit-elements-item-backgroundAccent text-codinit-elements-textPrimary border border-codinit-elements-borderColor flex gap-1.7 shrink-0 w-8 h-8 text-sm"
-              type="button"
+            <IconButton
+              icon="i-lucide:cloud"
               onClick={() => setIsDeployDialogOpen(true)}
               title="More Deploy Options"
-            >
-              <span className="i-lucide:cloud size-4"></span>
-            </button>
+              className="w-8 h-8 rounded-md bg-codinit-elements-item-backgroundActive text-codinit-elements-textPrimary border border-codinit-elements-borderColor"
+            />
 
-            <button
-              className="items-center justify-center font-medium min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:opacity-50 relative disabled:cursor-not-allowed focus-visible:outline-codinit-elements-item-contentAccent bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1 flex gap-1.7 shrink-0 w-8 h-8 text-sm"
-              type="button"
-              aria-controls="publish-menu"
+            <IconButton
+              icon="i-lucide:github"
               onClick={handleOpenPushDialog}
               title="Publish"
-            >
-              <span className="i-lucide:github size-4"></span>
-            </button>
+              className="w-8 h-8 rounded-md bg-codinit-elements-textPrimary text-codinit-elements-background-depth-1"
+            />
           </div>
         </div>
 

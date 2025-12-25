@@ -1,4 +1,5 @@
 import { memo, forwardRef, type ForwardedRef } from 'react';
+import { motion } from 'framer-motion';
 import { classNames } from '~/utils/classNames';
 
 type IconSize = 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
@@ -43,10 +44,12 @@ export const IconButton = memo(
       ref: ForwardedRef<HTMLButtonElement>,
     ) => {
       return (
-        <button
+        <motion.button
           ref={ref}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           className={classNames(
-            'flex items-center justify-center text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-500/50',
+            'flex items-center justify-center text-codinit-elements-item-contentDefault bg-transparent enabled:hover:text-codinit-elements-item-contentActive rounded-md enabled:hover:bg-codinit-elements-item-backgroundActive disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-accent-500/50 transition-all duration-200',
 
             // Only add padding if no explicit width/height is set
             !className?.includes('w-') && !className?.includes('h-') ? 'p-1' : '',
@@ -66,7 +69,7 @@ export const IconButton = memo(
           }}
         >
           {children ? children : <div className={classNames(icon, getIconSize(size), iconClassName)}></div>}
-        </button>
+        </motion.button>
       );
     },
   ),
