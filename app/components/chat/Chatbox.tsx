@@ -430,7 +430,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               )}
               onClick={() => {
                 if (props.provider?.name !== 'CodinIT') {
-                  toast.info('Web Search is a Pro feature available with CodinIT Pro provider.');
+                  toast.info('Web Search is a Pro feature coming soon...');
                   return;
                 }
 
