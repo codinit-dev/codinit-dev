@@ -127,7 +127,7 @@ export const McpServerCard = memo(
                     <button
                       onClick={() => onRetry(serverName)}
                       disabled={isCheckingServers}
-                      className="px-2 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors disabled:opacity-50"
+                      className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
                       title="Retry connection"
                     >
                       Retry
