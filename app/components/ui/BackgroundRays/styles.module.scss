@@ -16,7 +16,7 @@
   pointer-events: none;
   z-index: 0;
   :global(html[data-theme='dark']) & {
-    background-color: #141414; /* Changed from #1a1a1a to match description */
+    background-color: #141414; /* Changed from #999999 to match description */
   }
 
   :global(html[data-theme='dark']) & {
