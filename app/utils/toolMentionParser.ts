@@ -4,7 +4,7 @@ export interface AutocompleteState {
   atPosition: number;
 }
 
-export type ReferenceType = 'file' | 'tool';
+export type ReferenceType = 'file' | 'tool' | 'mixed';
 
 export function shouldShowAutocomplete(text: string, cursorPos: number): AutocompleteState {
   const textBeforeCursor = text.slice(0, cursorPos);
@@ -37,7 +37,8 @@ export function extractSearchQuery(text: string, cursorPos: number): string {
 }
 
 export function detectReferenceType(searchQuery: string): ReferenceType {
-  return /[\/\.]/.test(searchQuery) ? 'file' : 'tool';
+  if (!searchQuery) return 'mixed';
+  return /[\/\.]/.test(searchQuery) ? 'file' : 'mixed';
 }
 
 function getTextWidth(text: string, font: string): number {
