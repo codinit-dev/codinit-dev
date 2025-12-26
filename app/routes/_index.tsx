@@ -5,8 +5,6 @@ import { Chat } from '~/components/chat/Chat.client';
 import { Header } from '~/components/header/Header';
 import { ElectronTitleBar } from '~/components/ui/ElectronTitleBar';
 import BackgroundRays from '~/components/ui/BackgroundRays';
-import { LiveActionAlert } from '~/components/chat/LiveActionAlert';
-import { DiffApprovalDialog } from '~/components/workbench/DiffApprovalDialog';
 
 export const meta: MetaFunction = () => {
   return [
@@ -24,8 +22,7 @@ export default function Index() {
       <BackgroundRays />
       <Header />
       <ClientOnly fallback={<BaseChat />}>{() => <Chat />}</ClientOnly>
-      <ClientOnly>{() => <LiveActionAlert />}</ClientOnly>
-      <ClientOnly>{() => <DiffApprovalDialog />}</ClientOnly>
+      <ClientOnly>{() => <></>}</ClientOnly>
     </div>
   );
 }
