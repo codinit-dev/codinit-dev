@@ -1,11 +1,14 @@
 :root {
   /* Base colors */
-  --cm-backgroundColor: #0d1117; /* editor background */
-  --cm-textColor: #f0f6fc; /* primary text */
+  --cm-backgroundColor: #0d1117;
+  /* editor background */
+  --cm-textColor: #f0f6fc;
+  /* primary text */
 
   /* Gutter */
   --cm-gutter-backgroundColor: #0d1117;
-  --cm-gutter-textColor: #8b949e; /* muted gray */
+  --cm-gutter-textColor: #8b949e;
+  /* muted gray */
   --cm-gutter-activeLineTextColor: #f0f6fc;
 
   /* Fold Gutter */
@@ -13,7 +16,8 @@
   --cm-foldGutter-textColorHover: #f0f6fc;
 
   /* Active Line */
-  --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.04); /* subtle */
+  --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.04);
+  /* subtle */
 
   /* Cursor */
   --cm-cursor-width: 2px;
@@ -74,12 +78,15 @@
 /* Light theme overrides */
 html[data-theme='light'] {
   /* Base colors */
-  --cm-backgroundColor: #ffffff; /* editor background */
-  --cm-textColor: #1f2937; /* primary text */
+  --cm-backgroundColor: #ffffff;
+  /* editor background */
+  --cm-textColor: #1f2937;
+  /* primary text */
 
   /* Gutter */
   --cm-gutter-backgroundColor: #ffffff;
-  --cm-gutter-textColor: #9ca3af; /* muted gray */
+  --cm-gutter-textColor: #9ca3af;
+  /* muted gray */
   --cm-gutter-activeLineTextColor: #374151;
 
   /* Fold Gutter */
@@ -87,7 +94,8 @@ html[data-theme='light'] {
   --cm-foldGutter-textColorHover: #374151;
 
   /* Active Line */
-  --cm-activeLineBackgroundColor: rgba(0, 0, 0, 0.04); /* subtle */
+  --cm-activeLineBackgroundColor: rgba(0, 0, 0, 0.04);
+  /* subtle */
 
   /* Cursor */
   --cm-cursor-width: 2px;
@@ -147,12 +155,19 @@ html[data-theme='light'] {
 
 /* Dark theme overrides - pure neutral gray */
 html[data-theme='dark'] {
-  --cm-backgroundColor: #1f1f1f; /* Matches depth-2 for distinction from main background */
-  --cm-gutter-backgroundColor: #1f1f1f; /* Consistent with editor background */
-  --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.08); /* Subtle neutral highlight */
-  --cm-selection-backgroundColorFocused: #cccccc; /* Neutral gray selection */
+  --cm-backgroundColor: #09090b;
+  /* Darker than depth-2 for contrast */
+  --cm-gutter-backgroundColor: #09090b;
+  /* Consistent with editor background */
+  --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.08);
+  /* Subtle neutral highlight */
+  --cm-selection-backgroundColorFocused: #cccccc;
+  /* Neutral gray selection */
   --cm-selection-backgroundOpacityFocused: 0.25;
-  --cm-tooltip-backgroundColor: #252525; /* Matches depth-3 */
-  --cm-tooltip-borderColor: rgba(153, 153, 153, 0.2); /* Neutral border */
-  --cm-panels-borderColor: rgba(153, 153, 153, 0.1); /* Neutral panel borders */
+  --cm-tooltip-backgroundColor: #252525;
+  /* Matches depth-3 */
+  --cm-tooltip-borderColor: rgba(153, 153, 153, 0.2);
+  /* Neutral border */
+  --cm-panels-borderColor: rgba(153, 153, 153, 0.1);
+  /* Neutral panel borders */
 }
