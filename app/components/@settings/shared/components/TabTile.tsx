@@ -36,7 +36,7 @@ export const TabTile: React.FC<TabTileProps> = ({
             className={classNames(
               'relative flex flex-col items-center p-10 rounded-2xl',
               'w-full h-full min-h-[200px]',
-              'bg-gradient-to-br from-white to-gray-50/30 dark:from-[#0F0F0F] dark:to-[#1A1A1A]',
+              'bg-gradient-to-br from-white to-gray-50/30 dark:from-[#0F0F0F] dark:to-[#999999]',
               'border-2',
               isActive
                 ? 'border-blue-400 dark:border-blue-500/60 bg-gradient-to-br from-blue-50/80 to-purple-50/40 dark:from-blue-950/30 dark:to-purple-950/20'
