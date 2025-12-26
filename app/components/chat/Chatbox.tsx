@@ -179,7 +179,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
     <>
       <div
         className={classNames(
-          'relative bg-codinit-elements-bg-depth-1 backdrop-blur p-2 rounded-lg border border-codinit-elements-borderColor relative w-full max-w-chat mx-auto z-prompt transition-theme',
+          'relative bg-codinit-elements-background-depth-2 backdrop-blur p-2 rounded-xl border border-codinit-elements-borderColor relative w-full max-w-chat mx-auto z-prompt transition-theme',
 
           /*
            * {
@@ -285,9 +285,9 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         <textarea
           ref={props.textareaRef}
           className={classNames(
-            'w-full pl-4 pt-2 pr-0 pb-4 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
+            'w-full pl-4 pt-2 pr-4 pb-2 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
             'transition-all duration-200',
-            'hover:border-codinit-elements-focus',
+            // 'hover:border-codinit-elements-focus',
           )}
           onDragEnter={(e) => {
             e.preventDefault();
@@ -355,27 +355,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           placeholder={!props.chatStarted && props.input.length === 0 && showPlaceholder ? placeholderText : undefined}
           translate="no"
         />
-        <ClientOnly>
-          {() => (
-            <>
-              <SendButton
-                show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
-                isStreaming={props.isStreaming}
-                disabled={!props.providerList || props.providerList.length === 0}
-                onClick={(event) => {
-                  if (props.isStreaming) {
-                    props.handleStop?.();
-                    return;
-                  }
-
-                  if (props.input.length > 0 || props.uploadedFiles.length > 0) {
-                    props.handleSendMessage?.(event);
-                  }
-                }}
-              />
-            </>
-          )}
-        </ClientOnly>
         <div className="flex justify-between items-center text-sm p-4 pt-2">
           <div className="flex gap-1 items-center">
             <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
@@ -514,6 +493,27 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
             <McpTools onOpenPanel={() => setIsMcpPanelOpen(true)} />
             <McpServerSelector />
             <SupabaseConnection />
+            <ClientOnly>
+              {() => (
+                <>
+                  <SendButton
+                    show={props.input.length > 0 || props.isStreaming || props.uploadedFiles.length > 0}
+                    isStreaming={props.isStreaming}
+                    disabled={!props.providerList || props.providerList.length === 0}
+                    onClick={(event) => {
+                      if (props.isStreaming) {
+                        props.handleStop?.();
+                        return;
+                      }
+
+                      if (props.input.length > 0 || props.uploadedFiles.length > 0) {
+                        props.handleSendMessage?.(event);
+                      }
+                    }}
+                  />
+                </>
+              )}
+            </ClientOnly>
           </div>
           <ExpoQrModal open={props.qrModalOpen} onClose={() => props.setQrModalOpen(false)} />
         </div>
