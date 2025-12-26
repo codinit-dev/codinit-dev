@@ -299,7 +299,7 @@ export default function NetlifyConnection() {
       <div className="mt-6">
         <Collapsible open={isStatsOpen} onOpenChange={setIsStatsOpen}>
           <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
+            <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
               <div className="flex items-center gap-2">
                 <div className="i-ph:chart-bar w-4 h-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
                 <span className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
@@ -343,7 +343,7 @@ export default function NetlifyConnection() {
               </div>
               {sites.length > 0 && (
                 <div className="mt-4 space-y-4">
-                  <div className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
+                  <div className="bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="text-sm font-medium flex items-center gap-2 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                         <BuildingLibraryIcon className="h-4 w-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
@@ -370,7 +370,7 @@ export default function NetlifyConnection() {
                         <div
                           key={site.id}
                           className={classNames(
-                            'bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border rounded-lg p-4 transition-all',
+                            'bg-codinit-elements-background dark:bg-gray-800/50 border rounded-lg p-4 transition-all',
                             activeSiteIndex === index
                               ? 'border-codinit-elements-item-contentAccent bg-codinit-elements-item-backgroundActive/10'
                               : 'border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70',
@@ -474,7 +474,7 @@ export default function NetlifyConnection() {
                     </div>
                   </div>
                   {activeSiteIndex !== -1 && deploys.length > 0 && (
-                    <div className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
+                    <div className="bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-sm font-medium flex items-center gap-2 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                           <BuildingLibraryIcon className="h-4 w-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
@@ -485,7 +485,7 @@ export default function NetlifyConnection() {
                         {deploys.map((deploy) => (
                           <div
                             key={deploy.id}
-                            className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-3"
+                            className="bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-3"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
@@ -578,7 +578,7 @@ export default function NetlifyConnection() {
                     </div>
                   )}
                   {activeSiteIndex !== -1 && builds.length > 0 && (
-                    <div className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
+                    <div className="bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-sm font-medium flex items-center gap-2 text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
                           <CodeBracketIcon className="h-4 w-4 text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent" />
@@ -589,7 +589,7 @@ export default function NetlifyConnection() {
                         {builds.map((build) => (
                           <div
                             key={build.id}
-                            className="bg-codinit-elements-background dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-3"
+                            className="bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor rounded-lg p-3"
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
@@ -659,7 +659,7 @@ export default function NetlifyConnection() {
               placeholder="Enter your Netlify API token"
               className={classNames(
                 'w-full px-3 py-2 rounded-lg text-sm',
-                'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                'bg-[#F8F8F8] dark:bg-[#999999]',
                 'border border-[#E5E5E5] dark:border-[#333333]',
                 'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
                 'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
