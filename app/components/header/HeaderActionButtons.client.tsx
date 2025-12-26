@@ -15,9 +15,9 @@ import { useVercelDeploy } from '~/components/deploy/VercelDeploy.client';
 import { useNetlifyDeploy } from '~/components/deploy/NetlifyDeploy.client';
 import { useCloudflareDeploy } from '~/components/deploy/CloudflareDeploy.client';
 
-interface HeaderActionButtonsProps {}
+interface HeaderActionButtonsProps { }
 
-export function HeaderActionButtons({}: HeaderActionButtonsProps) {
+export function HeaderActionButtons({ }: HeaderActionButtonsProps) {
   const showWorkbench = useStore(workbenchStore.showWorkbench);
   const { showChat } = useStore(chatStore);
   const netlifyConn = useStore(netlifyConnection);
@@ -67,8 +67,8 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   const isDeploying = deployingTo !== null;
 
   return (
-    <div className={classNames('flex gap-2', { 'gap-1': showChat })}>
-      <div className="flex rounded-md overflow-hidden">
+    <div className={classNames('flex gap-2 items-center', { 'gap-1': showChat })}>
+      <div className="flex items-center gap-1">
         <IconButton
           title={
             !netlifyConn.user
@@ -95,7 +95,6 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           )}
           {netlifyConn.user && <NetlifyDeploymentLink />}
         </IconButton>
-        <div className="w-[1px] bg-codinit-elements-borderColor" />
         <IconButton
           title={
             !vercelConn.user ? 'Connect Vercel Account' : deployingTo === 'vercel' ? 'Deploying...' : 'Deploy to Vercel'
@@ -118,7 +117,6 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           )}
           {vercelConn.user && <VercelDeploymentLink />}
         </IconButton>
-        <div className="w-[1px] bg-codinit-elements-borderColor" />
         <IconButton
           title={
             !cloudflareConn.user
@@ -145,7 +143,6 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           )}
           {cloudflareConn.user && <CloudflareDeploymentLink />}
         </IconButton>
-        <div className="w-[1px] bg-codinit-elements-borderColor" />
         <IconButton
           title="View on GitHub"
           onClick={() => window.open('https://github.com/codinit-dev/codinit', '_blank')}
@@ -160,7 +157,7 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
           />
         </IconButton>
       </div>
-      <div className="flex rounded-md overflow-hidden">
+      <div className="flex items-center gap-1">
         <Button
           active={showChat}
           disabled={!canHideChat || isSmallViewport} // expand button is disabled on mobile as it's not needed
@@ -172,7 +169,6 @@ export function HeaderActionButtons({}: HeaderActionButtonsProps) {
         >
           <div className="i-lucide:message-circle text-sm" />
         </Button>
-        <div className="w-[1px] bg-codinit-elements-borderColor" />
         <Button
           active={showWorkbench}
           onClick={() => {
@@ -204,15 +200,15 @@ function Button({ active = false, disabled = false, children, onClick, className
   return (
     <button
       className={classNames(
-        'flex items-center',
+        'flex items-center justify-center transition-all duration-200 ease-in-out',
+        'rounded-lg border',
         {
-          'p-1.5': !showChat,
-          'p-1': showChat,
-          'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
+          'p-2 h-9 w-9': !showChat,
+          'p-1.5 h-8 w-8': showChat,
+          'border-transparent bg-transparent hover:bg-codinit-elements-item-backgroundHover text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
             !active,
-          'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
-          'bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
-            disabled,
+          'border-codinit-elements-borderColor bg-codinit-elements-item-backgroundAccent/10 text-codinit-elements-item-contentAccent': active && !disabled,
+          'opacity-50 cursor-not-allowed': disabled,
         },
         className,
       )}
@@ -237,15 +233,19 @@ function IconButton({ active = false, disabled = false, children, onClick, title
   return (
     <button
       title={title}
-      className={classNames('flex items-center justify-center relative', {
-        'p-1.5': !showChat,
-        'p-1': showChat,
-        'bg-codinit-elements-item-backgroundDefault hover:bg-codinit-elements-item-backgroundActive text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
-          !active,
-        'bg-codinit-elements-item-backgroundAccent text-codinit-elements-item-contentAccent': active && !disabled,
-        'bg-codinit-elements-item-backgroundDefault text-alpha-gray-20 dark:text-alpha-white-20 cursor-not-allowed':
-          disabled,
-      })}
+      className={classNames(
+        'flex items-center justify-center relative transition-all duration-200 ease-in-out',
+        'rounded-lg border',
+        {
+          'p-2 h-9 w-9': !showChat,
+          'p-1.5 h-8 w-8': showChat,
+          'border-transparent bg-transparent hover:bg-codinit-elements-item-backgroundHover text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
+            !active,
+          'border-codinit-elements-borderColor bg-codinit-elements-item-backgroundAccent/10 text-codinit-elements-item-contentAccent':
+            active && !disabled,
+          'opacity-50 cursor-not-allowed': disabled,
+        },
+      )}
       onClick={onClick}
       disabled={disabled}
     >
