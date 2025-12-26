@@ -69,7 +69,7 @@ export function ElectronTitleBar() {
 
   return (
     <div
-      className="flex items-center justify-between h-8 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor/50 select-none shadow-sm"
+      className="flex items-center justify-between h-8 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor select-none shadow-sm"
       style={
         {
           WebkitAppRegion: 'drag',
