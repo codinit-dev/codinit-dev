@@ -52,6 +52,7 @@ export const useUpdateCheck = () => {
         if (isElectron) {
           // Electron mode: Trigger check via IPC, results come via events
           await window.electronUpdates?.checkForUpdates();
+
           // We don't set loading false immediately here as we wait for events
         } else {
           // Web mode: Normal API check
@@ -63,6 +64,7 @@ export const useUpdateCheck = () => {
             setError(result.error.message);
             setHasUpdate(false);
             setIsLoading(false);
+
             return;
           }
 
@@ -76,6 +78,7 @@ export const useUpdateCheck = () => {
 
           if (result.available) {
             console.log('✨ Update available:', result.version);
+
             if (shouldShowUpdate && showToast) {
               toast.info(
                 `New version v${result.version} available! Please update to get the latest features and improvements.`,
@@ -84,6 +87,7 @@ export const useUpdateCheck = () => {
           } else {
             console.log('✅ App is up to date');
           }
+
           setIsLoading(false);
         }
       } catch (error) {
@@ -98,13 +102,18 @@ export const useUpdateCheck = () => {
 
   useEffect(() => {
     checkUpdate();
-    const interval = setInterval(() => checkUpdate(false), 30 * 60 * 1000); // 30 min check
+
+    const interval = setInterval(() => checkUpdate(false), 30 * 60 * 1000);
+
+    // 30 min check
     return () => clearInterval(interval);
   }, [checkUpdate]);
 
   // IPC Event Listeners for Electron
   useEffect(() => {
-    if (!isElectron || !window.electronUpdates) return;
+    if (!isElectron || !window.electronUpdates) {
+      return undefined;
+    }
 
     const unsubChecking = window.electronUpdates.onCheckingForUpdate(() => {
       console.log('IPC: Checking for update...');
@@ -117,8 +126,11 @@ export const useUpdateCheck = () => {
       setLatestVersion(info.version);
       setReleaseNotes(info.releaseNotes || ''); // Electron-updater might provide this
       setHasUpdate(true);
-      // Assuming initial check provides current version elsewhere or we parse it. 
-      // For now, we might rely on initial state or other means, but let's assume we proceed.
+
+      /*
+       * Assuming initial check provides current version elsewhere or we parse it.
+       * For now, we might rely on initial state or other means, but let's assume we proceed.
+       */
     });
 
     const unsubNotAvailable = window.electronUpdates.onUpdateNotAvailable((info) => {
@@ -156,17 +168,21 @@ export const useUpdateCheck = () => {
     };
   }, [isElectron]);
 
-
   const handleAcknowledgeUpdate = async () => {
-    // For web, we acknowledge. For Electron, "acknowledging" typically implies dismissing or closing.
-    // If we want to hide it until next time:
+    /*
+     * For web, we acknowledge. For Electron, "acknowledging" typically implies dismissing or closing.
+     * If we want to hide it until next time:
+     */
     if (!isElectron) {
       // ... existing web logic ...
       console.log('👆 Acknowledging update...');
+
       try {
         const result = await checkForUpdates();
+
         if (!result.error) {
           await acknowledgeUpdate(result.version);
+
           // ... persistence ...
           try {
             localStorage.setItem(LAST_ACKNOWLEDGED_VERSION_KEY, result.version);
@@ -176,10 +192,13 @@ export const useUpdateCheck = () => {
           setLastAcknowledgedVersion(result.version);
           setHasUpdate(false);
         }
-      } catch (e) { console.error(e) }
+      } catch (e) {
+        console.error(e);
+      }
     } else {
       // Electron: Just hide it locally
       setHasUpdate(false);
+
       // Optionally persist skip
     }
   };
@@ -189,13 +208,13 @@ export const useUpdateCheck = () => {
       window.electronUpdates.downloadUpdate();
       setIsDownloading(true);
     }
-  }
+  };
 
   const quitAndInstall = () => {
     if (isElectron && window.electronUpdates) {
       window.electronUpdates.quitAndInstall();
     }
-  }
+  };
 
   return {
     hasUpdate,
@@ -212,6 +231,6 @@ export const useUpdateCheck = () => {
     manualCheck: () => checkUpdate(false),
     downloadAndInstall,
     quitAndInstall,
-    isElectron
+    isElectron,
   };
 };

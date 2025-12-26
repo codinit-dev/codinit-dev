@@ -605,8 +605,9 @@ export default function GitHubConnection() {
               value={connection.token}
               onChange={(e) => setConnection((prev) => ({ ...prev, token: e.target.value }))}
               disabled={isConnecting || !!connection.user}
-              placeholder={`Enter your GitHub ${connection.tokenType === 'classic' ? 'personal access token' : 'fine-grained token'
-                }`}
+              placeholder={`Enter your GitHub ${
+                connection.tokenType === 'classic' ? 'personal access token' : 'fine-grained token'
+              }`}
               className={classNames(
                 'w-full px-3 py-2 rounded-lg text-sm',
                 'bg-[#F8F8F8] dark:bg-[#999999]',

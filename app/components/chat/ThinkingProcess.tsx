@@ -47,14 +47,15 @@ export const ThinkingProcess = memo(({ children, isStreaming = false }: Thinking
 
   useEffect(() => {
     if (steps.length === 0) {
-      return;
+      return undefined;
     }
 
     // If not streaming, show all steps immediately
     if (!isStreaming) {
       setDisplayedSteps(steps);
       setIsComplete(true);
-      return;
+
+      return undefined;
     }
 
     // If streaming, show steps progressively
@@ -82,11 +83,11 @@ export const ThinkingProcess = memo(({ children, isStreaming = false }: Thinking
   return (
     <div className="thinking-process my-4 p-4 thinking-glow rounded-lg shadow-sm border border-codinit-elements-glow-thinking-base transition-all duration-300">
       <div className="flex items-center gap-2 mb-3">
-        <div className={`i-ph:lightbulb-duotone text-xl ${isComplete ? 'text-codinit-elements-glow-thinking-secondary' : 'text-codinit-elements-glow-thinking-primary animate-pulse'}`} />
+        <div
+          className={`i-ph:lightbulb-duotone text-xl ${isComplete ? 'text-codinit-elements-glow-thinking-secondary' : 'text-codinit-elements-glow-thinking-primary animate-pulse'}`}
+        />
         {isComplete ? (
-          <span className="text-sm font-semibold text-codinit-elements-glow-thinking-secondary">
-            Reasoning Process
-          </span>
+          <span className="text-sm font-semibold text-codinit-elements-glow-thinking-secondary">Reasoning Process</span>
         ) : (
           <TextShimmer
             as="span"
@@ -99,9 +100,18 @@ export const ThinkingProcess = memo(({ children, isStreaming = false }: Thinking
         )}
         {!isComplete && (
           <div className="flex gap-1 ml-2">
-            <span className="w-1.5 h-1.5 bg-codinit-elements-glow-thinking-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-1.5 h-1.5 bg-codinit-elements-glow-thinking-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-1.5 h-1.5 bg-codinit-elements-glow-thinking-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <span
+              className="w-1.5 h-1.5 bg-codinit-elements-glow-thinking-primary rounded-full animate-bounce"
+              style={{ animationDelay: '0ms' }}
+            />
+            <span
+              className="w-1.5 h-1.5 bg-codinit-elements-glow-thinking-primary rounded-full animate-bounce"
+              style={{ animationDelay: '150ms' }}
+            />
+            <span
+              className="w-1.5 h-1.5 bg-codinit-elements-glow-thinking-primary rounded-full animate-bounce"
+              style={{ animationDelay: '300ms' }}
+            />
           </div>
         )}
       </div>
@@ -112,12 +122,15 @@ export const ThinkingProcess = memo(({ children, isStreaming = false }: Thinking
             className="flex items-start gap-3 group animate-in fade-in slide-in-from-left-2 duration-300"
             style={{ animationDelay: `${index * 50}ms` }}
           >
-            <div className={`flex-shrink-0 w-6 h-6 rounded-full text-codinit-elements-textPrimary text-xs font-bold flex items-center justify-center mt-0.5 transition-all duration-300 ${isComplete
-              ? 'bg-codinit-elements-glow-thinking-secondary'
-              : index === displayedSteps.length - 1
-                ? 'bg-codinit-elements-glow-thinking-primary animate-pulse'
-                : 'bg-codinit-elements-glow-thinking-secondary'
-              }`}>
+            <div
+              className={`flex-shrink-0 w-6 h-6 rounded-full text-codinit-elements-textPrimary text-xs font-bold flex items-center justify-center mt-0.5 transition-all duration-300 ${
+                isComplete
+                  ? 'bg-codinit-elements-glow-thinking-secondary'
+                  : index === displayedSteps.length - 1
+                    ? 'bg-codinit-elements-glow-thinking-primary animate-pulse'
+                    : 'bg-codinit-elements-glow-thinking-secondary'
+              }`}
+            >
               {isComplete || index < displayedSteps.length - 1 ? (
                 index + 1
               ) : (

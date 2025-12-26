@@ -41,6 +41,7 @@ export function detectReferenceType(searchQuery: string): ReferenceType {
   if (searchQuery && /[\/\.]/.test(searchQuery)) {
     return 'file';
   }
+
   // Default to tool for simple strings or empty queries
   return 'tool';
 }

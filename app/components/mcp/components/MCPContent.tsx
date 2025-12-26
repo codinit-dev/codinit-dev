@@ -6,12 +6,6 @@ import { TextShimmer } from '~/components/ui/text-shimmer';
 
 type TabType = 'integrations' | 'marketplace' | 'history';
 
-const TAB_LABELS = {
-  integrations: 'MCP Integrations',
-  marketplace: 'MCP Marketplace',
-  history: 'Execution History',
-} as const;
-
 // Lazy load tab components
 const MCPIntegrationsTab = lazy(() =>
   import('../tabs/MCPIntegrationsTab').then((module) => ({ default: module.default })),

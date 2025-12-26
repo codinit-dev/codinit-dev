@@ -99,58 +99,58 @@ export const Messages = forwardRef<HTMLDivElement, MessagesProps>(
           () =>
             messages.length > 0
               ? messages.map((message, index) => {
-                const { role, content, id: messageId, annotations } = message;
-                const isUserMessage = role === 'user';
-                const isFirst = index === 0;
-                const isLast = index === messages.length - 1;
-                const isHidden = annotations?.includes('hidden');
+                  const { role, content, id: messageId, annotations } = message;
+                  const isUserMessage = role === 'user';
+                  const isFirst = index === 0;
+                  const isLast = index === messages.length - 1;
+                  const isHidden = annotations?.includes('hidden');
 
-                if (isHidden) {
-                  return <Fragment key={messageId || `msg-${index}`} />;
-                }
+                  if (isHidden) {
+                    return <Fragment key={messageId || `msg-${index}`} />;
+                  }
 
-                return (
-                  <div
-                    key={messageId || `msg-${index}`}
-                    className={classNames('flex gap-4 p-6 w-full rounded-2xl', {
-                      'bg-codinit-elements-messages-background':
-                        isUserMessage || !isStreaming || (isStreaming && !isLast),
-                      'bg-gradient-to-b from-codinit-elements-messages-background from-30% to-transparent':
-                        isStreaming && isLast,
-                      'mt-6': !isFirst,
-                    })}
-                  >
-                    {isUserMessage && (
-                      <div className="flex items-center justify-center w-[40px] h-[40px] overflow-hidden bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-500 rounded-full shrink-0 self-start">
-                        {profile?.avatar ? (
-                          <img
-                            src={profile.avatar}
-                            alt={profile?.username || 'User'}
-                            className="w-full h-full object-cover"
-                            loading="eager"
-                            decoding="sync"
-                          />
+                  return (
+                    <div
+                      key={messageId || `msg-${index}`}
+                      className={classNames('flex gap-4 p-6 w-full rounded-2xl', {
+                        'bg-codinit-elements-messages-background':
+                          isUserMessage || !isStreaming || (isStreaming && !isLast),
+                        'bg-gradient-to-b from-codinit-elements-messages-background from-30% to-transparent':
+                          isStreaming && isLast,
+                        'mt-6': !isFirst,
+                      })}
+                    >
+                      {isUserMessage && (
+                        <div className="flex items-center justify-center w-[40px] h-[40px] overflow-hidden bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-500 rounded-full shrink-0 self-start">
+                          {profile?.avatar ? (
+                            <img
+                              src={profile.avatar}
+                              alt={profile?.username || 'User'}
+                              className="w-full h-full object-cover"
+                              loading="eager"
+                              decoding="sync"
+                            />
+                          ) : (
+                            <div className="i-ph:user-fill text-2xl" />
+                          )}
+                        </div>
+                      )}
+                      <div className="grid grid-col-1 w-full">
+                        {isUserMessage ? (
+                          <UserMessage content={content} />
                         ) : (
-                          <div className="i-ph:user-fill text-2xl" />
+                          <AssistantMessage
+                            content={content}
+                            annotations={message.annotations}
+                            messageId={messageId}
+                            onRewind={handleRewind}
+                            onFork={handleFork}
+                          />
                         )}
                       </div>
-                    )}
-                    <div className="grid grid-col-1 w-full">
-                      {isUserMessage ? (
-                        <UserMessage content={content} />
-                      ) : (
-                        <AssistantMessage
-                          content={content}
-                          annotations={message.annotations}
-                          messageId={messageId}
-                          onRewind={handleRewind}
-                          onFork={handleFork}
-                        />
-                      )}
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })
               : null,
           [messages, isStreaming, profile, handleRewind, handleFork],
         )}

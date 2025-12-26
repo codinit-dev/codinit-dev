@@ -311,9 +311,7 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
                     <h3 className="text-lg font-medium text-codinit-elements-textPrimary">
                       Successfully pushed to GitHub
                     </h3>
-                    <p className="text-sm text-codinit-elements-textSecondary">
-                      Your code is now available on GitHub
-                    </p>
+                    <p className="text-sm text-codinit-elements-textSecondary">Your code is now available on GitHub</p>
                   </div>
                 </div>
                 <DialogClose asChild>
@@ -433,11 +431,10 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
               >
                 <div className="i-ph:github-logo w-8 h-8" />
               </motion.div>
-              <h3 className="text-lg font-medium text-codinit-elements-textPrimary">
-                GitHub Connection Required
-              </h3>
+              <h3 className="text-lg font-medium text-codinit-elements-textPrimary">GitHub Connection Required</h3>
               <p className="text-sm text-codinit-elements-textSecondary max-w-md mx-auto">
-                To push your code to GitHub, you need to connect your GitHub account in Settings {'>'} Connections first.
+                To push your code to GitHub, you need to connect your GitHub account in Settings {'>'} Connections
+                first.
               </p>
               <div className="pt-2 flex justify-center gap-3">
                 <motion.button
@@ -486,11 +483,7 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
                 </p>
               </div>
               <DialogClose asChild>
-                <IconButton
-                  icon="i-ph:x"
-                  onClick={handleClose}
-                  className="ml-auto"
-                />
+                <IconButton icon="i-ph:x" onClick={handleClose} className="ml-auto" />
               </DialogClose>
             </div>
 
@@ -502,21 +495,14 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
                 </div>
               </div>
               <div>
-                <p className="text-sm font-medium text-codinit-elements-textPrimary">
-                  {user.name || user.login}
-                </p>
-                <p className="text-sm text-codinit-elements-textSecondary">
-                  @{user.login}
-                </p>
+                <p className="text-sm font-medium text-codinit-elements-textPrimary">{user.name || user.login}</p>
+                <p className="text-sm text-codinit-elements-textSecondary">@{user.login}</p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label
-                  htmlFor="repoName"
-                  className="text-sm text-codinit-elements-textSecondary"
-                >
+                <label htmlFor="repoName" className="text-sm text-codinit-elements-textSecondary">
                   Repository Name
                 </label>
                 <div className="relative">
@@ -537,9 +523,7 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm text-codinit-elements-textSecondary">
-                    Recent Repositories
-                  </label>
+                  <label className="text-sm text-codinit-elements-textSecondary">Recent Repositories</label>
                   <span className="text-xs text-codinit-elements-textTertiary">
                     {filteredRepos.length} of {recentRepos.length}
                   </span>
@@ -636,10 +620,7 @@ export function PushToGitHubDialog({ isOpen, onClose, onPush }: PushToGitHubDial
                     onChange={(e) => setIsPrivate(e.target.checked)}
                     className="rounded border-codinit-elements-borderColor text-blue-500 focus:ring-blue-500 bg-codinit-elements-background-depth-2"
                   />
-                  <label
-                    htmlFor="private"
-                    className="text-sm text-codinit-elements-textPrimary"
-                  >
+                  <label htmlFor="private" className="text-sm text-codinit-elements-textPrimary">
                     Make repository private
                   </label>
                 </div>

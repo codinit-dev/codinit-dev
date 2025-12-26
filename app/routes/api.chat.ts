@@ -83,7 +83,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
       async execute(dataStream) {
         const filePaths = getFilePaths(files || {});
         let filteredFiles: FileMap | undefined = undefined;
-        let summary: string | undefined = undefined;
+        const summary: string | undefined = undefined;
         let messageSliceId = 0;
 
         if (messages.length > 3) {

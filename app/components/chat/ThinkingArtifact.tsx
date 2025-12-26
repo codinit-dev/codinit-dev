@@ -28,9 +28,7 @@ export const ThinkingArtifact = memo(({ messageId }: ThinkingArtifactProps) => {
         <div className="flex-1 flex items-center px-5 py-3 text-left">
           <div className="w-full">
             <div className="w-full thinking-glow-text font-medium text-sm leading-5">{thinkingArtifact.title}</div>
-            <div className="w-full text-codinit-elements-textTertiary text-xs mt-0.5">
-              Chain of thought reasoning
-            </div>
+            <div className="w-full text-codinit-elements-textTertiary text-xs mt-0.5">Chain of thought reasoning</div>
           </div>
         </div>
 

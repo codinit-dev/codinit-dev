@@ -629,11 +629,11 @@ export default function DebugTab() {
       // Get memory metrics
       const memoryMetrics = memory
         ? {
-          jsHeapSizeLimit: memory.jsHeapSizeLimit,
-          totalJSHeapSize: memory.totalJSHeapSize,
-          usedJSHeapSize: memory.usedJSHeapSize,
-          heapUtilization: (memory.usedJSHeapSize / memory.totalJSHeapSize) * 100,
-        }
+            jsHeapSizeLimit: memory.jsHeapSizeLimit,
+            totalJSHeapSize: memory.totalJSHeapSize,
+            usedJSHeapSize: memory.usedJSHeapSize,
+            heapUtilization: (memory.usedJSHeapSize / memory.totalJSHeapSize) * 100,
+          }
         : null;
 
       // Get frame rate metrics

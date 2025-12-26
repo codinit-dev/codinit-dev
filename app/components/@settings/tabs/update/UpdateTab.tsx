@@ -29,7 +29,7 @@ const UpdateTab = () => {
     manualCheck,
     downloadAndInstall,
     quitAndInstall,
-    isElectron
+    isElectron,
   } = useUpdateCheck();
 
   const [updateSettings, setUpdateSettings] = useState<UpdateSettings>(() => {
@@ -37,10 +37,10 @@ const UpdateTab = () => {
     return stored
       ? JSON.parse(stored)
       : {
-        autoUpdate: false,
-        notifyInApp: true,
-        checkInterval: 24,
-      };
+          autoUpdate: false,
+          notifyInApp: true,
+          checkInterval: 24,
+        };
   });
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
@@ -51,12 +51,14 @@ const UpdateTab = () => {
   const handleUpdate = () => {
     if (isElectron) {
       downloadAndInstall();
+
       // Keep dialog open or show new status
     } else {
       if (releaseUrl) {
         window.open(releaseUrl, '_blank');
       }
     }
+
     acknowledgeUpdate();
     setShowUpdateDialog(false);
     toast.success('Update process started');
@@ -193,19 +195,21 @@ const UpdateTab = () => {
                 <div className="i-ph:spinner animate-spin w-4 h-4" />
                 Downloading... {Math.round(downloadProgress)}%
               </div>
-            ) : hasUpdate && (
-              <button
-                onClick={() => isElectron ? downloadAndInstall() : setShowUpdateDialog(true)}
-                className={classNames(
-                  'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
-                  'bg-blue-500 text-white',
-                  'hover:bg-blue-600',
-                  'transition-colors duration-200',
-                )}
-              >
-                <div className="i-ph:arrow-circle-up w-4 h-4" />
-                {isElectron ? 'Download Update' : 'View Update'}
-              </button>
+            ) : (
+              hasUpdate && (
+                <button
+                  onClick={() => (isElectron ? downloadAndInstall() : setShowUpdateDialog(true))}
+                  className={classNames(
+                    'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
+                    'bg-blue-500 text-white',
+                    'hover:bg-blue-600',
+                    'transition-colors duration-200',
+                  )}
+                >
+                  <div className="i-ph:arrow-circle-up w-4 h-4" />
+                  {isElectron ? 'Download Update' : 'View Update'}
+                </button>
+              )
             )}
             {!isDownloading && !isReadyToInstall && (
               <button

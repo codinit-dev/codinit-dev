@@ -287,6 +287,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
           className={classNames(
             'w-full pl-4 pt-2 pr-4 pb-2 outline-none resize-none text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary bg-transparent text-sm',
             'transition-all duration-200',
+
             // 'hover:border-codinit-elements-focus',
           )}
           onDragEnter={(e) => {

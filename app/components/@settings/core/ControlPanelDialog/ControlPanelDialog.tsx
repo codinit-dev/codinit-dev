@@ -66,6 +66,6 @@ export function ControlPanelDialog({ isOpen, onClose, initialTab = 'settings' }:
           </RadixDialog.Content>
         </div>
       </RadixDialog.Portal>
-    </RadixDialog.Root >
+    </RadixDialog.Root>
   );
 }

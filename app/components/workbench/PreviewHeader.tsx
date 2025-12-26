@@ -45,7 +45,7 @@ export const PreviewHeader = memo(
     setActivePreviewIndex,
     displayPath,
     setDisplayPath,
-    setIframeUrl,
+    setIframeUrl: _setIframeUrl,
     reloadPreview,
     setIsWindowSizeDropdownOpen,
     isWindowSizeDropdownOpen,
@@ -229,7 +229,7 @@ export const PreviewHeader = memo(
                       if (inputRef.current) {
                         inputRef.current.blur();
                       }
-                    } catch (e) {
+                    } catch {
                       console.error('Invalid URL:', activePreview.baseUrl);
                     }
                   }
@@ -419,36 +419,40 @@ export const PreviewHeader = memo(
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-codinit-elements-textTertiary">Show Device Frame</span>
                     <button
-                      className={`w-10 h-5 rounded-full transition-colors duration-200 ${showDeviceFrame
-                        ? 'bg-codinit-elements-item-contentAccent'
-                        : 'bg-codinit-elements-background-depth-3'
-                        } relative`}
+                      className={`w-10 h-5 rounded-full transition-colors duration-200 ${
+                        showDeviceFrame
+                          ? 'bg-codinit-elements-item-contentAccent'
+                          : 'bg-codinit-elements-background-depth-3'
+                      } relative`}
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDeviceFrame(!showDeviceFrame);
                       }}
                     >
                       <span
-                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-codinit-elements-background-depth-1 transition-transform duration-200 ${showDeviceFrame ? 'transform translate-x-5' : ''
-                          }`}
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-codinit-elements-background-depth-1 transition-transform duration-200 ${
+                          showDeviceFrame ? 'transform translate-x-5' : ''
+                        }`}
                       />
                     </button>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-codinit-elements-textTertiary">Landscape Mode</span>
                     <button
-                      className={`w-10 h-5 rounded-full transition-colors duration-200 ${isLandscape
-                        ? 'bg-codinit-elements-item-contentAccent'
-                        : 'bg-codinit-elements-background-depth-3'
-                        } relative`}
+                      className={`w-10 h-5 rounded-full transition-colors duration-200 ${
+                        isLandscape
+                          ? 'bg-codinit-elements-item-contentAccent'
+                          : 'bg-codinit-elements-background-depth-3'
+                      } relative`}
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsLandscape(!isLandscape);
                       }}
                     >
                       <span
-                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-codinit-elements-background-depth-1 transition-transform duration-200 ${isLandscape ? 'transform translate-x-5' : ''
-                          }`}
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-codinit-elements-background-depth-1 transition-transform duration-200 ${
+                          isLandscape ? 'transform translate-x-5' : ''
+                        }`}
                       />
                     </button>
                   </div>

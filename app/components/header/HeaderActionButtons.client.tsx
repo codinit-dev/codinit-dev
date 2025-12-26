@@ -15,9 +15,9 @@ import { useVercelDeploy } from '~/components/deploy/VercelDeploy.client';
 import { useNetlifyDeploy } from '~/components/deploy/NetlifyDeploy.client';
 import { useCloudflareDeploy } from '~/components/deploy/CloudflareDeploy.client';
 
-interface HeaderActionButtonsProps { }
+interface HeaderActionButtonsProps {}
 
-export function HeaderActionButtons({ }: HeaderActionButtonsProps) {
+export function HeaderActionButtons({}: HeaderActionButtonsProps) {
   const showWorkbench = useStore(workbenchStore.showWorkbench);
   const { showChat } = useStore(chatStore);
   const netlifyConn = useStore(netlifyConnection);
@@ -207,7 +207,8 @@ function Button({ active = false, disabled = false, children, onClick, className
           'p-1.5 h-8 w-8': showChat,
           'border-transparent bg-transparent hover:bg-codinit-elements-item-backgroundHover text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary':
             !active,
-          'border-codinit-elements-borderColor bg-codinit-elements-item-backgroundAccent/10 text-codinit-elements-item-contentAccent': active && !disabled,
+          'border-codinit-elements-borderColor bg-codinit-elements-item-backgroundAccent/10 text-codinit-elements-item-contentAccent':
+            active && !disabled,
           'opacity-50 cursor-not-allowed': disabled,
         },
         className,

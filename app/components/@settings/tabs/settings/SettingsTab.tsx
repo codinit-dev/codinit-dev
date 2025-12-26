@@ -16,6 +16,7 @@ export default function SettingsTab() {
       toast.error('Project name cannot be empty');
       return;
     }
+
     toast.success('Project name saved');
   };
 
@@ -40,7 +41,7 @@ export default function SettingsTab() {
                 'bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor',
                 'text-codinit-elements-textPrimary placeholder-gray-500',
                 'focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20',
-                'transition-all duration-200'
+                'transition-all duration-200',
               )}
             />
             <button
@@ -62,16 +63,18 @@ export default function SettingsTab() {
                 'relative px-6 py-4 rounded-xl text-sm font-medium transition-all duration-200 border text-left min-w-[140px]',
                 selectedAgent === 'claude'
                   ? 'bg-blue-500/10 border-blue-500/50 text-blue-400'
-                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor text-codinit-elements-textSecondary hover:border-codinit-elements-borderColorActive'
+                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor text-codinit-elements-textSecondary hover:border-codinit-elements-borderColorActive',
               )}
             >
               Claude Agent
             </button>
 
-            <div className={classNames(
-              'relative px-6 py-4 rounded-xl text-sm font-medium border text-left min-w-[140px]',
-              'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor text-codinit-elements-textSecondary opacity-60 cursor-not-allowed'
-            )}>
+            <div
+              className={classNames(
+                'relative px-6 py-4 rounded-xl text-sm font-medium border text-left min-w-[140px]',
+                'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor text-codinit-elements-textSecondary opacity-60 cursor-not-allowed',
+              )}
+            >
               <div className="flex items-center gap-2">
                 <span>Codex</span>
                 <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-codinit-elements-background-depth-2 text-gray-400 uppercase tracking-wide">
@@ -86,7 +89,7 @@ export default function SettingsTab() {
                 'relative px-6 py-4 rounded-xl text-sm font-medium transition-all duration-200 border text-left min-w-[140px]',
                 selectedAgent === 'v1'
                   ? 'bg-blue-500/10 border-blue-500/50 text-blue-400'
-                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor text-codinit-elements-textSecondary hover:border-codinit-elements-borderColorActive'
+                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor text-codinit-elements-textSecondary hover:border-codinit-elements-borderColorActive',
               )}
             >
               v1 Agent (legacy)
@@ -120,24 +123,26 @@ export default function SettingsTab() {
                 'p-4 rounded-xl text-left transition-all duration-200 border',
                 visibility === 'private'
                   ? 'bg-blue-500/10 border-blue-500/50'
-                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive'
+                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive',
               )}
             >
               <div className="flex items-center gap-2 mb-1">
-                <div className={classNames(
-                  'i-ph:lock-key-fill w-4 h-4',
-                  visibility === 'private' ? 'text-blue-400' : 'text-gray-400'
-                )} />
-                <span className={classNames(
-                  'font-medium text-sm',
-                  visibility === 'private' ? 'text-blue-400' : 'text-codinit-elements-textPrimary'
-                )}>
+                <div
+                  className={classNames(
+                    'i-ph:lock-key-fill w-4 h-4',
+                    visibility === 'private' ? 'text-blue-400' : 'text-gray-400',
+                  )}
+                />
+                <span
+                  className={classNames(
+                    'font-medium text-sm',
+                    visibility === 'private' ? 'text-blue-400' : 'text-codinit-elements-textPrimary',
+                  )}
+                >
                   Private
                 </span>
               </div>
-              <p className="text-xs text-codinit-elements-textSecondary">
-                Only owner can access
-              </p>
+              <p className="text-xs text-codinit-elements-textSecondary">Only owner can access</p>
             </button>
 
             <button
@@ -146,24 +151,26 @@ export default function SettingsTab() {
                 'p-4 rounded-xl text-left transition-all duration-200 border',
                 visibility === 'secret'
                   ? 'bg-blue-500/10 border-blue-500/50'
-                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive'
+                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive',
               )}
             >
               <div className="flex items-center gap-2 mb-1">
-                <div className={classNames(
-                  'i-ph:eye-slash-fill w-4 h-4',
-                  visibility === 'secret' ? 'text-blue-400' : 'text-gray-400'
-                )} />
-                <span className={classNames(
-                  'font-medium text-sm',
-                  visibility === 'secret' ? 'text-blue-400' : 'text-codinit-elements-textPrimary'
-                )}>
+                <div
+                  className={classNames(
+                    'i-ph:eye-slash-fill w-4 h-4',
+                    visibility === 'secret' ? 'text-blue-400' : 'text-gray-400',
+                  )}
+                />
+                <span
+                  className={classNames(
+                    'font-medium text-sm',
+                    visibility === 'secret' ? 'text-blue-400' : 'text-codinit-elements-textPrimary',
+                  )}
+                >
                   Secret
                 </span>
               </div>
-              <p className="text-xs text-codinit-elements-textSecondary">
-                Accessible via shared URL
-              </p>
+              <p className="text-xs text-codinit-elements-textSecondary">Accessible via shared URL</p>
             </button>
 
             <button
@@ -172,29 +179,35 @@ export default function SettingsTab() {
                 'p-4 rounded-xl text-left transition-all duration-200 border',
                 visibility === 'public'
                   ? 'bg-blue-500/10 border-blue-500/50'
-                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive'
+                  : 'bg-codinit-elements-background-depth-1 border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive',
               )}
             >
               <div className="flex items-center gap-2 mb-1">
-                <div className={classNames(
-                  'i-ph:globe-fill w-4 h-4',
-                  visibility === 'public' ? 'text-blue-400' : 'text-gray-400'
-                )} />
-                <span className={classNames(
-                  'font-medium text-sm',
-                  visibility === 'public' ? 'text-blue-400' : 'text-codinit-elements-textPrimary'
-                )}>
+                <div
+                  className={classNames(
+                    'i-ph:globe-fill w-4 h-4',
+                    visibility === 'public' ? 'text-blue-400' : 'text-gray-400',
+                  )}
+                />
+                <span
+                  className={classNames(
+                    'font-medium text-sm',
+                    visibility === 'public' ? 'text-blue-400' : 'text-codinit-elements-textPrimary',
+                  )}
+                >
                   Public
                 </span>
               </div>
-              <p className="text-xs text-codinit-elements-textSecondary">
-                Everyone can view
-              </p>
+              <p className="text-xs text-codinit-elements-textSecondary">Everyone can view</p>
             </button>
           </div>
           <div className="flex items-center gap-2 mt-4 text-xs text-codinit-elements-textSecondary">
             <div className="i-ph:info w-4 h-4" />
-            <span>Looking to share your site privately? Click <span className="font-bold text-codinit-elements-textPrimary">Share</span> in the top-right corner of your screen.</span>
+            <span>
+              Looking to share your site privately? Click{' '}
+              <span className="font-bold text-codinit-elements-textPrimary">Share</span> in the top-right corner of your
+              screen.
+            </span>
           </div>
         </div>
       </SettingsSection>
