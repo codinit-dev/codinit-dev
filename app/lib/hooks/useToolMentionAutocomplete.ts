@@ -41,7 +41,7 @@ interface UseToolMentionAutocompleteReturn {
   handleFileSelect: (filePath: string) => void;
   handleClose: () => void;
   setSelectedIndex: (index: number) => void;
-  referenceType: 'file' | 'tool';
+  referenceType: 'file' | 'tool' | 'mixed';
 }
 
 function getAvailableTools(serverTools: Record<string, any>, selectedMCP: string | null): ToolItem[] {
@@ -213,7 +213,15 @@ export function useToolMentionAutocomplete(
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent): boolean => {
-      const items = referenceType === 'file' ? filteredFiles : filteredTools;
+      let items: ReferenceItem[] = [];
+
+      if (referenceType === 'file') {
+        items = filteredFiles;
+      } else if (referenceType === 'tool') {
+        items = filteredTools;
+      } else {
+        items = [...filteredTools, ...filteredFiles];
+      }
 
       if (!isOpen || items.length === 0) {
         return false;
@@ -235,10 +243,12 @@ export function useToolMentionAutocomplete(
           if (items[selectedIndex]) {
             e.preventDefault();
 
-            if (referenceType === 'file') {
-              handleFileSelect((items[selectedIndex] as FileItem).relativePath);
+            const selectedItem = items[selectedIndex];
+
+            if ('type' in selectedItem && selectedItem.type === 'file') {
+              handleFileSelect(selectedItem.relativePath);
             } else {
-              handleToolSelect((items[selectedIndex] as ToolItem).name);
+              handleToolSelect((selectedItem as ToolItem).name);
             }
 
             return true;
