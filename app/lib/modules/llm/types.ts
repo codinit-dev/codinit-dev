@@ -7,6 +7,7 @@ export interface ModelInfo {
   provider: string;
   maxTokenAllowed: number;
   maxCompletionTokens?: number;
+  tier?: 'free' | 'pro';
   icon?: string;
 }
 
