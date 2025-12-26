@@ -64,10 +64,10 @@ export const DEFAULT_TAB_CONFIG = [
   { id: 'notifications', visible: true, window: 'user' as const, order: 5 },
 
   // User Window Tabs (In dropdown, initially hidden)
-  { id: 'profile', visible: false, window: 'user' as const, order: 7 },
-  { id: 'settings', visible: false, window: 'user' as const, order: 8 },
+  { id: 'profile', visible: true, window: 'user' as const, order: 7 },
+  { id: 'settings', visible: true, window: 'user' as const, order: 8 },
   { id: 'api-keys', visible: true, window: 'user' as const, order: 9 },
-  { id: 'service-status', visible: false, window: 'user' as const, order: 11 },
+  { id: 'service-status', visible: true, window: 'user' as const, order: 11 },
 
   // User Window Tabs (Hidden, controlled by TaskManagerTab)
   { id: 'debug', visible: false, window: 'user' as const, order: 12 },
