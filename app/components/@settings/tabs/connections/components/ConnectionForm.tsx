@@ -37,11 +37,11 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
   }, []);
 
   return (
-    <div className="rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] overflow-hidden">
+    <div className="rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999] overflow-hidden">
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#F5F5F5] dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+            <div className="p-2 rounded-lg bg-[#F5F5F5] dark:bg-[#999999] border border-[#E5E5E5] dark:border-[#999999]">
               <div className="i-ph:plug-fill text-codinit-elements-textTertiary" />
             </div>
             <div>
@@ -62,9 +62,9 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
               value={authState.username}
               onChange={(e) => setAuthState((prev: GitHubAuthState) => ({ ...prev, username: e.target.value }))}
               className={classNames(
-                'w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#1A1A1A] border rounded-lg',
+                'w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#999999] border rounded-lg',
                 'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary text-base',
-                'border-[#E5E5E5] dark:border-[#1A1A1A]',
+                'border-[#E5E5E5] dark:border-[#999999]',
                 'focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500',
                 'transition-all duration-200',
               )}
@@ -113,9 +113,9 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
                 }))
               }
               className={classNames(
-                'w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#1A1A1A] border rounded-lg',
+                'w-full px-4 py-2.5 bg-[#F5F5F5] dark:bg-[#999999] border rounded-lg',
                 'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary text-base',
-                'border-[#E5E5E5] dark:border-[#1A1A1A]',
+                'border-[#E5E5E5] dark:border-[#999999]',
                 'focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500',
                 'transition-all duration-200',
               )}
@@ -123,7 +123,7 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
             />
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between pt-4 border-t border-[#E5E5E5] dark:border-[#999999]">
             <div className="flex items-center gap-4">
               {!authState.isConnected ? (
                 <button
@@ -155,7 +155,7 @@ export function ConnectionForm({ authState, setAuthState, onSave, onDisconnect }
                     className={classNames(
                       'inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
                       'bg-[#F5F5F5] hover:bg-red-500/10 hover:text-red-500',
-                      'dark:bg-[#1A1A1A] dark:hover:bg-red-500/20 dark:hover:text-red-500',
+                      'dark:bg-[#999999] dark:hover:bg-red-500/20 dark:hover:text-red-500',
                       'text-codinit-elements-textPrimary',
                     )}
                   >
