@@ -79,7 +79,7 @@ const DraggableTabItem = ({
       }}
       className={classNames(
         'flex items-center justify-between p-4 rounded-lg',
-        'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
+        'bg-[#F5F5F5] dark:bg-[#999999]',
         'border border-[#E5E5E5] dark:border-[#333333]',
         isDragging ? 'z-50' : '',
       )}
