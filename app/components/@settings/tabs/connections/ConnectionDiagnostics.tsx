@@ -245,7 +245,7 @@ export default function ConnectionDiagnostics() {
       {/* Connection Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* GitHub Connection Card */}
-        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:github-logo text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
             <div className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
@@ -311,7 +311,7 @@ export default function ConnectionDiagnostics() {
         </div>
 
         {/* Netlify Connection Card */}
-        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-codinit:netlify text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
             <div className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
@@ -376,7 +376,7 @@ export default function ConnectionDiagnostics() {
         </div>
 
         {/* Vercel Connection Card */}
-        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-simple-icons:vercel text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
             <div className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
@@ -441,7 +441,7 @@ export default function ConnectionDiagnostics() {
         </div>
 
         {/* Supabase Connection Card */}
-        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-lg bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-simple-icons:supabase text-codinit-elements-item-contentAccent dark:text-codinit-elements-item-contentAccent w-4 h-4" />
             <div className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
@@ -565,7 +565,7 @@ export default function ConnectionDiagnostics() {
         <div className="mt-4">
           <Collapsible open={showDetails} onOpenChange={setShowDetails} className="w-full">
             <CollapsibleTrigger className="w-full">
-              <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
                 <div className="flex items-center gap-2">
                   <CodeBracketIcon className="w-4 h-4 text-blue-500" />
                   <span className="text-sm font-medium text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary">
@@ -581,7 +581,7 @@ export default function ConnectionDiagnostics() {
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent className="overflow-hidden">
-              <div className="p-4 mt-2 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor">
+              <div className="p-4 mt-2 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor">
                 <pre className="text-xs overflow-auto max-h-96 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                   {JSON.stringify(diagnosticResults, null, 2)}
                 </pre>
