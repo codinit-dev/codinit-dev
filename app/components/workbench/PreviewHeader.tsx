@@ -113,13 +113,13 @@ export const PreviewHeader = memo(
     };
 
     return (
-      <div className="flex items-center justify-between gap-4 h-12 px-4 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor">
+      <div className="flex items-center justify-center gap-4 h-10 px-2 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor">
         {/* Left: View Toggle Buttons */}
-        <div className="flex items-center gap-1 bg-codinit-elements-background-depth-2 rounded-full p-1 border border-codinit-elements-borderColor">
+        <div className="flex items-center gap-1 bg-codinit-elements-background-depth-2 rounded-full p-0.5 border border-codinit-elements-borderColor">
           <IconButton
             icon="i-lucide:eye"
             className={classNames(
-              'w-8 h-8 rounded-full transition-all',
+              'w-7 h-7 rounded-full transition-all icon-scale-90',
               activePreview
                 ? 'bg-codinit-elements-item-backgroundAccent/10 text-codinit-elements-item-contentAccent'
                 : 'bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary',
@@ -129,13 +129,13 @@ export const PreviewHeader = memo(
           />
           <IconButton
             icon="i-lucide:code"
-            className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+            className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
             title="Code"
             onClick={() => setSelectedView('code')}
           />
           <IconButton
             icon="i-lucide:git-compare-arrows"
-            className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+            className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
             title="Diff"
             onClick={() => setSelectedView('diff')}
           />
@@ -143,7 +143,7 @@ export const PreviewHeader = memo(
             <DropdownMenu.Trigger asChild>
               <IconButton
                 icon="i-lucide:settings"
-                className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+                className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
                 title="More Options"
               />
             </DropdownMenu.Trigger>
@@ -193,9 +193,9 @@ export const PreviewHeader = memo(
         </div>
 
         {/* Center: Address Bar */}
-        <div className="flex-1 flex justify-center max-w-2xl mx-auto">
-          <div className="w-full flex items-center gap-0 bg-codinit-elements-background-depth-2/50 backdrop-blur-md border border-codinit-elements-borderColor text-codinit-elements-textPrimary rounded-full h-10 hover:bg-codinit-elements-background-depth-2 hover:border-codinit-elements-borderColorActive focus-within:bg-codinit-elements-background-depth-2 focus-within:border-codinit-elements-borderColorActive transition-all duration-200 shadow-sm overflow-hidden">
-            <div className="flex gap-1.5 w-full pl-4 pr-2 py-1 items-center">
+        <div className="flex justify-center max-w-md w-full">
+          <div className="w-full flex items-center gap-0 bg-codinit-elements-background-depth-2/50 backdrop-blur-md border border-codinit-elements-borderColor text-codinit-elements-textPrimary rounded-full h-8 hover:bg-codinit-elements-background-depth-2 hover:border-codinit-elements-borderColorActive focus-within:bg-codinit-elements-background-depth-2 focus-within:border-codinit-elements-borderColorActive transition-all duration-200 shadow-sm overflow-hidden">
+            <div className="flex gap-1.5 w-full pl-3 pr-2 py-0.5 items-center">
               <PortDropdown
                 activePreviewIndex={activePreviewIndex}
                 setActivePreviewIndex={setActivePreviewIndex}
@@ -220,12 +220,17 @@ export const PreviewHeader = memo(
                       targetPath = '/' + targetPath;
                     }
 
-                    const fullUrl = activePreview.baseUrl + targetPath;
-                    setIframeUrl(fullUrl);
-                    setDisplayPath(targetPath);
+                    try {
+                      const url = new URL(activePreview.baseUrl);
+                      const fullUrl = url.origin + targetPath;
+                      workbenchStore.updatePreviewUrl(activePreview.port, fullUrl);
+                      setDisplayPath(targetPath);
 
-                    if (inputRef.current) {
-                      inputRef.current.blur();
+                      if (inputRef.current) {
+                        inputRef.current.blur();
+                      }
+                    } catch (e) {
+                      console.error('Invalid URL:', activePreview.baseUrl);
                     }
                   }
                 }}
@@ -236,37 +241,37 @@ export const PreviewHeader = memo(
             <div className="flex items-center border-l border-codinit-elements-borderColor h-full">
               <button
                 onClick={reloadPreview}
-                className="h-full px-3 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundHover transition-colors"
+                className="h-full px-2.5 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundHover transition-colors"
                 disabled={!activePreview}
                 title="Reload"
               >
-                <div className="i-lucide:rotate-cw text-sm" />
+                <div className="i-lucide:rotate-cw text-xs" />
               </button>
               <button
                 onClick={() => setIsWindowSizeDropdownOpen(!isWindowSizeDropdownOpen)}
-                className="h-full px-3 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundHover transition-colors"
+                className="h-full px-2.5 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary hover:bg-codinit-elements-item-backgroundHover transition-colors"
                 title="Window Size"
               >
-                <div className="i-lucide:more-horizontal text-sm" />
+                <div className="i-lucide:more-horizontal text-xs" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Right: Deployment Actions */}
-        <div className="flex items-center gap-1 bg-codinit-elements-background-depth-2 rounded-full p-1 border border-codinit-elements-borderColor">
+        <div className="flex items-center gap-1 bg-codinit-elements-background-depth-2 rounded-full p-0.5 border border-codinit-elements-borderColor">
           {/* Vercel Deploy Button */}
           <IconButton
             title={vercelConn.user ? 'Deploy to Vercel' : 'Connect Vercel account first'}
             disabled={!vercelConn.user || isDeployingVercel}
             onClick={handleDeployToVercel}
-            className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+            className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
           >
             {isDeployingVercel ? (
-              <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
+              <div className="i-svg-spinners:90-ring-with-bg w-3.5 h-3.5" />
             ) : (
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 width="1155"
                 height="1000"
                 viewBox="0 0 1155 1000"
@@ -283,13 +288,13 @@ export const PreviewHeader = memo(
             title={netlifyConn.user ? 'Deploy to Netlify' : 'Connect Netlify account first'}
             disabled={!netlifyConn.user || isDeployingNetlify}
             onClick={handleDeployToNetlify}
-            className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+            className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
           >
             {isDeployingNetlify ? (
-              <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
+              <div className="i-svg-spinners:90-ring-with-bg w-3.5 h-3.5" />
             ) : (
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 width="800px"
                 height="800px"
                 viewBox="0 0 40 40"
@@ -321,13 +326,13 @@ export const PreviewHeader = memo(
             title={cloudflareConn.user ? 'Deploy to Cloudflare' : 'Connect Cloudflare account first'}
             disabled={!cloudflareConn.user || isDeployingCloudflare}
             onClick={handleDeployToCloudflare}
-            className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+            className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
           >
             {isDeployingCloudflare ? (
-              <div className="i-svg-spinners:90-ring-with-bg w-4 h-4" />
+              <div className="i-svg-spinners:90-ring-with-bg w-3.5 h-3.5" />
             ) : (
               <svg
-                className="w-4 h-4"
+                className="w-3.5 h-3.5"
                 xmlns="http://www.w3.org/2000/svg"
                 role="img"
                 viewBox="0 0 460 271.2"
@@ -351,14 +356,14 @@ export const PreviewHeader = memo(
             icon="i-lucide:cloud"
             onClick={() => setIsDeployDialogOpen(true)}
             title="More Deploy Options"
-            className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+            className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
           />
 
           <IconButton
             icon="i-lucide:github"
             onClick={handleOpenPushDialog}
             title="Publish"
-            className="w-8 h-8 rounded-full transition-all bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
+            className="w-7 h-7 rounded-full transition-all icon-scale-90 bg-transparent text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary"
           />
         </div>
 
