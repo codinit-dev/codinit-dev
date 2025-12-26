@@ -170,9 +170,9 @@ const DependencySection = ({
       <CollapsibleTrigger
         className={classNames(
           'flex w-full items-center justify-between p-4',
-          'bg-white dark:bg-[#0A0A0A]',
-          'hover:bg-blue-50/50 dark:hover:bg-[#1a1a1a]',
-          'border-b border-[#E5E5E5] dark:border-[#1A1A1A]',
+          'bg-white dark:bg-gray-800/50',
+          'hover:bg-blue-50/50 dark:hover:bg-[#999999]',
+          'border-b border-[#E5E5E5] dark:border-[#999999]',
           'transition-colors duration-200',
           'first:rounded-t-lg last:rounded-b-lg',
           { 'hover:rounded-lg': !isOpen },
@@ -198,8 +198,8 @@ const DependencySection = ({
         <ScrollArea
           className={classNames(
             'h-[200px] w-full',
-            'bg-white dark:bg-[#0A0A0A]',
-            'border-b border-[#E5E5E5] dark:border-[#1A1A1A]',
+            'bg-white dark:bg-gray-800/50',
+            'border-b border-[#E5E5E5] dark:border-[#999999]',
             'last:rounded-b-lg last:border-b-0',
           )}
         >
@@ -629,11 +629,11 @@ export default function DebugTab() {
       // Get memory metrics
       const memoryMetrics = memory
         ? {
-            jsHeapSizeLimit: memory.jsHeapSizeLimit,
-            totalJSHeapSize: memory.totalJSHeapSize,
-            usedJSHeapSize: memory.usedJSHeapSize,
-            heapUtilization: (memory.usedJSHeapSize / memory.totalJSHeapSize) * 100,
-          }
+          jsHeapSizeLimit: memory.jsHeapSizeLimit,
+          totalJSHeapSize: memory.totalJSHeapSize,
+          usedJSHeapSize: memory.usedJSHeapSize,
+          heapUtilization: (memory.usedJSHeapSize / memory.totalJSHeapSize) * 100,
+        }
         : null;
 
       // Get frame rate metrics
@@ -1246,8 +1246,8 @@ export default function DebugTab() {
             'group flex items-center gap-2',
             'rounded-lg px-3 py-1.5',
             'text-sm text-gray-900 dark:text-white',
-            'bg-[#FAFAFA] dark:bg-[#0A0A0A]',
-            'border border-[#E5E5E5] dark:border-[#1A1A1A]',
+            'bg-[#FAFAFA] dark:bg-gray-800/50',
+            'border border-[#E5E5E5] dark:border-[#999999]',
             'hover:bg-blue-500/10 dark:hover:bg-blue-500/20',
             'transition-all duration-200',
           )}
@@ -1270,9 +1270,9 @@ export default function DebugTab() {
                   onClick={() => handleFormatClick(format.handler)}
                   className={classNames(
                     'flex items-center gap-3 px-4 py-3 text-sm rounded-lg transition-colors w-full text-left',
-                    'bg-white dark:bg-[#0A0A0A]',
-                    'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-                    'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+                    'bg-white dark:bg-gray-800/50',
+                    'border border-[#E5E5E5] dark:border-[#999999]',
+                    'hover:bg-blue-50 dark:hover:bg-[#999999]',
                     'hover:border-blue-200 dark:hover:border-blue-900/30',
                     'text-codinit-elements-textPrimary',
                   )}
@@ -1344,7 +1344,7 @@ export default function DebugTab() {
       {/* Quick Stats Banner */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Errors Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:warning-octagon text-blue-500 w-4 h-4" />
             <div className="text-sm text-codinit-elements-textSecondary">Errors</div>
@@ -1368,7 +1368,7 @@ export default function DebugTab() {
         </div>
 
         {/* Memory Usage Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:cpu text-blue-500 w-4 h-4" />
             <div className="text-sm text-codinit-elements-textSecondary">Memory Usage</div>
@@ -1405,7 +1405,7 @@ export default function DebugTab() {
         </div>
 
         {/* Page Load Time Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:timer text-blue-500 w-4 h-4" />
             <div className="text-sm text-codinit-elements-textSecondary">Page Load Time</div>
@@ -1431,7 +1431,7 @@ export default function DebugTab() {
         </div>
 
         {/* Network Speed Card */}
-        <div className="p-4 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
+        <div className="p-4 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999] hover:border-blue-500/30 transition-all duration-200 h-[180px] flex flex-col">
           <div className="flex items-center gap-2">
             <div className="i-ph:wifi-high text-blue-500 w-4 h-4" />
             <div className="text-sm text-codinit-elements-textSecondary">Network Speed</div>
@@ -1457,7 +1457,7 @@ export default function DebugTab() {
         </div>
 
         {/* Ollama Service Card - Now spans all 4 columns */}
-        <div className="md:col-span-4 p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-blue-500/30 transition-all duration-200 h-[260px] flex flex-col">
+        <div className="md:col-span-4 p-6 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999] hover:border-blue-500/30 transition-all duration-200 h-[260px] flex flex-col">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="i-ph:robot text-blue-500 w-5 h-5" />
@@ -1541,9 +1541,9 @@ export default function DebugTab() {
           disabled={loading.systemInfo}
           className={classNames(
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-            'bg-white dark:bg-[#0A0A0A]',
-            'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'bg-white dark:bg-gray-800/50',
+            'border border-[#E5E5E5] dark:border-[#999999]',
+            'hover:bg-blue-50 dark:hover:bg-[#999999]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.systemInfo },
@@ -1562,9 +1562,9 @@ export default function DebugTab() {
           disabled={loading.performance}
           className={classNames(
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-            'bg-white dark:bg-[#0A0A0A]',
-            'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'bg-white dark:bg-gray-800/50',
+            'border border-[#E5E5E5] dark:border-[#999999]',
+            'hover:bg-blue-50 dark:hover:bg-[#999999]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.performance },
@@ -1583,9 +1583,9 @@ export default function DebugTab() {
           disabled={loading.errors}
           className={classNames(
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-            'bg-white dark:bg-[#0A0A0A]',
-            'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'bg-white dark:bg-gray-800/50',
+            'border border-[#E5E5E5] dark:border-[#999999]',
+            'hover:bg-blue-50 dark:hover:bg-[#999999]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.errors },
@@ -1604,9 +1604,9 @@ export default function DebugTab() {
           disabled={loading.webAppInfo}
           className={classNames(
             'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors',
-            'bg-white dark:bg-[#0A0A0A]',
-            'border border-[#E5E5E5] dark:border-[#1A1A1A]',
-            'hover:bg-blue-50 dark:hover:bg-[#1a1a1a]',
+            'bg-white dark:bg-gray-800/50',
+            'border border-[#E5E5E5] dark:border-[#999999]',
+            'hover:bg-blue-50 dark:hover:bg-[#999999]',
             'hover:border-blue-200 dark:hover:border-blue-900/30',
             'text-codinit-elements-textPrimary',
             { 'opacity-50 cursor-not-allowed': loading.webAppInfo },
@@ -1630,7 +1630,7 @@ export default function DebugTab() {
         className="w-full"
       >
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             <div className="flex items-center gap-3">
               <div className="i-ph:cpu text-blue-500 w-5 h-5" />
               <h3 className="text-base font-medium text-codinit-elements-textPrimary">System Information</h3>
@@ -1645,7 +1645,7 @@ export default function DebugTab() {
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             {systemInfo ? (
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
@@ -1777,7 +1777,7 @@ export default function DebugTab() {
         className="w-full"
       >
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             <div className="flex items-center gap-3">
               <div className="i-ph:chart-line text-blue-500 w-5 h-5" />
               <h3 className="text-base font-medium text-codinit-elements-textPrimary">Performance Metrics</h3>
@@ -1792,7 +1792,7 @@ export default function DebugTab() {
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             {systemInfo && (
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -1867,7 +1867,7 @@ export default function DebugTab() {
         className="w-full"
       >
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             <div className="flex items-center gap-3">
               <div className="i-ph:info text-blue-500 w-5 h-5" />
               <h3 className="text-base font-medium text-codinit-elements-textPrimary">WebApp Information</h3>
@@ -1883,7 +1883,7 @@ export default function DebugTab() {
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             {loading.webAppInfo ? (
               <div className="flex items-center justify-center p-8">
                 <span className="loading loading-spinner loading-lg" />
@@ -2026,7 +2026,7 @@ export default function DebugTab() {
             {webAppInfo && (
               <div className="mt-6">
                 <h3 className="mb-4 text-base font-medium text-codinit-elements-textPrimary">Dependencies</h3>
-                <div className="bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A] rounded-lg divide-y divide-[#E5E5E5] dark:divide-[#1A1A1A]">
+                <div className="bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999] rounded-lg divide-y divide-[#E5E5E5] dark:divide-[#999999]">
                   <DependencySection title="Production" deps={webAppInfo.dependencies.production} />
                   <DependencySection title="Development" deps={webAppInfo.dependencies.development} />
                   <DependencySection title="Peer" deps={webAppInfo.dependencies.peer} />
@@ -2045,7 +2045,7 @@ export default function DebugTab() {
         className="w-full"
       >
         <CollapsibleTrigger className="w-full">
-          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="flex items-center justify-between p-6 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             <div className="flex items-center gap-3">
               <div className="i-ph:warning text-red-500 w-5 h-5" />
               <h3 className="text-base font-medium text-codinit-elements-textPrimary">Error Check</h3>
@@ -2065,7 +2065,7 @@ export default function DebugTab() {
         </CollapsibleTrigger>
 
         <CollapsibleContent>
-          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]">
+          <div className="p-6 mt-2 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]">
             <ScrollArea className="h-[300px]">
               <div className="space-y-4">
                 <div className="text-sm text-codinit-elements-textSecondary">
