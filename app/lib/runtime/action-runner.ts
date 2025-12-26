@@ -275,10 +275,6 @@ export class ActionRunner {
       unreachable('Shell terminal not found');
     }
 
-    if (this.onLiveOutput && shell.liveActionStream) {
-      this.#monitorLiveOutput(shell.liveActionStream, action.content);
-    }
-
     const resp = await shell.executeCommand(this.runnerId.get(), action.content, () => {
       logger.debug(`[${action.type}]:Aborting Action\n\n`, action);
       action.abort();
