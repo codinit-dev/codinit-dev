@@ -11,7 +11,7 @@ export function ChatHeader() {
   }
 
   return (
-    <header className="flex shrink-0 select-none items-center pl-4 pr-3 h-12 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor">
+    <header className="flex shrink-0 select-none items-center pl-4 pr-3 h-10 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor">
       <a href="/">
         <button
           className="flex items-center justify-center font-medium shrink-0 min-w-0 max-w-full rounded-md focus-visible:outline-2 disabled:op-50 relative disabled:cursor-not-allowed gap-1 h-8 focus-visible:outline-codinit-ds-brandHighlight bg-transparent hover:bg-codinit-elements-item-backgroundActive text-codinit-ds-textPrimary text-sm px-2 transition-all duration-200"
