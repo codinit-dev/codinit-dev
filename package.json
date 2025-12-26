@@ -185,6 +185,7 @@
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/file-saver": "^2.0.7",
     "@types/js-cookie": "^3.0.6",
+    "@types/node": "^25.0.3",
     "@types/path-browserify": "^1.0.3",
     "@types/react": "^18.3.25",
     "@types/react-dom": "^18.3.7",
