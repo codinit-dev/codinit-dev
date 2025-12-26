@@ -552,18 +552,18 @@ export default function GitHubConnection() {
         </div>
 
         {!connection.user && (
-          <div className="text-xs text-codinit-elements-textSecondary bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 p-3 rounded-lg mb-4">
+          <div className="text-xs text-codinit-elements-textSecondary bg-codinit-elements-background-depth-1 dark:bg-gray-800/50 p-3 rounded-lg mb-4">
             <p className="flex items-center gap-1 mb-1">
               <span className="i-ph:lightbulb w-3.5 h-3.5 text-codinit-elements-icon-success dark:text-codinit-elements-icon-success" />
               <span className="font-medium">Tip:</span> You can also set the{' '}
-              <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+              <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 rounded">
                 VITE_GITHUB_ACCESS_TOKEN
               </code>{' '}
               environment variable to connect automatically.
             </p>
             <p>
               For fine-grained tokens, also set{' '}
-              <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+              <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 rounded">
                 VITE_GITHUB_TOKEN_TYPE=fine-grained
               </code>
             </p>
@@ -584,7 +584,7 @@ export default function GitHubConnection() {
               disabled={isConnecting || !!connection.user}
               className={classNames(
                 'w-full px-3 py-2 rounded-lg text-sm',
-                'bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1',
+                'bg-codinit-elements-background-depth-1 dark:bg-gray-800/50',
                 'border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor',
                 'text-codinit-elements-textPrimary dark:text-codinit-elements-textPrimary',
                 'focus:outline-none focus:ring-1 focus:ring-codinit-elements-item-contentAccent dark:focus:ring-codinit-elements-item-contentAccent',
@@ -605,12 +605,11 @@ export default function GitHubConnection() {
               value={connection.token}
               onChange={(e) => setConnection((prev) => ({ ...prev, token: e.target.value }))}
               disabled={isConnecting || !!connection.user}
-              placeholder={`Enter your GitHub ${
-                connection.tokenType === 'classic' ? 'personal access token' : 'fine-grained token'
-              }`}
+              placeholder={`Enter your GitHub ${connection.tokenType === 'classic' ? 'personal access token' : 'fine-grained token'
+                }`}
               className={classNames(
                 'w-full px-3 py-2 rounded-lg text-sm',
-                'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                'bg-[#F8F8F8] dark:bg-[#999999]',
                 'border border-[#E5E5E5] dark:border-[#333333]',
                 'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
                 'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
@@ -721,7 +720,7 @@ export default function GitHubConnection() {
 
         {connection.user && connection.stats && (
           <div className="mt-6 border-t border-codinit-elements-borderColor dark:border-codinit-elements-borderColor pt-6">
-            <div className="flex items-center gap-4 p-4 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 rounded-lg mb-4">
+            <div className="flex items-center gap-4 p-4 bg-codinit-elements-background-depth-1 dark:bg-gray-800/50 rounded-lg mb-4">
               <img
                 src={connection.user.avatar_url}
                 alt={connection.user.login}
@@ -739,7 +738,7 @@ export default function GitHubConnection() {
 
             <Collapsible open={isStatsExpanded} onOpenChange={setIsStatsExpanded}>
               <CollapsibleTrigger asChild>
-                <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-codinit-elements-background dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive/70 dark:hover:border-codinit-elements-borderColorActive/70 transition-all duration-200">
                   <div className="flex items-center gap-2">
                     <div className="i-ph:chart-bar w-4 h-4 text-codinit-elements-item-contentAccent" />
                     <span className="text-sm font-medium text-codinit-elements-textPrimary">GitHub Stats</span>
@@ -794,7 +793,7 @@ export default function GitHubConnection() {
                     ].map((stat, index) => (
                       <div
                         key={index}
-                        className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                        className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                       >
                         <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
                         <span className="text-lg font-medium text-codinit-elements-textPrimary">{stat.value}</span>
@@ -820,7 +819,7 @@ export default function GitHubConnection() {
                           ].map((stat, index) => (
                             <div
                               key={index}
-                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                             >
                               <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
                               <span className="text-lg font-medium text-codinit-elements-textPrimary">
@@ -858,7 +857,7 @@ export default function GitHubConnection() {
                           ].map((stat, index) => (
                             <div
                               key={index}
-                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                             >
                               <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
                               <span className="text-lg font-medium text-codinit-elements-textPrimary flex items-center gap-1">
@@ -885,7 +884,7 @@ export default function GitHubConnection() {
                           ].map((stat, index) => (
                             <div
                               key={index}
-                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
+                              className="flex flex-col p-3 rounded-lg bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor"
                             >
                               <span className="text-xs text-codinit-elements-textSecondary">{stat.label}</span>
                               <span className="text-lg font-medium text-codinit-elements-textPrimary">
@@ -914,7 +913,7 @@ export default function GitHubConnection() {
                           href={repo.html_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group block p-4 rounded-lg bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive dark:hover:border-codinit-elements-borderColorActive transition-all duration-200"
+                          className="group block p-4 rounded-lg bg-codinit-elements-background-depth-1 dark:bg-gray-800/50 border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor hover:border-codinit-elements-borderColorActive dark:hover:border-codinit-elements-borderColorActive transition-all duration-200"
                         >
                           <div className="space-y-3">
                             <div className="flex items-start justify-between">
