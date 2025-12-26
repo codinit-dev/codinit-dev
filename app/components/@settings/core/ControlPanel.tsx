@@ -103,7 +103,7 @@ const AnimatedSwitch = ({ checked, onCheckedChange, id, label }: AnimatedSwitchP
         className={classNames(
           'relative inline-flex h-6 w-11 items-center rounded-full',
           'transition-all duration-300 ease-[cubic-bezier(0.87,_0,_0.13,_1)]',
-          'bg-codinit-elements-bg-depth-3',
+          'bg-codinit-elements-background-depth-3',
           'data-[state=checked]:bg-blue-500',
           'focus:outline-none focus:ring-2 focus:ring-blue-500/20',
           'cursor-pointer',
@@ -441,7 +441,7 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
               <motion.div
                 className={classNames(
                   'w-[1200px] h-[90vh]',
-                  'bg-codinit-elements-bg-depth-1',
+                  'bg-codinit-elements-background-depth-2',
                   'rounded-2xl shadow-2xl',
                   'border border-codinit-elements-borderColor',
                   'flex flex-col overflow-hidden',
