@@ -22,7 +22,7 @@ export function Header() {
 
   return (
     <>
-      <header className="flex items-center justify-between p-3 h-12 flex-1 bg-codinit-elements-background-depth-1 border-b border-transparent">
+      <header className="flex items-center justify-between p-3 h-12 flex-1 bg-codinit-elements-background-depth-2 border-b border-transparent">
         <div className="flex items-center gap-2 z-logo text-codinit-elements-textPrimary cursor-pointer">
           <div className="i-ph:sidebar-simple-duotone text-xl" />
           <a href="/" className="text-2xl font-semibold text-accent flex items-center">
