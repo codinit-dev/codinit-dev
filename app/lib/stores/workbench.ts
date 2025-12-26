@@ -23,9 +23,11 @@ import Cookies from 'js-cookie';
 import { createSampler } from '~/utils/sampler';
 import type { ActionAlert, DeployAlert, SupabaseAlert, FileAction } from '~/types/actions';
 import { startAutoSave } from '~/lib/persistence/fileAutoSave';
-import { liveActionConsoleStore, diffApprovalStore } from './settings';
+import { diffApprovalStore } from './settings';
 
 const { saveAs } = fileSaver;
+
+const DEFAULT_ACTION_SAMPLE_INTERVAL = 100;
 
 export interface ArtifactState {
   id: string;
@@ -160,6 +162,10 @@ export class WorkbenchStore {
 
   get previews() {
     return this.#previewsStore.previews;
+  }
+
+  updatePreviewUrl(port: number, url: string) {
+    this.#previewsStore.updateUrl(port, url);
   }
 
   get files() {
@@ -529,7 +535,18 @@ export class WorkbenchStore {
   }
 
   abortAllActions() {
-    // TODO: what do we wanna do and how do we wanna recover from this?
+    // Iterate over all artifacts and their actions to abort them
+    const artifacts = this.artifacts.get();
+
+    for (const artifact of Object.values(artifacts)) {
+      const actions = artifact.runner.actions.get();
+
+      for (const action of Object.values(actions)) {
+        if (action.status === 'pending' || action.status === 'running') {
+          action.abort();
+        }
+      }
+    }
   }
 
   setReloadedMessages(messages: string[]) {
@@ -610,12 +627,6 @@ export class WorkbenchStore {
         },
         (output, command) => {
           if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          const liveConsoleEnabled = liveActionConsoleStore.get();
-
-          if (!liveConsoleEnabled) {
             return;
           }
 
@@ -890,7 +901,7 @@ export class WorkbenchStore {
 
   actionStreamSampler = createSampler(async (data: ActionCallbackData, isStreaming: boolean = false) => {
     return await this._runAction(data, isStreaming);
-  }, 100); // TODO: remove this magic number to have it configurable
+  }, DEFAULT_ACTION_SAMPLE_INTERVAL);
 
   #getArtifact(id: string) {
     const artifacts = this.artifacts.get();
