@@ -51,15 +51,13 @@
 // Thinking/Building glow effect
 .thinking-glow {
   --spread: 22px;
-  --base-color: rgba(59, 130, 246, 0.1);
-  --bg: linear-gradient(
-    135deg,
-    rgba(59, 130, 246, 0.08) 0%,
-    rgba(147, 197, 253, 0.12) 25%,
-    rgba(59, 130, 246, 0.08) 50%,
-    rgba(96, 165, 250, 0.1) 75%,
-    rgba(59, 130, 246, 0.08) 100%
-  );
+  --base-color: var(--codinit-elements-glow-thinking-base);
+  --bg: linear-gradient(135deg,
+      var(--codinit-elements-glow-thinking-base) 0%,
+      var(--codinit-elements-glow-thinking-primary) 25%,
+      var(--codinit-elements-glow-thinking-base) 50%,
+      var(--codinit-elements-glow-thinking-primary) 75%,
+      var(--codinit-elements-glow-thinking-base) 100%);
   position: relative;
   background-image: var(--bg), linear-gradient(var(--base-color), var(--base-color));
   background-size:
@@ -70,8 +68,8 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow:
-    0 0 0 1px rgba(59, 130, 246, 0.1),
-    0 0 var(--spread) rgba(59, 130, 246, 0.15),
+    0 0 0 1px var(--codinit-elements-glow-thinking-base),
+    0 0 var(--spread) var(--codinit-elements-glow-thinking-primary),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -82,53 +80,60 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(59, 130, 246, 0.25),
-    rgba(147, 197, 253, 0.4),
-    rgba(59, 130, 246, 0.25),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      var(--codinit-elements-glow-thinking-primary),
+      var(--codinit-elements-glow-thinking-secondary),
+      var(--codinit-elements-glow-thinking-primary),
+      transparent);
   animation: thinkingShimmer 2s ease-in-out infinite;
 }
 
 .thinking-glow-text {
   position: relative;
   z-index: 1;
-  background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd, #60a5fa, #3b82f6);
+  background: linear-gradient(135deg,
+      var(--codinit-elements-glow-thinking-primary),
+      var(--codinit-elements-glow-thinking-secondary),
+      var(--codinit-elements-glow-thinking-primary),
+      var(--codinit-elements-glow-thinking-secondary),
+      var(--codinit-elements-glow-thinking-primary));
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: thinkingTextGlow 2s ease-in-out infinite;
   text-shadow:
-    0 0 8px rgba(59, 130, 246, 0.6),
-    0 0 16px rgba(59, 130, 246, 0.4),
-    0 0 24px rgba(59, 130, 246, 0.2);
+    0 0 8px var(--codinit-elements-glow-thinking-primary),
+    0 0 16px var(--codinit-elements-glow-thinking-secondary),
+    0 0 24px var(--codinit-elements-glow-thinking-base);
 }
 
 @keyframes thinkingGlow {
+
   0%,
   100% {
     background-position: 0% 50%;
-    box-shadow: 0 0 5px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 5px var(--codinit-elements-glow-thinking-base);
   }
+
   25% {
     background-position: 100% 50%;
     box-shadow:
-      0 0 15px rgba(59, 130, 246, 0.4),
-      0 0 25px rgba(59, 130, 246, 0.2);
+      0 0 15px var(--codinit-elements-glow-thinking-primary),
+      0 0 25px var(--codinit-elements-glow-thinking-base);
   }
+
   50% {
     background-position: 50% 100%;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 10px var(--codinit-elements-glow-thinking-primary);
   }
+
   75% {
     background-position: 100% 0%;
     box-shadow:
-      0 0 20px rgba(59, 130, 246, 0.5),
-      0 0 30px rgba(59, 130, 246, 0.3);
+      0 0 20px var(--codinit-elements-glow-thinking-primary),
+      0 0 30px var(--codinit-elements-glow-thinking-base);
   }
 }
 
@@ -136,16 +141,19 @@
   0% {
     left: -100%;
   }
+
   100% {
     left: 100%;
   }
 }
 
 @keyframes thinkingTextGlow {
+
   0%,
   100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -154,15 +162,13 @@
 // Building status glow
 .building-glow {
   --spread: 18px;
-  --base-color: rgba(34, 197, 94, 0.1);
-  --bg: linear-gradient(
-    135deg,
-    rgba(34, 197, 94, 0.08) 0%,
-    rgba(74, 222, 128, 0.12) 25%,
-    rgba(34, 197, 94, 0.08) 50%,
-    rgba(34, 197, 94, 0.1) 75%,
-    rgba(34, 197, 94, 0.08) 100%
-  );
+  --base-color: var(--codinit-elements-glow-building-base);
+  --bg: linear-gradient(135deg,
+      var(--codinit-elements-glow-building-base) 0%,
+      var(--codinit-elements-glow-building-primary) 25%,
+      var(--codinit-elements-glow-building-base) 50%,
+      var(--codinit-elements-glow-building-primary) 75%,
+      var(--codinit-elements-glow-building-base) 100%);
   position: relative;
   background-image: var(--bg), linear-gradient(var(--base-color), var(--base-color));
   background-size:
@@ -172,8 +178,8 @@
   animation: buildingGlow 2.5s ease-in-out infinite;
   border-radius: 6px;
   box-shadow:
-    0 0 0 1px rgba(34, 197, 94, 0.1),
-    0 0 var(--spread) rgba(34, 197, 94, 0.15),
+    0 0 0 1px var(--codinit-elements-glow-building-base),
+    0 0 var(--spread) var(--codinit-elements-glow-building-primary),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
@@ -184,47 +190,53 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(34, 197, 94, 0.3),
-    rgba(74, 222, 128, 0.45),
-    rgba(34, 197, 94, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      var(--codinit-elements-glow-building-primary),
+      var(--codinit-elements-glow-building-secondary),
+      var(--codinit-elements-glow-building-primary),
+      transparent);
   animation: buildingShimmer 1.8s ease-in-out infinite;
 }
 
 .building-glow-text {
   position: relative;
   z-index: 1;
-  background: linear-gradient(135deg, #22c55e, #4ade80, #86efac, #4ade80, #22c55e);
+  background: linear-gradient(135deg,
+      var(--codinit-elements-glow-building-base),
+      var(--codinit-elements-glow-building-primary),
+      var(--codinit-elements-glow-building-secondary),
+      var(--codinit-elements-glow-building-primary),
+      var(--codinit-elements-glow-building-base));
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: buildingTextGlow 1.8s ease-in-out infinite;
   text-shadow:
-    0 0 6px rgba(34, 197, 94, 0.5),
-    0 0 12px rgba(34, 197, 94, 0.3),
-    0 0 18px rgba(34, 197, 94, 0.15);
+    0 0 6px var(--codinit-elements-glow-building-primary),
+    0 0 12px var(--codinit-elements-glow-building-secondary),
+    0 0 18px var(--codinit-elements-glow-building-base);
 }
 
 @keyframes buildingGlow {
+
   0%,
   100% {
     background-position: 0% 50%;
-    box-shadow: 0 0 3px rgba(34, 197, 94, 0.15);
+    box-shadow: 0 0 3px var(--codinit-elements-glow-building-base);
   }
+
   33% {
     background-position: 100% 50%;
     box-shadow:
-      0 0 12px rgba(34, 197, 94, 0.3),
-      0 0 20px rgba(34, 197, 94, 0.15);
+      0 0 12px var(--codinit-elements-glow-building-primary),
+      0 0 20px var(--codinit-elements-glow-building-base);
   }
+
   66% {
     background-position: 50% 100%;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.25);
+    box-shadow: 0 0 8px var(--codinit-elements-glow-building-primary);
   }
 }
 
@@ -232,16 +244,19 @@
   0% {
     left: -100%;
   }
+
   100% {
     left: 100%;
   }
 }
 
 @keyframes buildingTextGlow {
+
   0%,
   100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -252,6 +267,7 @@
   0% {
     background-position: -250% center;
   }
+
   100% {
     background-position: 250% center;
   }
@@ -271,6 +287,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -281,6 +298,7 @@
     transform: translateX(-10px);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -300,4 +318,3 @@
 .slide-in-from-left-2 {
   animation-name: slide-in-from-left;
 }
-
