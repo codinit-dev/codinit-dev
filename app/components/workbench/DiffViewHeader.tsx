@@ -49,7 +49,7 @@ export const DiffViewHeader = memo(
     const showStats = additions > 0 || deletions > 0;
 
     return (
-      <div className="flex relative items-center gap-2 h-12 pl-4 pr-3 z-50">
+      <div className="flex relative items-center gap-2 h-12 pl-4 pr-3 z-50 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor">
         {/* Toggle Buttons Section */}
         <div className="flex items-center gap-1">
           <IconButton
