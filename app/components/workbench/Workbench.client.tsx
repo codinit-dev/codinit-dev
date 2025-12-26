@@ -134,12 +134,15 @@ export const Workbench = memo(
         >
           <div
             className={classNames(
-              'fixed top-[var(--header-height)] bottom-0 w-[var(--workbench-inner-width)] z-0 transition-[left,width] duration-200 codinit-ease-cubic-bezier',
+              'duration-200 codinit-ease-cubic-bezier',
               {
-                'w-full': isSmallViewport,
-                'left-0': showWorkbench && isSmallViewport,
-                'left-[var(--workbench-left)]': showWorkbench,
-                'left-[100%]': !showWorkbench,
+                // Mobile Styles (Fixed Overlay)
+                'fixed top-[var(--header-height)] bottom-0 right-0 w-full z-50': isSmallViewport,
+                'translate-x-0': isSmallViewport && showWorkbench,
+                'translate-x-full': isSmallViewport && !showWorkbench,
+
+                // Desktop Styles (Flow Layout)
+                'relative h-full w-full bg-codinit-elements-background-depth-1': !isSmallViewport,
               },
             )}
           >
@@ -201,7 +204,7 @@ export const Workbench = memo(
               }
             }}
           />
-        </motion.div>
+        </motion.div >
       )
     );
   },
