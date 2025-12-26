@@ -32,9 +32,9 @@ export function ControlPanelDialog({ isOpen, onClose, initialTab = 'settings' }:
           <RadixDialog.Content asChild>
             <motion.div
               className={classNames(
-                'w-[90vw] h-[700px] max-w-[1500px] max-h-[85vh]',
-                'bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-xl shadow-2xl',
-                'flex overflow-hidden focus:outline-none',
+                'w-[95vw] h-[750px] max-w-[1400px] max-h-[85vh]',
+                'bg-codinit-elements-background-depth-1 rounded-3xl shadow-2xl',
+                'flex overflow-hidden focus:outline-none ring-1 ring-codinit-elements-borderColor/50',
               )}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -45,10 +45,10 @@ export function ControlPanelDialog({ isOpen, onClose, initialTab = 'settings' }:
               <RadixDialog.Close asChild>
                 <button
                   className={classNames(
-                    'absolute top-2 right-2 z-[10000] flex items-center justify-center',
-                    'w-9 h-9 rounded-lg transition-all duration-200',
-                    'bg-transparent text-codinit-elements-textTertiary',
-                    'hover:bg-codinit-elements-background-depth-2 hover:text-codinit-elements-textPrimary',
+                    'absolute top-4 right-4 z-[10000] flex items-center justify-center',
+                    'w-8 h-8 rounded-full transition-all duration-200',
+                    'bg-codinit-elements-background-depth-2 text-codinit-elements-textTertiary',
+                    'hover:bg-codinit-elements-item-backgroundHover hover:text-codinit-elements-textPrimary',
                     'focus:outline-none focus:ring-2 focus:ring-codinit-elements-borderColor',
                   )}
                   aria-label="Close settings"
@@ -66,6 +66,6 @@ export function ControlPanelDialog({ isOpen, onClose, initialTab = 'settings' }:
           </RadixDialog.Content>
         </div>
       </RadixDialog.Portal>
-    </RadixDialog.Root>
+    </RadixDialog.Root >
   );
 }
