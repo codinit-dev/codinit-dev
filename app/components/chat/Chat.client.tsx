@@ -28,6 +28,7 @@ import type { DesignScheme } from '~/types/design-scheme';
 import type { ElementInfo } from '~/components/workbench/Inspector';
 import type { TextUIPart, FileUIPart, Attachment } from '@ai-sdk/ui-utils';
 import { useMCPStore } from '~/lib/stores/mcp';
+import { proStore } from '~/lib/stores/pro';
 import type { LlmErrorAlertType } from '~/types/actions';
 
 const logger = createScopedLogger('Chat');
@@ -140,6 +141,7 @@ export const ChatImpl = memo(
     } = useChat({
       api: '/api/chat',
       body: {
+        isPro: proStore.get().isPro,
         apiKeys,
         files,
         promptId,
