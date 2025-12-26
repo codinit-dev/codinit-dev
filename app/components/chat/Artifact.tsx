@@ -78,77 +78,82 @@ export const Artifact = memo(({ messageId }: ArtifactProps) => {
       : artifact?.title;
 
   return (
-    <div className="artifact flex flex-col overflow-hidden rounded-xl border border-codinit-elements-borderColor bg-codinit-elements-background-depth-1 shadow-sm transition-all duration-200">
-      <div className="flex items-stretch min-h-[56px] bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor">
-        <button
-          className="flex-1 flex items-center px-5 py-3 hover:bg-codinit-elements-background-depth-3 transition-colors text-left"
-          onClick={() => {
-            const showWorkbench = workbenchStore.showWorkbench.get();
-            workbenchStore.showWorkbench.set(!showWorkbench);
-          }}
-        >
-          <div className="w-full">
-            <div className="text-codinit-elements-textSecondary font-semibold text-sm truncate">
-              {dynamicTitle}
+    <>
+      <div className="artifact border border-codinit-elements-borderColor flex flex-col overflow-hidden rounded-lg w-full transition-border duration-150">
+        <div className="flex">
+          <button
+            className="flex items-stretch bg-codinit-elements-artifacts-background hover:bg-codinit-elements-artifacts-backgroundHover w-full overflow-hidden"
+            onClick={() => {
+              const showWorkbench = workbenchStore.showWorkbench.get();
+              workbenchStore.showWorkbench.set(!showWorkbench);
+            }}
+          >
+            <div className="px-5 p-3.5 w-full text-left">
+              <div className="w-full text-codinit-elements-textPrimary font-medium leading-5 text-sm">
+                {/* Use the dynamic title here */}
+                {dynamicTitle}
+              </div>
+              <div className="w-full w-full text-codinit-elements-textSecondary text-xs mt-0.5">
+                Click to open Webview
+              </div>
             </div>
-            <div className="text-codinit-elements-textTertiary text-xs mt-0.5">
-              Click to open Webview
-            </div>
-          </div>
-        </button>
-
-        {actions.length > 0 && artifact.type !== 'bundled' && (
-          <>
-            <div className="w-[1px] bg-codinit-elements-borderColor my-3" />
-            <div className="px-3 flex items-center">
+          </button>
+          {artifact.type !== 'bundled' && <div className="bg-codinit-elements-artifacts-borderColor w-[1px]" />}
+          <AnimatePresence>
+            {actions.length && artifact.type !== 'bundled' && (
               <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="p-2 rounded-lg hover:bg-codinit-elements-button-secondary-backgroundHover text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary transition-colors"
+                initial={{ width: 0 }}
+                animate={{ width: 'auto' }}
+                exit={{ width: 0 }}
+                transition={{ duration: 0.15, ease: cubicEasingFn }}
+                className="bg-codinit-elements-artifacts-background hover:bg-codinit-elements-artifacts-backgroundHover"
                 onClick={toggleActions}
               >
-                <div className={showActions ? 'i-ph:caret-up-bold text-lg' : 'i-ph:caret-down-bold text-lg'} />
+                <div className="p-4">
+                  <div className={showActions ? 'i-ph:caret-up-bold' : 'i-ph:caret-down-bold'}></div>
+                </div>
               </motion.button>
-            </div>
-          </>
-        )}
-      </div>
-
-      {artifact.type === 'bundled' && (
-        <div className="flex items-center gap-3 p-4 bg-codinit-elements-background-depth-2 border-t border-codinit-elements-borderColor">
-          <div className={classNames('text-lg', getIconColor(allActionFinished ? 'complete' : 'running'))}>
-            {allActionFinished ? (
-              <div className="i-ph:check-circle-fill text-xl"></div>
-            ) : (
-              <div className="i-svg-spinners:90-ring-with-bg"></div>
             )}
-          </div>
-          <div className="text-codinit-elements-textSecondary font-medium text-sm">
-            {allActionFinished
-              ? artifact.id === 'restored-project-setup'
-                ? 'Restore files from snapshot'
-                : 'Initial files created'
-              : 'Creating initial files'}
-          </div>
+          </AnimatePresence>
         </div>
-      )}
-
-      <AnimatePresence>
-        {artifact.type !== 'bundled' && showActions && actions.length > 0 && (
-          <motion.div
-            className="actions bg-codinit-elements-background-depth-1"
-            initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <div className="p-4 border-t border-codinit-elements-borderColor">
-              <ActionList actions={actions} />
+        {artifact.type === 'bundled' && (
+          <div className="flex items-center gap-1.5 p-5 bg-codinit-elements-actions-background border-t border-codinit-elements-artifacts-borderColor">
+            <div className={classNames('text-lg', getIconColor(allActionFinished ? 'complete' : 'running'))}>
+              {allActionFinished ? (
+                <div className="i-ph:check"></div>
+              ) : (
+                <div className="i-svg-spinners:90-ring-with-bg"></div>
+              )}
             </div>
-          </motion.div>
+            <div className="text-codinit-elements-textPrimary font-medium leading-5 text-sm">
+              {/* This status text remains the same */}
+              {allActionFinished
+                ? artifact.id === 'restored-project-setup'
+                  ? 'Restore files from snapshot'
+                  : 'Initial files created'
+                : 'Creating initial files'}
+            </div>
+          </div>
         )}
-      </AnimatePresence>
-    </div>
+        <AnimatePresence>
+          {artifact.type !== 'bundled' && showActions && actions.length > 0 && (
+            <motion.div
+              className="actions"
+              initial={{ height: 0 }}
+              animate={{ height: 'auto' }}
+              exit={{ height: '0px' }}
+              transition={{ duration: 0.15 }}
+            >
+              <div className="bg-codinit-elements-artifacts-borderColor h-[1px]" />
+
+              <div className="p-5 text-left bg-codinit-elements-actions-background">
+                <ActionList actions={actions} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </>
   );
 });
 
