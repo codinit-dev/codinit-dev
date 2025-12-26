@@ -38,6 +38,7 @@ const chatRequestSchema = z.object({
       files: z.boolean().optional(),
     })
     .optional(),
+  isPro: z.boolean().default(false),
 });
 
 export interface ValidatedChatRequest {
@@ -60,6 +61,7 @@ export interface ValidatedChatRequest {
     enable_lazy_edits?: boolean;
     files?: boolean;
   };
+  isPro: boolean;
 }
 
 export function validateChatRequest(data: unknown): ValidatedChatRequest {
