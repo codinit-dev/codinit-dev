@@ -70,9 +70,17 @@
   /* Messages */
   --codinit-elements-messages-background: #ffffff;
   --codinit-elements-messages-linkColor: #18181b;
-  --codinit-elements-messages-code-background: #18181b;
-  --codinit-elements-messages-inlineCode-background: #f4f4f5;
-  --codinit-elements-messages-inlineCode-text: #09090b;
+  --codinit-elements-messages-code-background: var(--codinit-elements-bg-depth-2);
+  --codinit-elements-messages-inlineCode-background: var(--codinit-elements-bg-depth-2);
+  --codinit-elements-messages-inlineCode-text: var(--codinit-elements-textPrimary);
+
+  --codinit-elements-glow-thinking-base: rgba(59, 130, 246, 0.1);
+  --codinit-elements-glow-thinking-primary: rgba(59, 130, 246, 0.25);
+  --codinit-elements-glow-thinking-secondary: rgba(147, 197, 253, 0.4);
+
+  --codinit-elements-glow-building-base: rgba(34, 197, 94, 0.1);
+  --codinit-elements-glow-building-primary: rgba(34, 197, 94, 0.3);
+  --codinit-elements-glow-building-secondary: rgba(74, 222, 128, 0.45);
 
   /* Icons */
   --codinit-elements-icon-success: #16a34a;
@@ -155,8 +163,8 @@
   --codinit-elements-borderColorActive: #52525b;
   /* Zinc-600 */
 
-  --codinit-elements-bg-depth-1: #09090b;
-  /* Zinc-950 base */
+  --codinit-elements-bg-depth-1: #101012;
+  /* Darker shade for cards/UI elements */
   --codinit-elements-bg-depth-2: #18181b;
   /* Zinc-900 */
   --codinit-elements-bg-depth-3: #27272a;
@@ -222,8 +230,8 @@
   --codinit-elements-messages-background: #18181b;
   /* Card bubble */
   --codinit-elements-messages-linkColor: #38bdf8;
-  --codinit-elements-messages-code-background: #09090b;
-  --codinit-elements-messages-inlineCode-background: #27272a;
+  --codinit-elements-messages-code-background: var(--codinit-elements-bg-depth-1);
+  --codinit-elements-messages-inlineCode-background: var(--codinit-elements-bg-depth-3);
   --codinit-elements-messages-inlineCode-text: #e4e4e7;
 
   /* Icons */
