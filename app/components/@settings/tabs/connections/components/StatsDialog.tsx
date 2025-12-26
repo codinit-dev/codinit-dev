@@ -26,7 +26,7 @@ export function StatsDialog({ isOpen, onClose, onConfirm, stats, isLargeRepo }: 
             transition={{ duration: 0.2 }}
             className="w-[90vw] md:w-[500px]"
           >
-            <Dialog.Content className="bg-white dark:bg-codinit-elements-background-depth-1 rounded-lg border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark shadow-xl">
+            <Dialog.Content className="bg-white dark:bg-gray-800/50 rounded-lg border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor-dark shadow-xl">
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-codinit-elements-background-depth-3 flex items-center justify-center text-blue-500">
