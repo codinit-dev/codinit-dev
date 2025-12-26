@@ -66,7 +66,6 @@ export class ExampleShell {
   >();
   #outputStream: ReadableStreamDefaultReader<string> | undefined;
   #shellInputStream: WritableStreamDefaultWriter<string> | undefined;
-  #liveActionStream: ReadableStreamDefaultReader<string> | undefined;
 
   constructor() {
     this.#readyPromise = new Promise((resolve) => {
@@ -78,22 +77,14 @@ export class ExampleShell {
     return this.#readyPromise;
   }
 
-  get liveActionStream() {
-    return this.#liveActionStream;
-  }
-
   async init(webcontainer: WebContainer, terminal: ITerminal) {
     this.#webcontainer = webcontainer;
     this.#terminal = terminal;
 
-    // Use all four streams from tee: terminal, command execution, Expo URL detection, live action monitoring
-    const { process, commandStream, expoUrlStream, liveActionStream } = await this.newExampleShellProcess(
-      webcontainer,
-      terminal,
-    );
+    // Use all three streams from tee: one for terminal, one for command execution, one for Expo URL detection
+    const { process, commandStream, expoUrlStream } = await this.newExampleShellProcess(webcontainer, terminal);
     this.#process = process;
     this.#outputStream = commandStream.getReader();
-    this.#liveActionStream = liveActionStream.getReader();
 
     // Start background Expo URL watcher immediately
     this._watchExpoUrlInBackground(expoUrlStream);
@@ -114,10 +105,9 @@ export class ExampleShell {
     const input = process.input.getWriter();
     this.#shellInputStream = input;
 
-    // Tee the output so we can have four independent readers
+    // Tee the output so we can have three independent readers
     const [streamA, streamB] = process.output.tee();
     const [streamC, streamD] = streamB.tee();
-    const [streamE, streamF] = streamD.tee();
 
     const jshReady = withResolvers<void>();
     let isInteractive = false;
@@ -147,13 +137,7 @@ export class ExampleShell {
     await jshReady.promise;
 
     // Return all streams for use in init
-    return {
-      process,
-      terminalStream: streamA,
-      commandStream: streamC,
-      expoUrlStream: streamE,
-      liveActionStream: streamF,
-    };
+    return { process, terminalStream: streamA, commandStream: streamC, expoUrlStream: streamD };
   }
 
   // Dedicated background watcher for Expo URL
