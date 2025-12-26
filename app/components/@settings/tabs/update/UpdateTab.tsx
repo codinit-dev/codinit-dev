@@ -21,19 +21,26 @@ const UpdateTab = () => {
     releaseNotes,
     releaseUrl,
     isLoading,
+    isDownloading,
+    downloadProgress,
+    isReadyToInstall,
     error,
     acknowledgeUpdate,
     manualCheck,
+    downloadAndInstall,
+    quitAndInstall,
+    isElectron
   } = useUpdateCheck();
+
   const [updateSettings, setUpdateSettings] = useState<UpdateSettings>(() => {
     const stored = localStorage.getItem('update_settings');
     return stored
       ? JSON.parse(stored)
       : {
-          autoUpdate: false,
-          notifyInApp: true,
-          checkInterval: 24,
-        };
+        autoUpdate: false,
+        notifyInApp: true,
+        checkInterval: 24,
+      };
   });
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
@@ -42,13 +49,17 @@ const UpdateTab = () => {
   }, [updateSettings]);
 
   const handleUpdate = () => {
-    if (releaseUrl) {
-      window.open(releaseUrl, '_blank');
+    if (isElectron) {
+      downloadAndInstall();
+      // Keep dialog open or show new status
+    } else {
+      if (releaseUrl) {
+        window.open(releaseUrl, '_blank');
+      }
     }
-
     acknowledgeUpdate();
     setShowUpdateDialog(false);
-    toast.success('Update acknowledged');
+    toast.success('Update process started');
   };
 
   return (
@@ -68,7 +79,7 @@ const UpdateTab = () => {
 
       {/* Update Settings Card */}
       <motion.div
-        className="p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]"
+        className="p-6 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
@@ -135,10 +146,10 @@ const UpdateTab = () => {
               onChange={(e) => setUpdateSettings((prev) => ({ ...prev, checkInterval: Number(e.target.value) }))}
               className={classNames(
                 'px-3 py-2 rounded-lg text-sm',
-                'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                'border border-[#E5E5E5] dark:border-[#1A1A1A]',
+                'bg-[#F5F5F5] dark:bg-gray-800/50',
+                'border border-[#E5E5E5] dark:border-gray-700',
                 'text-codinit-elements-textPrimary',
-                'hover:bg-[#E5E5E5] dark:hover:bg-[#2A2A2A]',
+                'hover:bg-[#E5E5E5] dark:hover:bg-gray-700/50',
                 'transition-colors duration-200',
               )}
             >
@@ -153,7 +164,7 @@ const UpdateTab = () => {
 
       {/* Update Status Card */}
       <motion.div
-        className="p-6 rounded-xl bg-white dark:bg-[#0A0A0A] border border-[#E5E5E5] dark:border-[#1A1A1A]"
+        className="p-6 rounded-xl bg-white dark:bg-gray-800/50 border border-[#E5E5E5] dark:border-[#999999]"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
@@ -164,9 +175,27 @@ const UpdateTab = () => {
             <h3 className="text-lg font-medium text-codinit-elements-textPrimary">Update Status</h3>
           </div>
           <div className="flex items-center gap-2">
-            {hasUpdate && (
+            {isReadyToInstall ? (
               <button
-                onClick={() => setShowUpdateDialog(true)}
+                onClick={quitAndInstall}
+                className={classNames(
+                  'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
+                  'bg-green-500 text-white',
+                  'hover:bg-green-600',
+                  'transition-colors duration-200',
+                )}
+              >
+                <div className="i-ph:power w-4 h-4" />
+                Restart & Install
+              </button>
+            ) : isDownloading ? (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-blue-50 dark:bg-blue-900/10 text-blue-600">
+                <div className="i-ph:spinner animate-spin w-4 h-4" />
+                Downloading... {Math.round(downloadProgress)}%
+              </div>
+            ) : hasUpdate && (
+              <button
+                onClick={() => isElectron ? downloadAndInstall() : setShowUpdateDialog(true)}
                 className={classNames(
                   'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
                   'bg-blue-500 text-white',
@@ -175,48 +204,50 @@ const UpdateTab = () => {
                 )}
               >
                 <div className="i-ph:arrow-circle-up w-4 h-4" />
-                View Update
+                {isElectron ? 'Download Update' : 'View Update'}
               </button>
             )}
-            <button
-              onClick={manualCheck}
-              className={classNames(
-                'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
-                'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
-                'hover:bg-blue-500/10 hover:text-blue-500',
-                'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
-                'text-codinit-elements-textPrimary',
-                'transition-colors duration-200',
-                'disabled:opacity-50 disabled:cursor-not-allowed',
-              )}
-              disabled={isLoading}
-              title={
-                error?.includes('rate limit')
-                  ? 'Rate limited by GitHub API. Try again later.'
-                  : 'Check for updates manually'
-              }
-            >
-              {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="i-ph:arrows-clockwise w-4 h-4"
-                  />
-                  Checking...
-                </div>
-              ) : error?.includes('rate limit') ? (
-                <>
-                  <div className="i-ph:clock w-4 h-4" />
-                  Rate Limited
-                </>
-              ) : (
-                <>
-                  <div className="i-ph:arrows-clockwise w-4 h-4" />
-                  Refresh Check
-                </>
-              )}
-            </button>
+            {!isDownloading && !isReadyToInstall && (
+              <button
+                onClick={manualCheck}
+                className={classNames(
+                  'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
+                  'bg-[#F5F5F5] dark:bg-gray-800/50',
+                  'hover:bg-blue-500/10 hover:text-blue-500',
+                  'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
+                  'text-codinit-elements-textPrimary',
+                  'transition-colors duration-200',
+                  'disabled:opacity-50 disabled:cursor-not-allowed',
+                )}
+                disabled={isLoading}
+                title={
+                  error?.includes('rate limit')
+                    ? 'Rate limited by GitHub API. Try again later.'
+                    : 'Check for updates manually'
+                }
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                      className="i-ph:arrows-clockwise w-4 h-4"
+                    />
+                    Checking...
+                  </div>
+                ) : error?.includes('rate limit') ? (
+                  <>
+                    <div className="i-ph:clock w-4 h-4" />
+                    Rate Limited
+                  </>
+                ) : (
+                  <>
+                    <div className="i-ph:arrows-clockwise w-4 h-4" />
+                    Refresh Check
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
 
@@ -236,14 +267,14 @@ const UpdateTab = () => {
                 Updates are checked from: <span className="font-mono">{GITHUB_REPOSITORY}</span> (GitHub releases)
               </p>
             </div>
-            {hasUpdate && releaseUrl && (
+            {hasUpdate && releaseUrl && !isElectron && (
               <a
                 href={releaseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={classNames(
                   'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
-                  'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
+                  'bg-[#F5F5F5] dark:bg-gray-800/50',
                   'hover:bg-blue-500/10 hover:text-blue-500',
                   'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
                   'text-codinit-elements-textPrimary',
@@ -264,7 +295,7 @@ const UpdateTab = () => {
                 <div className="i-ph:scroll text-blue-500 w-5 h-5" />
                 <p className="font-medium text-codinit-elements-textPrimary">Release Notes</p>
               </div>
-              <div className="bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-lg p-4 overflow-auto max-h-[300px]">
+              <div className="bg-[#F5F5F5] dark:bg-gray-900/50 rounded-lg p-4 overflow-auto max-h-[300px]">
                 <div className="prose dark:prose-invert prose-sm max-w-none">
                   <Markdown>{releaseNotes}</Markdown>
                 </div>
@@ -308,7 +339,7 @@ const UpdateTab = () => {
                     rel="noopener noreferrer"
                     className={classNames(
                       'flex items-center gap-2 px-4 py-2 rounded-lg text-sm',
-                      'bg-[#F5F5F5] dark:bg-[#1A1A1A]',
+                      'bg-[#F5F5F5] dark:bg-gray-800/50',
                       'hover:bg-blue-500/10 hover:text-blue-500',
                       'dark:hover:bg-blue-500/20 dark:hover:text-blue-500',
                       'text-codinit-elements-textPrimary',
@@ -325,7 +356,7 @@ const UpdateTab = () => {
               {releaseNotes && (
                 <div className="mb-6">
                   <p className="font-medium mb-2">Release Notes:</p>
-                  <div className="bg-[#F5F5F5] dark:bg-[#1A1A1A] rounded-lg p-3 max-h-[200px] overflow-auto">
+                  <div className="bg-[#F5F5F5] dark:bg-gray-900/50 rounded-lg p-3 max-h-[200px] overflow-auto">
                     <div className="prose dark:prose-invert prose-sm max-w-none">
                       <Markdown>{releaseNotes}</Markdown>
                     </div>
