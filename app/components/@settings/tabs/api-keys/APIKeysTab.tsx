@@ -250,7 +250,7 @@ export default function ApiKeysTab() {
                             defaultValue={apiKeys[provider.name] || ''}
                             className={classNames(
                               'flex-1 px-3 py-2 rounded-lg text-sm',
-                              'bg-white dark:bg-[#0F0F0F]',
+                              'bg-white dark:bg-gray-800/50',
                               'border border-gray-200 dark:border-[#2A2A2A]',
                               'text-codinit-elements-textPrimary',
                               'focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400',
@@ -282,7 +282,7 @@ export default function ApiKeysTab() {
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">
-                          <code className="flex-1 px-3 py-2 rounded-lg bg-gray-50 dark:bg-[#0F0F0F] text-sm font-mono text-codinit-elements-textSecondary">
+                          <code className="flex-1 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-sm font-mono text-codinit-elements-textSecondary">
                             {maskApiKey(apiKeys[provider.name])}
                           </code>
                           <button
