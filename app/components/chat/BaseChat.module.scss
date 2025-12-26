@@ -47,9 +47,7 @@
 }
 
 ._Shadow_8mvus_1 {
-  background: linear-gradient(to bottom,
-      var(--codinit-elements-bg-depth-1) 0%,
-      transparent 100%);
+  background: linear-gradient(to bottom, var(--codinit-elements-bg-depth-1) 0%, transparent 100%);
   height: 24px;
 }
 
@@ -89,7 +87,7 @@
   margin-block-end: 16px;
 }
 
-._MigrationSummary_1ebkv_1 ul li>ul {
+._MigrationSummary_1ebkv_1 ul li > ul {
   margin-block-start: 4px;
   padding-left: 0.75rem;
 }
@@ -101,7 +99,7 @@
   margin-block-end: 6px;
 }
 
-._MigrationSummary_1ebkv_1 ol+ul {
+._MigrationSummary_1ebkv_1 ol + ul {
   padding-left: 2rem;
 }
 
@@ -253,12 +251,14 @@
   transform: translate(-50%);
   height: 2px;
   width: 100px;
-  background: linear-gradient(90deg,
-      transparent 0%,
-      var(--codinit-elements-borderColor) 20%,
-      var(--codinit-elements-textPrimary) 50%,
-      var(--codinit-elements-borderColor) 80%,
-      transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--codinit-elements-borderColor) 20%,
+    var(--codinit-elements-textPrimary) 50%,
+    var(--codinit-elements-borderColor) 80%,
+    transparent 100%
+  );
   opacity: 0.6;
   transition:
     opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1),

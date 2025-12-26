@@ -52,12 +52,14 @@
 .thinking-glow {
   --spread: 22px;
   --base-color: var(--codinit-elements-glow-thinking-base);
-  --bg: linear-gradient(135deg,
-      var(--codinit-elements-glow-thinking-base) 0%,
-      var(--codinit-elements-glow-thinking-primary) 25%,
-      var(--codinit-elements-glow-thinking-base) 50%,
-      var(--codinit-elements-glow-thinking-primary) 75%,
-      var(--codinit-elements-glow-thinking-base) 100%);
+  --bg: linear-gradient(
+    135deg,
+    var(--codinit-elements-glow-thinking-base) 0%,
+    var(--codinit-elements-glow-thinking-primary) 25%,
+    var(--codinit-elements-glow-thinking-base) 50%,
+    var(--codinit-elements-glow-thinking-primary) 75%,
+    var(--codinit-elements-glow-thinking-base) 100%
+  );
   position: relative;
   background-image: var(--bg), linear-gradient(var(--base-color), var(--base-color));
   background-size:
@@ -80,24 +82,28 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      var(--codinit-elements-glow-thinking-primary),
-      var(--codinit-elements-glow-thinking-secondary),
-      var(--codinit-elements-glow-thinking-primary),
-      transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--codinit-elements-glow-thinking-primary),
+    var(--codinit-elements-glow-thinking-secondary),
+    var(--codinit-elements-glow-thinking-primary),
+    transparent
+  );
   animation: thinkingShimmer 2s ease-in-out infinite;
 }
 
 .thinking-glow-text {
   position: relative;
   z-index: 1;
-  background: linear-gradient(135deg,
-      var(--codinit-elements-glow-thinking-primary),
-      var(--codinit-elements-glow-thinking-secondary),
-      var(--codinit-elements-glow-thinking-primary),
-      var(--codinit-elements-glow-thinking-secondary),
-      var(--codinit-elements-glow-thinking-primary));
+  background: linear-gradient(
+    135deg,
+    var(--codinit-elements-glow-thinking-primary),
+    var(--codinit-elements-glow-thinking-secondary),
+    var(--codinit-elements-glow-thinking-primary),
+    var(--codinit-elements-glow-thinking-secondary),
+    var(--codinit-elements-glow-thinking-primary)
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -110,7 +116,6 @@
 }
 
 @keyframes thinkingGlow {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -148,7 +153,6 @@
 }
 
 @keyframes thinkingTextGlow {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -163,12 +167,14 @@
 .building-glow {
   --spread: 18px;
   --base-color: var(--codinit-elements-glow-building-base);
-  --bg: linear-gradient(135deg,
-      var(--codinit-elements-glow-building-base) 0%,
-      var(--codinit-elements-glow-building-primary) 25%,
-      var(--codinit-elements-glow-building-base) 50%,
-      var(--codinit-elements-glow-building-primary) 75%,
-      var(--codinit-elements-glow-building-base) 100%);
+  --bg: linear-gradient(
+    135deg,
+    var(--codinit-elements-glow-building-base) 0%,
+    var(--codinit-elements-glow-building-primary) 25%,
+    var(--codinit-elements-glow-building-base) 50%,
+    var(--codinit-elements-glow-building-primary) 75%,
+    var(--codinit-elements-glow-building-base) 100%
+  );
   position: relative;
   background-image: var(--bg), linear-gradient(var(--base-color), var(--base-color));
   background-size:
@@ -190,24 +196,28 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      var(--codinit-elements-glow-building-primary),
-      var(--codinit-elements-glow-building-secondary),
-      var(--codinit-elements-glow-building-primary),
-      transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--codinit-elements-glow-building-primary),
+    var(--codinit-elements-glow-building-secondary),
+    var(--codinit-elements-glow-building-primary),
+    transparent
+  );
   animation: buildingShimmer 1.8s ease-in-out infinite;
 }
 
 .building-glow-text {
   position: relative;
   z-index: 1;
-  background: linear-gradient(135deg,
-      var(--codinit-elements-glow-building-base),
-      var(--codinit-elements-glow-building-primary),
-      var(--codinit-elements-glow-building-secondary),
-      var(--codinit-elements-glow-building-primary),
-      var(--codinit-elements-glow-building-base));
+  background: linear-gradient(
+    135deg,
+    var(--codinit-elements-glow-building-base),
+    var(--codinit-elements-glow-building-primary),
+    var(--codinit-elements-glow-building-secondary),
+    var(--codinit-elements-glow-building-primary),
+    var(--codinit-elements-glow-building-base)
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -220,7 +230,6 @@
 }
 
 @keyframes buildingGlow {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -251,7 +260,6 @@
 }
 
 @keyframes buildingTextGlow {
-
   0%,
   100% {
     background-position: 0% 50%;
