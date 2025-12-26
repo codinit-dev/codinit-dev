@@ -6,6 +6,9 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { TextShimmer } from '~/components/ui/text-shimmer';
 import { APIKeyManager } from './APIKeyManager';
 import { LOCAL_PROVIDERS } from '~/lib/stores/settings';
+import { useStore } from '@nanostores/react';
+import { proStore } from '~/lib/stores/pro';
+import { toast } from 'react-toastify';
 
 interface ProviderModelSelectorProps {
   model?: string;
@@ -39,6 +42,7 @@ export const ProviderModelSelector = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [internalOpen, setInternalOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { isPro } = useStore(proStore);
 
   const isDropdownOpen = open !== undefined ? open : internalOpen;
   const setIsDropdownOpen = onOpenChange || setInternalOpen;
