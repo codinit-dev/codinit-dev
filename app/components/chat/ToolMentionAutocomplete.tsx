@@ -14,7 +14,7 @@ interface ToolMentionAutocompleteProps {
   onHover: (index: number) => void;
   onClose: () => void;
   searchQuery: string;
-  referenceType: 'file' | 'tool';
+  referenceType: 'file' | 'tool' | 'mixed';
 }
 
 export function ToolMentionAutocomplete({
@@ -150,29 +150,79 @@ export function ToolMentionAutocomplete({
       }}
     >
       <div className="max-h-[300px] overflow-y-auto p-2">
-        {tools.length === 0 ? (
+        {tools.length === 0 && files.length === 0 ? (
           <div className="py-4 text-center text-sm text-codinit-elements-textTertiary">
-            No tools found for &quot;{searchQuery}&quot;
+            No results found for &quot;{searchQuery}&quot;
           </div>
         ) : (
-          serverNames.map((serverName) => {
-            const serverTools = groupedTools[serverName];
+          <>
+            {/* Render Tools */}
+            {serverNames.map((serverName) => {
+              const serverTools = groupedTools[serverName];
 
-            return (
-              <div key={serverName} className="mb-2">
-                {showServerGroups && (
-                  <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">
-                    📦 {serverName}
-                  </div>
-                )}
-                {serverTools.map((tool) => {
+              return (
+                <div key={serverName} className="mb-2">
+                  {showServerGroups && (
+                    <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary">
+                      📦 {serverName}
+                    </div>
+                  )}
+                  {serverTools.map((tool) => {
+                    const currentIndex = globalIndex++;
+                    const isSelected = currentIndex === selectedIndex;
+
+                    return (
+                      <div
+                        key={`${serverName}-${tool.name}`}
+                        onClick={() => onSelectTool(tool.name)}
+                        onMouseEnter={() => onHover(currentIndex)}
+                        data-selected={isSelected}
+                        className={classNames(
+                          'cursor-pointer rounded-md px-3 py-2 mb-1 transition-colors',
+                          isSelected
+                            ? 'bg-accent-500 text-white'
+                            : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary',
+                        )}
+                      >
+                        <div className="flex flex-col gap-1 w-full">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base">🔧</span>
+                            <span className="font-medium text-sm">{tool.name}</span>
+                          </div>
+                          {tool.description && (
+                            <div
+                              className={classNames(
+                                'text-xs ml-6',
+                                isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary',
+                              )}
+                            >
+                              {tool.description.length > 100
+                                ? `${tool.description.slice(0, 100)}...`
+                                : tool.description}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+
+            {/* Render Files */}
+            {files.length > 0 && (
+              <>
+                <div className="px-3 py-2 text-xs font-medium text-codinit-elements-textSecondary sticky top-0 bg-codinit-elements-bg-depth-1">
+                  📁 Files
+                </div>
+                {files.map((file) => {
                   const currentIndex = globalIndex++;
                   const isSelected = currentIndex === selectedIndex;
 
                   return (
                     <div
-                      key={`${serverName}-${tool.name}`}
-                      onClick={() => onSelectTool(tool.name)}
+                      key={file.path}
+                      onClick={() => onSelectFile(file.relativePath)}
                       onMouseEnter={() => onHover(currentIndex)}
                       data-selected={isSelected}
                       className={classNames(
@@ -182,28 +232,16 @@ export function ToolMentionAutocomplete({
                           : 'hover:bg-codinit-elements-item-backgroundDefault text-codinit-elements-textPrimary',
                       )}
                     >
-                      <div className="flex flex-col gap-1 w-full">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base">🔧</span>
-                          <span className="font-medium text-sm">{tool.name}</span>
-                        </div>
-                        {tool.description && (
-                          <div
-                            className={classNames(
-                              'text-xs ml-6',
-                              isSelected ? 'text-white opacity-90' : 'text-codinit-elements-textSecondary',
-                            )}
-                          >
-                            {tool.description.length > 100 ? `${tool.description.slice(0, 100)}...` : tool.description}
-                          </div>
-                        )}
+                      <div className="flex items-center gap-2">
+                        <File size={16} className={isSelected ? 'text-white' : 'text-codinit-elements-textSecondary'} />
+                        <span className="font-medium text-sm font-mono">{file.relativePath}</span>
                       </div>
                     </div>
                   );
                 })}
-              </div>
-            );
-          })
+              </>
+            )}
+          </>
         )}
       </div>
     </div>
