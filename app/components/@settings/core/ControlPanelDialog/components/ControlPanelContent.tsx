@@ -106,13 +106,15 @@ export function ControlPanelContent({ activeTab }: ControlPanelContentProps) {
     <div
       className={classNames(
         'flex-1 pb-10 relative overflow-y-auto flex flex-col',
-        'bg-codinit-elements-background-depth-1 px-8',
+        'bg-codinit-elements-background-depth-2 px-8',
       )}
     >
       {/* Header */}
-      <div className="bg-codinit-elements-background-depth-1 sticky top-0 z-layer-3 pt-12 mb-4">
+      <div className="sticky top-0 z-layer-3 pt-8 pb-6 mb-4 bg-transparent backdrop-blur-xl">
         <div className="min-h-9 flex flex-col gap-2">
-          <h2 className="text-lg font-semibold truncate text-codinit-elements-textPrimary">{TAB_LABELS[activeTab]}</h2>
+          <h2 className="text-2xl font-bold truncate text-codinit-elements-textPrimary tracking-tight">
+            {TAB_LABELS[activeTab]}
+          </h2>
         </div>
       </div>
 
