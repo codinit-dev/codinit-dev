@@ -24,12 +24,12 @@ export function ControlPanelSidebar({ activeTab, onTabChange, tabs }: ControlPan
           id={`settings-item-${tab.id}`}
           onClick={() => onTabChange(tab.id)}
           className={classNames(
-            'w-full flex items-center shrink-0 justify-center md:justify-start gap-3 h-[33px] px-2.5 rounded-md text-sm font-medium',
+            'w-full flex items-center shrink-0 justify-center md:justify-start gap-3 h-[36px] px-3 rounded-full text-sm font-medium',
             'focus-visible:outline-2 focus-visible:outline-codinit-elements-borderColor',
-            'transition-colors duration-200',
+            'transition-all duration-200',
             isActive
-              ? 'bg-codinit-elements-item-backgroundActive text-codinit-elements-textPrimary'
-              : 'bg-transparent hover:bg-codinit-elements-background-depth-3 text-codinit-elements-textTertiary hover:text-codinit-elements-textPrimary',
+              ? 'bg-codinit-elements-item-backgroundActive text-codinit-elements-textPrimary font-semibold shadow-sm'
+              : 'bg-transparent hover:bg-codinit-elements-background-depth-2 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
           )}
         >
           <span className={classNames('shrink-0 text-base', iconClass)} />
@@ -43,9 +43,9 @@ export function ControlPanelSidebar({ activeTab, onTabChange, tabs }: ControlPan
     <aside
       className={classNames(
         'h-full overflow-y-auto flex flex-col',
-        'max-w-80 w-12 md:w-auto md:min-w-1/8',
+        'max-w-80 w-12 md:w-64', // Fixed width for better stability
         'bg-codinit-elements-background-depth-2 border-r border-codinit-elements-borderColor',
-        'p-2 md:p-4 pt-0 md:pt-0',
+        'p-4', // Consistent padding
       )}
     >
       <div className="flex-1 flex flex-col gap-4">
