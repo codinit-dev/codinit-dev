@@ -70,7 +70,7 @@ export default function CloudflareConnection() {
 
   return (
     <motion.div
-      className="bg-[#FFFFFF] dark:bg-[#0A0A0A] rounded-lg border border-[#E5E5E5] dark:border-[#1A1A1A]"
+      className="bg-[#FFFFFF] dark:bg-gray-800/50 rounded-lg border border-[#E5E5E5] dark:border-[#999999]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
@@ -111,7 +111,7 @@ export default function CloudflareConnection() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-lg">
+            <div className="flex items-center gap-4 p-4 bg-[#F8F8F8] dark:bg-[#999999] rounded-lg">
               <div className="text-sm text-codinit-elements-textSecondary">
                 Account: {connection.user.name || 'Cloudflare Account'}
               </div>
@@ -200,7 +200,7 @@ export default function CloudflareConnection() {
                 placeholder="Enter your Cloudflare API token"
                 className={classNames(
                   'w-full px-3 py-2 rounded-lg text-sm',
-                  'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                  'bg-[#F8F8F8] dark:bg-[#999999]',
                   'border border-[#E5E5E5] dark:border-[#333333]',
                   'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
                   'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
@@ -230,7 +230,7 @@ export default function CloudflareConnection() {
                 placeholder="Enter your Cloudflare Account ID"
                 className={classNames(
                   'w-full px-3 py-2 rounded-lg text-sm',
-                  'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                  'bg-[#F8F8F8] dark:bg-[#999999]',
                   'border border-[#E5E5E5] dark:border-[#333333]',
                   'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
                   'focus:outline-none focus:ring-1 focus:ring-codinit-elements-borderColorActive',
