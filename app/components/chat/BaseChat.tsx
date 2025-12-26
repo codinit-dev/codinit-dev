@@ -6,6 +6,8 @@ import type { JSONValue, Message } from 'ai';
 import React, { lazy, Suspense, type RefCallback, useEffect, useState } from 'react';
 import { ClientOnly } from 'remix-utils/client-only';
 import { Menu } from '~/components/sidebar/Menu.client';
+import { motion } from 'framer-motion';
+import { cubicEasingFn } from '~/utils/easings';
 
 const Workbench = lazy(() =>
   import('~/components/workbench/Workbench.client').then((module) => ({
@@ -447,69 +449,88 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       >
         <ClientOnly>{() => <Menu />}</ClientOnly>
 
-        {/* Unified Header Container - spans full width */}
         {chatStarted && (
           <div className="flex bg-codinit-elements-background-depth-1 border-b border-codinit-elements-borderColor z-10">
-            {/* Chat Header Section - constrained to chat width */}
-            <div className="w-[var(--chat-min-width)]">
+            {/* Chat Header Section - Syncs with Chat Panel */}
+            <div className="flex-1 min-w-[var(--chat-min-width)]">
               <ChatHeader />
             </div>
 
-            {/* Workbench Header Section - fills remaining space */}
-            <div className="flex-1">
-              {selectedView === 'code' && (
-                <CodeModeHeader
-                  onDownloadZip={() => {
-                    workbenchStore.downloadZip();
+            {/* Workbench Header Section - Syncs with Workbench Panel */}
+            <ClientOnly>
+              {() => (
+                <motion.div
+                  initial="closed"
+                  animate={useStore(workbenchStore.showWorkbench) ? 'open' : 'closed'}
+                  variants={{
+                    closed: {
+                      width: 0,
+                      transition: { duration: 0.2, ease: cubicEasingFn },
+                    },
+                    open: {
+                      width: 'var(--workbench-width)',
+                      transition: { duration: 0.2, ease: cubicEasingFn },
+                    },
                   }}
-                  onSyncFiles={() => setIsSyncing(true)}
-                  onPushToGitHub={() => setIsPushDialogOpen(true)}
-                  isSyncing={isSyncing}
-                  setIsPushDialogOpen={setIsPushDialogOpen}
-                />
-              )}
+                  className="overflow-hidden"
+                >
+                  <div className="w-full">
+                    {selectedView === 'code' && (
+                      <CodeModeHeader
+                        onDownloadZip={() => {
+                          workbenchStore.downloadZip();
+                        }}
+                        onSyncFiles={() => setIsSyncing(true)}
+                        onPushToGitHub={() => setIsPushDialogOpen(true)}
+                        isSyncing={isSyncing}
+                        setIsPushDialogOpen={setIsPushDialogOpen}
+                      />
+                    )}
 
-              {selectedView === 'preview' && (
-                <PreviewHeader
-                  previews={previews}
-                  activePreviewIndex={activePreviewIndex}
-                  setActivePreviewIndex={setActivePreviewIndex}
-                  displayPath={displayPath}
-                  setDisplayPath={setDisplayPath}
-                  setIframeUrl={handleSetIframeUrl}
-                  reloadPreview={handleReloadPreview}
-                  setIsWindowSizeDropdownOpen={setIsWindowSizeDropdownOpen}
-                  isWindowSizeDropdownOpen={isWindowSizeDropdownOpen}
-                  openInNewTab={handleOpenInNewTab}
-                  openInNewWindow={handleOpenInNewWindow}
-                  windowSizes={[]}
-                  selectedWindowSize={selectedWindowSize}
-                  setSelectedWindowSize={setSelectedWindowSize}
-                  showDeviceFrame={showDeviceFrame}
-                  setShowDeviceFrame={setShowDeviceFrame}
-                  isLandscape={isLandscape}
-                  setIsLandscape={setIsLandscape}
-                  setIsPushDialogOpen={setIsPushDialogOpen}
-                />
-              )}
+                    {selectedView === 'preview' && (
+                      <PreviewHeader
+                        previews={previews}
+                        activePreviewIndex={activePreviewIndex}
+                        setActivePreviewIndex={setActivePreviewIndex}
+                        displayPath={displayPath}
+                        setDisplayPath={setDisplayPath}
+                        setIframeUrl={handleSetIframeUrl}
+                        reloadPreview={handleReloadPreview}
+                        setIsWindowSizeDropdownOpen={setIsWindowSizeDropdownOpen}
+                        isWindowSizeDropdownOpen={isWindowSizeDropdownOpen}
+                        openInNewTab={handleOpenInNewTab}
+                        openInNewWindow={handleOpenInNewWindow}
+                        windowSizes={[]}
+                        selectedWindowSize={selectedWindowSize}
+                        setSelectedWindowSize={setSelectedWindowSize}
+                        showDeviceFrame={showDeviceFrame}
+                        setShowDeviceFrame={setShowDeviceFrame}
+                        isLandscape={isLandscape}
+                        setIsLandscape={setIsLandscape}
+                        setIsPushDialogOpen={setIsPushDialogOpen}
+                      />
+                    )}
 
-              {selectedView === 'diff' && selectedFile && currentDocument && (
-                <DiffViewHeader
-                  filename={selectedFile}
-                  beforeCode={
-                    files[selectedFile] && 'content' in files[selectedFile] ? files[selectedFile].content : ''
-                  }
-                  afterCode={currentDocument.value || ''}
-                  hasChanges={
-                    files[selectedFile] && 'content' in files[selectedFile]
-                      ? files[selectedFile].content !== currentDocument.value
-                      : false
-                  }
-                  isFullscreen={isDiffFullscreen}
-                  onToggleFullscreen={() => setIsDiffFullscreen(!isDiffFullscreen)}
-                />
+                    {selectedView === 'diff' && selectedFile && currentDocument && (
+                      <DiffViewHeader
+                        filename={selectedFile}
+                        beforeCode={
+                          files[selectedFile] && 'content' in files[selectedFile] ? files[selectedFile].content : ''
+                        }
+                        afterCode={currentDocument.value || ''}
+                        hasChanges={
+                          files[selectedFile] && 'content' in files[selectedFile]
+                            ? files[selectedFile].content !== currentDocument.value
+                            : false
+                        }
+                        isFullscreen={isDiffFullscreen}
+                        onToggleFullscreen={() => setIsDiffFullscreen(!isDiffFullscreen)}
+                      />
+                    )}
+                  </div>
+                </motion.div>
               )}
-            </div>
+            </ClientOnly>
           </div>
         )}
 
