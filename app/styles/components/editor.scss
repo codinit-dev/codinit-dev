@@ -1,19 +1,19 @@
 :root {
   /* Base colors */
-  --cm-backgroundColor: #0d1117;
+  --cm-backgroundColor: var(--codinit-elements-bg-depth-1);
   /* editor background */
-  --cm-textColor: #f0f6fc;
+  --cm-textColor: var(--codinit-elements-textPrimary);
   /* primary text */
 
   /* Gutter */
-  --cm-gutter-backgroundColor: #0d1117;
-  --cm-gutter-textColor: #8b949e;
+  --cm-gutter-backgroundColor: var(--codinit-elements-bg-depth-1);
+  --cm-gutter-textColor: var(--codinit-elements-textTertiary);
   /* muted gray */
-  --cm-gutter-activeLineTextColor: #f0f6fc;
+  --cm-gutter-activeLineTextColor: var(--codinit-elements-textSecondary);
 
   /* Fold Gutter */
-  --cm-foldGutter-textColor: #8b949e;
-  --cm-foldGutter-textColorHover: #f0f6fc;
+  --cm-foldGutter-textColor: var(--codinit-elements-textTertiary);
+  --cm-foldGutter-textColorHover: var(--codinit-elements-textSecondary);
 
   /* Active Line */
   --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.04);
@@ -21,55 +21,55 @@
 
   /* Cursor */
   --cm-cursor-width: 2px;
-  --cm-cursor-backgroundColor: #9ca3af;
+  --cm-cursor-backgroundColor: var(--codinit-elements-textSecondary);
 
   /* Matching Brackets */
   --cm-matching-bracket: rgba(80, 160, 255, 0.25);
 
   /* Selection */
-  --cm-selection-backgroundColorFocused: #42b4ff;
+  --cm-selection-backgroundColorFocused: var(--codinit-elements-terminals-brightBlue);
   --cm-selection-backgroundOpacityFocused: 0.25;
 
-  --cm-selection-backgroundColorBlured: #286b97;
+  --cm-selection-backgroundColorBlured: var(--codinit-elements-terminals-blue);
   --cm-selection-backgroundOpacityBlured: 0.2;
 
   /* Panels */
-  --cm-panels-borderColor: rgba(255, 255, 255, 0.06);
+  --cm-panels-borderColor: var(--codinit-elements-borderColor);
 
   /* Search */
-  --cm-search-backgroundColor: #0d1117;
-  --cm-search-textColor: #f0f6fc;
+  --cm-search-backgroundColor: var(--codinit-elements-bg-depth-2);
+  --cm-search-textColor: var(--codinit-elements-textPrimary);
 
   --cm-search-closeButton-backgroundColor: transparent;
-  --cm-search-closeButton-backgroundColorHover: rgba(255, 255, 255, 0.08);
+  --cm-search-closeButton-backgroundColorHover: var(--codinit-elements-bg-depth-3);
 
-  --cm-search-closeButton-textColor: #9ca3af;
-  --cm-search-closeButton-textColorHover: #ffffff;
+  --cm-search-closeButton-textColor: var(--codinit-elements-textTertiary);
+  --cm-search-closeButton-textColorHover: var(--codinit-elements-textPrimary);
 
-  --cm-search-button-backgroundColor: #2c2c2f;
-  --cm-search-button-backgroundColorHover: rgba(255, 255, 255, 0.08);
+  --cm-search-button-backgroundColor: var(--codinit-elements-bg-depth-3);
+  --cm-search-button-backgroundColorHover: var(--codinit-elements-bg-depth-4);
 
-  --cm-search-button-textColor: #cbd5e1;
-  --cm-search-button-textColorHover: #ffffff;
+  --cm-search-button-textColor: var(--codinit-elements-textSecondary);
+  --cm-search-button-textColorHover: var(--codinit-elements-textPrimary);
 
   --cm-search-button-borderColor: transparent;
-  --cm-search-button-borderColorHover: rgba(255, 255, 255, 0.15);
+  --cm-search-button-borderColorHover: var(--codinit-elements-borderColorActive);
 
-  --cm-search-button-borderColorFocused: rgba(66, 180, 255, 0.8);
+  --cm-search-button-borderColorFocused: var(--codinit-elements-terminals-blue);
 
-  --cm-search-input-backgroundColor: #2c2c31;
-  --cm-search-input-textColor: white;
-  --cm-search-input-borderColor: rgba(255, 255, 255, 0.12);
-  --cm-search-input-borderColorFocused: rgba(66, 180, 255, 0.9);
+  --cm-search-input-backgroundColor: var(--codinit-elements-bg-depth-1);
+  --cm-search-input-textColor: var(--codinit-elements-textPrimary);
+  --cm-search-input-borderColor: var(--codinit-elements-borderColor);
+  --cm-search-input-borderColorFocused: var(--codinit-elements-terminals-blue);
 
   /* Tooltip */
-  --cm-tooltip-backgroundColor: #161b22;
-  --cm-tooltip-textColor: #f0f6fc;
+  --cm-tooltip-backgroundColor: var(--codinit-elements-bg-depth-3);
+  --cm-tooltip-textColor: var(--codinit-elements-textPrimary);
 
   --cm-tooltip-backgroundColorSelected: rgba(66, 180, 255, 0.2);
-  --cm-tooltip-textColorSelected: #ffffff;
+  --cm-tooltip-textColorSelected: var(--codinit-elements-textPrimary);
 
-  --cm-tooltip-borderColor: rgba(255, 255, 255, 0.08);
+  --cm-tooltip-borderColor: var(--codinit-elements-borderColor);
 
   /* Search highlight */
   --cm-searchMatch-backgroundColor: rgba(234, 92, 0, 0.4);
@@ -78,20 +78,20 @@
 /* Light theme overrides */
 html[data-theme='light'] {
   /* Base colors */
-  --cm-backgroundColor: #ffffff;
+  --cm-backgroundColor: var(--codinit-elements-bg-depth-1);
   /* editor background */
-  --cm-textColor: #1f2937;
+  --cm-textColor: var(--codinit-elements-textPrimary);
   /* primary text */
 
   /* Gutter */
-  --cm-gutter-backgroundColor: #ffffff;
-  --cm-gutter-textColor: #9ca3af;
+  --cm-gutter-backgroundColor: var(--codinit-elements-bg-depth-1);
+  --cm-gutter-textColor: var(--codinit-elements-textTertiary);
   /* muted gray */
-  --cm-gutter-activeLineTextColor: #374151;
+  --cm-gutter-activeLineTextColor: var(--codinit-elements-textSecondary);
 
   /* Fold Gutter */
-  --cm-foldGutter-textColor: #9ca3af;
-  --cm-foldGutter-textColorHover: #374151;
+  --cm-foldGutter-textColor: var(--codinit-elements-textTertiary);
+  --cm-foldGutter-textColorHover: var(--codinit-elements-textSecondary);
 
   /* Active Line */
   --cm-activeLineBackgroundColor: rgba(0, 0, 0, 0.04);
@@ -99,55 +99,55 @@ html[data-theme='light'] {
 
   /* Cursor */
   --cm-cursor-width: 2px;
-  --cm-cursor-backgroundColor: #6b7280;
+  --cm-cursor-backgroundColor: var(--codinit-elements-textSecondary);
 
   /* Matching Brackets */
   --cm-matching-bracket: rgba(59, 130, 246, 0.25);
 
   /* Selection */
-  --cm-selection-backgroundColorFocused: #3b82f6;
+  --cm-selection-backgroundColorFocused: var(--codinit-elements-terminals-brightBlue);
   --cm-selection-backgroundOpacityFocused: 0.25;
 
-  --cm-selection-backgroundColorBlured: #93c5fd;
+  --cm-selection-backgroundColorBlured: var(--codinit-elements-terminals-blue);
   --cm-selection-backgroundOpacityBlured: 0.2;
 
   /* Panels */
-  --cm-panels-borderColor: rgba(0, 0, 0, 0.06);
+  --cm-panels-borderColor: var(--codinit-elements-borderColor);
 
   /* Search */
-  --cm-search-backgroundColor: #ffffff;
-  --cm-search-textColor: #374151;
+  --cm-search-backgroundColor: var(--codinit-elements-bg-depth-1);
+  --cm-search-textColor: var(--codinit-elements-textPrimary);
 
   --cm-search-closeButton-backgroundColor: transparent;
-  --cm-search-closeButton-backgroundColorHover: rgba(0, 0, 0, 0.08);
+  --cm-search-closeButton-backgroundColorHover: var(--codinit-elements-bg-depth-2);
 
-  --cm-search-closeButton-textColor: #6b7280;
-  --cm-search-closeButton-textColorHover: #1f2937;
+  --cm-search-closeButton-textColor: var(--codinit-elements-textTertiary);
+  --cm-search-closeButton-textColorHover: var(--codinit-elements-textPrimary);
 
-  --cm-search-button-backgroundColor: #f3f4f6;
-  --cm-search-button-backgroundColorHover: rgba(0, 0, 0, 0.08);
+  --cm-search-button-backgroundColor: var(--codinit-elements-bg-depth-2);
+  --cm-search-button-backgroundColorHover: var(--codinit-elements-bg-depth-3);
 
-  --cm-search-button-textColor: #374151;
-  --cm-search-button-textColorHover: #1f2937;
+  --cm-search-button-textColor: var(--codinit-elements-textSecondary);
+  --cm-search-button-textColorHover: var(--codinit-elements-textPrimary);
 
   --cm-search-button-borderColor: transparent;
-  --cm-search-button-borderColorHover: rgba(0, 0, 0, 0.15);
+  --cm-search-button-borderColorHover: var(--codinit-elements-borderColorActive);
 
-  --cm-search-button-borderColorFocused: rgba(59, 130, 246, 0.8);
+  --cm-search-button-borderColorFocused: var(--codinit-elements-terminals-blue);
 
-  --cm-search-input-backgroundColor: #f9fafb;
-  --cm-search-input-textColor: #1f2937;
-  --cm-search-input-borderColor: rgba(0, 0, 0, 0.12);
-  --cm-search-input-borderColorFocused: rgba(59, 130, 246, 0.9);
+  --cm-search-input-backgroundColor: var(--codinit-elements-bg-depth-2);
+  --cm-search-input-textColor: var(--codinit-elements-textPrimary);
+  --cm-search-input-borderColor: var(--codinit-elements-borderColor);
+  --cm-search-input-borderColorFocused: var(--codinit-elements-terminals-blue);
 
   /* Tooltip */
-  --cm-tooltip-backgroundColor: #ffffff;
-  --cm-tooltip-textColor: #1f2937;
+  --cm-tooltip-backgroundColor: var(--codinit-elements-bg-depth-1);
+  --cm-tooltip-textColor: var(--codinit-elements-textPrimary);
 
   --cm-tooltip-backgroundColorSelected: rgba(59, 130, 246, 0.2);
-  --cm-tooltip-textColorSelected: #1f2937;
+  --cm-tooltip-textColorSelected: var(--codinit-elements-textPrimary);
 
-  --cm-tooltip-borderColor: rgba(0, 0, 0, 0.08);
+  --cm-tooltip-borderColor: var(--codinit-elements-borderColor);
 
   /* Search highlight */
   --cm-searchMatch-backgroundColor: rgba(245, 101, 101, 0.4);
@@ -155,19 +155,19 @@ html[data-theme='light'] {
 
 /* Dark theme overrides - pure neutral gray */
 html[data-theme='dark'] {
-  --cm-backgroundColor: #09090b;
+  --cm-backgroundColor: var(--codinit-elements-bg-depth-1);
   /* Darker than depth-2 for contrast */
-  --cm-gutter-backgroundColor: #09090b;
+  --cm-gutter-backgroundColor: var(--codinit-elements-bg-depth-1);
   /* Consistent with editor background */
   --cm-activeLineBackgroundColor: rgba(255, 255, 255, 0.08);
   /* Subtle neutral highlight */
-  --cm-selection-backgroundColorFocused: #cccccc;
+  --cm-selection-backgroundColorFocused: var(--codinit-elements-terminals-white);
   /* Neutral gray selection */
   --cm-selection-backgroundOpacityFocused: 0.25;
-  --cm-tooltip-backgroundColor: #252525;
+  --cm-tooltip-backgroundColor: var(--codinit-elements-bg-depth-3);
   /* Matches depth-3 */
-  --cm-tooltip-borderColor: rgba(153, 153, 153, 0.2);
+  --cm-tooltip-borderColor: var(--codinit-elements-borderColor);
   /* Neutral border */
-  --cm-panels-borderColor: rgba(153, 153, 153, 0.1);
+  --cm-panels-borderColor: var(--codinit-elements-borderColor);
   /* Neutral panel borders */
 }
