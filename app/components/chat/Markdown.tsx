@@ -10,7 +10,6 @@ import { CodeBlock } from './CodeBlock';
 import { ThinkingProcess } from './ThinkingProcess';
 
 import styles from './Markdown.module.scss';
-import ThoughtBox from './ThoughtBox';
 
 const logger = createScopedLogger('MarkdownComponent');
 
@@ -54,10 +53,6 @@ export const Markdown = memo(({ children, html = false, limitedMarkdown = false 
           }
 
           return <TestArtifact messageId={messageId} />;
-        }
-
-        if (className?.includes('__codinitThought__')) {
-          return <ThoughtBox title="Thought process">{children}</ThoughtBox>;
         }
 
         if (className?.includes('__codinitThinking__')) {
