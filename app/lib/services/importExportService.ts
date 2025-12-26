@@ -8,25 +8,15 @@ interface ExtendedMessage extends Message {
   timestamp?: number;
 }
 
-/**
- * Service for handling import and export operations of application data
- */
 export class ImportExportService {
-  /**
-   * Export all chats to a JSON file
-   * @param db The IndexedDB database instance
-   * @returns A promise that resolves to the export data
-   */
   static async exportAllChats(db: IDBDatabase): Promise<{ chats: any[]; exportDate: string }> {
     if (!db) {
       throw new Error('Database not initialized');
     }
 
     try {
-      // Get all chats from the database using the getAllChats helper
       const chats = await getAllChats(db);
 
-      // Validate and sanitize each chat before export
       const sanitizedChats = chats.map((chat) => ({
         id: chat.id,
         description: chat.description || '',
@@ -55,10 +45,6 @@ export class ImportExportService {
     }
   }
 
-  /**
-   * Export application settings to a JSON file
-   * @returns A promise that resolves to the settings data
-   */
   static async exportSettings(): Promise<any> {
     try {
       // Get all cookies
@@ -177,10 +163,6 @@ export class ImportExportService {
     }
   }
 
-  /**
-   * Import settings from a JSON file
-   * @param importedData The imported data
-   */
   static async importSettings(importedData: any): Promise<void> {
     // Check if this is the new comprehensive format (v2.0)
     const isNewFormat = importedData._meta?.version === '2.0';
@@ -194,10 +176,6 @@ export class ImportExportService {
     }
   }
 
-  /**
-   * Import API keys from a JSON file
-   * @param keys The API keys to import
-   */
   static importAPIKeys(keys: Record<string, any>): Record<string, string> {
     // Get existing keys from cookies
     const existingKeys = (() => {
@@ -231,11 +209,6 @@ export class ImportExportService {
         normalizedKey = key.replace('_API_KEY', '');
       }
 
-      /*
-       * Only add non-empty keys
-       * Use the normalized key in the correct format
-       * (e.g., "OpenAI", "Google", "Anthropic")
-       */
       if (value) {
         newKeys[normalizedKey] = value;
       }
@@ -244,15 +217,7 @@ export class ImportExportService {
     return newKeys;
   }
 
-  /**
-   * Create an API keys template
-   * @returns The API keys template
-   */
   static createAPIKeysTemplate(): Record<string, any> {
-    /*
-     * Create a template with provider names as keys
-     * This matches how the application stores API keys in cookies
-     */
     const template = {
       Anthropic: '',
       OpenAI: '',
@@ -277,10 +242,6 @@ export class ImportExportService {
     };
   }
 
-  /**
-   * Reset all settings to default values
-   * @param db The IndexedDB database instance
-   */
   static async resetAllSettings(db: IDBDatabase): Promise<void> {
     // 1. Clear all localStorage items related to application settings
     const localStorageKeysToPreserve: string[] = ['debug_mode']; // Keys to preserve if needed
@@ -359,11 +320,6 @@ export class ImportExportService {
   }
 
   // Private helper methods
-
-  /**
-   * Import settings from a comprehensive format
-   * @param data The imported data
-   */
   private static async _importComprehensiveFormat(data: any): Promise<void> {
     // Import core settings
     if (data.core) {
@@ -536,17 +492,7 @@ export class ImportExportService {
     }
   }
 
-  /**
-   * Import settings from a legacy format
-   * @param data The imported data
-   */
   private static async _importLegacyFormat(data: any): Promise<void> {
-    /**
-     * Handle legacy format (v1.0 or earlier)
-     * This is a simplified version that tries to import whatever is available
-     */
-
-    // Try to import settings directly
     Object.entries(data).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
         // Skip metadata fields
@@ -579,11 +525,6 @@ export class ImportExportService {
     });
   }
 
-  /**
-   * Safely get an item from localStorage
-   * @param key The key to get
-   * @returns The value or null if not found
-   */
   private static _safeGetItem(key: string): any {
     try {
       const item = localStorage.getItem(key);
@@ -594,10 +535,6 @@ export class ImportExportService {
     }
   }
 
-  /**
-   * Get all localStorage items
-   * @returns All localStorage items
-   */
   private static _getAllLocalStorage(): Record<string, any> {
     const result: Record<string, any> = {};
 
@@ -621,11 +558,6 @@ export class ImportExportService {
     return result;
   }
 
-  /**
-   * Get GitHub connections from cookies
-   * @param _cookies The cookies object
-   * @returns GitHub connections
-   */
   private static _getGitHubConnections(_cookies: Record<string, string>): Record<string, any> {
     const result: Record<string, any> = {};
 
@@ -644,10 +576,6 @@ export class ImportExportService {
     return result;
   }
 
-  /**
-   * Get chat snapshots from localStorage
-   * @returns Chat snapshots
-   */
   private static _getChatSnapshots(): Record<string, any> {
     const result: Record<string, any> = {};
 
@@ -666,11 +594,6 @@ export class ImportExportService {
     return result;
   }
 
-  /**
-   * Safely set an item in localStorage
-   * @param key The key to set
-   * @param value The value to set
-   */
   private static _safeSetItem(key: string, value: any): void {
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -679,11 +602,6 @@ export class ImportExportService {
     }
   }
 
-  /**
-   * Safely set a cookie
-   * @param key The key to set
-   * @param value The value to set
-   */
   private static _safeSetCookie(key: string, value: any): void {
     try {
       Cookies.set(key, typeof value === 'string' ? value : JSON.stringify(value), { expires: 365 });
