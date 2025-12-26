@@ -1,23 +1,4 @@
-import { ipcRenderer, contextBridge, type IpcRendererEvent } from 'electron';
-
-console.debug('start preload.', ipcRenderer);
-
-const ipc = {
-  invoke(...args: any[]) {
-    return ipcRenderer.invoke('ipcTest', ...args);
-  },
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  on(channel: string, func: Function) {
-    const f = (event: IpcRendererEvent, ...args: any[]) => func(...[event, ...args]);
-    console.debug('register listener', channel, f);
-    ipcRenderer.on(channel, f);
-
-    return () => {
-      console.debug('remove listener', channel, f);
-      ipcRenderer.removeListener(channel, f);
-    };
-  },
-};
+import { ipcRenderer, contextBridge } from 'electron';
 
 const cookies = {
   set: (name: string, value: string, options?: any) => {
@@ -66,6 +47,42 @@ const windowControls = {
   },
 };
 
-contextBridge.exposeInMainWorld('ipc', ipc);
+const electronUpdates = {
+  checkForUpdates: () => ipcRenderer.invoke('update-check'),
+  downloadUpdate: () => ipcRenderer.invoke('update-download'),
+  quitAndInstall: () => ipcRenderer.invoke('update-install'),
+  onCheckingForUpdate: (callback: () => void) => {
+    const subscription = (_event: any) => callback();
+    ipcRenderer.on('auto-updater:checking-for-update', subscription);
+    return () => ipcRenderer.removeListener('auto-updater:checking-for-update', subscription);
+  },
+  onUpdateAvailable: (callback: (info: any) => void) => {
+    const subscription = (_event: any, info: any) => callback(info);
+    ipcRenderer.on('auto-updater:update-available', subscription);
+    return () => ipcRenderer.removeListener('auto-updater:update-available', subscription);
+  },
+  onUpdateNotAvailable: (callback: (info: any) => void) => {
+    const subscription = (_event: any, info: any) => callback(info);
+    ipcRenderer.on('auto-updater:update-not-available', subscription);
+    return () => ipcRenderer.removeListener('auto-updater:update-not-available', subscription);
+  },
+  onDownloadProgress: (callback: (progressObj: any) => void) => {
+    const subscription = (_event: any, progressObj: any) => callback(progressObj);
+    ipcRenderer.on('auto-updater:download-progress', subscription);
+    return () => ipcRenderer.removeListener('auto-updater:download-progress', subscription);
+  },
+  onUpdateDownloaded: (callback: (info: any) => void) => {
+    const subscription = (_event: any, info: any) => callback(info);
+    ipcRenderer.on('auto-updater:update-downloaded', subscription);
+    return () => ipcRenderer.removeListener('auto-updater:update-downloaded', subscription);
+  },
+  onError: (callback: (error: string) => void) => {
+    const subscription = (_event: any, error: string) => callback(error);
+    ipcRenderer.on('auto-updater:error', subscription);
+    return () => ipcRenderer.removeListener('auto-updater:error', subscription);
+  },
+};
+
 contextBridge.exposeInMainWorld('electronCookies', cookies);
 contextBridge.exposeInMainWorld('electronAPI', windowControls);
+contextBridge.exposeInMainWorld('electronUpdates', electronUpdates);
