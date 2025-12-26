@@ -12,11 +12,11 @@ export const Switch = memo(({ className, onCheckedChange, checked }: SwitchProps
   return (
     <SwitchPrimitive.Root
       className={classNames(
-        'relative h-6 w-11 cursor-pointer rounded-full bg-codinit-elements-bg-depth-3',
+        'relative h-6 w-11 cursor-pointer rounded-full bg-codinit-elements-background-depth-3',
         'transition-colors duration-200 ease-in-out',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
         'disabled:cursor-not-allowed disabled:opacity-50',
-        'data-[state=checked]:bg-codinit-elements-button-primary-background',
+        'data-[state=checked]:bg-blue-500',
         className,
       )}
       checked={checked}
