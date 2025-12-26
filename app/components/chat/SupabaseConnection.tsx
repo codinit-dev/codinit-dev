@@ -123,7 +123,7 @@ export function SupabaseConnection() {
                     placeholder="Enter your Supabase access token"
                     className={classNames(
                       'w-full px-3 py-2 rounded-lg text-sm',
-                      'bg-[#F8F8F8] dark:bg-[#1A1A1A]',
+                      'bg-[#F8F8F8] dark:bg-[#999999]',
                       'border border-[#E5E5E5] dark:border-[#333333]',
                       'text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary',
                       'focus:outline-none focus:ring-1 focus:ring-[#3ECF8E]',
@@ -186,7 +186,7 @@ export function SupabaseConnection() {
                   </DialogTitle>
                 </div>
 
-                <div className="flex items-center gap-4 p-3 bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-lg">
+                <div className="flex items-center gap-4 p-3 bg-[#F8F8F8] dark:bg-[#999999] rounded-lg">
                   <div>
                     <h4 className="text-sm font-medium text-codinit-elements-textPrimary">
                       {supabaseConn.user?.email}
@@ -238,7 +238,7 @@ export function SupabaseConnection() {
                     {isProjectsExpanded && (
                       <>
                         {!supabaseConn.selectedProjectId && (
-                          <div className="mb-2 p-3 bg-[#F8F8F8] dark:bg-[#1A1A1A] rounded-lg text-sm text-codinit-elements-textSecondary">
+                          <div className="mb-2 p-3 bg-[#F8F8F8] dark:bg-[#999999] rounded-lg text-sm text-codinit-elements-textSecondary">
                             Select a project or create a new one for this chat
                           </div>
                         )}
@@ -248,7 +248,7 @@ export function SupabaseConnection() {
                             {supabaseConn.stats.projects.map((project) => (
                               <div
                                 key={project.id}
-                                className="block p-3 rounded-lg border border-[#E5E5E5] dark:border-[#1A1A1A] hover:border-[#3ECF8E] dark:hover:border-[#3ECF8E] transition-colors"
+                                className="block p-3 rounded-lg border border-[#E5E5E5] dark:border-[#999999] hover:border-[#3ECF8E] dark:hover:border-[#3ECF8E] transition-colors"
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
