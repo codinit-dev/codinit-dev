@@ -146,18 +146,18 @@ declare global {
 
   const rendererURL = await (isDev
     ? (async () => {
-        await initViteServer();
+      await initViteServer();
 
-        if (!viteServer) {
-          throw new Error('Vite server is not initialized');
-        }
+      if (!viteServer) {
+        throw new Error('Vite server is not initialized');
+      }
 
-        const listen = await viteServer.listen();
-        global.__electron__ = electron;
-        viteServer.printUrls();
+      const listen = await viteServer.listen();
+      global.__electron__ = electron;
+      viteServer.printUrls();
 
-        return `http://localhost:${listen.config.server.port}`;
-      })()
+      return `http://localhost:${listen.config.server.port}`;
+    })()
     : `http://localhost:${DEFAULT_PORT}`);
 
   console.log('Using renderer URL:', rendererURL);
@@ -209,9 +209,6 @@ declare global {
   return win;
 })()
   .then((win) => {
-    // IPC test handler (ping removed to reduce overhead)
-    ipcMain.handle('ipcTest', (event, ...args) => console.log('ipc: renderer -> main', { event, ...args }));
-
     // Cookie synchronization handlers
     ipcMain.handle('cookie-set', async (_, name: string, value: string, options?: any) => {
       const cookieDetails: Electron.CookiesSetDetails = {
