@@ -21,11 +21,6 @@ export interface StreamingOptions extends Omit<Parameters<typeof _streamText>[0]
       supabaseUrl?: string;
     };
   };
-  codinit_options?: {
-    enable_web_search?: boolean;
-    enable_lazy_edits?: boolean;
-    files?: boolean;
-  };
 }
 
 const logger = createScopedLogger('stream-text');
@@ -43,11 +38,6 @@ export async function streamText(props: {
   summary?: string;
   messageSliceId?: number;
   designScheme?: DesignScheme;
-  codinit_options?: {
-    enable_web_search?: boolean;
-    enable_lazy_edits?: boolean;
-    files?: boolean;
-  };
 }) {
   const {
     messages,
@@ -61,7 +51,6 @@ export async function streamText(props: {
     contextFiles,
     summary,
     designScheme,
-    codinit_options: codinitOptions,
   } = props;
   let currentModel = DEFAULT_MODEL;
   let currentProvider = DEFAULT_PROVIDER.name;
@@ -230,7 +219,6 @@ Use these preferences when creating UI components, styling code, or suggesting d
       serverEnv,
       apiKeys,
       providerSettings,
-      codinit_options: codinitOptions || options?.codinit_options,
     }),
     system: systemPrompt,
     maxTokens: dynamicMaxTokens,
