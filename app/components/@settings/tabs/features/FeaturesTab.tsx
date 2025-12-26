@@ -287,7 +287,7 @@ export default function FeaturesTab() {
                 }}
                 className={classNames(
                   'px-4 py-3 rounded-xl text-sm font-medium min-w-[240px]',
-                  'bg-white dark:bg-[#0F0F0F]',
+                  'bg-white dark:bg-gray-800/50',
                   'border-2 border-gray-200 dark:border-[#2A2A2A]',
                   'text-codinit-elements-textPrimary',
                   'focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400',
