@@ -12,7 +12,7 @@ const CloudflareConnection = React.lazy(() => import('./CloudflareConnection'));
 
 // Loading fallback component
 const LoadingFallback = () => (
-  <div className="p-4 bg-codinit-elements-background-depth-1 dark:bg-codinit-elements-background-depth-1 rounded-lg border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor">
+  <div className="p-4 bg-codinit-elements-background-depth-1 dark:bg-gray-800/50 rounded-lg border border-codinit-elements-borderColor dark:border-codinit-elements-borderColor">
     <div className="flex items-center justify-center gap-2 text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
       <div className="i-ph:spinner-gap w-4 h-4 animate-spin" />
       <span>Loading connection...</span>
@@ -99,12 +99,12 @@ export default function ConnectionsTab() {
             <div className="mt-4">
               <p className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary mb-2">
                 You can configure connections using environment variables in your{' '}
-                <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+                <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 rounded">
                   .env.local
                 </code>{' '}
                 file:
               </p>
-              <div className="bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 p-3 rounded-md text-xs font-mono overflow-x-auto">
+              <div className="bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 p-3 rounded-md text-xs font-mono overflow-x-auto">
                 <div className="text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary">
                   # GitHub Authentication
                 </div>
@@ -131,7 +131,7 @@ export default function ConnectionsTab() {
                 <ul className="list-disc list-inside pl-2 space-y-1">
                   <li>
                     <span className="font-medium">classic</span> - Personal Access Token with{' '}
-                    <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 rounded">
+                    <code className="px-1 py-0.5 bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 rounded">
                       repo, read:org, read:user
                     </code>{' '}
                     scopes
@@ -166,7 +166,7 @@ export default function ConnectionsTab() {
       </div>
 
       {/* Additional help text */}
-      <div className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary bg-codinit-elements-background-depth-2 dark:bg-codinit-elements-background-depth-2 p-4 rounded-lg">
+      <div className="text-sm text-codinit-elements-textSecondary dark:text-codinit-elements-textSecondary bg-codinit-elements-background-depth-2 dark:bg-gray-800/50 p-4 rounded-lg">
         <p className="flex items-center gap-1 mb-2">
           <span className="i-ph:lightbulb w-4 h-4 text-codinit-elements-icon-success dark:text-codinit-elements-icon-success" />
           <span className="font-medium">Troubleshooting Tip:</span>
