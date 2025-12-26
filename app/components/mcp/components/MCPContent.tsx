@@ -61,18 +61,12 @@ export function MCPContent({ activeTab }: MCPContentProps) {
     <div
       className={classNames(
         'flex-1 pb-10 relative overflow-y-auto flex flex-col',
-        'bg-codinit-elements-background-depth-1 px-8',
+        'flex-1 pb-10 relative overflow-y-auto flex flex-col',
+        'px-8',
       )}
     >
-      {/* Header */}
-      <div className="bg-codinit-elements-background-depth-1 sticky top-0 z-layer-3 pt-12 mb-4">
-        <div className="min-h-9 flex flex-col gap-2">
-          <h2 className="text-lg font-semibold truncate text-codinit-elements-textPrimary">{TAB_LABELS[activeTab]}</h2>
-        </div>
-      </div>
-
       {/* Content */}
-      <div className="flex flex-col gap-6 flex-1">
+      <div className="flex flex-col gap-6 flex-1 pt-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
