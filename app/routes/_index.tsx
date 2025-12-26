@@ -19,7 +19,7 @@ export const loader = () => json({});
 
 export default function Index() {
   return (
-    <div className="flex flex-col h-full w-full bg-codinit-elements-background-depth-1">
+    <div className="flex flex-col h-full w-full bg-codinit-elements-background-depth-2">
       <ClientOnly>{() => <ElectronTitleBar />}</ClientOnly>
       <BackgroundRays />
       <Header />
