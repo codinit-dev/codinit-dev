@@ -17,7 +17,9 @@ import {
   categorizeError,
   getHttpStatusForError,
   type ValidatedChatRequest,
+  createChatError,
 } from '~/lib/api/chat-validation';
+import { LLMManager } from '~/lib/modules/llm/manager';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -58,7 +60,8 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
     });
   }
 
-  const { messages, files, promptId, contextOptimization, supabase, designScheme, enableMCPTools } = validatedRequest;
+  const { messages, files, promptId, contextOptimization, supabase, designScheme, enableMCPTools, isPro } =
+    validatedRequest;
 
   const cookieHeader = request.headers.get('Cookie');
   const apiKeys = JSON.parse(parseCookies(cookieHeader || '').apiKeys || '{}');
