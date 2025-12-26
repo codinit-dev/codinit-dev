@@ -18,6 +18,7 @@ export interface MCPTemplate {
     type: 'text' | 'password' | 'url';
     required: boolean;
   }>;
+  tier?: 'free' | 'pro';
 }
 
 export const MCP_TEMPLATES: MCPTemplate[] = [
@@ -73,6 +74,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     requiredFields: [
       { key: 'apiKey', label: 'Secret Key', placeholder: 'sk_test_...', type: 'password', required: true },
     ],
+    tier: 'pro',
   },
   {
     id: 'posthog',
@@ -106,6 +108,7 @@ export const MCP_TEMPLATES: MCPTemplate[] = [
     requiredFields: [
       { key: 'accessToken', label: 'Access Token', placeholder: 'pat-na1-...', type: 'password', required: true },
     ],
+    tier: 'pro',
   },
   {
     id: 'github',
@@ -234,30 +237,38 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="space-y-2">
+        <h2 className="text-xl font-semibold text-codinit-elements-textPrimary">Integrations</h2>
+        <p className="text-sm text-codinit-elements-textSecondary">
+          Easily connect with the tools your team already uses or extend your app with any Python SDK, library, or API.
+        </p>
+      </div>
+
       {/* Search and Filter */}
-      <div className="space-y-3">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         {/* Search */}
-        <div className="relative">
+        <div className="relative w-full md:max-w-md">
           <i className="i-ph:magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-codinit-elements-textTertiary" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search integrations..."
-            className="w-full pl-9 pr-3 py-2 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50"
+            placeholder="Search"
+            className="w-full pl-9 pr-3 py-2 bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor rounded-lg text-sm text-codinit-elements-textPrimary placeholder-codinit-elements-textTertiary focus:outline-none focus:ring-2 focus:ring-accent-500/50 transition-all"
           />
         </div>
 
         {/* Category Filter */}
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap justify-end">
           <button
             onClick={() => setSelectedCategory(null)}
             className={classNames(
-              'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+              'px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
               selectedCategory === null
-                ? 'bg-accent-500 text-white'
-                : 'bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                ? 'bg-accent-500 text-white border-accent-500'
+                : 'bg-transparent text-codinit-elements-textSecondary border-codinit-elements-borderColor hover:border-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
             )}
           >
             All
@@ -267,10 +278,10 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={classNames(
-                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                'px-3 py-1.5 rounded-full text-xs font-medium transition-all border',
                 selectedCategory === category
-                  ? 'bg-accent-500 text-white'
-                  : 'bg-codinit-elements-background-depth-1 text-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
+                  ? 'bg-accent-500 text-white border-accent-500'
+                  : 'bg-transparent text-codinit-elements-textSecondary border-codinit-elements-borderColor hover:border-codinit-elements-textSecondary hover:text-codinit-elements-textPrimary',
               )}
             >
               {getCategoryLabel(category)}
@@ -280,38 +291,60 @@ export const McpMarketplace = memo(({ onSelectTemplate }: MCPMarketplaceProps) =
       </div>
 
       {/* Templates Grid */}
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredTemplates.length > 0 ? (
           filteredTemplates.map((template) => (
             <button
               key={template.id}
               onClick={() => onSelectTemplate(template)}
-              className="flex items-center gap-3 p-3 bg-codinit-elements-background-depth-1 border border-codinit-elements-borderColor rounded-lg text-left transition-all hover:border-accent-500/50 hover:bg-codinit-elements-background-depth-2"
+              className="group relative flex flex-col items-center gap-4 p-6 bg-codinit-elements-background-depth-2 border border-codinit-elements-borderColor rounded-xl text-center transition-all hover:border-accent-500/50 hover:shadow-lg hover:-translate-y-1 min-h-[220px]"
             >
-              <div
-                className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: template.iconBgColor }}
-              >
-                <i className={classNames(template.icon, 'text-xl')} style={{ color: template.iconColor }} />
+              {/* Tags */}
+              <div className="absolute top-4 left-4 flex gap-2">
+                <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  Popular
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-codinit-elements-background-depth-3 text-codinit-elements-textSecondary border border-codinit-elements-borderColor">
+                  {getCategoryLabel(template.category)}
+                </span>
+                {template.tier === 'pro' && (
+                  <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center gap-1">
+                    <div className="i-ph:crown-simple-fill text-[10px]" />
+                    PRO
+                  </span>
+                )}
               </div>
 
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-codinit-elements-textPrimary mb-0.5">{template.name}</h3>
-                <p className="text-xs text-codinit-elements-textSecondary line-clamp-1">{template.description}</p>
+              {/* Icon */}
+              <div className="mt-8 mb-2">
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110"
+                  style={{ backgroundColor: template.iconBgColor }}
+                >
+                  {template.icon.startsWith('http') ? (
+                    <img src={template.icon} alt={template.name} className="w-10 h-10 object-contain" />
+                  ) : (
+                    <i className={classNames(template.icon, 'text-4xl')} style={{ color: template.iconColor }} />
+                  )}
+                </div>
               </div>
 
-              <div className="flex-shrink-0">
-                <i className="i-ph:arrow-right text-codinit-elements-textTertiary" />
+              {/* Content */}
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-semibold text-codinit-elements-textPrimary">{template.name}</h3>
+                <p className="text-xs text-codinit-elements-textSecondary line-clamp-2 leading-relaxed px-2">
+                  {template.description}
+                </p>
               </div>
             </button>
           ))
         ) : (
-          <div className="text-center py-8">
-            <div className="w-12 h-12 rounded-full bg-codinit-elements-background-depth-1 flex items-center justify-center mx-auto mb-3">
-              <i className="i-ph:magnifying-glass text-2xl text-codinit-elements-textTertiary" />
+          <div className="col-span-full text-center py-12">
+            <div className="w-16 h-16 rounded-full bg-codinit-elements-background-depth-2 flex items-center justify-center mx-auto mb-4 border border-codinit-elements-borderColor">
+              <i className="i-ph:magnifying-glass text-3xl text-codinit-elements-textTertiary" />
             </div>
-            <p className="text-sm text-codinit-elements-textSecondary">No integrations found</p>
-            <p className="text-xs text-codinit-elements-textTertiary mt-1">Try adjusting your search or filters</p>
+            <p className="text-base font-medium text-codinit-elements-textSecondary">No integrations found</p>
+            <p className="text-sm text-codinit-elements-textTertiary mt-1">Try adjusting your search or filters</p>
           </div>
         )}
       </div>
