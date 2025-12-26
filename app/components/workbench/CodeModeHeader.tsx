@@ -18,7 +18,7 @@ export const CodeModeHeader = memo(
     };
 
     return (
-      <div className="flex items-center gap-2 h-12 pl-4 pr-3">
+      <div className="flex items-center gap-2 h-12 pl-4 pr-3 bg-codinit-elements-background-depth-2 border-b border-codinit-elements-borderColor">
         {/* Toggle Buttons Section */}
         <div className="flex items-center gap-1">
           <IconButton
