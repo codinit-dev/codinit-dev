@@ -49,8 +49,8 @@ export default class AnthropicProvider extends BaseProvider {
       name: 'claude-opus-4-1-20250805',
       label: 'Claude Opus 4.1',
       provider: 'Anthropic',
-      maxTokenAllowed: 200000,
       maxCompletionTokens: 32000,
+      maxTokenAllowed: 200000
     },
   ];
 
