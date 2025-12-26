@@ -91,7 +91,7 @@ function ThinkingSteps({ steps }: ThinkingStepsProps) {
             }}
           >
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-6 h-6 rounded-full building-glow text-white text-xs font-bold flex items-center justify-center mt-0.5 building-glow-text">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full building-glow text-codinit-elements-textPrimary text-xs font-bold flex items-center justify-center mt-0.5 building-glow-text">
                 {index + 1}
               </div>
               <div className="flex-1 text-sm text-codinit-elements-textPrimary leading-relaxed pt-0.5">{step}</div>
