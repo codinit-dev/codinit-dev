@@ -37,8 +37,12 @@ export function extractSearchQuery(text: string, cursorPos: number): string {
 }
 
 export function detectReferenceType(searchQuery: string): ReferenceType {
-  if (!searchQuery) return 'mixed';
-  return /[\/\.]/.test(searchQuery) ? 'file' : 'mixed';
+  // If explicitly looking for file patterns (contains slash or dot)
+  if (searchQuery && /[\/\.]/.test(searchQuery)) {
+    return 'file';
+  }
+  // Default to tool for simple strings or empty queries
+  return 'tool';
 }
 
 function getTextWidth(text: string, font: string): number {
