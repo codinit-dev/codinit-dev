@@ -296,6 +296,17 @@ export class PreviewsStore {
     this.#refreshTimeouts.set(previewId, timeout);
   }
 
+  updateUrl(port: number, url: string) {
+    const previews = this.previews.get();
+    const preview = previews.find((p) => p.port === port);
+
+    if (preview) {
+      preview.baseUrl = url;
+      this.previews.set([...previews]);
+      this.broadcastUpdate(url);
+    }
+  }
+
   refreshAllPreviews() {
     const previews = this.previews.get();
 
