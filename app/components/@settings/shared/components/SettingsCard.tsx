@@ -14,7 +14,7 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({ children, variant = 
     switch (variant) {
       case 'elevated':
         return classNames(
-          'bg-white dark:bg-[#0F0F0F]',
+          'bg-white dark:bg-gray-800/50',
           'border border-[#E5E5E5] dark:border-[#2A2A2A]',
           'shadow-lg dark:shadow-xl',
           'hover:shadow-xl dark:hover:shadow-2xl',
@@ -24,7 +24,7 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({ children, variant = 
         );
       case 'gradient':
         return classNames(
-          'bg-gradient-to-br from-white to-gray-50/50 dark:from-[#0F0F0F] dark:to-[#1A1A1A]',
+          'bg-gradient-to-br from-white to-gray-50/50 dark:from-[#0F0F0F] dark:to-[#999999]',
           'border border-[#E5E5E5] dark:border-[#2A2A2A]',
           'shadow-md dark:shadow-lg',
           'hover:shadow-lg dark:hover:shadow-xl',
@@ -35,8 +35,8 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({ children, variant = 
         );
       case 'compact':
         return classNames(
-          'bg-white dark:bg-[#0A0A0A]',
-          'border border-[#E5E5E5] dark:border-[#1A1A1A]',
+          'bg-white dark:bg-gray-800/50',
+          'border border-[#E5E5E5] dark:border-[#999999]',
           'shadow-sm dark:shadow-none',
           'hover:shadow-md dark:hover:shadow-lg',
           'hover:border-blue-200 dark:hover:border-blue-800/20',
@@ -44,8 +44,8 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({ children, variant = 
         );
       default:
         return classNames(
-          'bg-white dark:bg-[#0A0A0A]',
-          'border border-[#E5E5E5] dark:border-[#1A1A1A]',
+          'bg-white dark:bg-gray-800/50',
+          'border border-[#E5E5E5] dark:border-[#999999]',
           'shadow-sm dark:shadow-none',
           'hover:shadow-md dark:hover:shadow-lg',
           'hover:border-blue-200 dark:hover:border-blue-800/20',
