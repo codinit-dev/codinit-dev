@@ -1,18 +1,35 @@
 <p align="center">
-  <img width="1270" height="630" alt="CodinIT.dev Hero" src="https://github.com/user-attachments/assets/7d522f08-bbab-47ee-a47f-0b9c92445cdc" />
-</p><p align="center">
+  <img
+    width="1270"
+    height="630"
+    alt="CodinIT.dev Hero"
+    src="https://github.com/user-attachments/assets/7d522f08-bbab-47ee-a47f-0b9c92445cdc"
+  />
+</p>
+
+<p align="center">
   <a href="https://fazier.com/launches/codinit" target="_blank">
-    <img src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=6267&badge_type=weekly&theme=light" width="270" alt="Fazier badge" />
+    <img
+      src="https://fazier.com/api/v1/public/badges/embed_image.svg?launch_id=6267&badge_type=weekly&theme=light"
+      width="270"
+      alt="Fazier badge"
+    />
   </a>
-  <br/><br/>
-  <a href="https://sourceforge.net/projects/codinit-dev/files/latest/download">
-    <img alt="Download CodinIT.dev"
-         src="https://a.fsdn.com/con/app/sf-download-button"
-         width="276"
-         height="48"
-         srcset="https://a.fsdn.com/con/app/sf-download-button?button_size=2x 2x">
+  &nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;
+  <a
+    href="https://peerpush.net/p/build-your-next-app-with-ai"
+    target="_blank"
+    rel="noopener"
+  >
+    <img
+      src="https://peerpush.net/p/build-your-next-app-with-ai/badge.png"
+      alt="CodinIT.dev badge"
+      width="230"
+    />
   </a>
-</p><p align="center">
+</p>
+
   <strong>⚡ CodinIT.dev — Open‑Source AI App Builder ⚡</strong><br/>
   Build, manage, and deploy intelligent applications faster — directly from your browser or desktop.
 </p>
