@@ -23,6 +23,8 @@ const THINKING_TAG_CLOSE = '</codinitThinking>';
 const THINKING_ARTIFACT_TAG_OPEN = '<thinkingArtifact';
 const THINKING_ARTIFACT_TAG_CLOSE = '</thinkingArtifact>';
 
+const MAX_FILE_CHUNK_SIZE = 1024 * 1024;
+
 const logger = createScopedLogger('MessageParser');
 
 export interface ArtifactCallbackData extends CodinitArtifactData {
@@ -198,6 +200,11 @@ export class StreamingMessageParser {
           } else {
             if ('type' in currentAction && currentAction.type === 'file') {
               let content = input.slice(i);
+
+              if (content.length > MAX_FILE_CHUNK_SIZE) {
+                content = content.slice(0, MAX_FILE_CHUNK_SIZE);
+                logger.warn(`File content exceeds 1MB limit, truncating for streaming`);
+              }
 
               if (!currentAction.filePath.endsWith('.md')) {
                 content = cleanoutMarkdownSyntax(content);
