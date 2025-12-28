@@ -30,6 +30,16 @@ const { saveAs } = fileSaver;
 
 const logger = createScopedLogger('WorkbenchStore');
 
+function yieldToMainThread(): Promise<void> {
+  return new Promise((resolve) => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => resolve(), { timeout: 100 });
+    } else {
+      setTimeout(resolve, 0);
+    }
+  });
+}
+
 const DEFAULT_ACTION_SAMPLE_INTERVAL = 500;
 
 export interface ArtifactState {
@@ -775,6 +785,8 @@ export class WorkbenchStore {
       return;
     }
 
+    await yieldToMainThread();
+
     if (data.action.type === 'file' && !isStreaming && diffApprovalStore.get()) {
       const wc = await webcontainer;
       const fullPath = path.join(wc.workdir, data.action.filePath);
@@ -842,9 +854,11 @@ export class WorkbenchStore {
       }
 
       this.#editorStore.updateFile(fullPath, data.action.content);
+      await yieldToMainThread();
 
       if (!isStreaming && data.action.content) {
         await this.saveFile(fullPath);
+        await yieldToMainThread();
       }
 
       if (!isStreaming) {
