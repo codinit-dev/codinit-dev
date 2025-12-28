@@ -54,6 +54,10 @@ export class FilesStore {
 
   files: MapStore<FileMap> = import.meta.hot?.data.files ?? map({});
 
+  #updateBatchTimeout: number | null = null;
+
+  #pendingUpdates: FileMap = {};
+
   get filesCount() {
     return this.#size;
   }
@@ -640,6 +644,23 @@ export class FilesStore {
     }
   }
 
+  #scheduleBatchUpdate() {
+    if (this.#updateBatchTimeout !== null) {
+      return;
+    }
+
+    this.#updateBatchTimeout = self.setTimeout(() => {
+      const updates = this.#pendingUpdates;
+      this.#pendingUpdates = {};
+      this.#updateBatchTimeout = null;
+
+      if (Object.keys(updates).length > 0) {
+        const currentFiles = this.files.get();
+        this.files.set({ ...currentFiles, ...updates });
+      }
+    }, 500);
+  }
+
   #processEventBuffer(events: Array<[events: PathWatcherEvent[]]>) {
     const watchEvents = events.flat(2);
 
@@ -668,15 +689,15 @@ export class FilesStore {
       switch (type) {
         case 'add_dir': {
           // we intentionally add a trailing slash so we can distinguish files from folders in the file tree
-          this.files.setKey(sanitizedPath, { type: 'folder' });
+          this.#pendingUpdates[sanitizedPath] = { type: 'folder' };
           break;
         }
         case 'remove_dir': {
-          this.files.setKey(sanitizedPath, undefined);
+          this.#pendingUpdates[sanitizedPath] = undefined;
 
-          for (const [direntPath] of Object.entries(this.files)) {
+          for (const [direntPath] of Object.entries(this.files.get())) {
             if (direntPath.startsWith(sanitizedPath)) {
-              this.files.setKey(direntPath, undefined);
+              this.#pendingUpdates[direntPath] = undefined;
             }
           }
 
@@ -715,17 +736,17 @@ export class FilesStore {
           // Preserve lock state if the file already exists
           const isLocked = existingFile?.type === 'file' ? existingFile.isLocked : false;
 
-          this.files.setKey(sanitizedPath, {
+          this.#pendingUpdates[sanitizedPath] = {
             type: 'file',
             content,
             isBinary,
             isLocked,
-          });
+          };
           break;
         }
         case 'remove_file': {
           this.#size--;
-          this.files.setKey(sanitizedPath, undefined);
+          this.#pendingUpdates[sanitizedPath] = undefined;
           break;
         }
         case 'update_directory': {
@@ -734,6 +755,8 @@ export class FilesStore {
         }
       }
     }
+
+    this.#scheduleBatchUpdate();
   }
 
   #decodeFileContent(buffer?: Uint8Array) {
