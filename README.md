@@ -30,102 +30,98 @@
   </a>
 </p>
 
-  <strong>⚡ CodinIT.dev — Open‑Source AI App Builder ⚡</strong><br/>
+<h1 align="center">CodinIT.dev — Open‑Source AI App Builder</h1>
+
+<p align="center">
   Build, manage, and deploy intelligent applications faster — directly from your browser or desktop.
 </p>
----
-
-✨ What is CodinIT.dev?
-
-CodinIT.dev is an open‑source, AI‑powered full‑stack development platform designed to help you build modern Node.js applications with speed and precision. It combines code generation, project management, and deployment tools into a single workflow — powered by your choice of AI providers.
-
-Whether you’re prototyping, scaling a SaaS product, or experimenting with local LLMs, CodinIT.dev adapts to your stack and your workflow.
-
 
 ---
 
-🚀 Quick Start
+## Overview
+
+CodinIT.dev is an open‑source, AI full‑stack development platform designed to help developers build modern Node.js applications with speed and precision. It combines code generation, project management, and deployment tools into a single workflow, powered by your choice of AI providers.
+
+Whether you are prototyping, scaling a SaaS product, or experimenting with local LLMs, CodinIT.dev adapts to your stack and workflow.
+
+---
+
+## Quick Start
 
 Get up and running in minutes.
 
-1️⃣ Clone the Repository
+### 1. Clone the Repository
 
-```
-git clone https://github.com/codinit-dev/codinit-dev.git
+```bash
+git clone [https://github.com/codinit-dev/codinit-dev.git](https://github.com/codinit-dev/codinit-dev.git)
 cd codinit-dev
-```
-
-2️⃣ Install Dependencies
 
 ```
+
+### 2. Install Dependencies
+
+```bash
 # npm
 npm install
 
 # or pnpm
 pnpm install
-```
-
-
-3️⃣ Configure Environment
-
-Create a .env file and add your preferred AI provider keys:
-
-(You can mix and match multiple providers.)
-
-4️⃣ Run the Dev Server
 
 ```
+
+### 3. Configure Environment
+
+Create a `.env` file and add your preferred AI provider keys. You can mix and match multiple providers depending on your requirements.
+
+### 4. Run the Development Server
+
+```bash
 pnpm run dev
+
 ```
 
-The app will be available at: 👉 http://localhost:5173
-
-
----
-
-🧩 Key Features
-
-🧠 AI‑powered full‑stack development for Node.js apps
-
-🌐 19+ AI provider integrations (cloud & local)
-
-🖥️ Web + Desktop (Electron) support
-
-🐳 Docker‑ready — deploy to Vercel, Netlify, or GitHub Pages
-
-🔍 Built‑in search, diff viewer & file‑locking
-
-🧰 Supabase integration, data visualization & voice prompting
-
-🔐 Provider‑agnostic architecture — no vendor lock‑in
-
-
+The application will be available at: http://localhost:5173
 
 ---
 
-🔑 Supported AI Providers
+## Core Capabilities
 
-☁️ Cloud Providers
-
-OpenAI · Anthropic · Google · Groq · xAI · DeepSeek · Cohere · Mistral · Together · Perplexity · HuggingFace · OpenRouter · and more
-
-🏠 Local Providers
-
-Ollama · LM Studio · OpenAI‑compatible local endpoints
-
-Use one provider or switch dynamically per task.
+- **Automated Full-Stack Engineering:** Streamline the creation and management of complex Node.js architectures using intelligent generation.
+- **Universal Model Integration:** Seamlessly connect with over 19 cloud and local AI providers.
+- **Hybrid Environment Support:** native compatibility for both Web browsers and Desktop (Electron) environments.
+- **Production-Ready Containerization:** Fully Dockerized workflow with preset configurations for Vercel, Netlify, and GitHub Pages.
+- **Integrated Development Suite:** Includes robust utilities such as semantic search, diff visualization, and concurrency file-locking.
+- **Expanded Ecosystem Connectivity:** Native integration with Supabase, real-time data visualization tools, and voice-command interfaces.
+- **Vendor-Neutral Infrastructure:** A flexible architecture designed to prevent vendor lock-in, allowing dynamic switching between backend providers.
 
 ---
 
-🖥️ Desktop & Docker Usage
+## Supported AI Providers
 
-Run with Docker
-```
+CodinIT.dev allows you to use one provider or switch dynamically per task.
+
+### Cloud Providers
+
+OpenAI, Anthropic, Google, Groq, xAI, DeepSeek, Cohere, Mistral, Together, Perplexity, HuggingFace, OpenRouter, and more.
+
+### Local Providers
+
+Ollama, LM Studio, and OpenAI‑compatible local endpoints.
+
+---
+
+## Deployment & Desktop Usage
+
+### Run with Docker
+
+```bash
 npm run dockerbuild
 docker compose --profile development up
+
 ```
-Run as a Desktop App
 
-Download the latest prebuilt release: 👉 https://github.com/codinit-dev/codinit-dev/releases/latest
+### Run as a Desktop App
 
-Available for macOS, Windows, and Linux.
+Download the latest prebuilt release for macOS, Windows, and Linux.
+
+[Download Latest Release](https://github.com/codinit-dev/codinit-dev/releases/latest)

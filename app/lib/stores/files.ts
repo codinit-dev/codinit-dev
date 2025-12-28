@@ -577,18 +577,11 @@ export class FilesStore {
     // Load locked files immediately for the current chat
     this.#loadLockedFiles(currentChatId);
 
-    /**
-     * Also set up a timer to load locked files again after a delay.
-     * This ensures that locks are applied even if files are loaded asynchronously.
-     */
     setTimeout(() => {
       this.#loadLockedFiles(currentChatId);
     }, 2000);
   }
 
-  /**
-   * Removes any deleted files/folders from the store
-   */
   #cleanupDeletedFiles() {
     if (this.#deletedPaths.size === 0) {
       return;
