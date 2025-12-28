@@ -9,6 +9,7 @@ import type {
 import { webcontainer, setupWebContainerEventHandlers } from '~/lib/webcontainer';
 import type { ITerminal } from '~/types/terminal';
 import { unreachable } from '~/utils/unreachable';
+import { createScopedLogger } from '~/utils/logger';
 import { EditorStore } from './editor';
 import { FilesStore, type FileMap } from './files';
 import { PreviewsStore } from './previews';
@@ -26,6 +27,8 @@ import { startAutoSave } from '~/lib/persistence/fileAutoSave';
 import { diffApprovalStore } from './settings';
 
 const { saveAs } = fileSaver;
+
+const logger = createScopedLogger('WorkbenchStore');
 
 const DEFAULT_ACTION_SAMPLE_INTERVAL = 500;
 
@@ -88,12 +91,15 @@ type Artifacts = MapStore<Record<string, ArtifactState>>;
 export type WorkbenchViewType = 'code' | 'diff' | 'preview' | 'progress';
 
 export class WorkbenchStore {
+  static readonly MAX_PENDING_ACTIONS = 50;
+
   #previewsStore = new PreviewsStore(webcontainer);
   #filesStore = new FilesStore(webcontainer);
   #editorStore = new EditorStore(this.#filesStore);
   #terminalStore = new TerminalStore(webcontainer);
 
   #reloadedMessages = new Set<string>();
+  #actionQueueDepth = 0;
 
   artifacts: Artifacts = import.meta.hot?.data.artifacts ?? map({});
   thinkingArtifacts: MapStore<Record<string, ThinkingArtifactState>> =
@@ -157,7 +163,25 @@ export class WorkbenchStore {
   }
 
   addToExecutionQueue(callback: () => Promise<void>) {
-    this.#globalExecutionQueue = this.#globalExecutionQueue.then(() => callback());
+    if (this.#actionQueueDepth >= WorkbenchStore.MAX_PENDING_ACTIONS) {
+      logger.warn(`Action queue full (${this.#actionQueueDepth}), dropping action to prevent memory overflow`);
+
+      this.actionAlert.set({
+        type: 'warning',
+        title: 'Action Queue Full',
+        description: 'Too many pending actions. Slowing down to prevent crashes.',
+      });
+
+      return;
+    }
+
+    this.#actionQueueDepth++;
+
+    this.#globalExecutionQueue = this.#globalExecutionQueue
+      .then(() => callback())
+      .finally(() => {
+        this.#actionQueueDepth--;
+      });
   }
 
   get previews() {
