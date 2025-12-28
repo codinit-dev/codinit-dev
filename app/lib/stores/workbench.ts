@@ -27,7 +27,7 @@ import { diffApprovalStore } from './settings';
 
 const { saveAs } = fileSaver;
 
-const DEFAULT_ACTION_SAMPLE_INTERVAL = 100;
+const DEFAULT_ACTION_SAMPLE_INTERVAL = 500;
 
 export interface ArtifactState {
   id: string;
