@@ -9,6 +9,7 @@ import type {
 import { webcontainer, setupWebContainerEventHandlers } from '~/lib/webcontainer';
 import type { ITerminal } from '~/types/terminal';
 import { unreachable } from '~/utils/unreachable';
+import { createScopedLogger } from '~/utils/logger';
 import { EditorStore } from './editor';
 import { FilesStore, type FileMap } from './files';
 import { PreviewsStore } from './previews';
@@ -27,7 +28,19 @@ import { diffApprovalStore } from './settings';
 
 const { saveAs } = fileSaver;
 
-const DEFAULT_ACTION_SAMPLE_INTERVAL = 100;
+const logger = createScopedLogger('WorkbenchStore');
+
+function yieldToMainThread(): Promise<void> {
+  return new Promise((resolve) => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => resolve(), { timeout: 100 });
+    } else {
+      setTimeout(resolve, 0);
+    }
+  });
+}
+
+const DEFAULT_ACTION_SAMPLE_INTERVAL = 500;
 
 export interface ArtifactState {
   id: string;
@@ -88,12 +101,15 @@ type Artifacts = MapStore<Record<string, ArtifactState>>;
 export type WorkbenchViewType = 'code' | 'diff' | 'preview' | 'progress';
 
 export class WorkbenchStore {
+  static readonly MAX_PENDING_ACTIONS = 50;
+
   #previewsStore = new PreviewsStore(webcontainer);
   #filesStore = new FilesStore(webcontainer);
   #editorStore = new EditorStore(this.#filesStore);
   #terminalStore = new TerminalStore(webcontainer);
 
   #reloadedMessages = new Set<string>();
+  #actionQueueDepth = 0;
 
   artifacts: Artifacts = import.meta.hot?.data.artifacts ?? map({});
   thinkingArtifacts: MapStore<Record<string, ThinkingArtifactState>> =
@@ -157,7 +173,25 @@ export class WorkbenchStore {
   }
 
   addToExecutionQueue(callback: () => Promise<void>) {
-    this.#globalExecutionQueue = this.#globalExecutionQueue.then(() => callback());
+    if (this.#actionQueueDepth >= WorkbenchStore.MAX_PENDING_ACTIONS) {
+      logger.warn(`Action queue full (${this.#actionQueueDepth}), dropping action to prevent memory overflow`);
+
+      this.actionAlert.set({
+        type: 'warning',
+        title: 'Action Queue Full',
+        description: 'Too many pending actions. Slowing down to prevent crashes.',
+      });
+
+      return;
+    }
+
+    this.#actionQueueDepth++;
+
+    this.#globalExecutionQueue = this.#globalExecutionQueue
+      .then(() => callback())
+      .finally(() => {
+        this.#actionQueueDepth--;
+      });
   }
 
   get previews() {
@@ -751,6 +785,8 @@ export class WorkbenchStore {
       return;
     }
 
+    await yieldToMainThread();
+
     if (data.action.type === 'file' && !isStreaming && diffApprovalStore.get()) {
       const wc = await webcontainer;
       const fullPath = path.join(wc.workdir, data.action.filePath);
@@ -818,9 +854,11 @@ export class WorkbenchStore {
       }
 
       this.#editorStore.updateFile(fullPath, data.action.content);
+      await yieldToMainThread();
 
       if (!isStreaming && data.action.content) {
         await this.saveFile(fullPath);
+        await yieldToMainThread();
       }
 
       if (!isStreaming) {

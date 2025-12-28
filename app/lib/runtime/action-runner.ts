@@ -74,8 +74,12 @@ export type TestResultCallback = (result: {
 }) => void;
 
 export class ActionRunner {
+  static readonly MAX_CONCURRENT_FILE_WRITES = 5;
+
   #webcontainer: Promise<WebContainer>;
   #currentExecutionPromise: Promise<void> = Promise.resolve();
+  #currentFileWrites = 0;
+  #fileWriteQueue: Array<() => Promise<void>> = [];
   #shellTerminal: () => ExampleShell;
   runnerId = atom<string>(`${Date.now()}`);
   actions: ActionsMap = map({});
@@ -176,7 +180,7 @@ export class ActionRunner {
           break;
         }
         case 'file': {
-          await this.#runFileAction(action);
+          await this.#queueFileWrite(() => this.#runFileAction(action));
           break;
         }
         case 'supabase': {
@@ -260,6 +264,40 @@ export class ActionRunner {
 
       // re-throw the error to be caught in the promise chain
       throw error;
+    }
+  }
+
+  async #queueFileWrite(writeOperation: () => Promise<void>): Promise<void> {
+    if (this.#currentFileWrites < ActionRunner.MAX_CONCURRENT_FILE_WRITES) {
+      this.#currentFileWrites++;
+
+      try {
+        await writeOperation();
+      } finally {
+        this.#currentFileWrites--;
+        this.#processFileWriteQueue();
+      }
+    } else {
+      await new Promise<void>((resolve) => {
+        this.#fileWriteQueue.push(async () => {
+          await writeOperation();
+          resolve();
+        });
+      });
+    }
+  }
+
+  #processFileWriteQueue() {
+    while (this.#fileWriteQueue.length > 0 && this.#currentFileWrites < ActionRunner.MAX_CONCURRENT_FILE_WRITES) {
+      const next = this.#fileWriteQueue.shift();
+
+      if (next) {
+        this.#currentFileWrites++;
+        next().finally(() => {
+          this.#currentFileWrites--;
+          this.#processFileWriteQueue();
+        });
+      }
     }
   }
 
