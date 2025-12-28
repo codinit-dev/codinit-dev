@@ -561,7 +561,7 @@ export class FilesStore {
     // Set up file watcher
     webcontainer.internal.watchPaths(
       { include: [`${WORK_DIR}/**`], exclude: ['**/node_modules', '.git'], includeContent: true },
-      bufferWatchEvents(300, this.#processEventBuffer.bind(this)),
+      bufferWatchEvents(1000, this.#processEventBuffer.bind(this)),
     );
 
     // Get the current chat ID
