@@ -23,13 +23,6 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   const cookieHeader = request.headers.get('Cookie');
   const apiKeys = getApiKeysFromCookie(cookieHeader);
 
-  /*
-   * Check API key in order of precedence:
-   * 1. Client-side API keys (from cookies)
-   * 2. Server environment variables (from Cloudflare env)
-   * 3. Process environment variables (from .env.local)
-   * 4. LLMManager environment variables
-   */
   const isSet = !!(
     apiKeys?.[provider] ||
     (context?.cloudflare?.env as Record<string, any>)?.[envVarName] ||
