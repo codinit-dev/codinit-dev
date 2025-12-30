@@ -28,6 +28,7 @@ import { insertToolMention, insertFileReference } from '~/utils/toolMentionParse
 import { useStore } from '@nanostores/react';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { proStore, toggleFeature } from '~/lib/stores/pro';
+import { PromptSelector } from './PromptSelector';
 
 interface ChatBoxProps {
   isModelSettingsCollapsed: boolean;
@@ -75,6 +76,8 @@ interface ChatBoxProps {
     enable_lazy_edits?: boolean;
     files?: boolean;
   };
+  promptId?: string;
+  setPromptId?: (promptId: string) => void;
 }
 
 export const ChatBox: React.FC<ChatBoxProps> = (props) => {
@@ -358,6 +361,7 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
         />
         <div className="flex justify-between items-center text-sm p-4 pt-2">
           <div className="flex gap-1 items-center">
+            <PromptSelector promptId={props.promptId} setPromptId={props.setPromptId} />
             <ColorSchemeDialog designScheme={props.designScheme} setDesignScheme={props.setDesignScheme} />
             <IconButton title="Upload file" className="transition-all" onClick={() => props.handleFileUpload()}>
               <div className="i-ph:paperclip text-xl"></div>
@@ -418,26 +422,6 @@ export const ChatBox: React.FC<ChatBoxProps> = (props) => {
               }}
             >
               <div className="i-ph:globe text-xl" />
-            </IconButton>
-            <IconButton
-              title="Lazy Edits"
-              className={classNames(
-                'transition-all flex items-center gap-1 px-1.5',
-                props.provider?.name !== 'CodinIT' ? 'opacity-50 grayscale' : '',
-                proStore.get().features.lazyEdits
-                  ? '!bg-codinit-elements-item-backgroundAccent !text-codinit-elements-item-contentAccent'
-                  : 'bg-codinit-elements-item-backgroundDefault text-codinit-elements-item-contentDefault',
-              )}
-              onClick={() => {
-                if (props.provider?.name !== 'CodinIT') {
-                  toast.info('Lazy Edits is a Pro feature available with CodinIT Pro provider.');
-                  return;
-                }
-
-                toggleFeature('lazyEdits');
-              }}
-            >
-              <div className="i-ph:magic-wand text-xl" />
             </IconButton>
             <ClientOnly>
               {() =>
