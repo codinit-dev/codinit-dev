@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { LLMManager } from '~/lib/modules/llm/manager';
 import { mockOpenAIModels, mockApiKeys } from '../../fixtures/api-responses';
 
@@ -9,6 +9,15 @@ describe('LLMManager', () => {
     // Reset the singleton instance for each test
     (LLMManager as any)._instance = null;
     manager = LLMManager.getInstance();
+
+    // Silence console for cleaner test output
+    vi.spyOn(console, 'log').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => { });
+    vi.spyOn(console, 'warn').mockImplementation(() => { });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe('getInstance', () => {
