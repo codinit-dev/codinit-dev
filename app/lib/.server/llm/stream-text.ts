@@ -1,6 +1,5 @@
 import { convertToCoreMessages, streamText as _streamText, type Message } from 'ai';
 import { MAX_TOKENS, type FileMap } from './constants';
-import { getSystemPrompt } from '~/lib/common/prompts/prompts';
 import { DEFAULT_MODEL, DEFAULT_PROVIDER, MODIFICATIONS_TAG_NAME, PROVIDER_LIST, WORK_DIR } from '~/utils/constants';
 import type { IProviderSetting } from '~/types/model';
 import type { DesignScheme } from '~/types/design-scheme';
@@ -112,17 +111,16 @@ export async function streamText(props: {
 
   const dynamicMaxTokens = modelDetails && modelDetails.maxTokenAllowed ? modelDetails.maxTokenAllowed : MAX_TOKENS;
 
-  let systemPrompt =
-    PromptLibrary.getPropmtFromLibrary(promptId || 'default', {
-      cwd: WORK_DIR,
-      allowedHtmlElements: allowedHTMLElements,
-      modificationTagName: MODIFICATIONS_TAG_NAME,
-      supabase: {
-        isConnected: options?.supabaseConnection?.isConnected || false,
-        hasSelectedProject: options?.supabaseConnection?.hasSelectedProject || false,
-        credentials: options?.supabaseConnection?.credentials || undefined,
-      },
-    }) ?? getSystemPrompt();
+  let systemPrompt = PromptLibrary.getPromptFromLibrary(promptId || 'default', {
+    cwd: WORK_DIR,
+    allowedHtmlElements: allowedHTMLElements,
+    modificationTagName: MODIFICATIONS_TAG_NAME,
+    supabase: {
+      isConnected: options?.supabaseConnection?.isConnected || false,
+      hasSelectedProject: options?.supabaseConnection?.hasSelectedProject || false,
+      credentials: options?.supabaseConnection?.credentials || undefined,
+    },
+  });
 
   if (contextFiles && contextOptimization) {
     const codeContext = createFilesContext(contextFiles, true);
