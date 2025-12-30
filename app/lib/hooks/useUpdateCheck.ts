@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 import { checkForUpdates, acknowledgeUpdate } from '~/lib/api/updates';
 
 const LAST_ACKNOWLEDGED_VERSION_KEY = 'codinit_last_acknowledged_version';
+const UPDATE_SNOOZE_KEY = 'codinit_update_snooze';
 
 // Define the interface for the window object with electronUpdates
 declare global {
@@ -73,11 +75,13 @@ export const useUpdateCheck = () => {
           setReleaseNotes(result.releaseNotes || '');
           setReleaseUrl(result.releaseUrl || '');
 
-          const shouldShowUpdate = result.available && result.version !== lastAcknowledgedVersion;
+          const isSnoozed = Cookies.get(UPDATE_SNOOZE_KEY) === result.version;
+          const shouldShowUpdate = result.available && result.version !== lastAcknowledgedVersion && !isSnoozed;
+
           setHasUpdate(shouldShowUpdate);
 
           if (result.available) {
-            console.log('✨ Update available:', result.version);
+            console.log('✨ Update available:', result.version, isSnoozed ? '(Snoozed)' : '');
 
             if (shouldShowUpdate && showToast) {
               toast.info(
@@ -123,14 +127,14 @@ export const useUpdateCheck = () => {
     const unsubAvailable = window.electronUpdates.onUpdateAvailable((info) => {
       console.log('IPC: Update available', info);
       setIsLoading(false);
-      setLatestVersion(info.version);
-      setReleaseNotes(info.releaseNotes || ''); // Electron-updater might provide this
-      setHasUpdate(true);
 
-      /*
-       * Assuming initial check provides current version elsewhere or we parse it.
-       * For now, we might rely on initial state or other means, but let's assume we proceed.
-       */
+      const isSnoozed = Cookies.get(UPDATE_SNOOZE_KEY) === info.version;
+
+      if (!isSnoozed) {
+        setLatestVersion(info.version);
+        setReleaseNotes(info.releaseNotes || '');
+        setHasUpdate(true);
+      }
     });
 
     const unsubNotAvailable = window.electronUpdates.onUpdateNotAvailable((info) => {
@@ -169,12 +173,7 @@ export const useUpdateCheck = () => {
   }, [isElectron]);
 
   const handleAcknowledgeUpdate = async () => {
-    /*
-     * For web, we acknowledge. For Electron, "acknowledging" typically implies dismissing or closing.
-     * If we want to hide it until next time:
-     */
     if (!isElectron) {
-      // ... existing web logic ...
       console.log('👆 Acknowledging update...');
 
       try {
@@ -183,7 +182,6 @@ export const useUpdateCheck = () => {
         if (!result.error) {
           await acknowledgeUpdate(result.version);
 
-          // ... persistence ...
           try {
             localStorage.setItem(LAST_ACKNOWLEDGED_VERSION_KEY, result.version);
           } catch (error) {
@@ -198,8 +196,16 @@ export const useUpdateCheck = () => {
     } else {
       // Electron: Just hide it locally
       setHasUpdate(false);
+    }
+  };
 
-      // Optionally persist skip
+  const snoozeUpdate = () => {
+    if (latestVersion) {
+      console.log('💤 Snoozing update:', latestVersion);
+
+      // Snooze for 1 day
+      Cookies.set(UPDATE_SNOOZE_KEY, latestVersion, { expires: 1 });
+      setHasUpdate(false);
     }
   };
 
@@ -218,7 +224,7 @@ export const useUpdateCheck = () => {
 
   return {
     hasUpdate,
-    currentVersion, // Note: In electron, might need to fetch app version explicitly if not available
+    currentVersion,
     latestVersion,
     releaseNotes,
     releaseUrl,
@@ -229,6 +235,7 @@ export const useUpdateCheck = () => {
     error,
     acknowledgeUpdate: handleAcknowledgeUpdate,
     manualCheck: () => checkUpdate(false),
+    snoozeUpdate,
     downloadAndInstall,
     quitAndInstall,
     isElectron,
