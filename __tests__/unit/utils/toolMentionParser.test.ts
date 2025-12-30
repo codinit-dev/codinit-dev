@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   shouldShowAutocomplete,
   detectReferenceType,
@@ -7,6 +7,15 @@ import {
 } from '~/utils/toolMentionParser';
 
 describe('toolMentionParser', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => { });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('shouldShowAutocomplete', () => {
     it('should return isOpen=true when @ is at start of text', () => {
       const result = shouldShowAutocomplete('@', 1);
