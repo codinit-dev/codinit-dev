@@ -125,7 +125,7 @@
   ._GradientBorder_1k1wl_5:before {
     position: absolute;
     padding: 1px;
-    background: linear-gradient(180deg, var(--codinit-elements-borderColor), #fff3);
+    background: linear-gradient(180deg, var(--codinit-elements-borderColor), rgba(255, 255, 255, 0.2));
     border-radius: inherit;
     content: '';
     inset: 0;
@@ -140,14 +140,18 @@
   }
 
   [data-theme='light'] ._GradientBorder_1k1wl_5:before {
-    background: linear-gradient(180deg, var(--codinit-elements-borderColor), #0003);
+    background: linear-gradient(180deg, var(--codinit-elements-borderColor), rgba(0, 0, 0, 0.1));
   }
 }
 
 ._LiquidGlassButton_16cym_1 {
   min-height: 40px;
   overflow: visible;
-  background: linear-gradient(135deg, var(--codinit-elements-item-backgroundAccent), rgba(204, 204, 204, 0.05));
+  background: linear-gradient(
+    135deg,
+    var(--codinit-elements-item-backgroundAccent),
+    var(--secondary-5, rgba(255, 255, 255, 0.05))
+  );
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   box-shadow:
