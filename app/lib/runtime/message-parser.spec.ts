@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { StreamingMessageParser, type ActionCallback, type ArtifactCallback } from './message-parser';
 
 interface ExpectedResult {
@@ -12,6 +12,16 @@ interface ExpectedResult {
 }
 
 describe('StreamingMessageParser', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should pass through normal text', () => {
     const parser = new StreamingMessageParser();
     expect(parser.parse('test_id', 'Hello, world!')).toBe('Hello, world!');
