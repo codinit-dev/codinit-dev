@@ -153,6 +153,11 @@
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
   --ring: 240 10% 3.9%;
+
+  /* Editor specific */
+  --codinit-elements-editor-activeLine: rgba(0, 0, 0, 0.04);
+  --codinit-elements-editor-selection: rgba(59, 130, 246, 0.25);
+  --codinit-elements-editor-match: rgba(245, 101, 101, 0.4);
 }
 
 /* Color Tokens Dark Theme - Modernized */
@@ -305,6 +310,11 @@
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
   --ring: 240 4.9% 83.9%;
+
+  /* Editor specific */
+  --codinit-elements-editor-activeLine: rgba(255, 255, 255, 0.08);
+  --codinit-elements-editor-selection: rgba(255, 255, 255, 0.25);
+  --codinit-elements-editor-match: rgba(234, 92, 0, 0.4);
 }
 
 /*
