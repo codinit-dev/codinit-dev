@@ -25,6 +25,8 @@ import { createSampler } from '~/utils/sampler';
 import type { ActionAlert, DeployAlert, SupabaseAlert, FileAction } from '~/types/actions';
 import { startAutoSave } from '~/lib/persistence/fileAutoSave';
 import { diffApprovalStore } from './settings';
+import { isElectron, saveFileLocal } from '~/utils/electron';
+import { getProjectName } from '~/utils/projectName';
 
 const { saveAs } = fileSaver;
 
@@ -349,6 +351,12 @@ export class WorkbenchStore {
 
     await this.#filesStore.saveFile(filePath, document.value);
 
+    if (isElectron()) {
+      const projectName = this.#getProjectName();
+      const relativePath = extractRelativePath(filePath);
+      await saveFileLocal(projectName, relativePath, document.value);
+    }
+
     const newUnsavedFiles = new Set(this.unsavedFiles.get());
     newUnsavedFiles.delete(filePath);
 
@@ -460,6 +468,12 @@ export class WorkbenchStore {
 
       if (success) {
         this.setSelectedFile(filePath);
+
+        if (isElectron()) {
+          const projectName = this.#getProjectName();
+          const relativePath = extractRelativePath(filePath);
+          await saveFileLocal(projectName, relativePath, content);
+        }
 
         /*
          * For empty files, we need to ensure they're not marked as unsaved
@@ -1316,6 +1330,10 @@ export class WorkbenchStore {
 
       throw error;
     }
+  }
+
+  #getProjectName() {
+    return getProjectName();
   }
 }
 
