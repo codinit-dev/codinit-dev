@@ -1,7 +1,5 @@
-import { getSystemPrompt } from './prompts/prompts';
 import optimized from './prompts/optimized';
 import { getFineTunedPrompt } from './prompts/fine-tuned';
-import { getBasePrompt } from './prompts/base-prompt';
 
 export interface PromptOptions {
   cwd: string;
@@ -47,42 +45,29 @@ class PromptRegistryImpl {
 
   #registerDefaults() {
     this.register({
-      id: 'base',
-      label: 'Universal Standards (Core)',
-      description: 'Framework-agnostic universal standards and best practices that always apply',
-      version: 1,
-      category: 'core',
-      tokenEstimate: 2000,
-      get: () => getBasePrompt(),
-    });
-
-    this.register({
       id: 'default',
       label: 'Default Prompt',
       description: 'Battle-tested default system prompt with comprehensive guidelines',
       version: 2,
       category: 'standard',
-      tokenEstimate: 15000,
-      get: (options) => getSystemPrompt(options.cwd, options.supabase),
+      get: (options) => optimized(options),
     });
 
     this.register({
       id: 'enhanced',
-      label: 'Fine Tuned Prompt',
+      label: 'Fine-Tuned',
       description: 'Fine-tuned prompt optimized for better results with advanced techniques',
       version: 2,
       category: 'standard',
-      tokenEstimate: 12000,
       get: (options) => getFineTunedPrompt(options.cwd, options.supabase),
     });
 
     this.register({
       id: 'optimized',
-      label: 'Optimized Prompt (experimental)',
+      label: 'Experimental',
       description: 'Experimental version optimized for lower token usage',
       version: 1,
       category: 'experimental',
-      tokenEstimate: 8000,
       get: (options) => optimized(options),
     });
   }
@@ -180,11 +165,6 @@ export { promptRegistryInstance as PromptRegistry };
 
 export class PromptLibrary {
   static library = {
-    base: {
-      label: 'Universal Standards (Core)',
-      description: 'Framework-agnostic universal standards and best practices that always apply',
-      get: (options: PromptOptions) => promptRegistryInstance.get('base', options),
-    },
     default: {
       label: 'Default Prompt',
       description: 'Battle-tested default system prompt with comprehensive guidelines',
@@ -208,10 +188,6 @@ export class PromptLibrary {
       label,
       description,
     }));
-  }
-
-  static getPropmtFromLibrary(promptId: string, options: PromptOptions): string {
-    return promptRegistryInstance.get(promptId, options);
   }
 
   static getPromptFromLibrary(promptId: string, options: PromptOptions): string {
