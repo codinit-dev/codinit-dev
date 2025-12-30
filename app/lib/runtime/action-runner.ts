@@ -7,6 +7,8 @@ import { unreachable } from '~/utils/unreachable';
 import type { ActionCallbackData } from './message-parser';
 import type { ExampleShell } from '~/utils/shell';
 import { validateCode } from './code-validator';
+import { isElectron, saveFileLocal } from '~/utils/electron';
+import { getProjectName } from '~/utils/projectName';
 
 const logger = createScopedLogger('ActionRunner');
 
@@ -426,6 +428,11 @@ export class ActionRunner {
     try {
       await webcontainer.fs.writeFile(relativePath, action.content);
       logger.debug(`File written ${relativePath}`);
+
+      if (isElectron()) {
+        const projectName = getProjectName();
+        await saveFileLocal(projectName, relativePath, action.content);
+      }
     } catch (error) {
       logger.error('Failed to write file\n\n', error);
     }
