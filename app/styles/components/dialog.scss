@@ -1,7 +1,6 @@
 @use '../variables.scss';
 
 /* Light theme dialog colors */
-/* Light theme dialog colors */
 :root[data-theme='light'] {
   --secondary-1: var(--codinit-elements-bg-depth-1);
   --secondary-2: var(--codinit-elements-bg-depth-2);
@@ -20,18 +19,18 @@
 }
 
 /* Dark theme dialog colors */
-:root,
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+:root:not([data-theme='light']) {
   --secondary-1: var(--codinit-elements-bg-depth-3);
   --secondary-2: var(--codinit-elements-bg-depth-2);
   --secondary-3: var(--codinit-elements-bg-depth-1);
   --secondary-4: var(--codinit-elements-borderColor);
-  --secondary-5: rgba(204, 204, 204, 0.1);
-  --secondary-6: rgba(204, 204, 204, 0.15);
-  --secondary-7: rgba(204, 204, 204, 0.2);
-  --secondary-8: rgba(204, 204, 204, 0.25);
-  --secondary-9: rgba(204, 204, 204, 0.3);
-  --secondary-10: rgba(204, 204, 204, 0.4);
+  --secondary-5: rgba(255, 255, 255, 0.05);
+  --secondary-6: rgba(255, 255, 255, 0.08);
+  --secondary-7: rgba(255, 255, 255, 0.1);
+  --secondary-8: rgba(255, 255, 255, 0.12);
+  --secondary-9: rgba(255, 255, 255, 0.15);
+  --secondary-10: rgba(255, 255, 255, 0.2);
   --secondary-11: var(--codinit-elements-textSecondary);
   --secondary-12: var(--codinit-elements-textPrimary);
   --dialog-overlay-bg: rgba(0, 0, 0, 0.7);
@@ -42,6 +41,8 @@
 .dialog-overlay {
   background-color: var(--dialog-overlay-bg);
   backdrop-filter: blur(4px);
+  position: fixed;
+  inset: 0;
 }
 
 .dialog-content {
@@ -50,4 +51,5 @@
   box-shadow:
     0 20px 25px -5px var(--dialog-shadow-color),
     0 10px 10px -5px var(--dialog-shadow-color);
+  border-radius: 12px;
 }
