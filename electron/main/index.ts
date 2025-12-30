@@ -3,6 +3,11 @@ import { createRequestHandler } from '@remix-run/node';
 import electron, { app, BrowserWindow, ipcMain, protocol, session } from 'electron';
 import log from 'electron-log';
 import path from 'node:path';
+import fs from 'node:fs/promises';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const execAsync = promisify(exec);
 import * as pkg from '../../package.json';
 import { setupAutoUpdater } from './utils/auto-update';
 import { isDev, DEFAULT_PORT } from './utils/constants';
@@ -55,6 +60,18 @@ process.on('unhandledRejection', async (error) => {
   }
 
   app.setAppLogsPath(path.join(root, subdirName, 'Logs'));
+
+  // Ensure codinit-apps folder exists in home directory
+  (async () => {
+    const appsDir = path.join(app.getPath('home'), 'codinit-apps');
+
+    try {
+      await fs.mkdir(appsDir, { recursive: true });
+      console.log(`Ensured codinit-apps folder exists at: ${appsDir}`);
+    } catch (error) {
+      console.error('Failed to create codinit-apps folder:', error);
+    }
+  })();
 })();
 
 console.log('appPath:', app.getAppPath());
@@ -266,6 +283,52 @@ declare global {
         return true;
       } catch (error) {
         console.error('Failed to remove cookie from Electron session:', error);
+        return false;
+      }
+    });
+
+    ipcMain.handle('initialize-project', async (_, projectName: string) => {
+      try {
+        const home = app.getPath('home');
+        const projectDir = path.join(home, 'codinit-apps', projectName);
+
+        await fs.mkdir(projectDir, { recursive: true });
+
+        // Initialize git repository
+        try {
+          await execAsync('git init', { cwd: projectDir });
+          await execAsync('git add .', { cwd: projectDir });
+          await execAsync('git commit -m "Init codinit app"', { cwd: projectDir });
+        } catch (gitError) {
+          console.warn(`Git initialization failed for ${projectName}:`, gitError);
+          // Don't fail the whole process if git fails
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Failed to initialize project:', error);
+        return false;
+      }
+    });
+
+    ipcMain.handle('save-file-local', async (_, projectName: string, filePath: string, content: string | Uint8Array) => {
+      try {
+        const home = app.getPath('home');
+        const appsDir = path.join(home, 'codinit-apps');
+        const projectDir = path.join(appsDir, projectName);
+        const fullPath = path.join(projectDir, filePath);
+
+        await fs.mkdir(path.dirname(fullPath), { recursive: true });
+
+        if (typeof content === 'string') {
+          await fs.writeFile(fullPath, content, 'utf8');
+        } else {
+          await fs.writeFile(fullPath, Buffer.from(content));
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Failed to save file locally:', error);
         return false;
       }
     });
