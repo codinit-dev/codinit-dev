@@ -1,7 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { stripCodeFenceFromArtifact } from './Markdown';
 
 describe('stripCodeFenceFromArtifact', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should remove code fences around artifact element', () => {
     const input = "```xml\n<div class='__codinitArtifact__'></div>\n```";
     const expected = "\n<div class='__codinitArtifact__'></div>\n";
