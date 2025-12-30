@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   extractFileReferences,
   createReferencedFilesContext,
@@ -12,6 +12,15 @@ import type { FileMap } from '~/lib/.server/llm/constants';
 import type { Message } from 'ai';
 
 describe('LLM Utils - File References', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => { });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('extractFileReferences', () => {
     it('should extract single file reference', () => {
       const text = 'Can you check @src/index.ts?';
