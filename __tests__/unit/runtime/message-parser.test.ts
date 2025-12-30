@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 function cleanoutMarkdownSyntax(content: string) {
   const codeBlockRegex = /^\s*```[\w-]*\s*\n?([\s\S]*?)\n?\s*```\s*$/;
@@ -18,6 +18,15 @@ function cleanoutMarkdownSyntax(content: string) {
 }
 
 describe('message-parser - cleanoutMarkdownSyntax', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => { });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe('Basic markdown removal', () => {
     it('should remove markdown code block with language', () => {
       const input = '```javascript\nconst x = 1;\n```';
