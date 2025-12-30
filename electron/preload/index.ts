@@ -31,6 +31,12 @@ const windowControls = {
   getPlatform: () => {
     return ipcRenderer.invoke('window-get-platform');
   },
+  saveFileLocal: (projectName: string, filePath: string, content: string | Uint8Array) => {
+    return ipcRenderer.invoke('save-file-local', projectName, filePath, content);
+  },
+  initializeProject: (projectName: string) => {
+    return ipcRenderer.invoke('initialize-project', projectName);
+  },
   onMaximize: (callback: () => void) => {
     ipcRenderer.on('window-maximized', callback);
     return () => ipcRenderer.removeListener('window-maximized', callback);
