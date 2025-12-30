@@ -11,6 +11,7 @@ import type { ContextAnnotation, ProgressAnnotation } from '~/types/context';
 import { WORK_DIR } from '~/utils/constants';
 import { extractPropertiesFromMessage } from '~/lib/.server/llm/utils';
 import { MCPService } from '~/lib/services/mcpService';
+import { BuiltInToolService } from '~/lib/services/builtInToolService';
 
 export async function action(args: ActionFunctionArgs) {
   return chatAction(args);
@@ -251,6 +252,16 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
           } catch (error) {
             logger.error('Failed to process MCP tool invocations:', error);
           }
+        }
+
+        try {
+          const builtInToolService = BuiltInToolService.getInstance();
+          const serverSideTools = ['SearchWeb', 'FetchFromWeb', 'TodoManager'];
+          builtInToolService.setEnabledTools(serverSideTools);
+          processedMessages = await builtInToolService.processToolInvocations(processedMessages, dataStream);
+          logger.debug('Processed built-in tool invocations');
+        } catch (error) {
+          logger.error('Failed to process built-in tool invocations:', error);
         }
 
         const result = await streamText({
