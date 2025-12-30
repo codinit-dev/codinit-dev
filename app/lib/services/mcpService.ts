@@ -1,6 +1,5 @@
 import {
   experimental_createMCPClient,
-  type ToolSet,
   type Message,
   type DataStreamWriter,
   convertToCoreMessages,
@@ -17,96 +16,20 @@ import {
   TOOL_NO_EXECUTE_FUNCTION,
 } from '~/utils/constants';
 import { createScopedLogger } from '~/utils/logger';
+import {
+  mcpServerConfigSchema,
+  type MCPConfig,
+  type MCPServerConfig,
+  type MCPServerTools,
+  type MCPClient,
+  type ToolCall,
+  type STDIOServerConfig,
+  type SSEServerConfig,
+  type StreamableHTTPServerConfig,
+  type ToolSet,
+} from '~/types/mcp';
 
 const logger = createScopedLogger('mcp-service');
-
-export const stdioServerConfigSchema = z
-  .object({
-    type: z.enum(['stdio']).optional(),
-    command: z.string().min(1, 'Command cannot be empty'),
-    args: z.array(z.string()).optional(),
-    cwd: z.string().optional(),
-    env: z.record(z.string()).optional(),
-  })
-  .transform((data) => ({
-    ...data,
-    type: 'stdio' as const,
-  }));
-export type STDIOServerConfig = z.infer<typeof stdioServerConfigSchema>;
-
-export const sseServerConfigSchema = z
-  .object({
-    type: z.enum(['sse']).optional(),
-    url: z.string().url('URL must be a valid URL format'),
-    headers: z.record(z.string()).optional(),
-  })
-  .transform((data) => ({
-    ...data,
-    type: 'sse' as const,
-  }));
-export type SSEServerConfig = z.infer<typeof sseServerConfigSchema>;
-
-export const streamableHTTPServerConfigSchema = z
-  .object({
-    type: z.enum(['streamable-http']).optional(),
-    url: z.string().url('URL must be a valid URL format'),
-    headers: z.record(z.string()).optional(),
-  })
-  .transform((data) => ({
-    ...data,
-    type: 'streamable-http' as const,
-  }));
-
-export type StreamableHTTPServerConfig = z.infer<typeof streamableHTTPServerConfigSchema>;
-
-export const mcpServerConfigSchema = z.union([
-  stdioServerConfigSchema,
-  sseServerConfigSchema,
-  streamableHTTPServerConfigSchema,
-]);
-export type MCPServerConfig = z.infer<typeof mcpServerConfigSchema>;
-
-export const mcpConfigSchema = z.object({
-  mcpServers: z.record(z.string(), mcpServerConfigSchema),
-});
-export type MCPConfig = z.infer<typeof mcpConfigSchema>;
-
-export type MCPClient = {
-  tools: () => Promise<ToolSet>;
-  close: () => Promise<void>;
-} & {
-  serverName: string;
-};
-
-export type ToolCall = {
-  type: 'tool-call';
-  toolCallId: string;
-  toolName: string;
-  args: Record<string, unknown>;
-};
-
-export type MCPServerTools = Record<string, MCPServer>;
-
-export type MCPServerAvailable = {
-  status: 'available';
-  tools: ToolSet;
-  client: MCPClient;
-  config: MCPServerConfig;
-};
-export type MCPServerUnavailable = {
-  status: 'unavailable';
-  error: string;
-  client: MCPClient | null;
-  config: MCPServerConfig;
-};
-export type MCPServer = MCPServerAvailable | MCPServerUnavailable | MCPServerConnecting;
-
-export type MCPServerConnecting = {
-  status: 'connecting';
-  config: MCPServerConfig;
-  retryCount: number;
-  lastAttempt: Date;
-};
 
 interface LogThrottleEntry {
   lastLogged: number;
@@ -197,44 +120,13 @@ export class MCPService {
   }
 
   private _validateServerConfig(serverName: string, config: any): MCPServerConfig {
-    const hasStdioField = config.command !== undefined;
-    const hasUrlField = config.url !== undefined;
+    const result = this.validateServerConfig(serverName, config);
 
-    if (hasStdioField && hasUrlField) {
-      throw new Error(`cannot have "command" and "url" defined for the same server.`);
+    if (!result.isValid || !result.config) {
+      throw new Error(result.error || 'Invalid configuration');
     }
 
-    if (!config.type && hasStdioField) {
-      config.type = 'stdio';
-    }
-
-    if (hasUrlField && !config.type) {
-      throw new Error(`missing "type" field, only "sse" and "streamable-http" are valid options.`);
-    }
-
-    if (!['stdio', 'sse', 'streamable-http'].includes(config.type)) {
-      throw new Error(`provided "type" is invalid, only "stdio", "sse" or "streamable-http" are valid options.`);
-    }
-
-    // Check for type/field mismatch
-    if (config.type === 'stdio' && !hasStdioField) {
-      throw new Error(`missing "command" field.`);
-    }
-
-    if (['sse', 'streamable-http'].includes(config.type) && !hasUrlField) {
-      throw new Error(`missing "url" field.`);
-    }
-
-    try {
-      return mcpServerConfigSchema.parse(config);
-    } catch (validationError) {
-      if (validationError instanceof z.ZodError) {
-        const errorMessages = validationError.errors.map((err) => `${err.path.join('.')}: ${err.message}`).join('; ');
-        throw new Error(`Invalid configuration for server "${serverName}": ${errorMessages}`);
-      }
-
-      throw validationError;
-    }
+    return result.config;
   }
 
   async updateConfig(config: MCPConfig) {
@@ -436,6 +328,30 @@ export class MCPService {
     await Promise.allSettled(checkPromises);
 
     return this._mcpToolsPerServer;
+  }
+
+  async retryServerConnection(serverName: string): Promise<MCPServerTools> {
+    const server = this._mcpToolsPerServer[serverName];
+
+    if (!server) {
+      throw new Error(`Server "${serverName}" not found`);
+    }
+
+    // Force retry by clearing retry info and throttle
+    this._retryAttempts.delete(serverName);
+    this._availabilityCheckThrottleCache.delete(serverName);
+
+    // If it was unavailable, mark as connecting to trigger a check
+    if (server.status === 'unavailable') {
+      this._mcpToolsPerServer[serverName] = {
+        status: 'connecting',
+        config: server.config,
+        retryCount: 0,
+        lastAttempt: new Date(),
+      };
+    }
+
+    return await this.checkServersAvailabilities();
   }
 
   private _formatConnectionError(error: any, serverName: string): string {
