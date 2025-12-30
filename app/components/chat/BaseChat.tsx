@@ -94,6 +94,8 @@ interface BaseChatProps {
   setDesignScheme?: (scheme: DesignScheme) => void;
   selectedElement?: ElementInfo | null;
   setSelectedElement?: (element: ElementInfo | null) => void;
+  promptId?: string;
+  setPromptId?: (promptId: string) => void;
   addToolResult?: ({ toolCallId, result }: { toolCallId: string; result: any }) => void;
 }
 
@@ -141,6 +143,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
       setDesignScheme,
       selectedElement,
       setSelectedElement,
+      promptId,
+      setPromptId,
       addToolResult = () => {
         throw new Error('addToolResult not implemented');
       },
@@ -797,6 +801,8 @@ export const BaseChat = React.forwardRef<HTMLDivElement, BaseChatProps>(
                   setDesignScheme={setDesignScheme}
                   selectedElement={selectedElement}
                   setSelectedElement={setSelectedElement}
+                  promptId={promptId}
+                  setPromptId={setPromptId}
                   codinit_options={{
                     enable_web_search: proStore.get().features.webSearch,
                     enable_lazy_edits: proStore.get().features.lazyEdits,
