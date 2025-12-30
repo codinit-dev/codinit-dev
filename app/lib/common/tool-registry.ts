@@ -1,4 +1,4 @@
-import toolsConfig from './tools.json';
+import toolsConfig from './builtin-tools.json';
 
 export interface ToolDefinition {
   name: string;

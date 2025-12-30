@@ -1,0 +1,196 @@
+{
+  "tools": [
+    {
+      "name": "ReadFile",
+      "description": "Reads file contents intelligently - returns complete files when small, or targeted sections when large.\n\n**When to use:**\n• Before editing existing files to understand context\n• Understanding implementation details\n• Finding specific code patterns\n• Code analysis and review\n\n**Features:**\n• Small files (≤2000 lines) - Returns complete content\n• Large files (>2000 lines) - Returns with truncation warning\n• Supports line ranges for reading specific sections\n• Any lines longer than 2000 characters are truncated",
+      "parameters": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "filePath": {
+            "type": "string",
+            "description": "The absolute path to the file to read"
+          },
+          "query": {
+            "type": "string",
+            "description": "Optional: What you're looking for in the file (for context)"
+          },
+          "startLine": {
+            "type": "number",
+            "description": "Optional: Starting line number (1-based)"
+          },
+          "endLine": {
+            "type": "number",
+            "description": "Optional: Ending line number (1-based)"
+          },
+          "taskNameActive": {
+            "type": "string",
+            "description": "2-5 words describing the task when running"
+          },
+          "taskNameComplete": {
+            "type": "string",
+            "description": "2-5 words describing the task when complete"
+          }
+        },
+        "required": ["filePath", "taskNameActive", "taskNameComplete"]
+      }
+    },
+    {
+      "name": "LSRepo",
+      "description": "Lists files and directories in the repository. Returns file paths sorted alphabetically.\n\n**Use cases:**\n• Explore repository structure\n• Find files in specific directories\n• Locate configuration files or documentation\n• Get overview before diving into code\n\n**Features:**\n• Recursive directory listing\n• Glob pattern support for filtering\n• Default ignores: node_modules, .git, dist, build, .next, .turbo\n• Max 200 files returned",
+      "parameters": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Optional: The absolute path to the directory to list"
+          },
+          "globPattern": {
+            "type": "string",
+            "description": "Optional: Glob pattern to filter files (e.g., '*.js', '*.{ts,tsx}')"
+          },
+          "ignore": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional: List of glob patterns to ignore"
+          },
+          "taskNameActive": {
+            "type": "string",
+            "description": "2-5 words describing the task when running"
+          },
+          "taskNameComplete": {
+            "type": "string",
+            "description": "2-5 words describing the task when complete"
+          }
+        },
+        "required": ["taskNameActive", "taskNameComplete"]
+      }
+    },
+    {
+      "name": "GrepRepo",
+      "description": "Searches for regex patterns within file contents. Returns matching lines with file paths and line numbers.\n\n**Use cases:**\n• Find function definitions\n• Locate imports/exports\n• Search for specific classes or interfaces\n• Find API calls or configuration\n• Track usage patterns\n\n**Features:**\n• Case-insensitive regex matching\n• Glob pattern support for file filtering\n• Returns file path, line number, and content\n• Max 200 matches returned",
+      "parameters": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "The regex pattern to search for"
+          },
+          "globPattern": {
+            "type": "string",
+            "description": "Optional: Glob pattern to filter files"
+          },
+          "path": {
+            "type": "string",
+            "description": "Optional: The absolute path to search within"
+          },
+          "taskNameActive": {
+            "type": "string",
+            "description": "2-5 words describing the task when running"
+          },
+          "taskNameComplete": {
+            "type": "string",
+            "description": "2-5 words describing the task when complete"
+          }
+        },
+        "required": ["pattern", "taskNameActive", "taskNameComplete"]
+      }
+    },
+    {
+      "name": "SearchWeb",
+      "description": "Performs web search using high-quality sources. Supports first-party documentation search for Vercel ecosystem.\n\n**When to use:**\n• Need up-to-date documentation\n• Latest best practices and features\n• Technical details not in training data\n• Troubleshooting and debugging\n• Framework/library comparisons\n\n**Features:**\n• General web search via Brave API\n• First-party docs for Vercel ecosystem (Next.js, Vercel, AI SDK, etc.)\n• Returns top 10 results with titles, URLs, and snippets",
+      "parameters": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "The search query"
+          },
+          "isFirstParty": {
+            "type": "boolean",
+            "description": "Set true for Vercel ecosystem products (Next.js, Vercel, AI SDK, etc.)"
+          },
+          "taskNameActive": {
+            "type": "string",
+            "description": "2-5 words describing the task when running"
+          },
+          "taskNameComplete": {
+            "type": "string",
+            "description": "2-5 words describing the task when complete"
+          }
+        },
+        "required": ["query", "taskNameActive", "taskNameComplete"]
+      }
+    },
+    {
+      "name": "FetchFromWeb",
+      "description": "Fetches full text content from web pages. Returns clean, parsed text with metadata.\n\n**When to use:**\n• Have specific URLs to read completely\n• Need full article/documentation text\n• Follow-up after web search\n• Read complete tutorials or references\n\n**Features:**\n• Fetches and parses HTML\n• Removes scripts and styles\n• Extracts clean text content\n• 50,000 character limit per URL\n• Supports multiple URLs in single request",
+      "parameters": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "URLs to fetch content from"
+          },
+          "taskNameActive": {
+            "type": "string",
+            "description": "2-5 words describing the task when running"
+          },
+          "taskNameComplete": {
+            "type": "string",
+            "description": "2-5 words describing the task when complete"
+          }
+        },
+        "required": ["urls", "taskNameActive", "taskNameComplete"]
+      }
+    },
+    {
+      "name": "TodoManager",
+      "description": "Manages structured todo lists for complex projects. Tracks progress through milestone-level tasks.\n\n**When to use:**\n• Multi-step projects with distinct systems\n• Apps requiring separate components\n• Complex integrations with multiple features\n• Need to demonstrate systematic approach\n\n**Actions:**\n• set_tasks - Create initial task breakdown (3-7 tasks)\n• add_task - Add single task to list\n• move_to_task - Complete current, focus on next\n• mark_all_done - Complete all tasks\n• read_list - View current todo list",
+      "parameters": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["add_task", "set_tasks", "mark_all_done", "move_to_task", "read_list"],
+            "description": "The todo management action to perform"
+          },
+          "task": {
+            "type": "string",
+            "description": "Task description for add_task"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Complete task list for set_tasks"
+          },
+          "moveToTask": {
+            "type": "string",
+            "description": "Exact task name for move_to_task"
+          },
+          "taskNameActive": {
+            "type": "string",
+            "description": "2-5 words describing the task when running"
+          },
+          "taskNameComplete": {
+            "type": "string",
+            "description": "2-5 words describing the task when complete"
+          }
+        },
+        "required": ["action", "taskNameActive", "taskNameComplete"]
+      }
+    }
+  ]
+}
