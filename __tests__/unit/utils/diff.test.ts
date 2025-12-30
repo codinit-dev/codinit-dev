@@ -1,9 +1,18 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { extractRelativePath, computeFileModifications, diffFiles, fileModificationsToHTML } from '~/utils/diff';
 import { WORK_DIR } from '~/utils/constants';
 import type { FileMap } from '~/lib/stores/files';
 
 describe('extractRelativePath', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => { });
+    vi.spyOn(console, 'error').mockImplementation(() => { });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('should strip out WORK_DIR from file paths', () => {
     const filePath = `${WORK_DIR}/src/components/Button.tsx`;
     const result = extractRelativePath(filePath);
