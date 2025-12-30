@@ -20,6 +20,8 @@ import {
 import type { FileMap } from '~/lib/stores/files';
 import type { Snapshot } from './types';
 import { webcontainer } from '~/lib/webcontainer';
+import { initializeProject, isElectron } from '~/utils/electron';
+import { getProjectName } from '~/utils/projectName';
 
 export interface ChatHistoryItem {
   id: string;
@@ -264,6 +266,10 @@ export function useChatHistory() {
 
         if (!urlId) {
           navigateChat(nextId);
+        }
+
+        if (isElectron()) {
+          initializeProject(getProjectName());
         }
       }
 
