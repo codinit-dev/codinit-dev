@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { MCPConfig, MCPServerTools } from '~/lib/services/mcpService';
+import type { MCPConfig, MCPServerTools } from '~/types/mcp';
 
 // Tool execution tracking
 export interface MCPToolExecution {
