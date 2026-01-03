@@ -4,8 +4,8 @@ import { WORK_DIR } from './constants';
 
 describe('Diff', () => {
   beforeEach(() => {
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(vi.fn());
+    vi.spyOn(console, 'error').mockImplementation(vi.fn());
   });
 
   afterEach(() => {
