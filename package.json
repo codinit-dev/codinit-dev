@@ -10,6 +10,10 @@
     "name": "Gerome-Elassaad",
     "email": "contact@codinit.dev"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codinit-dev/codinit-dev.git"
+  },
   "scripts": {
     "deploy": "npm run build && wrangler pages deploy",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 remix vite:build",

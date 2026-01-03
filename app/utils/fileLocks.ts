@@ -8,10 +8,6 @@ import { createScopedLogger } from './logger';
 
 const logger = createScopedLogger('FileLocks');
 
-/**
- * Get the current chat ID from the URL
- * @returns The current chat ID or a default value if not found
- */
 export function getCurrentChatId(): string {
   try {
     if (typeof window !== 'undefined') {
@@ -31,12 +27,6 @@ export function getCurrentChatId(): string {
   }
 }
 
-/**
- * Check if a file is locked directly from localStorage
- * This avoids circular dependencies between components and stores
- * @param filePath The path of the file to check
- * @param chatId Optional chat ID (will be extracted from URL if not provided)
- */
 export function isFileLocked(filePath: string, chatId?: string): { locked: boolean; lockedBy?: string } {
   try {
     const currentChatId = chatId || getCurrentChatId();
@@ -60,12 +50,6 @@ export function isFileLocked(filePath: string, chatId?: string): { locked: boole
   }
 }
 
-/**
- * Check if a folder is locked directly from localStorage
- * This avoids circular dependencies between components and stores
- * @param folderPath The path of the folder to check
- * @param chatId Optional chat ID (will be extracted from URL if not provided)
- */
 export function isFolderLocked(folderPath: string, chatId?: string): { locked: boolean; lockedBy?: string } {
   try {
     const currentChatId = chatId || getCurrentChatId();
@@ -78,11 +62,6 @@ export function isFolderLocked(folderPath: string, chatId?: string): { locked: b
   }
 }
 
-/**
- * Check if any files are locked in the current chat
- * @param chatId Optional chat ID (will be extracted from URL if not provided)
- * @returns True if any files or folders are locked
- */
 export function hasLockedItems(chatId?: string): boolean {
   try {
     const currentChatId = chatId || getCurrentChatId();

@@ -33,14 +33,6 @@ function saveFallbackState(state: boolean) {
   }
 }
 
-/**
- * Safe file watcher that falls back to polling when native file watching fails
- *
- * @param webcontainer The WebContainer instance
- * @param pattern File pattern to watch
- * @param callback Function to call when files change
- * @returns An object with a close method
- */
 export async function safeWatch(webcontainer: WebContainer, pattern: string = '**/*', callback: () => void) {
   // Register the callback
   if (!watcherState.callbacks.has(pattern)) {
