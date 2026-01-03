@@ -5,9 +5,18 @@ import log from 'electron-log';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
 
-const execAsync = promisify(exec);
+const execAsync = (command: string, options?: any) => {
+  return new Promise<string>((resolve, reject) => {
+    exec(command, options, (error, stdout, _stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout?.toString() || '');
+      }
+    });
+  });
+};
 import * as pkg from '../../package.json';
 import { setupAutoUpdater } from './utils/auto-update';
 import { isDev, DEFAULT_PORT } from './utils/constants';
@@ -163,18 +172,18 @@ declare global {
 
   const rendererURL = await (isDev
     ? (async () => {
-      await initViteServer();
+        await initViteServer();
 
-      if (!viteServer) {
-        throw new Error('Vite server is not initialized');
-      }
+        if (!viteServer) {
+          throw new Error('Vite server is not initialized');
+        }
 
-      const listen = await viteServer.listen();
-      global.__electron__ = electron;
-      viteServer.printUrls();
+        const listen = await viteServer.listen();
+        global.__electron__ = electron;
+        viteServer.printUrls();
 
-      return `http://localhost:${listen.config.server.port}`;
-    })()
+        return `http://localhost:${listen.config.server.port}`;
+      })()
     : `http://localhost:${DEFAULT_PORT}`);
 
   console.log('Using renderer URL:', rendererURL);
@@ -301,6 +310,7 @@ declare global {
           await execAsync('git commit -m "Init codinit app"', { cwd: projectDir });
         } catch (gitError) {
           console.warn(`Git initialization failed for ${projectName}:`, gitError);
+
           // Don't fail the whole process if git fails
         }
 
@@ -311,27 +321,30 @@ declare global {
       }
     });
 
-    ipcMain.handle('save-file-local', async (_, projectName: string, filePath: string, content: string | Uint8Array) => {
-      try {
-        const home = app.getPath('home');
-        const appsDir = path.join(home, 'codinit-apps');
-        const projectDir = path.join(appsDir, projectName);
-        const fullPath = path.join(projectDir, filePath);
+    ipcMain.handle(
+      'save-file-local',
+      async (_, projectName: string, filePath: string, content: string | Uint8Array) => {
+        try {
+          const home = app.getPath('home');
+          const appsDir = path.join(home, 'codinit-apps');
+          const projectDir = path.join(appsDir, projectName);
+          const fullPath = path.join(projectDir, filePath);
 
-        await fs.mkdir(path.dirname(fullPath), { recursive: true });
+          await fs.mkdir(path.dirname(fullPath), { recursive: true });
 
-        if (typeof content === 'string') {
-          await fs.writeFile(fullPath, content, 'utf8');
-        } else {
-          await fs.writeFile(fullPath, Buffer.from(content));
+          if (typeof content === 'string') {
+            await fs.writeFile(fullPath, content, 'utf8');
+          } else {
+            await fs.writeFile(fullPath, Buffer.from(content));
+          }
+
+          return true;
+        } catch (error) {
+          console.error('Failed to save file locally:', error);
+          return false;
         }
-
-        return true;
-      } catch (error) {
-        console.error('Failed to save file locally:', error);
-        return false;
-      }
-    });
+      },
+    );
 
     return win;
   })
