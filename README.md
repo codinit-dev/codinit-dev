@@ -53,7 +53,7 @@ Get up and running in minutes.
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/codinit-dev/codinit-dev.git](https://github.com/codinit-dev/codinit-dev.git)
+git clone https://github.com/codinit-dev/codinit-dev.git
 cd codinit-dev
 
 ```

@@ -67,19 +67,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y rpm
 
-      - name: Sync version with tag
-        if: github.event_name == 'push' && github.ref_type == 'tag'
-        shell: bash
-        run: |
-          # Extract version from tag (remove 'v' prefix)
-          TAG_VERSION=${GITHUB_REF_NAME#v}
-          echo "TAG_VERSION=$TAG_VERSION"
-          # Update package.json version
-          npm version $TAG_VERSION --no-git-tag-version --allow-same-version
-
       - name: Build Electron app
         env:
-          NODE_OPTIONS: '--max_old_space_size=4096'
+          GH_TOKEN: ${{ secrets.TOKEN }}
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
             pnpm run electron:build:win
@@ -125,7 +116,6 @@ jobs:
           tag_name: ${{ github.ref_name }}
           draft: false
           name: Release ${{ github.ref_name }}
-          fail_on_unmatched_files: false
           files: |
             artifacts/**/*.exe
             artifacts/**/*.dmg
@@ -133,7 +123,6 @@ jobs:
             artifacts/**/*.AppImage
             artifacts/**/*.zip
             artifacts/**/*.blockmap
-            artifacts/**/latest.yml
-            artifacts/**/latest-*.yml
+            artifacts/**/*.yml
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

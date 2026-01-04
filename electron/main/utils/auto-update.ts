@@ -1,5 +1,6 @@
 import logger from 'electron-log';
-import { app } from 'electron';
+import type { MessageBoxOptions } from 'electron';
+import { app, dialog } from 'electron';
 import type { AppUpdater, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater';
 import path from 'node:path';
 
@@ -39,93 +40,101 @@ export async function setupAutoUpdater() {
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = true;
 
-  // Helper to send events to all windows
-  const sendToAllWindows = (channel: string, ...args: any[]) => {
-    const windows = require('electron').BrowserWindow.getAllWindows();
-    windows.forEach((win: any) => {
-      if (!win.isDestroyed()) {
-        win.webContents.send(channel, ...args);
-      }
-    });
-  };
-
-  // IPC Listeners
-  const { ipcMain } = require('electron');
-
-  ipcMain.handle('update-check', async () => {
-    logger.info('Manual update check requested via IPC');
-    try {
-      const result = await autoUpdater.checkForUpdates();
-      return { success: true, result };
-    } catch (error) {
-      logger.error('Manual update check failed:', error);
-      return { success: false, error: (error as Error).message };
-    }
-  });
-
-  ipcMain.handle('update-download', async () => {
-    logger.info('Download update requested via IPC');
-    try {
-      await autoUpdater.downloadUpdate();
-      return { success: true };
-    } catch (error) {
-      logger.error('Download update failed:', error);
-      return { success: false, error: (error as Error).message };
-    }
-  });
-
-  ipcMain.handle('update-install', () => {
-    logger.info('Install and restart requested via IPC');
-    autoUpdater.quitAndInstall(false);
-  });
-
-  // AutoUpdater Events
   autoUpdater.on('checking-for-update', () => {
     logger.info('checking-for-update...');
-    sendToAllWindows('auto-updater:checking-for-update');
   });
 
-  autoUpdater.on('update-available', (info: UpdateInfo) => {
-    logger.info('Update available:', info);
-    sendToAllWindows('auto-updater:update-available', info);
+  autoUpdater.on('update-available', async (info: UpdateInfo) => {
+    logger.info('Update available.', info);
+
+    const dialogOpts: MessageBoxOptions = {
+      type: 'info' as const,
+      buttons: ['Update', 'Later'],
+      title: 'Application Update',
+      message: `Version ${info.version} is available.`,
+      detail: 'A new version is available. Would you like to update now?',
+    };
+
+    const response = await dialog.showMessageBox(dialogOpts);
+
+    if (response.response === 0) {
+      logger.info('User chose to update. Starting download...');
+      autoUpdater.downloadUpdate();
+    } else {
+      logger.info('User chose to skip update');
+    }
   });
 
-  autoUpdater.on('update-not-available', (info: UpdateInfo) => {
+  autoUpdater.on('update-not-available', () => {
     logger.info('Update not available.');
-    sendToAllWindows('auto-updater:update-not-available', info);
   });
 
   autoUpdater.on('error', (err) => {
     logger.error('Error in auto-updater:', err);
-    sendToAllWindows('auto-updater:error', err.message);
+    dialog.showErrorBox('Update Error', `Failed to check for updates: ${err.message}`);
   });
 
   autoUpdater.on('download-progress', (progressObj) => {
-    // logger.info('Download progress:', progressObj.percent); // Reduce log noise
-    sendToAllWindows('auto-updater:download-progress', progressObj);
+    logger.info('Download progress:', progressObj);
   });
 
-  autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent) => {
-    logger.info('Update downloaded:', info);
-    sendToAllWindows('auto-updater:update-downloaded', info);
+  autoUpdater.on('update-downloaded', async (event: UpdateDownloadedEvent) => {
+    logger.info('Update downloaded:', formatUpdateDownloadedEvent(event));
+
+    const dialogOpts: MessageBoxOptions = {
+      type: 'info' as const,
+      buttons: ['Restart', 'Later'],
+      title: 'Application Update',
+      message: 'Update Downloaded',
+      detail: 'A new version has been downloaded. Restart the application to apply the updates.',
+    };
+
+    const response = await dialog.showMessageBox(dialogOpts);
+
+    if (response.response === 0) {
+      logger.info('User chose to restart and install update');
+      autoUpdater.quitAndInstall(false);
+    } else {
+      logger.info('User chose to restart later');
+    }
   });
 
-  // Initial check (optional, can be triggered by UI)
-  // setTimeout(() => {
-  //   autoUpdater.checkForUpdates().catch(err => logger.error('Initial check failed', err));
-  // }, 5000);
+  // Check for updates
+  try {
+    logger.info('Checking for updates. Current version:', app.getVersion());
+    await autoUpdater.checkForUpdates();
+    logger.info('Update check completed successfully');
+  } catch (err) {
+    logger.error('Failed to check for updates:', err);
 
-  // Periodic checks can still be here, but we'll let the UI initiate them mostly so we have visibility
-  // If we do want background checks:
+    // Show user-friendly error message
+    dialog.showErrorBox(
+      'Update Check Failed',
+      'Unable to check for updates. Please check your internet connection and try again later.',
+    );
+  }
+
+  // Set up periodic update checks (every 4 hours)
   setInterval(
     async () => {
       try {
-        logger.info('Performing periodic background update check...');
+        logger.info('Performing periodic update check...');
         await autoUpdater.checkForUpdates();
+        logger.info('Periodic update check completed');
       } catch (err) {
-        logger.error('Periodic background update check failed:', err);
+        logger.error('Periodic update check failed:', err);
+
+        // Don't show dialog for periodic checks to avoid annoying users
       }
     },
     4 * 60 * 60 * 1000,
   );
+}
+
+function formatUpdateDownloadedEvent(event: UpdateDownloadedEvent): string {
+  return JSON.stringify({
+    version: event.version,
+    downloadedFile: event.downloadedFile,
+    files: event.files.map((e) => ({ files: { url: e.url, size: e.size } })),
+  });
 }

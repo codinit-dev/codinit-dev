@@ -51,6 +51,7 @@ export function createWindow(rendererURL: string) {
     if (boundsTimeout) {
       clearTimeout(boundsTimeout);
     }
+
     boundsTimeout = setTimeout(() => {
       const bounds = win.getBounds();
       store.set('bounds', bounds);
