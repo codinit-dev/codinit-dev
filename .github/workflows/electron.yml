@@ -69,14 +69,14 @@ jobs:
 
       - name: Build Electron app
         env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
+          NODE_OPTIONS: '--max_old_space_size=4096'
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            pnpm run electron:build:win
+            pnpm run electron:build:win --publish=never
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            pnpm run electron:build:mac
+            pnpm run electron:build:mac --publish=never
           else
-            pnpm run electron:build:linux
+            pnpm run electron:build:linux --publish=never
           fi
         shell: bash
 
