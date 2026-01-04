@@ -81,11 +81,11 @@ jobs:
           NODE_OPTIONS: '--max_old_space_size=4096'
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            pnpm run electron:build:win --publish=never
+            pnpm run electron:build:win
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            pnpm run electron:build:mac --publish=never
+            pnpm run electron:build:mac
           else
-            pnpm run electron:build:linux --publish=never
+            pnpm run electron:build:linux
           fi
         shell: bash
 
