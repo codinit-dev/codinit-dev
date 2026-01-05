@@ -48,6 +48,12 @@ Whether you are prototyping, scaling a SaaS product, or experimenting with local
 
 ## Quick Start
 
+### Run as a Desktop App
+
+Download the latest prebuilt release for macOS, Windows, and Linux.
+
+[Download Latest Release](https://github.com/codinit-dev/codinit-dev/releases/latest)
+
 Get up and running in minutes.
 
 ### 1. Clone the Repository
@@ -120,8 +126,4 @@ docker compose --profile development up
 
 ```
 
-### Run as a Desktop App
 
-Download the latest prebuilt release for macOS, Windows, and Linux.
-
-[Download Latest Release](https://github.com/codinit-dev/codinit-dev/releases/latest)
