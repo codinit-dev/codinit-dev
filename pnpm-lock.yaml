@@ -227,8 +227,8 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       diff:
-        specifier: ^5.2.0
-        version: 5.2.0
+        specifier: ^8.0.3
+        version: 8.0.3
       dotenv:
         specifier: ^16.6.1
         version: 16.6.1
@@ -4771,6 +4771,10 @@ packages:
 
   diff@5.2.0:
     resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
+    engines: {node: '>=0.3.1'}
+
+  diff@8.0.3:
+    resolution: {integrity: sha512-qejHi7bcSD4hQAZE0tNAawRK1ZtafHDmMTMkrrIGgSLl7hTnQHmKCeB45xAcbfTqK2zowkM3j3bHt/4b/ARbYQ==}
     engines: {node: '>=0.3.1'}
 
   diffie-hellman@5.0.3:
@@ -13734,6 +13738,8 @@ snapshots:
   diff3@0.0.3: {}
 
   diff@5.2.0: {}
+
+  diff@8.0.3: {}
 
   diffie-hellman@5.0.3:
     dependencies:
