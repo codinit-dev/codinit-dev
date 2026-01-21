@@ -33,23 +33,23 @@ export default class OpenRouterProvider extends BaseProvider {
      * Claude Opus 4.5 via OpenRouter: 200k context, maximum intelligence
      */
     {
-      name: 'anthropic/claude-opus-4-5',
+      name: 'anthropic/claude-opus-4.5',
       label: 'Claude Opus 4.5',
       provider: 'OpenRouter',
       maxTokenAllowed: 200000,
       maxCompletionTokens: 64000,
     },
 
-    // Claude Sonnet 4.5 via OpenRouter: 200k context
+    // Claude Sonnet 4.5 via OpenRouter: 1M context, highest intelligence
     {
-      name: 'anthropic/claude-sonnet-4-5',
+      name: 'anthropic/claude-sonnet-4.5',
       label: 'Claude Sonnet 4.5',
       provider: 'OpenRouter',
-      maxTokenAllowed: 200000,
+      maxTokenAllowed: 1000000,
       maxCompletionTokens: 64000,
     },
 
-    // GPT-5.2 Pro via OpenRouter: 400k context, highest accuracy
+    // GPT-5.2 Pro via OpenRouter: 400k context, latest GPT
     {
       name: 'openai/gpt-5.2-pro',
       label: 'GPT-5.2 Pro',
@@ -58,39 +58,21 @@ export default class OpenRouterProvider extends BaseProvider {
       maxCompletionTokens: 128000,
     },
 
-    // GPT-5.2 Thinking via OpenRouter: 400k context, complex reasoning
+    // GPT-4o via OpenRouter: 128k context, reliable fallback
     {
-      name: 'openai/gpt-5.2-thinking',
-      label: 'GPT-5.2 Thinking',
-      provider: 'OpenRouter',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-
-    // GPT-5.2 Instant via OpenRouter: 400k context, optimized for speed
-    {
-      name: 'openai/gpt-5.2-instant',
-      label: 'GPT-5.2 Instant',
-      provider: 'OpenRouter',
-      maxTokenAllowed: 400000,
-      maxCompletionTokens: 128000,
-    },
-
-    // GPT-5.1 via OpenRouter: 128k context
-    {
-      name: 'openai/gpt-5.1',
-      label: 'GPT-5.1',
+      name: 'openai/gpt-4o',
+      label: 'GPT-4o',
       provider: 'OpenRouter',
       maxTokenAllowed: 128000,
       maxCompletionTokens: 16384,
     },
 
-    // DeepSeek-R1 via OpenRouter: 128k context
+    // DeepSeek R1 via OpenRouter: 163k context, free tier available
     {
-      name: 'deepseek/deepseek-r1',
-      label: 'DeepSeek-R1',
+      name: 'deepseek/deepseek-r1-0528:free',
+      label: 'DeepSeek R1 (Free)',
       provider: 'OpenRouter',
-      maxTokenAllowed: 131072,
+      maxTokenAllowed: 163840,
       maxCompletionTokens: 32768,
     },
   ];
