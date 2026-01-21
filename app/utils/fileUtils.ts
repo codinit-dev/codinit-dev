@@ -137,12 +137,12 @@ export async function readPath(webcontainer: WebContainer, filePath: string): Pr
     // Try as directory first
     const entries = await webcontainer.fs.readdir(filePath, { withFileTypes: true });
     return { type: 'directory', children: entries };
-  } catch (e) {
+  } catch (_e) {
     // If not a directory, try as file
     try {
       const content = await webcontainer.fs.readFile(filePath, 'utf-8');
       return { type: 'file', content };
-    } catch (e2) {
+    } catch (_e2) {
       // console.warn(`Failed to read path ${filePath}`, e2);
     }
   }
