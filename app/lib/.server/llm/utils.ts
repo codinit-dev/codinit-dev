@@ -63,7 +63,7 @@ export function createFilesContext(files: FileMap, useRelativePath?: boolean) {
   });
 
   const fileContexts = filePaths
-    .filter((x) => files[x] && files[x].type == 'file')
+    .filter((x) => files[x]?.type === 'file')
     .map((path) => {
       const dirent = files[path];
 

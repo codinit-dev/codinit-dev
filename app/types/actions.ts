@@ -30,9 +30,9 @@ export interface SupabaseAction extends BaseAction {
   projectId?: string;
 }
 
-export type BoltAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
+export type CodinitAction = FileAction | ShellAction | StartAction | BuildAction | SupabaseAction;
 
-export type BoltActionData = BoltAction | BaseAction;
+export type CodinitActionData = CodinitAction | BaseAction;
 
 export interface ActionAlert {
   type: string;

@@ -117,5 +117,34 @@ ${files[filePath].content}
   )
   .join('\n')}
 </codinitArtifact>
+</codinitArtifact>
   `;
 };
+
+// Added utilities
+import type { WebContainer } from '@webcontainer/api';
+import { path } from 'codinit-agent/utils/path';
+import { WORK_DIR } from 'codinit-agent/constants';
+
+export function workDirRelative(filePath: string): string {
+  return path.relative(WORK_DIR, filePath);
+}
+
+export type FileResult = { type: 'file'; content: string } | { type: 'directory'; children: any[] };
+
+export async function readPath(webcontainer: WebContainer, filePath: string): Promise<FileResult> {
+  try {
+    // Try as directory first
+    const entries = await webcontainer.fs.readdir(filePath, { withFileTypes: true });
+    return { type: 'directory', children: entries };
+  } catch {
+    // If not a directory, try as file
+    try {
+      const content = await webcontainer.fs.readFile(filePath, 'utf-8');
+      return { type: 'file', content };
+    } catch {
+      // console.warn(`Failed to read path ${filePath}`, e2);
+    }
+  }
+  return { type: 'directory', children: [] }; // Fallback
+}

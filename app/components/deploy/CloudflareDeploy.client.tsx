@@ -2,10 +2,12 @@ import { toast } from 'react-toastify';
 import { useStore } from '@nanostores/react';
 import { cloudflareConnection } from '~/lib/stores/cloudflare';
 import { workbenchStore } from '~/lib/stores/workbench';
+import { alertsStore } from '~/lib/stores/alerts';
 import { webcontainer } from '~/lib/webcontainer';
 import { path } from '~/utils/path';
 import { useState } from 'react';
-import type { ActionCallbackData } from '~/lib/runtime/message-parser';
+import type { ActionCallbackData } from 'codinit-agent/message-parser';
+import { makePartId } from 'codinit-agent/partId';
 import { chatId } from '~/lib/persistence/useChatHistory';
 
 export function useCloudflareDeploy() {
@@ -35,21 +37,27 @@ export function useCloudflareDeploy() {
 
       // Create a deployment artifact for visual feedback
       const deploymentId = `deploy-cloudflare-project`;
+      const partId = makePartId(deploymentId, 0);
       workbenchStore.addArtifact({
         id: deploymentId,
-        messageId: deploymentId,
+        partId,
         title: 'Cloudflare Pages Deployment',
         type: 'standalone',
       });
 
-      const deployArtifact = workbenchStore.artifacts.get()[deploymentId];
-
       // Notify that build is starting
-      deployArtifact.runner.handleDeployAction('building', 'running', { source: 'cloudflare' });
+      alertsStore.setDeployAlert({
+        type: 'info',
+        title: 'Cloudflare Deployment',
+        description: 'Building project...',
+        stage: 'building',
+        buildStatus: 'running',
+        source: 'cloudflare',
+      });
 
       const actionId = 'build-' + Date.now();
       const actionData: ActionCallbackData = {
-        messageId: 'cloudflare build',
+        partId: makePartId('cloudflare-build', 0),
         artifactId: artifact.id,
         actionId,
         action: {
@@ -61,20 +69,32 @@ export function useCloudflareDeploy() {
       // Add the action first
       artifact.runner.addAction(actionData);
 
-      // Then run it
-      await artifact.runner.runAction(actionData);
+      // Run the build action
+      await artifact.runner.runAction(actionData, { isStreaming: false });
 
       if (!artifact.runner.buildOutput) {
         // Notify that build failed
-        deployArtifact.runner.handleDeployAction('building', 'failed', {
-          error: 'Build failed. Check the terminal for details.',
+        alertsStore.setDeployAlert({
+          type: 'error',
+          title: 'Cloudflare Deployment Failed',
+          description: 'Build failed. Check the terminal for details.',
+          stage: 'building',
+          buildStatus: 'failed',
           source: 'cloudflare',
         });
         throw new Error('Build failed');
       }
 
       // Notify that build succeeded and deployment is starting
-      deployArtifact.runner.handleDeployAction('deploying', 'running', { source: 'cloudflare' });
+      alertsStore.setDeployAlert({
+        type: 'info',
+        title: 'Cloudflare Deployment',
+        description: 'Build successful. Starting deployment...',
+        stage: 'building',
+        buildStatus: 'complete',
+        deployStatus: 'running',
+        source: 'cloudflare',
+      });
 
       // Get the build files
       const container = await webcontainer;
@@ -156,8 +176,12 @@ export function useCloudflareDeploy() {
         console.error('Invalid deploy response:', data);
 
         // Notify that deployment failed
-        deployArtifact.runner.handleDeployAction('deploying', 'failed', {
-          error: data.error || 'Invalid deployment response',
+        alertsStore.setDeployAlert({
+          type: 'error',
+          title: 'Cloudflare Deployment Failed',
+          description: data.error || 'Invalid deployment response',
+          stage: 'deploying',
+          deployStatus: 'failed',
           source: 'cloudflare',
         });
         throw new Error(data.error || 'Invalid deployment response');
@@ -169,7 +193,12 @@ export function useCloudflareDeploy() {
       }
 
       // Notify that deployment completed successfully
-      deployArtifact.runner.handleDeployAction('complete', 'complete', {
+      alertsStore.setDeployAlert({
+        type: 'success',
+        title: 'Cloudflare Deployment Complete',
+        description: 'Your project has been deployed successfully!',
+        stage: 'complete',
+        deployStatus: 'complete',
         url: data.deploy.url,
         source: 'cloudflare',
       });

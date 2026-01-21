@@ -1,5 +1,6 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { StreamingMessageParser, type ActionCallback, type ArtifactCallback } from './message-parser';
+import { describe, expect, it, vi } from 'vitest';
+import { StreamingMessageParser, type ActionCallback, type ArtifactCallback } from './message-parser.js';
+import { makePartId } from './partId.js';
 
 interface ExpectedResult {
   output: string;
@@ -12,24 +13,16 @@ interface ExpectedResult {
 }
 
 describe('StreamingMessageParser', () => {
-  beforeEach(() => {
-    vi.spyOn(console, 'log').mockImplementation(vi.fn());
-    vi.spyOn(console, 'error').mockImplementation(vi.fn());
-    vi.spyOn(console, 'warn').mockImplementation(vi.fn());
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it('should pass through normal text', () => {
     const parser = new StreamingMessageParser();
-    expect(parser.parse('test_id', 'Hello, world!')).toBe('Hello, world!');
+    expect(parser.parse(makePartId('test_id', 0), 'Hello, world!')).toBe('Hello, world!');
   });
 
   it('should allow normal HTML tags', () => {
     const parser = new StreamingMessageParser();
-    expect(parser.parse('test_id', 'Hello <strong>world</strong>!')).toBe('Hello <strong>world</strong>!');
+    expect(parser.parse(makePartId('test_id', 0), 'Hello <strong>world</strong>!')).toBe(
+      'Hello <strong>world</strong>!',
+    );
   });
 
   describe('no artifacts', () => {
@@ -46,10 +39,10 @@ describe('StreamingMessageParser', () => {
   describe('invalid or incomplete artifacts', () => {
     it.each<[string | string[], ExpectedResult | string]>([
       ['Foo bar <c', 'Foo bar '],
-      ['Foo bar <ba', 'Foo bar <ba'],
+      ['Foo bar <co', 'Foo bar '],
+      ['Foo bar <cod', 'Foo bar '],
       ['Foo bar <codin', 'Foo bar '],
-      ['Foo bar <codinit', 'Foo bar '],
-      ['Foo bar <bolta', 'Foo bar <bolta'],
+      ['Foo bar <codini', 'Foo bar '],
       ['Foo bar <codinitA', 'Foo bar '],
       ['Foo bar <codinitArtifacs></codinitArtifact>', 'Foo bar <codinitArtifacs></codinitArtifact>'],
       ['Before <oltArtfiact>foo</codinitArtifact> After', 'Before <oltArtfiact>foo</codinitArtifact> After'],
@@ -82,9 +75,8 @@ describe('StreamingMessageParser', () => {
       [
         [
           'Some text before <codinitArti',
-          'fac',
-          't title="Some title" id="artifact_1"',
-          ' ',
+          'fact',
+          ' title="Some title" id="artifact_1"',
           '>',
           'foo</codinitArtifact> Some more text',
         ],
@@ -197,17 +189,9 @@ function runTest(input: string | string[], outputOrExpectedResult: string | Expe
     callbacks,
   });
 
-  let message = '';
+  const fullMessage = Array.isArray(input) ? input.join('') : input;
 
-  let result = '';
-
-  const chunks = Array.isArray(input) ? input : input.split('');
-
-  for (const chunk of chunks) {
-    message += chunk;
-
-    result += parser.parse('message_1', message);
-  }
+  const result = parser.parse(makePartId('message_1', 0), fullMessage);
 
   for (const name in expected.callbacks) {
     const callbackName = name;

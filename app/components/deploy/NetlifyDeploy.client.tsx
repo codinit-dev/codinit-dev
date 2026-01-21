@@ -2,10 +2,12 @@ import { toast } from 'react-toastify';
 import { useStore } from '@nanostores/react';
 import { netlifyConnection } from '~/lib/stores/netlify';
 import { workbenchStore } from '~/lib/stores/workbench';
+import { alertsStore } from '~/lib/stores/alerts';
 import { webcontainer } from '~/lib/webcontainer';
 import { path } from '~/utils/path';
 import { useState } from 'react';
-import type { ActionCallbackData } from '~/lib/runtime/message-parser';
+import type { ActionCallbackData } from 'codinit-agent/message-parser';
+import { makePartId } from 'codinit-agent/partId';
 import { chatId } from '~/lib/persistence/useChatHistory';
 
 export function useNetlifyDeploy() {
@@ -35,22 +37,28 @@ export function useNetlifyDeploy() {
 
       // Create a deployment artifact for visual feedback
       const deploymentId = `deploy-artifact`;
+      const partId = makePartId(deploymentId, 0);
       workbenchStore.addArtifact({
         id: deploymentId,
-        messageId: deploymentId,
+        partId,
         title: 'Netlify Deployment',
         type: 'standalone',
       });
 
-      const deployArtifact = workbenchStore.artifacts.get()[deploymentId];
-
       // Notify that build is starting
-      deployArtifact.runner.handleDeployAction('building', 'running', { source: 'netlify' });
+      alertsStore.setDeployAlert({
+        type: 'info',
+        title: 'Netlify Deployment',
+        description: 'Building project...',
+        stage: 'building',
+        buildStatus: 'running',
+        source: 'netlify',
+      });
 
       // Set up build action
       const actionId = 'build-' + Date.now();
       const actionData: ActionCallbackData = {
-        messageId: 'netlify build',
+        partId: makePartId('netlify-build', 0),
         artifactId: artifact.id,
         actionId,
         action: {
@@ -62,20 +70,32 @@ export function useNetlifyDeploy() {
       // Add the action first
       artifact.runner.addAction(actionData);
 
-      // Then run it
-      await artifact.runner.runAction(actionData);
+      // Run the build action
+      await artifact.runner.runAction(actionData, { isStreaming: false });
 
       if (!artifact.runner.buildOutput) {
         // Notify that build failed
-        deployArtifact.runner.handleDeployAction('building', 'failed', {
-          error: 'Build failed. Check the terminal for details.',
+        alertsStore.setDeployAlert({
+          type: 'error',
+          title: 'Netlify Deployment Failed',
+          description: 'Build failed. Check the terminal for details.',
+          stage: 'building',
+          buildStatus: 'failed',
           source: 'netlify',
         });
         throw new Error('Build failed');
       }
 
       // Notify that build succeeded and deployment is starting
-      deployArtifact.runner.handleDeployAction('deploying', 'running', { source: 'netlify' });
+      alertsStore.setDeployAlert({
+        type: 'info',
+        title: 'Netlify Deployment',
+        description: 'Build successful. Starting deployment...',
+        stage: 'building',
+        buildStatus: 'complete',
+        deployStatus: 'running',
+        source: 'netlify',
+      });
 
       // Get the build files
       const container = await webcontainer;
@@ -158,8 +178,12 @@ export function useNetlifyDeploy() {
         console.error('Invalid deploy response:', data);
 
         // Notify that deployment failed
-        deployArtifact.runner.handleDeployAction('deploying', 'failed', {
-          error: data.error || 'Invalid deployment response',
+        alertsStore.setDeployAlert({
+          type: 'error',
+          title: 'Netlify Deployment Failed',
+          description: data.error || 'Invalid deployment response',
+          stage: 'deploying',
+          deployStatus: 'failed',
           source: 'netlify',
         });
         throw new Error(data.error || 'Invalid deployment response');
@@ -188,8 +212,12 @@ export function useNetlifyDeploy() {
 
           if (deploymentStatus.state === 'error') {
             // Notify that deployment failed
-            deployArtifact.runner.handleDeployAction('deploying', 'failed', {
-              error: 'Deployment failed: ' + (deploymentStatus.error_message || 'Unknown error'),
+            alertsStore.setDeployAlert({
+              type: 'error',
+              title: 'Netlify Deployment Failed',
+              description: 'Deployment failed: ' + (deploymentStatus.error_message || 'Unknown error'),
+              stage: 'deploying',
+              deployStatus: 'failed',
               source: 'netlify',
             });
             throw new Error('Deployment failed: ' + (deploymentStatus.error_message || 'Unknown error'));
@@ -206,8 +234,12 @@ export function useNetlifyDeploy() {
 
       if (attempts >= maxAttempts) {
         // Notify that deployment timed out
-        deployArtifact.runner.handleDeployAction('deploying', 'failed', {
-          error: 'Deployment timed out',
+        alertsStore.setDeployAlert({
+          type: 'error',
+          title: 'Netlify Deployment Failed',
+          description: 'Deployment timed out',
+          stage: 'deploying',
+          deployStatus: 'failed',
           source: 'netlify',
         });
         throw new Error('Deployment timed out');
@@ -219,7 +251,12 @@ export function useNetlifyDeploy() {
       }
 
       // Notify that deployment completed successfully
-      deployArtifact.runner.handleDeployAction('complete', 'complete', {
+      alertsStore.setDeployAlert({
+        type: 'success',
+        title: 'Netlify Deployment Complete',
+        description: 'Your project has been deployed successfully!',
+        stage: 'complete',
+        deployStatus: 'complete',
         url: deploymentStatus.ssl_url || deploymentStatus.url,
         source: 'netlify',
       });
