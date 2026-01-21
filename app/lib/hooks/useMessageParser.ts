@@ -1,6 +1,7 @@
 import type { Message } from 'ai';
 import { useCallback, useState } from 'react';
-import { StreamingMessageParser } from '~/lib/runtime/message-parser';
+import { StreamingMessageParser } from 'codinit-agent/message-parser';
+import { makePartId } from 'codinit-agent/partId';
 import { workbenchStore } from '~/lib/stores/workbench';
 import { createScopedLogger } from '~/utils/logger';
 
@@ -40,16 +41,6 @@ const messageParser = new StreamingMessageParser({
       logger.trace('onActionStream', data.action);
       workbenchStore.runAction(data, true);
     },
-    onThinkingArtifactOpen: (data) => {
-      logger.trace('onThinkingArtifactOpen', data);
-
-      workbenchStore.addThinkingArtifact(data);
-    },
-    onThinkingArtifactClose: (data) => {
-      logger.trace('onThinkingArtifactClose', data);
-
-      workbenchStore.updateThinkingArtifact(data, { closed: true });
-    },
   },
 });
 const extractTextContent = (message: Message) =>
@@ -70,7 +61,7 @@ export function useMessageParser() {
 
     for (const [index, message] of messages.entries()) {
       if (message.role === 'assistant' || message.role === 'user') {
-        const newParsedContent = messageParser.parse(message.id, extractTextContent(message));
+        const newParsedContent = messageParser.parse(makePartId(message.id, 0), extractTextContent(message));
         setParsedMessages((prevParsed) => ({
           ...prevParsed,
           [index]: !reset ? (prevParsed[index] || '') + newParsedContent : newParsedContent,
