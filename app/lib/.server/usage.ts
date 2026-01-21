@@ -2,6 +2,6 @@ export function encodeUsageAnnotation(toolCallId: any, usage: any, providerMetad
   return usage;
 }
 
-export function encodeModelAnnotation(toolCallId: any, providerMetadata: any, modelChoice: any) {
+export function encodeModelAnnotation(toolCallId: any, _providerMetadata: any, _modelChoice: any) {
   return { model: modelChoice };
 }
