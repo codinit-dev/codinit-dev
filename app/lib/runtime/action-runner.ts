@@ -129,6 +129,7 @@ export class ActionRunner {
       if (action.content !== data.action.content) {
         this.updateAction(actionId, { ...action, content: data.action.content });
       }
+
       return;
     }
 
@@ -176,9 +177,11 @@ export class ActionRunner {
     // Check for duplicate tool calls
     if (action.type === 'toolUse') {
       const parsed = action.parsedContent;
+
       if (parsed.state === 'call') {
         const key = `${parsed.toolName}:${JSON.stringify(parsed.args)}`;
         const previousCall = this.#previousToolCalls.get(key);
+
         if (previousCall) {
           this.onToolCallComplete({
             kind: 'error',
@@ -188,6 +191,7 @@ export class ActionRunner {
           });
           return;
         }
+
         this.#previousToolCalls.set(key, { toolName: parsed.toolName, args: parsed.args });
       }
     }
@@ -329,11 +333,13 @@ export class ActionRunner {
     if (parsed.state === 'result') {
       return;
     }
+
     if (parsed.state === 'partial-call') {
       throw new Error('Tool call is still in progress');
     }
 
     let result: string;
+
     try {
       switch (parsed.toolName) {
         case 'view': {
@@ -341,14 +347,17 @@ export class ActionRunner {
           const container = await this.#webcontainer;
           const relPath = workDirRelative(args.path);
           const file = await readPath(container, relPath);
+
           if (file.type === 'directory') {
             result = renderDirectory(file.children);
           } else {
             if (args.view_range && args.view_range.length !== 2) {
               throw new Error('When provided, view_range must be an array of two numbers');
             }
+
             result = renderFile(file.content, args.view_range as [number, number]);
           }
+
           break;
         }
         case 'edit': {
@@ -356,24 +365,33 @@ export class ActionRunner {
           const container = await this.#webcontainer;
           const relPath = workDirRelative(args.path);
           const file = await readPath(container, relPath);
+
           if (file.type !== 'file') {
             throw new Error('Expected a file');
           }
+
           let content = file.content;
+
           if (args.old.length > 1024) {
             throw new Error(`Old text must be less than 1024 characters: ${args.old}`);
           }
+
           if (args.new.length > 1024) {
             throw new Error(`New text must be less than 1024 characters: ${args.new}`);
           }
+
           const matchPos = content.indexOf(args.old);
+
           if (matchPos === -1) {
             throw new Error(`Old text not found: ${args.old}`);
           }
+
           const secondMatchPos = content.indexOf(args.old, matchPos + args.old.length);
+
           if (secondMatchPos !== -1) {
             throw new Error(`Old text found multiple times: ${args.old}`);
           }
+
           content = content.replace(args.old, args.new);
           await container.fs.writeFile(relPath, content);
           result = `Successfully edited ${args.path}`;
@@ -384,10 +402,12 @@ export class ActionRunner {
             const args = npmInstallToolParameters.parse(parsed.args);
             const container = await this.#webcontainer;
             await waitForContainerBootState(ContainerBootState.READY);
+
             const npmInstallProc = await container.spawn('npm', ['install', ...args.packages.split(' ')]);
             action.abortSignal.addEventListener('abort', () => {
               npmInstallProc.kill();
             });
+
             const { output, exitCode } = await streamOutput(npmInstallProc, {
               onOutput: (output) => {
                 this.terminalOutput.set(output);
@@ -395,9 +415,11 @@ export class ActionRunner {
               debounceMs: 50,
             });
             const cleanedOutput = cleanCodinitOutput(output);
+
             if (exitCode !== 0) {
               throw new Error(`Npm install failed with exit code ${exitCode}: ${cleanedOutput}`);
             }
+
             result = cleanedOutput;
           } catch (error: unknown) {
             if (error instanceof z.ZodError) {
@@ -442,6 +464,7 @@ export class ActionRunner {
             onOutput?: (s: string) => void,
           ): Promise<string> => {
             logger.info('starting to run', errorPrefix);
+
             const t0 = performance.now();
             const proc = await container.spawn(commandAndArgs[0], commandAndArgs.slice(1));
             const abortListener: () => void = () => proc.kill();
@@ -449,35 +472,43 @@ export class ActionRunner {
               logger.info('aborting', commandAndArgs);
               proc.kill();
             });
+
             const { output, exitCode } = await streamOutput(proc, { onOutput, debounceMs: 50 });
 
             const cleanedOutput = cleanCodinitOutput(output);
             const time = performance.now() - t0;
             logger.debug('finished', errorPrefix, 'in', Math.round(time));
+
             if (exitCode !== 0) {
               // Kill all other commands
               commandErroredController.abort(`${errorPrefix}`);
+
               // This command's output will be reported exclusively
               throw new Error(`[${errorPrefix}] Failed with exit code ${exitCode}: ${cleanedOutput}`);
             }
+
             abortSignal.removeEventListener('abort', abortListener);
+
             if (cleanedOutput.trim().length === 0) {
               return '';
             }
+
             return cleanedOutput + '\n\n';
           };
 
-          //         START         deploy tool call
-          //          /
-          //         /
-          //  codegen              `convex typecheck` includes typecheck of convex/ dir
-          // + typecheck
-          //       |
-          //       |
-          // app typecheck         `tsc --noEmit --project tsconfig.app.json
-          //         \
-          //          \
-          //         deploy        `deploy` can fail
+          /*
+           *         START         deploy tool call
+           *          /
+           *         /
+           *  codegen              `convex typecheck` includes typecheck of convex/ dir
+           * + typecheck
+           *       |
+           *       |
+           * app typecheck         `tsc --noEmit --project tsconfig.app.json
+           *         \
+           *          \
+           *         deploy        `deploy` can fail
+           */
 
           const runCodegenAndTypecheck = async (onOutput?: (output: string) => void) => {
             // Codinit codegen does a codinit directory typecheck, then tsc does a full-project typecheck.
@@ -487,6 +518,7 @@ export class ActionRunner {
               outputLabels.frontendTypecheck,
               onOutput,
             );
+
             return output;
           };
 
@@ -495,6 +527,7 @@ export class ActionRunner {
             this.terminalOutput.set(output);
           });
           result += await run(['codinit', 'dev', '--once', '--typecheck=disable'], outputLabels.codinitDeploy);
+
           const time = performance.now() - t0;
           logger.info('deploy action finished in', time);
 
@@ -509,11 +542,14 @@ export class ActionRunner {
         case 'addEnvironmentVariables': {
           const args = addEnvironmentVariablesParameters.parse(parsed.args);
           const envVarNames = args.envVarNames;
+
           if (envVarNames.length === 0) {
             result = 'Error: No environment variables to add. Please provide a list of environment variable names.';
             break;
           }
+
           let path = `settings/environment-variables?var=${envVarNames[0]}`;
+
           for (const envVarName of envVarNames.slice(1)) {
             path += `&var=${envVarName}`;
           }
@@ -523,12 +559,14 @@ export class ActionRunner {
         }
         case 'getCodinitDeploymentName': {
           const codinitProject = codinitProjectStore.get();
+
           if (!codinitProject) {
             result = 'Error: No Codinit project is currently connected. Please connect a Codinit project first.';
           } else {
             result = codinitProject.deploymentName;
             console.log('getCodinitDeploymentName tool called, returning:', result);
           }
+
           break;
         }
         default: {
@@ -543,10 +581,13 @@ export class ActionRunner {
       });
     } catch (e: any) {
       console.error('Error on tool call', e);
+
       let message = e.toString();
+
       if (!message.startsWith('Error:')) {
         message = 'Error: ' + message;
       }
+
       this.onToolCallComplete({
         kind: 'error',
         result: message,
