@@ -1,11 +1,10 @@
 import { atom, map, type MapStore, type ReadableAtom, type WritableAtom } from 'nanostores';
 import type { EditorDocument, ScrollPosition } from '~/components/editor/codemirror/CodeMirrorEditor';
-import { ActionRunner } from '~/lib/runtime/action-runner';
 import type {
   ActionCallbackData,
   ArtifactCallbackData,
-  ThinkingArtifactCallbackData,
-} from '~/lib/runtime/message-parser';
+} from 'codinit-agent/message-parser';
+import type { ExampleShell } from '~/utils/shell';
 import { webcontainer, setupWebContainerEventHandlers } from '~/lib/webcontainer';
 import type { ITerminal } from '~/types/terminal';
 import { unreachable } from '~/utils/unreachable';
@@ -27,6 +26,7 @@ import { startAutoSave } from '~/lib/persistence/fileAutoSave';
 import { diffApprovalStore } from './settings';
 import { isElectron, saveFileLocal } from '~/utils/electron';
 import { getProjectName } from '~/utils/projectName';
+import { ActionRunner } from '../runtime/action-runner';
 
 const { saveAs } = fileSaver;
 
@@ -140,6 +140,11 @@ export class WorkbenchStore {
   modifiedFiles = new Set<string>();
   artifactIdList: string[] = [];
   #globalExecutionQueue = Promise.resolve();
+
+  actionStreamSampler = createSampler(
+    (data: ActionCallbackData, isStreaming: boolean) => this.addToExecutionQueue(() => this._runAction(data, isStreaming)),
+    DEFAULT_ACTION_SAMPLE_INTERVAL,
+  );
 
   constructor() {
     if (import.meta.hot) {
@@ -502,6 +507,10 @@ export class WorkbenchStore {
     }
   }
 
+  isDefaultPreviewRunning() {
+    return this.#previewsStore.previews.get().length > 0;
+  }
+
   async deleteFile(filePath: string) {
     try {
       const currentDocument = this.currentDocument.get();
@@ -601,8 +610,17 @@ export class WorkbenchStore {
     this.#reloadedMessages = new Set(messages);
   }
 
-  addArtifact(data: ArtifactCallbackData & { id: string; title: string; type?: string }) {
-    const { messageId, title, id, type } = data;
+  #getArtifact(messageId: string): ArtifactState | undefined {
+    return this.artifacts.get()[messageId];
+  }
+
+  #getProjectName() {
+    return getProjectName();
+  }
+
+  addArtifact(data: ArtifactCallbackData) {
+    const { partId, title, id, type } = data;
+    const messageId = partId;
     const artifact = this.#getArtifact(messageId);
 
     if (artifact) {
@@ -620,79 +638,22 @@ export class WorkbenchStore {
       type,
       runner: new ActionRunner(
         webcontainer,
-        () => this.codinitTerminal,
-        (alert) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
+        this.codinitTerminal as unknown as ExampleShell,
+        {
+          onAlert: (alert: ActionAlert) => {
+            if (this.#reloadedMessages.has(messageId)) return;
+            this.actionAlert.set(alert);
+          },
+          onToolCallComplete: () => {
+            // Partial implementation
           }
-
-          this.actionAlert.set(alert);
-        },
-        (alert) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          this.supabaseAlert.set(alert);
-        },
-        (alert) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          this.deployAlert.set(alert);
-        },
-        (testResult) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          // Create or update test artifact
-          const testArtifact = this.#getTestArtifact(messageId);
-
-          if (!testArtifact) {
-            this.addTestArtifact(messageId, {
-              id: `test-${Date.now()}`,
-              title: 'Test Results',
-              type: 'test',
-              command: testResult.command,
-              summary: testResult.summary,
-              duration: testResult.duration,
-              coverage: testResult.coverage,
-              failedTests: testResult.failedTests,
-              status: testResult.status,
-              timestamp: new Date().toISOString(),
-            });
-          } else {
-            this.updateTestArtifact(messageId, {
-              summary: testResult.summary,
-              duration: testResult.duration,
-              coverage: testResult.coverage,
-              failedTests: testResult.failedTests,
-              status: testResult.status,
-            });
-          }
-        },
-        (output, command) => {
-          if (this.#reloadedMessages.has(messageId)) {
-            return;
-          }
-
-          this.actionAlert.set({
-            type: 'info',
-            title: 'Command Running',
-            description: `Executing: ${command}`,
-            content: output,
-            isStreaming: true,
-            streamingOutput: output,
-            command,
-          });
-        },
+        }
       ),
     });
   }
 
-  updateArtifact({ messageId }: ArtifactCallbackData, state: Partial<ArtifactUpdateState>) {
+  updateArtifact({ partId }: ArtifactCallbackData, state: Partial<ArtifactUpdateState>) {
+    const messageId = partId;
     const artifact = this.#getArtifact(messageId);
 
     if (!artifact) {
@@ -702,36 +663,7 @@ export class WorkbenchStore {
     this.artifacts.setKey(messageId, { ...artifact, ...state });
   }
 
-  addThinkingArtifact({ messageId, title, id, type, steps, content }: ThinkingArtifactCallbackData) {
-    const thinkingArtifact = this.#getThinkingArtifact(messageId);
 
-    if (thinkingArtifact) {
-      return;
-    }
-
-    this.thinkingArtifacts.setKey(messageId, {
-      id,
-      title,
-      closed: false,
-      type,
-      steps,
-      content,
-    });
-  }
-
-  updateThinkingArtifact({ messageId }: ThinkingArtifactCallbackData, state: Partial<ThinkingArtifactUpdateState>) {
-    const thinkingArtifact = this.#getThinkingArtifact(messageId);
-
-    if (!thinkingArtifact) {
-      return;
-    }
-
-    this.thinkingArtifacts.setKey(messageId, { ...thinkingArtifact, ...state });
-  }
-
-  #getThinkingArtifact(messageId: string): ThinkingArtifactState | undefined {
-    return this.thinkingArtifacts.get()[messageId];
-  }
 
   addTestArtifact(messageId: string, artifact: Omit<TestArtifactState, 'closed'>) {
     const testArtifact = this.#getTestArtifact(messageId);
@@ -761,12 +693,12 @@ export class WorkbenchStore {
   }
 
   addAction(data: ActionCallbackData) {
-    // this._addAction(data);
-
     this.addToExecutionQueue(() => this._addAction(data));
   }
+
   async _addAction(data: ActionCallbackData) {
-    const { messageId } = data;
+    const { partId } = data;
+    const messageId = partId;
 
     const artifact = this.#getArtifact(messageId);
 
@@ -784,8 +716,10 @@ export class WorkbenchStore {
       this.addToExecutionQueue(() => this._runAction(data, isStreaming));
     }
   }
+
   async _runAction(data: ActionCallbackData, isStreaming: boolean = false) {
-    const { messageId } = data;
+    const { partId } = data;
+    const messageId = partId;
 
     const artifact = this.#getArtifact(messageId);
 
@@ -799,88 +733,25 @@ export class WorkbenchStore {
       return;
     }
 
-    await yieldToMainThread();
-
-    if (data.action.type === 'file' && !isStreaming && diffApprovalStore.get()) {
-      const wc = await webcontainer;
-      const fullPath = path.join(wc.workdir, data.action.filePath);
-
-      let beforeContent = '';
-      const existingFile = this.files.get()[fullPath];
-
-      if (existingFile && existingFile.type === 'file') {
-        beforeContent = existingFile.content;
-      } else {
-        try {
-          const fileContent = await wc.fs.readFile(fullPath, 'utf-8');
-          beforeContent = fileContent;
-        } catch {
-          beforeContent = '';
-        }
-      }
-
-      const afterContent = data.action.content;
-
-      if (beforeContent !== afterContent) {
-        this.pendingApproval.set({
-          actionId: data.actionId,
-          messageId,
-          artifactId: data.artifactId,
-          filePath: fullPath,
-          beforeContent,
-          afterContent,
-          action: data.action,
-        });
-
-        const actions = artifact.runner.actions.get();
-        const currentAction = actions[data.actionId];
-
-        if (currentAction) {
-          artifact.runner.actions.setKey(data.actionId, { ...currentAction, status: 'awaiting-approval' });
-        }
-
-        return;
-      }
-    }
-
     if (data.action.type === 'file') {
-      const wc = await webcontainer;
-      const fullPath = path.join(wc.workdir, data.action.filePath);
+      const fullPath = path.join('/', data.action.filePath);
 
-      /*
-       * For scoped locks, we would need to implement diff checking here
-       * to determine if the AI is modifying existing code or just adding new code
-       * This is a more complex feature that would be implemented in a future update
-       */
-
-      if (this.selectedFile.value !== fullPath) {
+      if (this.selectedFile.get() !== fullPath) {
         this.setSelectedFile(fullPath);
       }
 
-      if (this.currentView.value !== 'code') {
-        this.currentView.set('code');
-      }
-
-      const doc = this.#editorStore.documents.get()[fullPath];
-
-      if (!doc) {
-        await artifact.runner.runAction(data, isStreaming);
-      }
-
       this.#editorStore.updateFile(fullPath, data.action.content);
-      await yieldToMainThread();
 
       if (!isStreaming && data.action.content) {
         await this.saveFile(fullPath);
-        await yieldToMainThread();
       }
+    }
 
-      if (!isStreaming) {
-        await artifact.runner.runAction(data);
-        this.resetAllFileModifications();
-      }
+    if (!isStreaming) {
+      await artifact.runner.runAction(data, { isStreaming });
+      this.resetAllFileModifications();
     } else {
-      await artifact.runner.runAction(data);
+      await artifact.runner.runAction(data, { isStreaming });
     }
   }
 
@@ -914,10 +785,14 @@ export class WorkbenchStore {
     try {
       await this._runAction(
         {
-          messageId,
-          artifactId,
+
           actionId,
-          action,
+          partId: artifact.id as any,
+          artifactId: artifact.id,
+          action: {
+            type: 'build' as const,
+            content: 'npm run build',
+          },
         },
         false,
       );
@@ -951,14 +826,9 @@ export class WorkbenchStore {
     }
   }
 
-  actionStreamSampler = createSampler(async (data: ActionCallbackData, isStreaming: boolean = false) => {
-    return await this._runAction(data, isStreaming);
-  }, DEFAULT_ACTION_SAMPLE_INTERVAL);
 
-  #getArtifact(id: string) {
-    const artifacts = this.artifacts.get();
-    return artifacts[id];
-  }
+
+
 
   async downloadZip() {
     const zip = new JSZip();
@@ -1332,9 +1202,7 @@ export class WorkbenchStore {
     }
   }
 
-  #getProjectName() {
-    return getProjectName();
-  }
+
 }
 
 export const workbenchStore = new WorkbenchStore();
