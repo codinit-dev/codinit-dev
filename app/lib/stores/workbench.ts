@@ -1,9 +1,6 @@
 import { atom, map, type MapStore, type ReadableAtom, type WritableAtom } from 'nanostores';
 import type { EditorDocument, ScrollPosition } from '~/components/editor/codemirror/CodeMirrorEditor';
-import type {
-  ActionCallbackData,
-  ArtifactCallbackData,
-} from 'codinit-agent/message-parser';
+import type { ActionCallbackData, ArtifactCallbackData } from 'codinit-agent/message-parser';
 import type { ExampleShell } from '~/utils/shell';
 import { webcontainer, setupWebContainerEventHandlers } from '~/lib/webcontainer';
 import type { ITerminal } from '~/types/terminal';
@@ -142,7 +139,8 @@ export class WorkbenchStore {
   #globalExecutionQueue = Promise.resolve();
 
   actionStreamSampler = createSampler(
-    (data: ActionCallbackData, isStreaming: boolean) => this.addToExecutionQueue(() => this._runAction(data, isStreaming)),
+    (data: ActionCallbackData, isStreaming: boolean) =>
+      this.addToExecutionQueue(() => this._runAction(data, isStreaming)),
     DEFAULT_ACTION_SAMPLE_INTERVAL,
   );
 
@@ -636,19 +634,18 @@ export class WorkbenchStore {
       title,
       closed: false,
       type,
-      runner: new ActionRunner(
-        webcontainer,
-        this.codinitTerminal as unknown as ExampleShell,
-        {
-          onAlert: (alert: ActionAlert) => {
-            if (this.#reloadedMessages.has(messageId)) return;
-            this.actionAlert.set(alert);
-          },
-          onToolCallComplete: () => {
-            // Partial implementation
+      runner: new ActionRunner(webcontainer, this.codinitTerminal as unknown as ExampleShell, {
+        onAlert: (alert: ActionAlert) => {
+          if (this.#reloadedMessages.has(messageId)) {
+            return;
           }
-        }
-      ),
+
+          this.actionAlert.set(alert);
+        },
+        onToolCallComplete: () => {
+          // Partial implementation
+        },
+      }),
     });
   }
 
@@ -662,8 +659,6 @@ export class WorkbenchStore {
 
     this.artifacts.setKey(messageId, { ...artifact, ...state });
   }
-
-
 
   addTestArtifact(messageId: string, artifact: Omit<TestArtifactState, 'closed'>) {
     const testArtifact = this.#getTestArtifact(messageId);
@@ -785,7 +780,6 @@ export class WorkbenchStore {
     try {
       await this._runAction(
         {
-
           actionId,
           partId: artifact.id as any,
           artifactId: artifact.id,
@@ -825,10 +819,6 @@ export class WorkbenchStore {
       artifact.runner.actions.setKey(actionId, { ...currentAction, status: 'aborted' });
     }
   }
-
-
-
-
 
   async downloadZip() {
     const zip = new JSZip();
@@ -1201,8 +1191,6 @@ export class WorkbenchStore {
       throw error;
     }
   }
-
-
 }
 
 export const workbenchStore = new WorkbenchStore();
