@@ -45,8 +45,6 @@ export function useVercelDeploy() {
         type: 'standalone',
       });
 
-      const deployArtifact = workbenchStore.artifacts.get()[deploymentId];
-
       // Notify that build is starting
       alertsStore.setDeployAlert({
         type: 'info',
