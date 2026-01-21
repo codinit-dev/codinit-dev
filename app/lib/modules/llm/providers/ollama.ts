@@ -109,14 +109,40 @@ export default class OllamaProvider extends BaseProvider {
       throw new Error('Invalid response from Ollama API: missing models array');
     }
 
-    return data.models.map((model: OllamaModel) => ({
-      name: model.name,
-      label: `${model.name} (${model.details?.parameter_size || 'unknown'})`,
-      provider: this.name,
-      maxTokenAllowed: 8000,
-      maxCompletionTokens: 8000,
-      icon: '/thirdparty/logos/ollama.svg',
-    }));
+    return data.models.map((model: OllamaModel) => {
+      // Use proper context window based on model family and parameter size
+      let contextWindow = 4096; // default
+
+      // Larger context windows for modern models
+      if (model.details?.parameter_size) {
+        const paramSize = parseInt(model.details.parameter_size.replace(/[^0-9]/g, ''));
+
+        // Models with larger parameter sizes generally support larger contexts
+        if (paramSize >= 70) {
+          contextWindow = 32768; // 32k for 70B+ models
+        } else if (paramSize >= 30) {
+          contextWindow = 16384; // 16k for 30B+ models
+        } else if (paramSize >= 7) {
+          contextWindow = 8192; // 8k for 7B+ models
+        }
+      }
+
+      // Special handling for specific model families
+      if (model.details?.family?.includes('llama') && model.details?.parameter_size?.includes('70')) {
+        contextWindow = 32768; // Llama 70B models
+      } else if (model.details?.family?.includes('llama') && model.details?.parameter_size?.includes('405')) {
+        contextWindow = 128000; // Llama 405B models
+      }
+
+      return {
+        name: model.name,
+        label: `${model.name} (${model.details?.parameter_size || 'unknown'}, ${contextWindow >= 1000 ? Math.floor(contextWindow / 1000) + 'k' : contextWindow} ctx)`,
+        provider: this.name,
+        maxTokenAllowed: contextWindow,
+        maxCompletionTokens: Math.min(contextWindow, 4096), // Cap completion tokens
+        icon: '/thirdparty/logos/ollama.svg',
+      };
+    });
   }
 
   getModelInstance: (options: {
