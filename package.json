@@ -124,7 +124,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "codinit": "^1.0.1",
+    "convex": "^1.0.1",
     "date-fns": "^3.6.0",
     "diff": "^5.2.0",
     "dotenv": "^16.6.1",
@@ -198,12 +198,12 @@
     "@types/react-dom": "^18.3.7",
     "@types/react-window": "^1.8.8",
     "@vitejs/plugin-react": "^4.7.0",
-    "@vitest/browser": "^2.1.9",
+    "@vitest/browser": "^3.2.4",
     "baseline-browser-mapping": "^2.9.11",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "electron": "^35.7.5",
-    "electron-builder": "^26.0.12",
+    "electron-builder": "^26.4.0",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -233,7 +233,9 @@
   "pnpm": {
     "overrides": {
       "wrangler": "^4.42.1",
-      "jsondiffpatch": "^0.7.2"
+      "jsondiffpatch": "^0.7.2",
+      "electron-builder-squirrel-windows": "26.4.0",
+      "dmg-builder": "26.4.0"
     },
     "peerDependencyRules": {
       "allowedVersions": {
