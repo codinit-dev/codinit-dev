@@ -8,7 +8,6 @@ import { allowedHTMLElements } from '~/utils/markdown';
 import { LLMManager } from '~/lib/modules/llm/manager';
 import { createScopedLogger } from '~/utils/logger';
 import { createFilesContext, extractPropertiesFromMessage } from './utils';
-import { BuiltInToolService } from '~/lib/services/builtInToolService';
 
 export type Messages = Message[];
 
@@ -211,14 +210,6 @@ Use these preferences when creating UI components, styling code, or suggesting d
   logger.info(`Sending llm call to ${provider.name} with model ${modelDetails.name}`);
 
   let allTools = { ...options?.tools };
-  const builtInToolService = BuiltInToolService.getInstance();
-  const builtInTools = builtInToolService.toolsWithoutExecute;
-
-  if (Object.keys(builtInTools).length > 0) {
-    allTools = { ...allTools, ...builtInTools };
-    logger.info(`Added ${Object.keys(builtInTools).length} built-in tools:`, Object.keys(builtInTools));
-  }
-
   const hasTools = Object.keys(allTools).length > 0;
 
   return await _streamText({
