@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "types": [
       "@remix-run/cloudflare",
       "vite/client",
@@ -21,11 +25,19 @@
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./app/*"],
-      "~/docs*": ["./docs/*"],
-      "#build/*": ["./build/*"]
+      "~/*": [
+        "./app/*"
+      ],
+      "~/docs*": [
+        "./docs/*"
+      ],
+      "codinit-agent/*": [
+        "./codinit-agent/*"
+      ],
+      "#build/*": [
+        "./build/*"
+      ]
     },
-
     "noEmit": true
   },
   "include": [
@@ -36,5 +48,8 @@
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
   ],
-  "exclude": ["node_modules", "templates/**/*"]
+  "exclude": [
+    "node_modules",
+    "templates/**/*"
+  ]
 }
