@@ -23,7 +23,7 @@ import { startAutoSave } from '~/lib/persistence/fileAutoSave';
 import { diffApprovalStore } from './settings';
 import { isElectron, saveFileLocal } from '~/utils/electron';
 import { getProjectName } from '~/utils/projectName';
-import { ActionRunner } from '../runtime/action-runner';
+import { ActionRunner } from '~/lib/runtime/action-runner';
 
 const { saveAs } = fileSaver;
 
