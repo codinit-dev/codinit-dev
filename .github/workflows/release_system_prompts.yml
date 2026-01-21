@@ -1,0 +1,61 @@
+name: Create System Prompts Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'codinit-agent/prompts/**'
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup and Build
+        uses: ./.github/actions/setup-and-build
+
+      - name: Build System Prompts
+        run: |
+          pnpm run build:system-prompts
+          node dist/buildSystemPrompts.js
+
+      - name: Create Release
+        id: create_release
+        uses: rymndhng/release-on-push-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          bump_version_scheme: patch
+          tag_prefix: prompts-v
+          release_name: 'codinit System Prompts <RELEASE_VERSION>'
+          release_body: |
+            ## codinit System Prompts Release
+
+            This release contains the compiled system prompts used by the codinit AI assistant.
+
+            ### Files included:
+            - `codinit-system-prompts.txt` - Complete system prompts as sent to the AI model
+
+            Generated automatically from the latest prompt changes in the codinit-agent.
+
+      - name: Upload Release Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f "codinit-system-prompts.txt" ]; then
+            gh release upload "${{ steps.create_release.outputs.tag_name }}" "codinit-system-prompts.txt" --clobber
+            echo "✅ Uploaded codinit-system-prompts.txt to release"
+          else
+            echo "❌ codinit-system-prompts.txt not found"
+            exit 1
+          fi
