@@ -108,14 +108,14 @@ export const filesToArtifacts = (files: { [path: string]: { content: string } },
   return `
 <codinitArtifact id="${id}" title="User Updated Files">
 ${Object.keys(files)
-      .map(
-        (filePath) => `
+  .map(
+    (filePath) => `
 <codinitAction type="file" filePath="${filePath}">
 ${files[filePath].content}
 </codinitAction>
 `,
-      )
-      .join('\n')}
+  )
+  .join('\n')}
 </codinitArtifact>
 </codinitArtifact>
   `;
@@ -148,4 +148,3 @@ export async function readPath(webcontainer: WebContainer, filePath: string): Pr
   }
   return { type: 'directory', children: [] }; // Fallback
 }
-
