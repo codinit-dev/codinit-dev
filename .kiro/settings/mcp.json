@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+        "example-server": {
+            "command": "uvx",
+            "args": [
+                "example-mcp-server@latest"
+            ],
+            "env": {
+                "FASTMCP_LOG_LEVEL": "ERROR"
+            },
+            "disabled": true,
+            "autoApprove": []
+        }
+    }
+}

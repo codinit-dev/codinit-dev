@@ -1,0 +1,5 @@
+# This file ensures the specs directory is tracked by git
+# Spec files will be created here following the pattern:
+# .kiro/specs/{feature-name}/requirements.md
+# .kiro/specs/{feature-name}/design.md  
+# .kiro/specs/{feature-name}/tasks.md
