@@ -1,6 +1,6 @@
 import { atom, map } from 'nanostores';
 import { PROVIDER_LIST } from '~/utils/constants';
-import type { IProviderConfig } from '~/types/model';
+import type { IProviderConfig, IProviderSetting } from '~/types/model';
 import type {
   TabVisibilityConfig,
   TabWindowConfig,
@@ -101,7 +101,7 @@ const getInitialProviderSettings = (): ProviderSetting => {
 export const providersStore = map<ProviderSetting>(getInitialProviderSettings());
 
 // Create a function to update provider settings that handles both store and persistence
-export const updateProviderSettings = (provider: string, settings: ProviderSetting) => {
+export const updateProviderSettings = (provider: string, settings: Partial<IProviderSetting>) => {
   const currentSettings = providersStore.get();
 
   // Create new provider config with updated settings
