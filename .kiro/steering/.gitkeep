@@ -1,6 +1,0 @@
-# This file ensures the steering directory is tracked by git
-# Steering files (.md) will be created here to provide:
-# - Team standards and norms
-# - Project-specific information
-# - Build/test instructions
-# - Additional context for AI interactions
