@@ -8,7 +8,6 @@ import { allowedHTMLElements } from '~/utils/markdown';
 import { LLMManager } from '~/lib/modules/llm/manager';
 import { createScopedLogger } from '~/utils/logger';
 import { createFilesContext, extractPropertiesFromMessage } from './utils';
-import { BuiltInToolService } from '~/lib/services/builtInToolService';
 
 export type Messages = Message[];
 
@@ -210,16 +209,16 @@ Use these preferences when creating UI components, styling code, or suggesting d
 
   logger.info(`Sending llm call to ${provider.name} with model ${modelDetails.name}`);
 
-  let allTools = { ...options?.tools };
-  const builtInToolService = BuiltInToolService.getInstance();
-  const builtInTools = builtInToolService.toolsWithoutExecute;
+  /*
+   * Only pass tools that are properly implemented with valid Zod schemas.
+   * Built-in tools from JSON don't have Zod validation, so we don't pass any tools
+   * to avoid zod-to-json-schema conversion errors.
+   */
+  const allTools = {};
 
-  if (Object.keys(builtInTools).length > 0) {
-    allTools = { ...allTools, ...builtInTools };
-    logger.info(`Added ${Object.keys(builtInTools).length} built-in tools:`, Object.keys(builtInTools));
-  }
+  logger.info(`Skipping all tool passing to AI SDK - tools are processed server-side only`);
 
-  const hasTools = Object.keys(allTools).length > 0;
+  const hasTools = false;
 
   return await _streamText({
     model: provider.getModelInstance({
@@ -232,6 +231,5 @@ Use these preferences when creating UI components, styling code, or suggesting d
     maxTokens: dynamicMaxTokens,
     messages: convertToCoreMessages(processedMessages as any),
     ...(hasTools ? { tools: allTools, toolChoice: 'auto' } : {}),
-    ...options,
   });
 }
