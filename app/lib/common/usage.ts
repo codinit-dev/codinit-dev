@@ -1,6 +1,6 @@
 import type { Usage } from './annotations';
 
-export function calculateCodinitTokens(usage: Usage, provider: string): { codinitTokens: number } {
+export function calculateCodinitTokens(_usage: Usage, _provider: string): { codinitTokens: number } {
   return { codinitTokens: 0 };
 }
 
