@@ -254,7 +254,7 @@ async function chatAction({ context, request }: ActionFunctionArgs) {
         }
 
         try {
-          const _serverSideTools = ['SearchWeb', 'FetchFromWeb', 'TodoManager'];
+          // const serverSideTools = ['SearchWeb', 'FetchFromWeb', 'TodoManager'];
           logger.debug('Processed built-in tool invocations');
         } catch (error) {
           logger.error('Failed to process built-in tool invocations:', error);

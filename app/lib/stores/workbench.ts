@@ -29,16 +29,6 @@ const { saveAs } = fileSaver;
 
 const logger = createScopedLogger('WorkbenchStore');
 
-function yieldToMainThread(): Promise<void> {
-  return new Promise((resolve) => {
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => resolve(), { timeout: 100 });
-    } else {
-      setTimeout(resolve, 0);
-    }
-  });
-}
-
 const DEFAULT_ACTION_SAMPLE_INTERVAL = 500;
 
 export interface ArtifactState {
@@ -757,7 +747,7 @@ export class WorkbenchStore {
       return;
     }
 
-    const { actionId, messageId, artifactId, action } = pending;
+    const { actionId, messageId, _artifactId, _action } = pending;
 
     this.pendingApproval.set(null);
 
