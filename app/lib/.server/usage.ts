@@ -3,5 +3,5 @@ export function encodeUsageAnnotation(toolCallId: any, usage: any, _providerMeta
 }
 
 export function encodeModelAnnotation(_toolCallId: any, _providerMetadata: any, _modelChoice: any) {
-  return { model: modelChoice };
+  return { model: _modelChoice };
 }

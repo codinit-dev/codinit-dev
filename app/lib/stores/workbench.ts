@@ -747,7 +747,7 @@ export class WorkbenchStore {
       return;
     }
 
-    const { actionId, messageId, _artifactId, _action } = pending;
+    const { actionId, messageId } = pending;
 
     this.pendingApproval.set(null);
 
