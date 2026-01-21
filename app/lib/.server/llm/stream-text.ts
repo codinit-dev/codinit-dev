@@ -209,7 +209,7 @@ Use these preferences when creating UI components, styling code, or suggesting d
 
   logger.info(`Sending llm call to ${provider.name} with model ${modelDetails.name}`);
 
-  let allTools = { ...options?.tools };
+  const allTools = { ...options?.tools };
   const hasTools = Object.keys(allTools).length > 0;
 
   return await _streamText({
