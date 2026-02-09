@@ -140,7 +140,7 @@
     "js-cookie": "^3.0.5",
     "jspdf": "^4.0.0",
     "jszip": "^3.10.1",
-    "langsmith": "^0.3.82",
+    "langsmith": "^0.4.6",
     "lucide-react": "^0.485.0",
     "mime": "^4.1.0",
     "nanostores": "^0.10.3",
