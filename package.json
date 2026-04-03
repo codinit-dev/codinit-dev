@@ -199,7 +199,7 @@
     "baseline-browser-mapping": "^2.9.11",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "electron": "^35.7.5",
+    "electron": "^39.8.4",
     "electron-builder": "^26.0.12",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
